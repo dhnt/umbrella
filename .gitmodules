@@ -1,0 +1,45 @@
+[submodule "appstore"]
+	path = appstore
+	url = https://github.com/dhnt/appstore.git
+[submodule "bashsharp"]
+	path = bashsharp
+	url = https://github.com/bashsharp/bashsharp.git
+[submodule "bashsharp-tests"]
+	path = bashsharp-tests
+	url = https://github.com/bashsharp/bashsharp-tests.git
+[submodule "bashsharp-tour"]
+	path = bashsharp-tour
+	url = https://github.com/bashsharp/tour.git
+[submodule "bashy"]
+	path = bashy
+	url = https://github.com/qiangli/bashy.git
+[submodule "bonsai"]
+	path = bonsai
+	url = https://github.com/qiangli/bonsai.git
+[submodule "coreutils"]
+	path = coreutils
+	url = https://github.com/qiangli/coreutils.git
+[submodule "filebrowser"]
+	path = filebrowser
+	url = https://github.com/qiangli/filebrowser.git
+[submodule "gfy"]
+	path = gfy
+	url = https://github.com/qiangli/gfy.git
+[submodule "nadir"]
+	path = nadir
+	url = https://github.com/qiangli/nadir.git
+[submodule "outpost"]
+	path = outpost
+	url = https://github.com/qiangli/outpost.git
+[submodule "readline"]
+	path = readline
+	url = https://github.com/qiangli/readline.git
+[submodule "sh"]
+	path = sh
+	url = https://github.com/qiangli/sh.git
+[submodule "ycode"]
+	path = ycode
+	url = https://github.com/qiangli/ycode.git
+[submodule "yoke"]
+	path = yoke
+	url = https://github.com/qiangli/yoke.git

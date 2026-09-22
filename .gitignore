@@ -1,0 +1,26 @@
+# Umbrella-level only. Per-subproject ignores live inside each submodule.
+
+# Private siblings: not submodules here. Clone them beside the others when
+# you have access; they resolve as flat ../<X> siblings exactly the same way.
+cloudbox/
+kg/
+vsc-pcts-harness-kit/
+
+# Local scrub patterns (machine names, logins) — never committed.
+.scrub-patterns.local
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Local agentic tool artifacts
+.agents/
+.gfy-out/
+.claude/
+.aider*
+tmp/
+
+# bashy kb read log (derived on demand; would churn every `kb show`)
+docs/kb/reads.jsonl

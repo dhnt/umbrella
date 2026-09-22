@@ -1,0 +1,41 @@
+name: test
+
+# The umbrella's own lint: shell syntax, gitlink pins, the public-repo scrub
+# over every tracked file. Cheap enough to run on every push (public minutes).
+# The real gates run in each subproject and on the release hosts.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  umbrella:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Check shell scripts
+        shell: bash
+        run: |
+          mapfile -d '' scripts < <(find script -type f -name '*.sh' -print0)
+          bash -n "${scripts[@]}"
+
+      - name: Check submodule pins
+        shell: bash
+        run: |
+          while read -r key path; do
+            mode=$(git ls-files --stage -- "$path" | awk '{print $1}')
+            if [[ "$mode" != 160000 ]]; then
+              echo "::error file=$path::submodule is not recorded as a gitlink"
+              exit 1
+            fi
+          done < <(git config -f .gitmodules --get-regexp '^submodule\..*\.path$')
+
+      - name: Public-repo scrub (every tracked file)
+        run: script/scrub-gate.sh --all
