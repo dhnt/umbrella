@@ -175,6 +175,12 @@ bash53)
     check bash53-native bashy pty make test-bash
   fi
   ;;
+modernish-diagnostics)
+  export OCI="$root/script/validation-oci.sh"
+  run free-suite-sources . python script/provision-conformance-fixtures.py free-posix bashy
+  check modernish bashy env POSIX_SUITE_EVIDENCE="$EVIDENCE_DIR/modernish" scripts/modernish-suite.sh
+  printf '%s\n' 'Modernish initialization diagnostics only, with original suite verdicts retained. This is not full free-POSIX validation or certification.' > "$EVIDENCE_DIR/coverage.md"
+  ;;
 free-posix)
   check bashy-build bashy make build
   export PATH="$root/bashy/bin:$PATH"
