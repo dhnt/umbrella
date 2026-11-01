@@ -4,6 +4,8 @@
 import argparse
 import hashlib
 import io
+import json
+import os
 import pathlib
 import re
 import shutil
@@ -29,6 +31,7 @@ SOURCES = (
 def extract_bash(data, destination, digest):
     if hashlib.sha256(data).hexdigest() != digest:
         raise ValueError("GNU Bash archive checksum mismatch")
+    modes = {}
     with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
         for member in archive:
             parts = pathlib.PurePosixPath(member.name).parts
@@ -45,9 +48,20 @@ def extract_bash(data, destination, digest):
                 with archive.extractfile(member) as source, target.open("wb") as output:
                     shutil.copyfileobj(source, output)
                 target.chmod(member.mode & 0o777)
+                modes[str(target.relative_to(destination))] = member.mode & 0o777
     for required in ("tests/run-all", "support/recho.c"):
         if not (destination / required).is_file():
             raise ValueError("GNU Bash archive lacks " + required)
+    if os.name == "nt":
+        # chmod on Windows does not preserve execute bits. Use the same ACL
+        # representation as Bashy's extractor and the fixture runner, before
+        # publishing provenance. Never infer modes from file extensions.
+        helper = pathlib.Path(__file__).resolve().with_name("fixture-modes.go")
+        environment = dict(os.environ, GOWORK="off")
+        subprocess.run(["go", "run", str(helper), str(destination.resolve())],
+                       cwd=helper.parent.parent / "sh", env=environment,
+                       input=json.dumps(modes), text=True, check=True)
+        (destination / ".bashy-windows-modes").write_text(digest + "\n")
     (destination / ".bashy-source-sha256").write_text(digest + "\n")
 
 
@@ -64,7 +78,10 @@ def bash53(root):
     if destination.exists() or destination.is_symlink():
         if (marker.is_file() and marker.read_text().strip() == digest
                 and (destination / "tests/run-all").is_file()
-                and (destination / "support/recho.c").is_file()):
+                and (destination / "support/recho.c").is_file()
+                and (os.name != "nt" or
+                     ((destination / ".bashy-windows-modes").is_file() and
+                      (destination / ".bashy-windows-modes").read_text().strip() == digest))):
             print("GNU Bash fixture cache matches " + digest, flush=True)
             return
         raise ValueError("existing GNU fixture tree lacks matching provenance; use a clean runner")
