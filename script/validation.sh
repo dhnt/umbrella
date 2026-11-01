@@ -159,6 +159,9 @@ bashy-full)
   ;;
 shell-repairs)
   printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap and unset-scanner guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
+  check formatter-flags sh go test -count=1 -timeout 3m ./cmd/shfmt -run '^TestScript$/^flags$'
+  check pragma-sdk sh go test -count=1 -timeout 3m ./lower -run '^TestGoSourcePragmaPosition$'
+  check runtime-diagnostics sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 3m ./interp -run '^(Example|TestPhaseDiagnostic.*|TestPrefix.*|TestLetExpandedArgumentsFidelity)$'
   check unset-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 3m ./interp -run '^(TestScanUnsetOperandSourcesBoundaries|TestUnsetContinuedOperands|TestUnsetOperandSourcesDoesNotCopyScriptTail)$'
   check shell-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel|TestBashPPImportBridgeDoesNotContaminatePackage|TestS243OriginalChannelDomainRegressions|TestSelectorResolutionScales|TestCommandSubstitutionExitTrap(|Cancellation|Panic))$'
   ;;
