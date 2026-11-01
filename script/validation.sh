@@ -165,6 +165,7 @@ shell-full)
   fi
   ;;
 bash53)
+  export BASH53_DEBUG_DIR="$EVIDENCE_DIR/bash53-diffs"
   run bash53-source . python script/provision-conformance-fixtures.py bash53 bashy
   if [ "$RUNNER_OS" = Windows ]; then
     check windows-locales bashy scripts/provision-windows-wsl-locales.sh
