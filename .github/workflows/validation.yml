@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -30,6 +30,33 @@ env:
   GOFLAGS: '-p=2'
 
 jobs:
+  shell-repairs:
+    if: inputs.lane == 'shell-repairs'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Recheck observed full-shell failures
+        shell: bash
+        run: bash script/validation.sh shell-repairs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shell-repairs-${{ matrix.os }}
+          path: ${{ runner.temp }}/umbrella-validation
+          if-no-files-found: error
+
   native:
     if: inputs.lane == 'all' || inputs.lane == 'native'
     strategy:

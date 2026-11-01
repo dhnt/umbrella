@@ -12,7 +12,7 @@ export DEPENDENCY_MODE=${DEPENDENCY_MODE:-workspace}
 # Full Sh enumerates moreinterp and invokes dockexec; full Bashy runs nested
 # desk modules as independent applications. Native quick tests retain workspace
 # coverage; these full release contracts use standalone module resolution.
-if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = bashy-full ]; then
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = bashy-full ]; then
   export DEPENDENCY_MODE=standalone
 fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
@@ -69,6 +69,13 @@ yoke_native() {
     "$@"
   fi
 }
+
+# The trimpath and replacement-tool fixtures intentionally hide or mutate
+# GOROOT. Their independent SDK must exist at the module-cache path authenticated
+# by sh's reviewed toolchain table, not merely in setup-go's installation.
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ]; then
+  run shell-reviewed-sdk . bash -euo pipefail -c 'cd "$EVIDENCE_DIR"; GOWORK=off go mod download -json "golang.org/toolchain@v0.0.1-go1.27.2.$(go env GOOS)-$(go env GOARCH)"'
+fi
 
 case "$VALIDATION_LANE" in
 native-repairs)
@@ -141,6 +148,10 @@ bashy-full)
   run bashy-product bashy bash -euo pipefail -c 'mkdir -p bin; scripts/go-product.sh build -o bin/bashy ./cmd/bashy'
   export PATH="$root/bashy/bin:$PATH"
   check make-test bashy pty make test
+  ;;
+shell-repairs)
+  printf '%s\n' 'Focused rerun of the fourteen top-level failures observed in full shell run 41327533961. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
+  check shell-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel)$'
   ;;
 shell-full)
   printf '%s\n' 'Full Sh release suite, nested moreinterp, race and confirm gates use standalone module resolution (GOWORK=off). Workspace quick coverage remains in the native lane. No packages or tests excluded.' > "$EVIDENCE_DIR/coverage.md"
