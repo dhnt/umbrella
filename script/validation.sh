@@ -71,6 +71,15 @@ yoke_native() {
 }
 
 case "$VALIDATION_LANE" in
+native-repairs)
+  printf '%s\n' 'Focused regression evidence only. Full native lanes remain required.' > "$EVIDENCE_DIR/coverage.md"
+  check nadir-rotation nadir go test -race -count=1 -timeout 3m ./internal/store/jsonl ./internal/logmaint
+  check bonsai-import bonsai go test -count=1 -timeout 3m -run '^TestFeature(ImportStreamProducerErrors|ExportImportRoundtrip)$' ./pkg/bonsai
+  check bonsai-fixtures bonsai go test -count=1 -timeout 3m -run 'TestLogWriter|TestFindDataFiles|TestInit' ./x
+  check bonsai-schema bonsai go test -run '^$' ./schema
+  check ycode-unattended ycode env CI=true go test -count=1 -timeout 1m ./internal/runtime/unattended
+  check ycode-shared-session ycode go test -count=1 -timeout 3m -run '^TestWebAndTUIShareSessions$' ./pkg/ycodecli
+  ;;
 native)
   cat > "$EVIDENCE_DIR/coverage.md" <<'EOF'
 Native build/unit/integration lane. Standalone runs resolve published module

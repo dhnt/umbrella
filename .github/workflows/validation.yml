@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -76,6 +76,35 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.os }}-${{ matrix.mode }}
+          path: ${{ runner.temp }}/umbrella-validation
+          if-no-files-found: error
+
+  native-repairs:
+    if: inputs.lane == 'native-repairs'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Preserve committed fixture bytes
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Verify focused native repairs
+        shell: bash
+        run: bash script/validation.sh native-repairs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-repairs-${{ matrix.os }}
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 
