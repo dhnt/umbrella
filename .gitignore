@@ -1,7 +1,7 @@
 # Umbrella-level only. Per-subproject ignores live inside each submodule.
 
-# Private siblings: not submodules here. Clone them beside the others when
-# you have access; they resolve as flat ../<X> siblings exactly the same way.
+# Private repositories are separate workspaces, never public submodules.
+# Ignore accidental nested checkouts as an additional boundary guard.
 cloudbox/
 kg/
 vsc-pcts-harness-kit/

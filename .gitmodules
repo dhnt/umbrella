@@ -43,3 +43,12 @@
 [submodule "yoke"]
 	path = yoke
 	url = https://github.com/qiangli/yoke.git
+[submodule "agent-bench"]
+	path = agent-bench
+	url = https://github.com/qiangli/agent-bench.git
+[submodule "gotreesitter"]
+	path = gotreesitter
+	url = https://github.com/qiangli/gotreesitter.git
+[submodule "yamux"]
+	path = yamux
+	url = https://github.com/qiangli/yamux.git
