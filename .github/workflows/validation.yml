@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, modernish-diagnostics, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -312,8 +312,8 @@ jobs:
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 
-  modernish-diagnostics:
-    if: inputs.lane == 'modernish-diagnostics'
+  posix-diagnostics:
+    if: inputs.lane == 'modernish-diagnostics' || inputs.lane == 'strict-posix-diagnostics'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -325,12 +325,14 @@ jobs:
         with:
           go-version: 1.27.2
           cache: false
-      - name: Trace contained modernish initialization
-        run: bash script/validation.sh modernish-diagnostics
+      - name: Measure the selected contained POSIX diagnostic
+        env:
+          DIAGNOSTIC_LANE: ${{ inputs.lane }}
+        run: bash script/validation.sh "$DIAGNOSTIC_LANE"
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: modernish-diagnostics-linux
+          name: ${{ inputs.lane }}-linux
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 

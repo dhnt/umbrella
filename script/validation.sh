@@ -150,8 +150,8 @@ bashy-full)
   check make-test bashy pty make test
   ;;
 shell-repairs)
-  printf '%s\n' 'Focused rerun of the fourteen top-level failures observed in full shell run 41327533961. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
-  check shell-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel)$'
+  printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
+  check shell-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel|TestBashPPImportBridgeDoesNotContaminatePackage|TestS243OriginalChannelDomainRegressions|TestSelectorResolutionScales|TestCommandSubstitutionExitTrap(|Cancellation|Panic))$'
   ;;
 shell-full)
   printf '%s\n' 'Full Sh release suite, nested moreinterp, race and confirm gates use standalone module resolution (GOWORK=off). Workspace quick coverage remains in the native lane. No packages or tests excluded.' > "$EVIDENCE_DIR/coverage.md"
@@ -174,6 +174,14 @@ bash53)
     check bash53-helpers bashy make test-bash-helpers
     check bash53-native bashy pty make test-bash
   fi
+  ;;
+strict-posix-diagnostics)
+  run bashy-build bashy make build
+  export PATH="$root/bashy/bin:$PATH" BASHY="$root/bashy/bin/bashy"
+  export OCI="$root/script/validation-oci.sh"
+  run free-suite-sources . python script/provision-conformance-fixtures.py free-posix bashy
+  check yash-strict bashy env YASH_PROFILE=strict POSIX_SUITE_EVIDENCE="$EVIDENCE_DIR/yash-strict" scripts/yash-posix-suite.sh
+  printf '%s\n' 'Separate public cmd/sh strict-profile Yash measurement. Original Bash compatibility results remain separate; this is not licensed certification.' > "$EVIDENCE_DIR/coverage.md"
   ;;
 modernish-diagnostics)
   export OCI="$root/script/validation-oci.sh"
