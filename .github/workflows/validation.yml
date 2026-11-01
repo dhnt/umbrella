@@ -42,6 +42,9 @@ jobs:
     env:
       DEPENDENCY_MODE: ${{ matrix.mode }}
     steps:
+      - name: Preserve committed fixture bytes on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v7
         with:
           submodules: recursive
@@ -50,6 +53,15 @@ jobs:
         with:
           go-version: 1.27.2
           cache: false
+      - name: Provision Linux native engine and locale prerequisites
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pkg-config libgpgme-dev libbtrfs-dev libassuan-dev \
+            libdevmapper-dev libseccomp-dev locales
+          sudo localedef -i de_DE -f ISO-8859-1 de_DE.ISO-8859-1
       - name: Build and test existing native contracts
         shell: bash
         run: bash script/validation.sh native
@@ -167,6 +179,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     steps:
+      - name: Preserve committed fixture bytes on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v7
         with:
           submodules: recursive

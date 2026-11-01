@@ -77,6 +77,7 @@ manifest = {
     "arch": platform.machine(),
     "lane": os.environ.get("VALIDATION_LANE", "unspecified"),
     "dependency_mode": os.environ.get("DEPENDENCY_MODE", "workspace"),
+    "resolved_gowork": subprocess.check_output(["go", "env", "GOWORK"], text=True).strip(),
     "run_id": os.environ.get("GITHUB_RUN_ID", "local"),
     "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "local"),
     "coverage": "Per-lane evidence only; consult coverage.md and every job result.",

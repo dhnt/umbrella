@@ -17,13 +17,14 @@ if [ "$VALIDATION_LANE" = shell-full ]; then
 fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
   export GOWORK=off
+elif [ "$VALIDATION_LANE" = candidate-prepare ]; then
+  # Keep the artifact's reviewed build recipe explicit.
+  export GOWORK="$root/go.work"
 else
-  if [ "${RUNNER_OS:-}" = Windows ]; then
-    GOWORK=$(cygpath -w "$root/go.work")
-    export GOWORK
-  else
-    export GOWORK="$root/go.work"
-  fi
+  # Go discovers this workspace from each sibling's directory. Exporting an
+  # absolute GOWORK also forces unrelated temporary modules created by tests
+  # into this workspace, breaking their independent module contracts.
+  unset GOWORK
 fi
 python "$root/script/validation-manifest.py" > "$EVIDENCE_DIR/manifest.log"
 printf '%s\n' "Lane: $VALIDATION_LANE; mode: $DEPENDENCY_MODE. This is per-lane evidence, not an aggregate release verdict. Review all job statuses, raw logs and recorded coverage limitations." > "$EVIDENCE_DIR/coverage.md"
