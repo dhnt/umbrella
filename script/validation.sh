@@ -74,7 +74,7 @@ yoke_native() {
 # GOROOT. Their independent SDK must exist at the module-cache path authenticated
 # by sh's reviewed toolchain table, not merely in setup-go's installation.
 if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ]; then
-  run shell-reviewed-sdk . bash -euo pipefail -c 'cd "$EVIDENCE_DIR"; GOWORK=off go mod download -json "golang.org/toolchain@v0.0.1-go1.27.2.$(go env GOOS)-$(go env GOARCH)"'
+  run shell-reviewed-sdk . python script/initialize-reviewed-sdk.py "$EVIDENCE_DIR"
 fi
 
 case "$VALIDATION_LANE" in
