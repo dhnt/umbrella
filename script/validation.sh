@@ -58,6 +58,18 @@ pty() {
 }
 export -n -f pty
 
+# Match yoke/scripts/embed-podman.sh: desktop platforms use Podman's
+# supported remote client graph, including the pure-Go image signature backend.
+# Invoked by run() in its subshell.
+# shellcheck disable=SC2329
+yoke_native() {
+  if [ "$RUNNER_OS" = Windows ] || [ "$RUNNER_OS" = macOS ]; then
+    env GOFLAGS="${GOFLAGS:-} -tags=remote,exclude_graphdriver_btrfs,containers_image_openpgp" "$@"
+  else
+    "$@"
+  fi
+}
+
 case "$VALIDATION_LANE" in
 native)
   cat > "$EVIDENCE_DIR/coverage.md" <<'EOF'
@@ -83,11 +95,11 @@ EOF
   check bashy-source-route bashy go test -count=1 -timeout 5m -run '^TestSourceRoute$' ./cmd/bashy
   check bashy-e2e bashy go test -count=1 -timeout 8m -tags e2e -run '^(TestE2EAllListedCommandsDispatch|TestE2ERegisteredAppFlow|TestE2ECustomLauncher)$' ./internal/agentos
   check coreutils-vet coreutils go vet ./...
-  check yoke-vet yoke bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v /external/); if [ "$RUNNER_OS" = Windows ]; then pkgs=$(printf "%s\n" "$pkgs" | grep -vE "/pkg/weave$"); fi; go vet $pkgs github.com/qiangli/yoke/external/gotoolchain github.com/qiangli/yoke/external/act github.com/qiangli/yoke/external/gh'
+  check yoke-vet yoke yoke_native bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v /external/); if [ "$RUNNER_OS" = Windows ]; then pkgs=$(printf "%s\n" "$pkgs" | grep -vE "/pkg/weave$"); fi; go vet $pkgs github.com/qiangli/yoke/external/gotoolchain github.com/qiangli/yoke/external/act github.com/qiangli/yoke/external/gh'
   if [ "$RUNNER_OS" = Windows ]; then
     check coreutils-compile coreutils go test -run '^$' ./...
     check coreutils-owned-child coreutils bash -euo pipefail -c 'go test ./tool -run "^TestOwnedExecLargeArgumentsAndEnvironment$" -count=1 && go build -o coreutils-owned-proof.exe ./cmd/coreutils && python scripts/owned-exec-windows-proof.py coreutils-owned-proof.exe'
-    check yoke-compile yoke bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v /external/ | grep -vE "/pkg/weave$"); go test -run "^$" $pkgs'
+    check yoke-compile yoke yoke_native bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v /external/ | grep -vE "/pkg/weave$"); go test -run "^$" $pkgs'
     check yoke-resources yoke go test -count=1 -timeout 3m ./pkg/resources -run 'Test(CollectLiveHost|CollectSingleSample|HostObservation|ResourceAlert|ResourcesObservationChild)'
     check yoke-budget yoke go test -count=1 -timeout 3m ./pkg/llmbudget
     check yoke-capacity yoke bash -euo pipefail -c 'go test ./pkg/dag -list "^TestCapacity(Executable|UnsupportedPlatforms)" > "$EVIDENCE_DIR/windows-capacity-tests.txt"; grep -Fx TestCapacityExecutablePlatformMode "$EVIDENCE_DIR/windows-capacity-tests.txt"; grep -Fx TestCapacityUnsupportedPlatformsNeverAdvertiseGuardedExecution "$EVIDENCE_DIR/windows-capacity-tests.txt"; go test -count=1 -timeout 3m ./pkg/dag -run "^TestCapacity(Executable|UnsupportedPlatforms)"'
@@ -96,7 +108,7 @@ EOF
     check outpost-build outpost go build -tags fb_archives ./...
   else
     check coreutils-ratchet coreutils scripts/ci-test-gate.sh
-    check yoke-ratchet yoke scripts/ci-test-gate.sh
+    check yoke-ratchet yoke yoke_native scripts/ci-test-gate.sh
     check sh-quick sh make test-quick
     check sh-moreinterp sh/moreinterp env GOWORK=off go test -short -count=1 -timeout 10m ./...
     check outpost-headless outpost bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v "/internal/agent/shell$"); go test -tags fb_archives -short -count=1 -timeout 10m $pkgs'
