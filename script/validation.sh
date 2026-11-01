@@ -9,10 +9,10 @@ export EVIDENCE_DIR=${EVIDENCE_DIR:-${RUNNER_TEMP:?set RUNNER_TEMP or EVIDENCE_D
 mkdir -p "$EVIDENCE_DIR"
 export VALIDATION_LANE=${1:?select a validation lane}
 export DEPENDENCY_MODE=${DEPENDENCY_MODE:-workspace}
-# The full Sh runner enumerates its independent moreinterp module and invokes
-# dockexec, whose module discovery expects one main module. Native quick tests
-# retain workspace coverage; the full release contract uses standalone mode.
-if [ "$VALIDATION_LANE" = shell-full ]; then
+# Full Sh enumerates moreinterp and invokes dockexec; full Bashy runs nested
+# desk modules as independent applications. Native quick tests retain workspace
+# coverage; these full release contracts use standalone module resolution.
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = bashy-full ]; then
   export DEPENDENCY_MODE=standalone
 fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
@@ -137,6 +137,9 @@ module-tests)
   check yamux-v5-unit yamux/v5 go test -short -count=1 -timeout 15m ./...
   ;;
 bashy-full)
+  printf '%s\n' 'Full Bashy release gate uses standalone module resolution (GOWORK=off), including nested desk applications. Native jobs retain workspace coverage. Remote-install fixtures use the locally built candidate on PATH.' > "$EVIDENCE_DIR/coverage.md"
+  run bashy-product bashy bash -euo pipefail -c 'mkdir -p bin; scripts/go-product.sh build -o bin/bashy ./cmd/bashy'
+  export PATH="$root/bashy/bin:$PATH"
   check make-test bashy pty make test
   ;;
 shell-full)
