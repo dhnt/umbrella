@@ -110,6 +110,14 @@ jobs:
         with:
           version: 11.17.0
           run_install: false
+      # Match Bashy's host-release.yml engine build prerequisites. The full
+      # make gate deliberately compiles every supported host tag combination.
+      - name: Provision native engine build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pkg-config libgpgme-dev libbtrfs-dev libassuan-dev \
+            libdevmapper-dev libseccomp-dev
       - name: Full Bashy make gate including scratch and SPA contracts
         shell: bash
         run: bash script/validation.sh bashy-full
@@ -295,3 +303,4 @@ jobs:
           name: bashsharp-corpus-linux
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
+          include-hidden-files: true

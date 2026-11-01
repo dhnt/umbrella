@@ -9,6 +9,12 @@ export EVIDENCE_DIR=${EVIDENCE_DIR:-${RUNNER_TEMP:?set RUNNER_TEMP or EVIDENCE_D
 mkdir -p "$EVIDENCE_DIR"
 export VALIDATION_LANE=${1:?select a validation lane}
 export DEPENDENCY_MODE=${DEPENDENCY_MODE:-workspace}
+# The full Sh runner enumerates its independent moreinterp module and invokes
+# dockexec, whose module discovery expects one main module. Native quick tests
+# retain workspace coverage; the full release contract uses standalone mode.
+if [ "$VALIDATION_LANE" = shell-full ]; then
+  export DEPENDENCY_MODE=standalone
+fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
   export GOWORK=off
 else
@@ -37,7 +43,7 @@ run() {
   return "$rc"
 }
 check() { run "$@" || failed=1; }
-# Invoked from exported child-shell commands below.
+# Invoked directly by run()'s subshell, never exported into test environments.
 # shellcheck disable=SC2329
 pty() {
   if [ "$RUNNER_OS" = Linux ]; then
@@ -49,7 +55,7 @@ pty() {
     script -q /dev/null "$@"
   fi
 }
-export -f pty
+export -n -f pty
 
 case "$VALIDATION_LANE" in
 native)
@@ -71,7 +77,7 @@ EOF
     check bashy-agentos bashy go test -count=1 -timeout 10m ./internal/agentos
     check bash53-runner bashy go test -count=1 -timeout 5m ./tools/bash53suite
   else
-    check bashy-native bashy bash -euo pipefail -c 'pty go test -count=1 -timeout 10m ./internal/cli ./internal/agentos'
+    check bashy-native bashy pty go test -count=1 -timeout 10m ./internal/cli ./internal/agentos
   fi
   check bashy-source-route bashy go test -count=1 -timeout 5m -run '^TestSourceRoute$' ./cmd/bashy
   check bashy-e2e bashy go test -count=1 -timeout 8m -tags e2e -run '^(TestE2EAllListedCommandsDispatch|TestE2ERegisteredAppFlow|TestE2ECustomLauncher)$' ./internal/agentos
@@ -93,7 +99,7 @@ EOF
     check sh-quick sh make test-quick
     check sh-moreinterp sh/moreinterp env GOWORK=off go test -short -count=1 -timeout 10m ./...
     check outpost-headless outpost bash -euo pipefail -c 'pkgs=$(go list ./... | grep -v "/internal/agent/shell$"); go test -tags fb_archives -short -count=1 -timeout 10m $pkgs'
-    check outpost-pty outpost bash -euo pipefail -c 'pty go test -tags fb_archives -count=1 -timeout 10m ./internal/agent/shell/...'
+    check outpost-pty outpost pty go test -tags fb_archives -count=1 -timeout 10m ./internal/agent/shell/...
   fi
   for module in bashsharp bonsai gfy nadir ycode; do
     check "$module-unit" "$module" go test -short -count=1 -timeout 10m ./...
@@ -101,6 +107,7 @@ EOF
   check provider-unit yoke/pkg/provider env GOWORK=off go test -count=1 -timeout 5m ./...
   ;;
 module-tests)
+  run grammar-fixtures . python script/provision-grammar-fixtures.py gotreesitter
   printf '%s\n' 'Additional public module suites on Linux. Other platforms are not measured by this lane; the native job covers its explicitly listed portable product contracts.' > "$EVIDENCE_DIR/coverage.md"
   for module in agent-bench appstore filebrowser gotreesitter readline yamux; do
     check "$module-unit" "$module" go test -short -count=1 -timeout 15m ./...
@@ -108,9 +115,10 @@ module-tests)
   check yamux-v5-unit yamux/v5 go test -short -count=1 -timeout 15m ./...
   ;;
 bashy-full)
-  check make-test bashy bash -euo pipefail -c 'pty make test'
+  check make-test bashy pty make test
   ;;
 shell-full)
+  printf '%s\n' 'Full Sh release suite, nested moreinterp, race and confirm gates use standalone module resolution (GOWORK=off). Workspace quick coverage remains in the native lane. No packages or tests excluded.' > "$EVIDENCE_DIR/coverage.md"
   check sh-full sh env 'GOFLAGS=-p=2 -tags=netgo,full' make test-full
   if [ "$RUNNER_OS" = Linux ]; then
     check sh-race sh make bashpp-race-gate
@@ -118,6 +126,7 @@ shell-full)
   fi
   ;;
 bash53)
+  run bash53-source . python script/provision-conformance-fixtures.py bash53 bashy
   if [ "$RUNNER_OS" = Windows ]; then
     check windows-locales bashy scripts/provision-windows-wsl-locales.sh
     check windows-containment bashy go test -count=1 -timeout 5m -run TestFixture ./tools/bash53suite
@@ -127,15 +136,20 @@ bash53)
   else
     check bash53-fixtures bashy make test-bash-fixtures
     check bash53-helpers bashy make test-bash-helpers
-    check bash53-native bashy bash -euo pipefail -c 'pty make test-bash'
+    check bash53-native bashy pty make test-bash
   fi
   ;;
 free-posix)
   check bashy-build bashy make build
+  export PATH="$root/bashy/bin:$PATH"
+  export BASHY="$root/bashy/bin/bashy"
+  export OCI="$root/script/validation-oci.sh" BASH53_OCI="$root/script/validation-oci.sh"
+  run bash53-source . python script/provision-conformance-fixtures.py bash53 bashy
+  run free-suite-sources . python script/provision-conformance-fixtures.py free-posix bashy
   check bash53-container bashy make test-bash-container
   check bash53-container-bashpp bashy make test-bash-container-bashpp
   mkdir -p "$EVIDENCE_DIR/free-suite-logs"
-  check free-posix bashy env OCI=docker TMPDIR="$EVIDENCE_DIR/free-suite-logs" scripts/posix-certdryrun.sh
+  check free-posix bashy env TMPDIR="$EVIDENCE_DIR/free-suite-logs" scripts/posix-certdryrun.sh
   printf '%s\n' 'Free POSIX suite runner verdicts preserved verbatim. INFO/PENDING are not PASS. Licensed certification is not covered by this public workflow.' > "$EVIDENCE_DIR/coverage.md"
   ;;
 candidate-prepare)
@@ -214,7 +228,21 @@ PYRESTORE
   run authenticate-candidate bashsharp-tests env GOWORK=off bash tools/go-by-example/gbe.sh validate-candidate --candidate "$GBE_CANDIDATE" --bashy "$BASHY_BIN"
   check python-package-gate bashsharp-tests env GOWORK=off BASHY="$BASHY_BIN" bash tools/python-package-gate.sh
   check typescript-package-gate bashsharp-tests env GOWORK=off bash tools/sprint184-typescript-gate.sh
+  # Keep structured failure details, progress journal, raw logs and retained
+  # execution trees inside the uploaded evidence, including unsuccessful runs.
+  export GBE_RESULTS="$EVIDENCE_DIR/go-by-example/results.jsonl"
   check bashsharp-corpus bashsharp-tests env GOWORK=off bash harness/run.sh
+  python - "$GBE_RESULTS" <<'PYGBE'
+import json, pathlib, sys
+for path in pathlib.Path(sys.argv[1]).parent.glob("results.jsonl.*"):
+    if not path.is_file() or path.name.endswith(".progress.jsonl"):
+        continue
+    for line in path.read_text().splitlines():
+        record = json.loads(line)
+        if record.get("type") == "attempt" and record.get("verdict", "").startswith("fail"):
+            print(json.dumps({key: record.get(key) for key in
+                ("path", "mode", "verdict", "state", "detail", "stages")}, sort_keys=True))
+PYGBE
   printf '%s\n' 'Full existing Bash# harness invoked without exclusions. PLANNED is not PASS. Missing pinned foreign fixture environments or oracle prerequisites fail the lane; no tests are silently skipped or reclassified here.' > "$EVIDENCE_DIR/coverage.md"
   ;;
 *) echo "unknown validation lane: $VALIDATION_LANE" >&2; exit 2 ;;
