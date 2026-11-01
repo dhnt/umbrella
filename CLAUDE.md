@@ -2,8 +2,9 @@
 
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
-`dhnt` project as a flat sibling submodule so the `../<X>` replace
-directives resolve and each project builds on its own. `AGENTS.md` is a
+`dhnt` project as a flat sibling submodule. The root `go.work` selects live
+siblings for development; each project's versioned dependencies also support
+independent builds with `GOWORK=off`. `AGENTS.md` is a
 one-screen redirect to this file — keep it that way.
 
 **Everything in this repository is public.** Stories, sprint plans, notes,
@@ -55,7 +56,7 @@ Six tiers, foundation → payoff (use the names precisely):
 | # | Tier | Scope | Components (bashy verb) |
 |---|------|-------|-------------------------|
 | 1 | **userland** | single-node, native | **bashy** (bash + coreutils + agentic ext) |
-| 2 | **workspace** | single-node, fs-isolated | weave · dag · loom · sdlc · sprint |
+| 2 | **workplace** | agent work and collaboration | weave · dag · loom · sdlc · sprint |
 | 3 | **sandbox** | single-node, OCI container | `bashy oci` (`sandbox` alias; podman/docker hidden) |
 | 4 | **sphere** | multi-node, peer-direct | p2p ollama routing/LB/sharding — `bashy sphere` (fronts outpost) |
 | 5 | **cluster** | your machines, orchestrated | k8s/k3s/DKS — `bashy kubectl` / `helm` |
@@ -68,43 +69,44 @@ never vendored.
 
 ## Layout
 
-Fifteen submodules (`github.com/qiangli/<name>` unless noted), all flat
-siblings. Module path may differ from the dir (`mvdan.cc/sh/v3 => ../sh`,
-`github.com/bashsharp/bashsharp => ../bashsharp`,
-`github.com/ergochat/readline => ../readline`).
+Eighteen public submodules (`github.com/qiangli/<name>` unless noted), all
+flat siblings. Module paths may differ from directory names; fork module paths
+and version replacements are declared in each `go.mod`.
 
 ```
+agent-bench/      agent evaluation task packs
 appstore/          DKS app catalog — Helm chart pointers (github.com/dhnt/appstore)
 bashsharp/         Bash# language front door: front · transpile · cmd (github.com/bashsharp/bashsharp; ENGINE stays in sh)
 bashsharp-tests/   Bash# conformance gate: Go profile + POSIX-2016 suite (github.com/bashsharp/bashsharp-tests)
 bashsharp-tour/    the Bash# tour + install-matrix CI (repo `tour`, github.com/bashsharp/tour)
 bashy/             product — pure-Go Bash 5.3 drop-in CLI; consumes sh
 bonsai/ gfy/       embedded DB and its dep (pulled by version; mounted for hacking)
-coreutils/         the CERTIFIED POSIX package (116 POSIX names ∪ GNU coreutils); stable, bug fixes only
+coreutils/         the POSIX implementation package (116 POSIX names ∪ GNU coreutils); stable, bug fixes only
 filebrowser/       File Browser fork; fbembed seam → outpost `files` builtin
+gotreesitter/      parser fork used by code-intelligence tools
 nadir/             ycode dep
 outpost/           home-host agent (bridge)
 readline/          ergochat/readline fork; sh interactive dep
 sh/                mvdan.cc/sh/v3 fork — the engine (+ Bash# evaluator/lower/gosource/polyglot/grammar)
+yamux/             permissive stream-multiplexing implementation
 ycode/             local agentic dev tool
 yoke/              agentic userland — everything non-POSIX split out of coreutils; imports coreutils, never the reverse
 docs/ script/      docs + todo store; gates and bootstrap
 ```
 
-**Not here:** `cloudbox/` (the hosted control plane), `kg/`,
-`vsc-pcts-harness-kit/` — proprietary, kept in a private superproject. No
-`go.mod` in this tree path-replaces into them; nothing here needs them to
-build. They are gitignored so a person with access can clone them beside
-the others. Anything that touches the control plane's wire (matrix-tunnel
-protocol, bearer scopes, fleet/LLM registries, sandbox provider, fleet
-upgrade envelope, trace propagation) is done in the private superproject
-where both sides sit together; this repo then receives a pin bump.
+Private hosted services, deployment configuration and licensed certification
+fixtures are developed and retained outside this public workspace. Public
+builds and CI must not require private source or credentials. Changes crossing
+a service boundary use documented public wire contracts and explicit artifact
+versions; integration tests consuming private services run outside public CI.
+Do not copy private plans, source or raw restricted evidence into this repo.
 
 `.agents/`, `.claude/`, `.gfy-out/` are gitignored scratch, never canonical.
 
 ## Branches and CI
 
-This umbrella and the public subprojects work on `main` directly. CI here is
+This umbrella works on `main`; subprojects use their canonical `main` or
+`master` integration branch. CI here is
 the cheap umbrella lint (shell syntax + gitlink pins); the real gates run in
 each subproject and on the release hosts.
 
@@ -117,8 +119,11 @@ pointer — the edits look lost on a fresh clone. `modified content` in root
 `git status` means "finish the work inside that subproject". Never
 `git add -A` at the root; other agents work the umbrella concurrently.
 
-`script/sync.sh` pulls the default branch in each submodule, propagates
-`.sibling-pins` in the consumers that carry one, and stages the bumps.
+`script/sync.sh` discovers submodules from `.gitmodules`, checks for local or
+unintegrated work, fetches and fast-forwards their default `main`/`master`
+branches, hydrates nested pins, and stages only the resulting gitlinks. It does
+not rewrite dependency versions, create commits or push. Dependency changes
+belong to explicit subproject stories and must pass standalone checks.
 Commit message: `sync: bump submodule pins`, or `sync: bump <a> + <b> pins
 (<why>)`.
 
@@ -130,17 +135,16 @@ branches with unique commits alone and report them.
 
 ## Build & test
 
-`script/bootstrap.sh` hydrates submodules (including `yoke`'s nested
-`external/ollama/src` and `external/podman/src`, which `bashy`'s go.mod
-path-replaces even for the lean build) and installs the git hooks. No
-`go.work` or root Makefile — each `go.mod` is self-contained; every
-cross-project dep is `replace … => ../<X>` (flat sibling, never nested).
-Full reference: `docs/build.md`.
+`script/bootstrap.sh` hydrates public submodule pins and their nested source
+dependencies and installs the git hooks. The root `go.work` builds the coupled
+modules against live sibling trees; `GOWORK=off` verifies standalone published
+dependency pins. Go baseline: Go 1.27 with toolchain go1.27.2. Nested examples
+outside the workspace also use `GOWORK=off`. Full reference: `docs/build.md`.
 
 ```bash
 cd bashy    && make test && make test-bash # BOTH — test-bash 86/86 serial is the release gate
 cd bashsharp && go test ./...
-bashsharp-tests/harness/run.sh            # tests the BUILT ../bashy/bashy; TDD-first, red ≠ regression
+bashsharp-tests/harness/run.sh            # supply the exact built candidate via BASHY_BIN
 cd outpost  && go test -short ./...       # internal/agent/shell needs a controlling TTY (hangs headless)
 cd ycode    && go test -short ./...       # same for bonsai, sh, nadir, gfy
 cd coreutils && go test ./...

@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
-# Fresh-clone setup: fetch every submodule at its pinned SHA (including
-# yoke's nested external/{ollama,podman}/src, which bashy's go.mod
-# path-replaces), then install the git hooks. Idempotent — safe to re-run.
+# Hydrate the committed public submodule pins, including nested source
+# dependencies, then install provenance and public-content hooks.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-git submodule update --init --recursive
-
-# An interrupted first run (one submodule's pin unreachable, a dropped
-# connection) leaves the others CLONED but never CHECKED OUT: HEAD already
-# equals the pin, so a rerun skips them and the working tree stays empty.
-# That state is unmistakable — HEAD has files, the index has none — and
-# nothing a person did can produce it, so repair it in place.
-git submodule foreach --quiet '
-  if [ -n "$(git ls-tree --name-only HEAD | head -1)" ] && [ -z "$(git ls-files | head -1)" ]; then
-    echo "bootstrap: $name was cloned but never checked out — checking out $sha1"
-    git checkout -q -f "$sha1"
-    git submodule update --init --recursive
+# Do not overwrite local edits, including edits in initialized nested modules.
+# A missing checkout is handled by submodule update; an interrupted or edited
+# checkout requiring repair must be reviewed rather than force-reset here.
+git submodule foreach --quiet --recursive '
+  test -z "$(git status --porcelain --untracked-files=all --ignore-submodules=all)" || {
+    echo "bootstrap: $displaypath has local changes; preserve them before retrying" >&2
+    exit 1
+  }
+  if test "$(git rev-parse HEAD)" != "$sha1" &&
+     test -z "$(git for-each-ref --contains HEAD --format="%(refname)" refs/heads refs/remotes)"; then
+    echo "bootstrap: $displaypath has an unreferenced detached commit; preserve it before retrying" >&2
+    exit 1
   fi
 '
+git submodule update --init --recursive
 
 # Hooks: provenance guard (commit-msg, via bashy) + public-repo scrub gate
 # (pre-commit). bashy sets core.hooksPath to .git/bashy-hooks; the scrub
@@ -46,8 +46,11 @@ git submodule status
 
 cat <<'EOF2'
 
-Each subproject builds from its own root (no umbrella go.work). Quick checks:
-  cd bashy     && go build ./... && make test
+Go 1.27 with toolchain go1.27.2 is required.
+The root go.work selects live sibling modules for development.
+Use GOWORK=off to verify each module's published dependency pins independently.
+Heavy builds and full suites belong on prepared test hosts. Commands there:
+  cd bashy     && make test && make test-bash
   cd bashsharp && go test ./...
   cd sh        && go test -short ./...
   cd coreutils && go test ./...
