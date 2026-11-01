@@ -86,6 +86,8 @@ native-repairs)
   check bonsai-schema bonsai go test -run '^$' ./schema
   check ycode-unattended ycode env CI=true go test -count=1 -timeout 1m ./internal/runtime/unattended
   check ycode-shared-session ycode go test -count=1 -timeout 3m -run '^TestWebAndTUIShareSessions$' ./pkg/ycodecli
+  check ycode-session-isolation ycode go test -count=1 -timeout 3m -run '^(TestYAMLCLISessionGroupAndResume|TestYAMLCLITerminalSessionPointer|TestDeclaredSessionControlsExecuteAndDryRun|TestSessionSayAdmitsTextToTheCompiledSteeringQueue)$' ./pkg/ycodecli
+  check ycode-memory-latency ycode go test -v -count=1 -timeout 3m -run '^(TestStore.*|TestCompetitive_LatencyComparison)$' ./pkg/memex/memory
   ;;
 native)
   cat > "$EVIDENCE_DIR/coverage.md" <<'EOF'
@@ -150,7 +152,8 @@ bashy-full)
   check make-test bashy pty make test
   ;;
 shell-repairs)
-  printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
+  printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap and unset-scanner guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
+  check unset-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 3m ./interp -run '^(TestScanUnsetOperandSourcesBoundaries|TestUnsetContinuedOperands|TestUnsetOperandSourcesDoesNotCopyScriptTail)$'
   check shell-regressions sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel|TestBashPPImportBridgeDoesNotContaminatePackage|TestS243OriginalChannelDomainRegressions|TestSelectorResolutionScales|TestCommandSubstitutionExitTrap(|Cancellation|Panic))$'
   ;;
 shell-full)
