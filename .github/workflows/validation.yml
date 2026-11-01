@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -165,7 +165,7 @@ jobs:
           if-no-files-found: error
 
   bashy-full:
-    if: inputs.lane == 'all' || inputs.lane == 'bashy-full'
+    if: inputs.lane == 'all' || inputs.lane == 'bashy-full' || inputs.lane == 'bashy-diagnostics'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -192,13 +192,15 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             pkg-config libgpgme-dev libbtrfs-dev libassuan-dev \
             libdevmapper-dev libseccomp-dev
-      - name: Full Bashy make gate including scratch and SPA contracts
+      - name: Selected Bashy full gate or focused diagnostics
         shell: bash
-        run: bash script/validation.sh bashy-full
+        env:
+          BASHY_VALIDATION_LANE: ${{ inputs.lane == 'bashy-diagnostics' && 'bashy-diagnostics' || 'bashy-full' }}
+        run: bash script/validation.sh "$BASHY_VALIDATION_LANE"
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bashy-full-linux
+          name: bashy-${{ inputs.lane == 'bashy-diagnostics' && 'diagnostics' || 'full' }}-linux
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 

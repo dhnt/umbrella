@@ -12,7 +12,7 @@ export DEPENDENCY_MODE=${DEPENDENCY_MODE:-workspace}
 # Full Sh enumerates moreinterp and invokes dockexec; full Bashy runs nested
 # desk modules as independent applications. Native quick tests retain workspace
 # coverage; these full release contracts use standalone module resolution.
-if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = bashy-full ]; then
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = bashy-full ] || [ "$VALIDATION_LANE" = bashy-diagnostics ]; then
   export DEPENDENCY_MODE=standalone
 fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
@@ -144,6 +144,12 @@ module-tests)
     check "$module-unit" "$module" go test -short -count=1 -timeout 15m ./...
   done
   check yamux-v5-unit yamux/v5 go test -short -count=1 -timeout 15m ./...
+  ;;
+bashy-diagnostics)
+  printf '%s\n' 'Focused Desk package diagnostics with the unchanged 10-minute package deadline and all fork/verify/activate/undo assertions. This does not replace the full Bashy release gate.' > "$EVIDENCE_DIR/coverage.md"
+  run bashy-product bashy bash -euo pipefail -c 'mkdir -p bin; scripts/go-product.sh build -o bin/bashy ./cmd/bashy'
+  export PATH="$root/bashy/bin:$PATH"
+  check desk-package bashy pty go test -v -count=1 -timeout 10m ./examples/desk
   ;;
 bashy-full)
   printf '%s\n' 'Full Bashy release gate uses standalone module resolution (GOWORK=off), including nested desk applications. Native jobs retain workspace coverage. Remote-install fixtures use the locally built candidate on PATH.' > "$EVIDENCE_DIR/coverage.md"
