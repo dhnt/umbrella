@@ -81,6 +81,11 @@ case "$VALIDATION_LANE" in
 native-repairs)
   printf '%s\n' 'Focused regression evidence only. Full native lanes remain required.' > "$EVIDENCE_DIR/coverage.md"
   check nadir-rotation nadir go test -race -count=1 -timeout 3m ./internal/store/jsonl ./internal/logmaint
+  check sh-redirect-capture sh bash -euo pipefail -c 'go test -list "^TestCommandSubstitutionRedirectCapture$" ./interp > "$EVIDENCE_DIR/sh-redirect-tests.txt"; grep -Fx TestCommandSubstitutionRedirectCapture "$EVIDENCE_DIR/sh-redirect-tests.txt"; go test -count=1 -timeout 60s -run "^TestCommandSubstitutionRedirectCapture$" ./interp'
+  if [ "$RUNNER_OS" != Windows ]; then
+    check bashy-orphan-lifecycle bashy go test -race -count=3 -timeout 90s -run '^Test(Reclaim|ProcStartTime|ProcStatRejectsMalformed|ProcGroupIdentities|ProcessProviderOwnership|CapturedOrphanEscalation|ServiceMonitorReclaimsOrphanOfHardKilledMonitor)' ./internal/agentos
+    check ycode-pty-steering ycode go test -race -count=3 -timeout 90s -run '^TestTUIOverPTY$' ./pkg/ycodecli
+  fi
   check bonsai-import bonsai go test -count=1 -timeout 3m -run '^TestFeature(ImportStreamProducerErrors|ExportImportRoundtrip)$' ./pkg/bonsai
   check bonsai-fixtures bonsai go test -count=1 -timeout 3m -run 'TestLogWriter|TestFindDataFiles|TestInit' ./x
   check bonsai-schema bonsai go test -run '^$' ./schema
