@@ -39,6 +39,10 @@ All agents: subscription-backed route only; no metered/API fallback. Do not crea
 
 ### 1. Canonical Inventory Summary (18 Public Submodules)
 
+Worker-reported snapshot of umbrella `bfe7b0a` and cached upstream refs.
+The table is retained as reported inventory, not a fresh remote observation.
+Independent review coverage and unverified claims are distinguished below.
+
 | Submodule | Canonical Branch | HEAD SHA | Umbrella HEAD Gitlink | Matches Gitlink | Ahead/Behind Upstream | Dirty | Status / cd91b04 Pin Delta |
 |---|---|---|---|---|---|---|---|
 | agent-bench | main | `f5c2f7b7` | `f5c2f7b7` | Yes | 0 / 0 | Clean | Match candidate |
@@ -63,35 +67,67 @@ All agents: subscription-backed route only; no metered/API fallback. Do not crea
 - **Candidate vs HEAD distinction**: Exactly 7 submodules advanced beyond runtime candidate `cd91b04`. Every diff between `cd91b04` and `bfe7b0a` across all 7 submodules consists strictly of story and acceptance documentation records under `docs/todo/` (plus sh commit `5948a83f` recording hosted fc terminal regression check acceptance). Zero runtime, parser, evaluator, or test code changed.
 - **Gitlink modes**: All 18 submodule gitlinks in the umbrella index verified as mode `160000`.
 
-### 2. Preservation of Unique Worktrees and Work
+### 2. Preserved Worktrees and Limits of Integration Evidence
 
-Audited all 18 active worktrees across umbrella and submodules. Zero work was stashed, deleted, or reset.
-Ancestry (`git merge-base --is-ancestor`) and patch equivalence (`git cherry <canonical-branch> <sha>`) were evaluated:
-- **Direct canonical ancestors** (ahead count 0): 6 worktrees:
-  - `bashy`: `s557-bashy-modernish-xtrace-fd` (`a688be7d`), `s557-windows-redir-probe` (`7ba1e36a`)
-  - `bonsai`: `s557-bonsai-log-rotation` (`9137fd3`)
-  - `sh`: `s557-sh-fc-pty` (`c0e71e66`), `s557-sh-modernish188` (`a228a27c`), `s557-sh-nonfork190-baseline` (`6663c93a`)
-- **Non-ancestors verified patch-equivalent upstream** (`git cherry` returns `-`, indicating equivalent patch already merged into canonical branch under a different commit SHA): 11 worktrees:
-  - `umbrella`: `s557-umbrella-matrix-binding` (`71ce462` -> `-`, equivalent to `303d43cf` in `main`), `s557-umbrella-modernish-trace` (`15b442d` -> `-`, equivalent to `4dfc3bdb` in `main`)
-  - `bashy`: `s557-bashy-elfaudit-bounds` (`51dcb43a` -> `-`, equivalent to `bb622f60` in `main`), `s557-bashy-modernish-trace` (`bf2ca6a7` -> `- 5c796197`, `- bf2ca6a7`, equivalent to `bb4f3b7b` and `5bdfcbe8` in `main`)
-  - `bonsai`: `s557-bonsai-export` (`42a2007` -> `-`, equivalent to `6784010b` in `main`)
-  - `ycode`: `s557-ycode-pty66` (`ed3dd64` -> `-`, equivalent to `45e39aae` in `main`)
-  - `sh`: `s557-sh-alias-performance` (`8421dc93` -> `-`, equivalent to `7c44e9ce`), `s557-sh-history183` (`b3b72ebb` -> `-`, equivalent to `681d4da7`), `s557-sh-modernish-control-alias` (`5ff9db75` -> `-`, equivalent to `da495901`), `s557-sh-modernish-unexport` (`ab96560e` -> `-`, equivalent to `0a430c45`), `s557-sh-windows-redir` (`665c4290` -> `-`, equivalent to `fc80ba5d`)
-- **Non-ancestor with split/decomposed patch**: 1 worktree:
-  - `sh`: `s557-sh-gate-prereqs` (`4b4920a1`): 3 of 4 commits return `-` (`abd42856`, `d7d81669`, `4b4920a1`); commit `35a3b8c8` returns `+` because its authored test diff was decomposed across `978152ca` and `da495901` when integrated upstream.
-- **Untracked work preserved**: 1 worktree:
-  - `sh`: `s557-sh-fc-pty` retains untracked story record `docs/todo/79456e1ca444-s557-repair-interactive-fc-editor-pty-input-owners.md`.
+The worker reported inspecting 18 worktrees without deleting, stashing or
+resetting work. Its inventory is retained below as a reported snapshot; it is
+not a cleanup authorization or an independently verified count of unique work.
 
-### 3. Module Boundaries, Standalone Dependencies, and Verification Scopes
+| Reported category | Worktrees |
+|---|---|
+| HEAD reported as a canonical ancestor | Bashy: `s557-bashy-modernish-xtrace-fd`, `s557-windows-redir-probe`; Bonsai: `s557-bonsai-log-rotation`; Sh: `s557-sh-fc-pty`, `s557-sh-modernish188`, `s557-sh-nonfork190-baseline` |
+| Non-ancestor HEAD reported with patch-equivalent commits upstream | Umbrella: `s557-umbrella-matrix-binding`, `s557-umbrella-modernish-trace`; Bashy: `s557-bashy-elfaudit-bounds`, `s557-bashy-modernish-trace`; Bonsai: `s557-bonsai-export`; Ycode: `s557-ycode-pty66`; Sh: `s557-sh-alias-performance`, `s557-sh-history183`, `s557-sh-modernish-control-alias`, `s557-sh-modernish-unexport`, `s557-sh-windows-redir` |
+| Mixed patch-equivalence result, manual review outstanding | Sh: `s557-sh-gate-prereqs` |
+| Additional untracked content reported | `s557-sh-fc-pty`: `docs/todo/79456e1ca444-s557-repair-interactive-fc-editor-pty-input-owners.md` |
 
-- **Root workspace (`go.work`)**: Verified format (`go work edit -fmt`), exactly 25 `use` directives for live sibling modules (16 top-level public submodules and 9 nested modules/packages: `coreutils/third_party/goawk`, `yamux/v5`, `ycode/examples/genie`, `yoke/external/ollama/src`, `yoke/external/otel`, `yoke/external/podman/src`, `yoke/pkg/llmgw`, `yoke/pkg/oci`, `yoke/pkg/provider`), with explicit public fork replacements.
-- **Downloaded module cache verification (`GOWORK=off go mod verify`)**: Tested and exited 0 across all 16 Go modules (agent-bench, appstore, bashsharp, bashy, bonsai, coreutils, filebrowser, gfy, gotreesitter, nadir, outpost, readline, sh, yamux, ycode, yoke).
-  - *Evidence and exact limits*: `go mod verify` verifies only the cryptographic hash integrity of previously downloaded module cache entries against each module's `go.sum`. It does NOT test or prove standalone package compilation/resolution, absence of missing dependencies in clean environments, absence of import cycles, or network independence during fresh builds.
-- **Verification scripts syntax**:
-  - *Command limitation*: Running `bash -n script/*.sh` checks only the first script (`script/bootstrap.sh`) due to shell parameter handling where subsequent names are treated as arguments to the script.
-  - *Bounded per-file check*: A bounded per-file loop `for f in script/*.sh; do bash -n "$f"; done` was executed across all 5 scripts (`bootstrap.sh`, `scrub-gate.sh`, `sync.sh`, `validation-oci.sh`, `validation.sh`); all 5 passed syntax inspection.
-- **Scrub gate audit (`script/scrub-gate.sh --all`)**: Passed clean (exit 0).
-  - *Evidence and exact limits*: `script/scrub-gate.sh --all` only inspects tracked regular text files in the root umbrella repository against finite built-in regexes (tokens/credentials, non-documentation IPv4 addresses, `/Users/`, `/home/`) and optional `.scrub-patterns.local`. It explicitly skips gitlink mode `160000` entries (`[ -f "$f" ] || continue`) and binaries (`*.png|*.pdf|*.zip|...`), and does not inspect the internal contents of submodule repositories. Therefore, passing this gate confirms no staged/tracked root text matches the configured scrub regexes, but is not a claim that the entire public tree has zero private paths, repos, or fixtures beyond those pattern checks.
+Independent read-only review confirmed these specific command results against
+canonical branches at review time:
+
+- `git cherry main 71ce462` in umbrella returned
+  `- 71ce46253007019b56b7d69482f59a784541cc7f`.
+- `git cherry master 4b4920a1` in Sh returned `-` for `abd42856`,
+  `d7d81669` and `4b4920a1`, and `+` for `35a3b8c8`.
+
+A minus means Git found an equivalent patch upstream; it does not identify the
+matching upstream commit or establish that the branch tip is an ancestor.
+A plus means Git did not find an equivalent patch, not necessarily that the
+feature is absent. The proposed decomposition of `35a3b8c8` has not been
+established: manual source/evidence review remains required. Unsupported exact
+counterpart SHAs from the earlier report are withdrawn. Other ancestry and
+patch-equivalence rows above remain worker-reported, not independent findings.
+Cleanliness, ignored/untracked content, current ancestry and lifecycle ownership
+must be checked separately before any removal.
+
+### 3. Module Boundaries and Verification Scopes
+
+- **Root workspace (`go.work`)**: Independent source inspection at umbrella
+  `bfe7b0a` confirms 25 `use` entries: 16 top-level modules and nine nested
+  modules (`coreutils/third_party/goawk`, `yamux/v5`, `ycode/examples/genie`,
+  `yoke/external/ollama/src`, `yoke/external/otel`, `yoke/external/podman/src`,
+  `yoke/pkg/llmgw`, `yoke/pkg/oci`, `yoke/pkg/provider`). The worker reported
+  `go work edit -fmt`; that command is not evidence of compilation or cycle checks.
+- **Downloaded module cache integrity**: The worker reported exit 0 from
+  `GOWORK=off go mod verify` in 16 top-level modules (agent-bench, appstore,
+  bashsharp, bashy, bonsai, coreutils, filebrowser, gfy, gotreesitter, nadir,
+  outpost, readline, sh, yamux, ycode, yoke). Raw per-command receipts were not
+  located in the retained review artifact. This command checks downloaded cache
+  integrity; it does not establish standalone compilation/resolution, clean-cache
+  dependency completeness, absence of import cycles, or network-independent builds.
+- **Shell syntax**: `bash -n script/*.sh` checks only the first expanded script,
+  `bootstrap.sh`. The worker subsequently reported a per-file loop,
+  `for f in script/*.sh; do bash -n "$f"; done`, passing five scripts:
+  `bootstrap.sh`, `scrub-gate.sh`, `sync.sh`, `validation-oci.sh`, `validation.sh`.
+  Raw per-file exit receipts were not located. The loop's final exit alone would
+  not establish all five results unless intermediate failures were captured.
+- **Scrub gate**: The worker reported exit 0 from `script/scrub-gate.sh --all`;
+  raw execution receipts were not located. Independent source inspection confirms
+  that its finite configured regexes inspect root-repository tracked regular text
+  files, skip submodule directories and listed binary suffixes, and optionally
+  include `.scrub-patterns.local`. Even a verified pass would not establish zero
+  private content throughout submodules or the entire public tree.
+
+No additional tests or gates were executed for this corrective documentation
+review. The retained worker response is a self-report, not raw tool receipts.
 
 ### 4. Transferred Checklist Disposition (`17bccfc3f954`)
 
@@ -101,12 +137,11 @@ Ancestry (`git merge-base --is-ancestor`) and patch equivalence (`git cherry <ca
 
 | Area | Status | Evidence / Limits / Notes |
 |---|---|---|
-| Canonical branches & heads | PASS | All 18 submodules checked out to canonical `main` or `master`, synchronized with upstream (0 ahead / 0 behind). |
-| Gitlink synchronization | PASS | All 18 gitlinks match submodule HEADs exactly; all mode `160000`. |
-| Candidate vs HEAD distinction | PASS | 7 submodules advanced beyond candidate `cd91b04`; 100% of diffs are documentation/todo records (`docs/todo/`). |
-| Worktree preservation & ancestry | PASS | All 18 worktrees inspected; 6 are direct ancestors of canonical branches, 11 have non-ancestor commits verified patch-equivalent upstream (`git cherry` returns `-`), 1 has a decomposed patch (`s557-sh-gate-prereqs`), and 1 has an untracked story record (`s557-sh-fc-pty`). Zero work deleted, reset, or stashed. |
-| Module boundaries & `go.work` | PASS | Valid `go.work` with exactly 25 `use` directives (16 top-level + 9 nested modules/packages) and public fork replacements. |
-| Downloaded cache integrity | PASS | All 16 Go modules verified downloaded module-cache hash integrity via `GOWORK=off go mod verify`. Scope limited to cache hash verification (no claim of standalone build, offline dependency completeness, or import cycle check). |
-| Public scrub gate | PASS | `script/scrub-gate.sh --all` passed with 0 regex hits. Scope limited to tracked text files at umbrella root; skips submodule gitlinks and binaries. |
-| Public scripts syntax | PASS | All 5 scripts verified clean via bounded per-file loop `for f in script/*.sh; do bash -n "$f"; done`. Single-file limitation of `bash -n script/*.sh` documented. |
-| Final candidate producer pin bump (`17bccfc3f954`) | BLOCKED (pending runtime fix completion) | Blocked on root completing concurrent shell runtime repairs before cutting final candidate and re-pinning producer revisions in `bashy/go.mod`. |
+| Canonical branches, heads and gitlinks | WORKER-REPORTED SNAPSHOT | Inventory above describes umbrella `bfe7b0a` and its cached upstream refs; no fresh remote observation is established by this report. |
+| Candidate vs snapshot distinction | VERIFIED SOURCE COMPARISON | Independent review confirmed all seven changed submodule diffs from `cd91b04` to `bfe7b0a` contain only `docs/todo/` paths. This is not a statement about later HEADs. |
+| Worktree preservation and integration | PARTIAL EVIDENCE | Specific `git cherry` results are recorded above. Other rows remain worker-reported; `35a3b8c8` manual review and all cleanup prerequisites remain outstanding. |
+| Root workspace inventory | VERIFIED SOURCE COUNT | 25 `use` entries; no compilation, dependency-completeness or import-cycle verdict. |
+| Downloaded cache integrity | WORKER-REPORTED PASS | Sixteen top-level modules; raw receipts not located. Standalone build/resolution is not established. |
+| Root scrub gate | WORKER-REPORTED PASS | Finite configured patterns in root tracked text only; raw receipt not located. |
+| Public script syntax | WORKER-REPORTED PASS | Five per-file checks reported; raw individual exits not located. |
+| Final candidate producer pin bump (`17bccfc3f954`) | PENDING ROOT INTEGRATION | Final runtime fixes, candidate selection and relevant producer pins/gates remain manager-owned. |
