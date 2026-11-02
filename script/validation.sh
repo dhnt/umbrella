@@ -84,7 +84,7 @@ native-repairs)
   check sh-redirect-capture sh bash -euo pipefail -c 'go test -list "^TestCommandSubstitutionRedirectCapture$" ./interp > "$EVIDENCE_DIR/sh-redirect-tests.txt"; grep -Fx TestCommandSubstitutionRedirectCapture "$EVIDENCE_DIR/sh-redirect-tests.txt"; go test -count=1 -timeout 60s -run "^TestCommandSubstitutionRedirectCapture$" ./interp'
   if [ "$RUNNER_OS" != Windows ]; then
     check bashy-orphan-lifecycle bashy go test -race -count=3 -timeout 90s -run '^Test(Reclaim|ProcStartTime|ProcStatRejectsMalformed|ProcGroupIdentities|ProcessProviderOwnership|CapturedOrphanEscalation|ServiceMonitorReclaimsOrphanOfHardKilledMonitor)' ./internal/agentos
-    check sh-fc-editor sh go test -count=10 -timeout 120s -run '^TestFcS88EditorSessionThroughInteractivePTY$' ./interp
+    check sh-fc-editor sh bash -euo pipefail -c 'go test -list "^TestFcS88EditorSessionThroughInteractivePTY$" ./interactive > "$EVIDENCE_DIR/sh-fc-tests.txt"; grep -Fx TestFcS88EditorSessionThroughInteractivePTY "$EVIDENCE_DIR/sh-fc-tests.txt"; go test -v -count=10 -timeout 120s -run "^TestFcS88EditorSessionThroughInteractivePTY$" ./interactive'
     check ycode-pty-steering ycode go test -race -count=3 -timeout 90s -run '^TestTUIOverPTY$' ./pkg/ycodecli
   fi
   check bonsai-import bonsai go test -count=1 -timeout 3m -run '^TestFeature(ImportStreamProducerErrors|ExportImportRoundtrip)$' ./pkg/bonsai
@@ -164,6 +164,10 @@ bashy-full)
   # Desk provisions and verifies real isolated applications. Keep its existing
   # package deadline and subtest parallelism, but avoid competing package jobs.
   check make-test bashy pty env GOFLAGS="${GOFLAGS:-} -p=1" make test
+  ;;
+fc-diagnostics)
+  check sh-fc-editor sh bash -euo pipefail -c 'go test -list "^TestFcS88EditorSessionThroughInteractivePTY$" ./interactive > "$EVIDENCE_DIR/sh-fc-tests.txt"; grep -Fx TestFcS88EditorSessionThroughInteractivePTY "$EVIDENCE_DIR/sh-fc-tests.txt"; go test -v -count=10 -timeout 120s -run "^TestFcS88EditorSessionThroughInteractivePTY$" ./interactive'
+  printf '%s\n' 'Focused interactive fc regression with explicit discovery and ten unchanged executions. No full-suite claim.' > "$EVIDENCE_DIR/coverage.md"
   ;;
 shell-repairs)
   printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap and unset-scanner guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"

@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, fc-diagnostics, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -30,6 +30,33 @@ env:
   GOFLAGS: '-p=2'
 
 jobs:
+  fc-diagnostics:
+    if: inputs.lane == 'fc-diagnostics'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Discover and execute the original interactive fc test
+        shell: bash
+        run: bash script/validation.sh fc-diagnostics
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fc-diagnostics-${{ matrix.os }}
+          path: ${{ runner.temp }}/umbrella-validation
+          if-no-files-found: error
+
   shell-repairs:
     if: inputs.lane == 'shell-repairs'
     strategy:
