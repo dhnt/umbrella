@@ -49,3 +49,57 @@ The added trace is diagnostic evidence, not a passing conformance result.
 Shell syntax and diff checks passed; four producer mocks verified opt-out,
 success, signal failure and timeout without modifying original evidence.
 Hosted trace execution remains pending manager integration and dispatch.
+
+## Consolidated acceptance ownership — 2026-11-02
+
+Operator-directed triage: implementation mistakes, review corrections and failed tests belong to this existing deliverable, not new stories. Superseded child records retain their original scope and evidence. Their decision closure means responsibility transferred here, NOT fixed, passed, waived or feature retirement. Keep this parent open until its acceptance is verified. New stories require genuinely independent scope.
+
+Release constraint: RC tags only, using the existing format. Official v1.0.0 requires completed official POSIX certification and separate explicit operator approval even if every test passes. Formal certification is deferred; the migration still requires its shell-only conformance gate.
+
+Remaining acceptance: verify full native/standalone/workspace, full Bashy and shell, race/confirmation, Bash 5.3, authenticated Bash# corpus, and applicable free-POSIX results against exact candidates. Record skips/applicability and preserved failures; do not equate workflow success or missing tests with a passing suite.
+
+Known actionable blocker: older candidate's Linux TestGoSourceNativeMemberCancellation race fixture fails net import admission requiring cgo (all three repetitions); repair and verify within this parent. Both ordinary shell suites passed on that older candidate, not automatically on later bytes. Current candidate cd91b04 Bash53 workflows are green on all three platforms and free-POSIX workflow is green; retain/check raw target totals before final acceptance. Current full suites remain subject to completed-result review. Candidate preparation success is not artifact approval or corpus completion.
+
+Pre-existing informational limitation: Modernish NONFORKSUBSH fails the same external-parent probe on frozen and current engines. Keep the raw failure and INFO classification; no architectural redesign or blanket pass claim. Previously resolved focused regressions (including fc10/10 on each Unix host) retain their scoped evidence. Final Windows glob/redirection coverage and full corpus still require exact-result reconciliation; do not silently waive historical failures.
+
+### Transferred implementation and verification checklist
+
+Every row retains its original acceptance and evidence in the named source record; verify disposition within this parent before closure. These rows are tasks, not additional stories.
+
+- [ ] `c81387d7f6c1` (bashy #3040): S557 measure strict POSIX profile separately from Bash compatibility. Reconcile existing evidence and any remaining verification.
+- [ ] `0f8ecab1247b` (bashy #3036): S557 restore full-gate session and path fixtures. Reconcile existing evidence and any remaining verification.
+- [ ] `1bae7aa7aebd` (bashy #3041): S557 repair Desk full-suite timeout without weakening behavioral coverage. Reconcile existing evidence and any remaining verification.
+- [ ] `455135314fb4` (bashy #3039): S557 bound native CI stages independently of cumulative compile time. Reconcile existing evidence and any remaining verification.
+- [ ] `cebf026837c7` (bashsharp-tests #112): S557 repair literal-byte transport test accounting prerequisite. Reconcile existing evidence and any remaining verification.
+- [ ] `4acedd8ee5b9` (bashsharp-tests #111): S557 enable exact migrated candidate in full Bashsharp corpus gate. Reconcile existing evidence and any remaining verification.
+- [ ] `da4959013114` (sh #184): S557 preserve compound alias parsing for Modernish test-runner control flow. Reconcile existing evidence and any remaining verification.
+- [ ] `efd2bd0ddffd` (sh #182): S557 repair Modernish readonly variable unexport probe. Reconcile existing evidence and any remaining verification.
+- [ ] `bc2580329a94` (sh #178): S557 preserve variable-prefix expansion under nounset for Modernish. Reconcile existing evidence and any remaining verification.
+- [ ] `7a887d4056ea` (sh #174): S557 repair shell native fixture preparation and race audit coverage. Reconcile existing evidence and any remaining verification.
+- [ ] `d59ea3c8b6c7` (sh #175): S557 preserve parse-time aliases in sourced compound commands. Reconcile existing evidence and any remaining verification.
+- [ ] `3ea2aafcb341` (sh #166): S557 update shell race gate bounds for the current package inventory. Reconcile existing evidence and any remaining verification.
+- [ ] `6988fd06e87a` (sh #179): S557 join replacement signal forwarders after process completion. Reconcile existing evidence and any remaining verification.
+- [ ] `de21afd1cbc8` (sh #187): S557 diagnose Windows command-substitution redirection ambiguity. Reconcile existing evidence and any remaining verification.
+- [ ] `50c64b10fca7` (sh #177): S557 repair full-shell toolchain fixture and channel timeout evidence. Reconcile existing evidence and any remaining verification.
+- [ ] `a554eec72b20` (sh #183): S557 isolate asynchronous process substitution from history reader replay. Reconcile existing evidence and any remaining verification.
+- [ ] `4fafab8c629a` (sh #185): S557 avoid repeated alias ancestry scans for ordinary sourced command words. Reconcile existing evidence and any remaining verification.
+- [ ] `7b0044a95807` (sh #176): S557 restore Bash fixture fidelity after let shell-word parsing. Reconcile existing evidence and any remaining verification.
+- [ ] `f8fcd72802bd` (sh #172): S557 verify strict asynchronous EXIT trap redirection lifetime. Reconcile existing evidence and any remaining verification.
+- [ ] `32c55b3b4bb3` (sh #170): S557 bound unset operand scanning across escaped line endings. Reconcile existing evidence and any remaining verification.
+- [ ] `74b5b0a013a8` (sh #180): S557 parse parameter expansion as arithmetic operands in sourced conditions. Reconcile existing evidence and any remaining verification.
+- [ ] `b7426d360392` (sh #171): S557 verify and correct strict getopts readonly assignment status. Reconcile existing evidence and any remaining verification.
+- [ ] `ca1e33f51032` (sh #173): S557 restore Bash let shell-word and redirection parsing for Modernish. Reconcile existing evidence and any remaining verification.
+- [ ] `61b1156f9de1` (sh #168): S557 repair interpreter regressions exposed by full migrated shell suite. Reconcile existing evidence and any remaining verification.
+- [ ] `aea9087c173c` (sh #169): S557 dispatch explicit EXIT traps in command substitution for modernish initialization. Reconcile existing evidence and any remaining verification.
+- [ ] `d952dda0e568` (bonsai #5): S557 restore GraphQL add then exact-person query contract. Reconcile existing evidence and any remaining verification.
+- [ ] `b8be36ceabd7` (bonsai #4): S557 synchronize Bonsai database GC shutdown with Close. Reconcile existing evidence and any remaining verification.
+- [ ] `4b920a28f726` (bonsai #3): S557 repair GraphQL subscription update delivery timeout. Reconcile existing evidence and any remaining verification.
+- [ ] `8ca06fe246d8` (ycode #63): S557 restore portable file and process contracts in native Windows tests. Reconcile existing evidence and any remaining verification.
+- [ ] `a724a4808b5f` (ycode #64): S557 isolate native session controls and diagnose Windows latency gate. Reconcile existing evidence and any remaining verification.
+- [ ] `d16a4ff5691c` (ycode #65): S557 repair recall time-window fast-path regression. Reconcile existing evidence and any remaining verification.
+- [ ] `d56152607dff` (outpost #2764): S557 isolate pairing service unit fixture from host config paths. Reconcile existing evidence and any remaining verification.
+- [ ] `0feb99d2fc7c` (yoke #3050): S557 join independent KV session ownership before temporary cleanup. Reconcile existing evidence and any remaining verification.
+- [ ] `7bc5d2685915` (yoke #3046): S557 use portable temporary homes in native test entrypoints. Reconcile existing evidence and any remaining verification.
+- [ ] `38ba61f3e8f5` (yoke #3051): S557 stabilize semantic Prometheus label assertions. Reconcile existing evidence and any remaining verification.
+- [ ] `f15099d20dc3` (yoke #3048): S557 repair native census and chat cleanup ownership. Reconcile existing evidence and any remaining verification.
+- [ ] `6848aa300e5f` (yoke #3049): S557 isolate macOS delegate timing and Linux graph fixture environments. Reconcile existing evidence and any remaining verification.
