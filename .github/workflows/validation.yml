@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, free-posix, bashsharp, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, candidate-prepare]
 
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
@@ -232,6 +232,35 @@ jobs:
             ${{ runner.temp }}/umbrella-validation
             sh/artifacts/full-test
             sh/artifacts/bashpp-race-gate.txt
+          if-no-files-found: error
+
+  bash53-redir-diagnostics:
+    if: inputs.lane == 'bash53-redir-diagnostics'
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      DEPENDENCY_MODE: standalone
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Original redirect measurement and separate CLI diagnostics
+        shell: bash
+        run: bash script/validation.sh bash53-redir-diagnostics
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bash53-redir-windows
+          path: |
+            ${{ runner.temp }}/umbrella-validation
+            bashy/bash53-windows.log
+            bashy/bash53-windows-counts.json
           if-no-files-found: error
 
   bash53:

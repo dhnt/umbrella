@@ -181,6 +181,17 @@ shell-full)
     check sh-confirm sh bash -euo pipefail -c 'go install mvdan.cc/dockexec@latest && CGO_ENABLED=0 go test -run TestRunnerRunConfirm -exec "dockexec bash:5.2" ./interp'
   fi
   ;;
+bash53-redir-diagnostics)
+  export BASH53_DEBUG_DIR="$EVIDENCE_DIR/bash53-diffs"
+  run bash53-source . python script/provision-conformance-fixtures.py bash53 bashy
+  check windows-runner bashy go test -count=1 -timeout 5m ./tools/bash53suite
+  # Build once through the existing Windows measurement contract. Its raw
+  # selected-fixture verdict remains independent of subsequent diagnostics.
+  run windows-redir-measurement bashy env TESTS=redir scripts/ci-bash53-windows.sh
+  run redir-binary-identity bashy bash -euo pipefail -c 'sha256sum bin/bash.exe bin/yoke.exe bin/bash53suite.exe; go version -m bin/bash.exe; go version -m bin/yoke.exe'
+  check windows-redir-probes bashy bin/bash53suite.exe -tests-dir external/bash-5.3/tests -bash bin/bash.exe -userland bin/yoke.exe -redir-probe-dir "$EVIDENCE_DIR/redir-probes"
+  printf '%s\n' 'One unchanged Windows redir fixture measurement plus separately bounded CLI diagnostics against the same binaries. Not a full Bash 5.3 or subfixture acceptance claim.' > "$EVIDENCE_DIR/coverage.md"
+  ;;
 bash53)
   export BASH53_DEBUG_DIR="$EVIDENCE_DIR/bash53-diffs"
   run bash53-source . python script/provision-conformance-fixtures.py bash53 bashy
