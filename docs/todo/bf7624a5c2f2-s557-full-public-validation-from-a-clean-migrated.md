@@ -38,3 +38,14 @@ No second binary, shim, rebuilt payload, assertion change, or skip is added.
 Shell syntax and a bounded mock of the actual authentication/environment
 handoff passed. Full hosted replay remains required; this does not close the
 overall corpus or migration gate.
+
+Modernish diagnostic lane now opts into a separate bounded self-test trace
+from the producer runner. The original suite command, counters and verdict
+remain authoritative and unchanged. The trace has independent setup/run/copy
+statuses and per-test files, and is not enabled by full free-POSIX validation.
+Run 41380385436 completed initialization/version but terminated the self-test
+with SIGALRM before any summary; partial execution counts are unknown.
+The added trace is diagnostic evidence, not a passing conformance result.
+Shell syntax and diff checks passed; four producer mocks verified opt-out,
+success, signal failure and timeout without modifying original evidence.
+Hosted trace execution remains pending manager integration and dispatch.
