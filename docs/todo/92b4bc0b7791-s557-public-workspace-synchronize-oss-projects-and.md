@@ -27,3 +27,9 @@ Remaining acceptance: canonical public branches and published producer revisions
 Every row retains its original acceptance and evidence in the named source record; verify disposition within this parent before closure. These rows are tasks, not additional stories.
 
 - [ ] `17bccfc3f954` (bashy #3037): S557 align standalone release candidate with validated producer revisions. Reconcile existing evidence and any remaining verification.
+
+## Active bounded worker assignment — 2026-11-02
+
+Immediate bounded assignment: verify remaining publicworkspace readiness against currentcanonical roots and reconcile precise blockers. Read parentandcurrenttriage; rootisrunningruntimefixworkseparately. Readonly canonicalinventory: branch/HEAD/upstream/dirty/gitlink/moduleboundary for publicumbrella+submodules; distinguish documentation-onlypinchanges fromruntimecandidatecd91b04. Inspect remainingrun/worktreeuniquecommits without removingorresettinganything. Source/candidate modulepins maylegitimately exclude laterdocs; no blindmassgo get. Identify concrete brokenpaths/private dependencies relevantmigration. Use managedisolatedworkspace for any small neededscript/docfix, preserve originalassertions/semantics. Do not modifycanonical/frozen dhnt, inspectlicensedtrees, createcloudresources, runfullbuildsuiteorcontainers, orpush/merge. No newstories. Within5minutes send inventorysummaryandone nextaction; within twenty minutes deliver concise exactpass/blocker matrixandscopedcommitifnecessary. Useexisting557/#4/92b4bc0b7791 actualAgent. Rootowns allcleanupmutations andfinalacceptance.
+
+All agents: subscription-backed route only; no metered/API fallback. Do not create stories for corrections; append evidence to this parent. Manager checks concrete progress every five minutes, steers and reassigns stalled work.
