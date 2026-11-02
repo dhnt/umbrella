@@ -27,3 +27,14 @@ idempotence, byte/mode preservation, hash/coordinate rejection, and symlink
 rejection tests passed (3 tests); bash syntax and ShellCheck passed. No full
 SDK copy, build, or local suite was run. Hosted Linux/macOS rerun remains the
 acceptance requirement; no test exclusions or product SDK policy changes.
+
+2026-11-02 candidate matrix binding: hosted run 41371336485 authenticated the
+native candidate and completed Go by Example 255/255, literal-byte transports
+60/60, and Go delta 26/26, then stopped because the executable matrix defaulted
+to an absent `bin/bash`. The bundle intentionally contains only `bin/bashy`.
+After candidate authentication, validation now exports `BASH_ENGINE_BIN` as
+the same `BASHY_BIN` for the matrix's existing selector and plain/POSIX checks.
+No second binary, shim, rebuilt payload, assertion change, or skip is added.
+Shell syntax and a bounded mock of the actual authentication/environment
+handoff passed. Full hosted replay remains required; this does not close the
+overall corpus or migration gate.

@@ -291,6 +291,9 @@ PYRESTORE
   export GBE_CANDIDATE="$CANDIDATE_BUNDLE/gbe-candidate.json"
   cp "$GBE_CANDIDATE" "$EVIDENCE_DIR/gbe-candidate.json"
   run authenticate-candidate bashsharp-tests env GOWORK=off bash tools/go-by-example/gbe.sh validate-candidate --candidate "$GBE_CANDIDATE" --bashy "$BASHY_BIN"
+  # Matrix engine and front-door checks use the same authenticated payload.
+  # The native candidate bundle contains bin/bashy, not a second bin/bash build.
+  export BASH_ENGINE_BIN="$BASHY_BIN"
   check python-package-gate bashsharp-tests env GOWORK=off BASHY="$BASHY_BIN" bash tools/python-package-gate.sh
   check typescript-package-gate bashsharp-tests env GOWORK=off bash tools/sprint184-typescript-gate.sh
   # Keep structured failure details, progress journal, raw logs and retained
