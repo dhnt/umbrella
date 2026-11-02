@@ -155,7 +155,9 @@ bashy-full)
   printf '%s\n' 'Full Bashy release gate uses standalone module resolution (GOWORK=off), including nested desk applications. Native jobs retain workspace coverage. Remote-install fixtures use the locally built candidate on PATH.' > "$EVIDENCE_DIR/coverage.md"
   run bashy-product bashy bash -euo pipefail -c 'mkdir -p bin; scripts/go-product.sh build -o bin/bashy ./cmd/bashy'
   export PATH="$root/bashy/bin:$PATH"
-  check make-test bashy pty make test
+  # Desk provisions and verifies real isolated applications. Keep its existing
+  # package deadline and subtest parallelism, but avoid competing package jobs.
+  check make-test bashy pty env GOFLAGS="${GOFLAGS:-} -p=1" make test
   ;;
 shell-repairs)
   printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap and unset-scanner guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
