@@ -1,5 +1,43 @@
 # CLAUDE.md — umbrella (public)
 
+## Mandatory migration scope — operator decision
+
+Migration changes references and locations; it does not repair or extend product
+behavior. This rule supersedes earlier migration notes that authorized fixing
+implementation failures within the migration deliverable.
+
+- Allowed: necessary repository/module/import references, checkout locations,
+  equivalent dependency origins, and test/build harness paths or wiring needed
+  to execute the same contract after relocation. Each change must be traceable
+  to the move. A dependency-pin change must preserve the approved implementation;
+  a bug/feature upgrade hidden behind a version bump is not a reference-only move.
+- Prohibited: product implementation changes, bug fixes, features, optimizations,
+  semantic refactors, or configuration changes enabling new behavior. Apply
+  particular scrutiny to sh and POSIX-required coreutils and their shared APIs.
+- Preserve test meaning: no behavioral assertion/expected-output changes, new
+  exclusions/skips, altered fixtures/oracles, or relaxed per-test timing budgets
+  to obtain green results. Mechanical relocated-path substitutions are allowed.
+  Additional diagnostics must be separate and must not replace original verdicts.
+- Investigate failures with matched frozen/migrated controls: exact source and
+  resolved dependency graph, toolchain/compiler flags (including CGO), harness,
+  fixtures, environment and resource conditions. Distinguish standalone builds
+  from workspace builds. A failed run alone is not evidence of a product bug.
+- No product bug fixes during migration, including fixes for proven pre-existing
+  bugs. Reproduce the failure on the unchanged frozen baseline, document the
+  evidence, and defer the fix to separate work AFTER migration is complete.
+  This supersedes the earlier permission to repair the baseline before migrating.
+- If only the migrated version fails, correct the migration reference or setup,
+  or revert an out-of-scope implementation change. Do not add a compensating
+  behavioral fix. If the cause is unknown, investigate without changing product
+  behavior or test expectations; never label it pre-existing without evidence.
+- Keep the frozen baseline immutable. A deferred bug is neither a passing test
+  nor an automatic waiver of migration acceptance. Preserve its raw result and
+  report its effect on acceptance explicitly.
+- Preserve the original frozen commit and all current work/evidence. Separate
+  existing implementation patches without deleting their history. Migration
+  acceptance requires an inspected reference-only diff against its explicit
+  baseline and passing applicable validation. No official release is authorized.
+
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
 `dhnt` project as a flat sibling submodule. The root `go.work` selects live
