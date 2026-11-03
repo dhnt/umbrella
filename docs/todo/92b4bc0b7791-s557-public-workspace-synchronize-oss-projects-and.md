@@ -3,14 +3,16 @@ id: 92b4bc0b7791
 kind: chore
 title: 'S557 public workspace: synchronize OSS projects and provide independent development and test entrypoints'
 seq: 4
-status: assigned
+status: done
 priority: p1
 created: 2026-11-01T09:17:34.646235Z
 weave: 2
-assignee: agy-gemini3.8-flash
+assignee: s557-manager
 sprint: 557
 sprint_id: f5ccf563-f5d1-5b94-8be4-9388e51ef86d
 sprint_title: 'Bashy v1.0.0 preparation: split private/public development and retire qiangli/dhnt'
+closed: 2026-11-03T06:23:53.87833Z
+closed_by: s557-manager
 ---
 
 Prepare the public workspace for the official Bashy v1.0.0 release: synchronize public submodule heads, hydrate required public modules, maintain version-pinned standalone builds and an optional sibling workspace, update bootstrap/sync/CI and developer documentation. Preserve unique work. Public builds must not require private sources, credentials or licensed conformance fixtures. Record reproducible public verification commands and sanitized evidence. Keep all private coordination in the private migration record.
@@ -27,7 +29,7 @@ Remaining acceptance: canonical public branches and published producer revisions
 
 Every row retains its original acceptance and evidence in the named source record; verify disposition within this parent before closure. These rows are tasks, not additional stories.
 
-- [ ] `17bccfc3f954` (bashy #3037): S557 align standalone release candidate with validated producer revisions. Reconcile existing evidence and any remaining verification.
+- [x] `17bccfc3f954` (bashy #3037): S557 align standalone release candidate with validated producer revisions. Reconcile existing evidence and any remaining verification.
 
 ## Active bounded worker assignment — 2026-11-02
 
@@ -145,3 +147,27 @@ review. The retained worker response is a self-report, not raw tool receipts.
 | Root scrub gate | WORKER-REPORTED PASS | Finite configured patterns in root tracked text only; raw receipt not located. |
 | Public script syntax | WORKER-REPORTED PASS | Five per-file checks reported; raw individual exits not located. |
 | Final candidate producer pin bump (`17bccfc3f954`) | PENDING ROOT INTEGRATION | Final runtime fixes, candidate selection and relevant producer pins/gates remain manager-owned. |
+
+## Verified workspace delivery — 2026-11-03
+
+Manager review supersedes the historical inventory above. All eighteen public
+gitlinks match clean canonical module checkouts and published main/master heads.
+The public root is independently usable without private source, credentials or
+licensed fixtures. Producer runtime pins are immutable and published: Bashy
+`7a0c89e`, Sh `f8ee416`, Coreutils `a7e78d7`, and Yoke `4895bc9`. Later canonical
+Sh `ba1870e` and Yoke `baf77bfd` changes affect tests and CI only; they do not
+require changing product dependency versions.
+
+Hosted native41577967745 resolved and built both dependency modes on all three
+platforms. Its behavioral failures remain owned by validation6, with later
+focused repairs and fresh hosted runs; build success is not a claim that its
+full test suites passed. Subsequent standalone Yoke CI verified platform graph
+and build prerequisites, including native Windows executable checks. Existing
+bootstrap/sync and public boundary checks passed.
+
+Fresh remote-head checks and integration/patch-equivalence review account for
+unique contributions. Completed owned scratch worktrees have been reclaimed
+only after verification; remaining validation workspaces retain explicit owners.
+This accepts workspace migration and standalone build resolution only. Full
+behavioral acceptance, legacy archival and release remain separate gates; no
+v1.0.0 release or official certification is authorized.
