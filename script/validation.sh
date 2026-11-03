@@ -249,6 +249,37 @@ candidate-prepare)
   python "$root/script/validation-manifest.py" --prepare-candidate
   printf '%s\n' 'PREPARED ONLY: artifact awaits independent review and registry approval; no corpus verdict.' > "$EVIDENCE_DIR/coverage.md"
   ;;
+tour)
+  export SH_ROOT="$root/sh" BASHY_ROOT="$root/bashy"
+  export BASHY_BIN="$root/bashy/bin/bashy"
+  run sh-module-cache sh env GOWORK=off go mod download
+  run bashy-module-cache bashy env GOWORK=off go mod download
+  : "${CANDIDATE_BUNDLE:?download the reviewed candidate artifact first}"
+  python - "$CANDIDATE_BUNDLE/candidate-binaries.tar" "$root/bashy" <<'PYRESTORE'
+import pathlib, sys, tarfile
+with tarfile.open(sys.argv[1]) as archive:
+    members = archive.getmembers()
+    if len(members) != 1 or members[0].name != "bin/bashy" or not members[0].isfile():
+        raise SystemExit("Candidate archive must contain only the native bin/bashy file")
+    target = pathlib.Path(sys.argv[2]) / "bin/bashy"
+    if target.is_symlink() or target.parent.is_symlink():
+        raise SystemExit("Candidate destination must not be a symlink")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(archive.extractfile(members[0]).read())
+    target.chmod(0o755)
+PYRESTORE
+  export GBE_CANDIDATE="$CANDIDATE_BUNDLE/gbe-candidate.json"
+  cp "$GBE_CANDIDATE" "$EVIDENCE_DIR/gbe-candidate.json"
+  run authenticate-candidate bashsharp-tests env GOWORK=off bash tools/go-by-example/gbe.sh validate-candidate --candidate "$GBE_CANDIDATE" --bashy "$BASHY_BIN"
+  export BASHPP_BIN="$BASHY_BIN" TOUR_CANDIDATE_MANIFEST="$GBE_CANDIDATE"
+  export TOUR_EXECUTOR_RESULTS="$EVIDENCE_DIR/tour/results.jsonl"
+  export TOUR_EXECUTOR_EVIDENCE="$EVIDENCE_DIR/tour/raw"
+  mkdir -p "$EVIDENCE_DIR/tour"
+  unset TOUR_ONLY TOUR_INVENTORY TOUR_CORPUS_ROOT TOUR_ORACLE_REPEATS TOUR_STEP_TIMEOUT
+  check tour-executor bashsharp-tests env GOWORK=off bash tools/tour/run-executor.sh
+  check tour-verdict bashsharp-tests env GOWORK=off bash tools/tour/validate-executor.sh
+  printf '%s\n' 'Complete existing Tour executor: 97 sources in all three modes, unchanged oracle repetitions and per-stage deadlines. Historical sealed evidence is not this replay.' > "$EVIDENCE_DIR/coverage.md"
+  ;;
 bashsharp)
   export SH_ROOT="$root/sh" BASHY_ROOT="$root/bashy"
   export BASHY_BIN="$root/bashy/bin/bashy" BASHY_AGENTOS_BIN="$root/bashy/bin/bashy"
