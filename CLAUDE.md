@@ -10,6 +10,8 @@ Small, baseline-proven repairs belong in separate C commits. Broader repairs are
 
 No official v1.0.0 release before official POSIX certification and explicit operator release approval. This migration does not authorize a release.
 
+Prefer the established self-hosted machine fleet for validation. Hosted CI billing must not be a default dependency. Use existing working execution routes while the self-hosted scheduler is being completed; preserve source identities, isolation and raw test evidence.
+
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
 `dhnt` project as a flat sibling submodule. The root `go.work` selects live
