@@ -90,6 +90,34 @@ bashy-cross)
   run windows-vet bashy env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go vet ./tools/bash53suite
   run windows-test-compile bashy env CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go test -c -o /dev/null ./tools/bash53suite
   ;;
+gotreesitter-cgo-smoke)
+  run smoke gotreesitter/cgo_harness env GTS_PARITY_MODE=smoke go test . -tags treesitter_c_parity -run '^TestParityFreshParse$|^TestParityIncrementalParse$|^TestParityHasNoErrors$|^TestParityIssue3Repros$|^TestParityGLRCanaryGo$|^TestParityGLRCanarySet$|^TestParityGLRCapPressureTopLanguages$|^TestParityGateCoverageRatchet$|^TestParityHighlight$' -timeout=20m -count=1 -v
+  ;;
+gotreesitter-cgo-exhaustive)
+  run fresh gotreesitter/cgo_harness env GTS_PARITY_MODE=exhaustive go test . -tags treesitter_c_parity -run '^TestParityFreshParse$|^TestParityHasNoErrors$|^TestParityIssue3Repros$' -timeout=30m -count=1 -v
+  run incremental gotreesitter/cgo_harness env GTS_PARITY_MODE=exhaustive go test . -tags treesitter_c_parity -run '^TestParityIncrementalParse$|^TestParityGLRCanaryGo$|^TestParityGLRCanarySet$|^TestParityGLRCapPressureTopLanguages$|^TestParityGateCoverageRatchet$' -timeout=30m -count=1 -v
+  run corpus gotreesitter/cgo_harness env GTS_PARITY_MODE=exhaustive go test . -tags treesitter_c_parity -run '^TestParityCorpusFreshParse$' -timeout=30m -count=1 -v
+  run highlight gotreesitter/cgo_harness env GTS_PARITY_MODE=exhaustive go test . -tags treesitter_c_parity -run '^TestParityHighlight$|^TestParityHighlightAllGrammars$|^TestParityYAMLCorpus$|^TestParityYAMLCorpusStructural$|^TestParityYAMLCorpusSummary$' -timeout=30m -count=1 -v
+  ;;
+gotreesitter-report)
+  run parity gotreesitter env GOTREESITTER_GRAMMAR_BLOB_DIR=grammars/grammar_blobs go run -tags grammar_blobs_external ./cmd/parity_report
+  ;;
+yoke-crossvet) run crossvet yoke scripts/crossvet.sh ;;
+ycode-dag)
+  # Exact frozen DAG.md build/test commands; no release/model/evaluation targets.
+  run format ycode scripts/fmtcheck.sh
+  run vet ycode go vet ./...
+  run features ycode go test -count=1 ./internal/features/...
+  run compile ycode bash -euo pipefail -c 'go build -trimpath -ldflags "-s -w -X main.version=$(git describe --tags --always --dirty 2>/dev/null || echo dev) -X main.commit=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)" -o bin/ycode ./cmd/ycode/'
+  run race ycode go test -short -race -count=1 ./...
+  ;;
+bashy-oci-policy) run policy bashy make test-bashy-oci-policy ;;
+bashy-installed-stress) run stress bashy make test-awd-installed-stress ;;
+bashy-self-container)
+  # The original runner explicitly accepts an OCI executable. Keep its pinned
+  # base image, resource limits, inner target, and original test timeouts.
+  run self-container bashy env BASHY_TEST_OCI=podman make test-self-container
+  ;;
 confirm-verbose)
   run dockexec sh go install mvdan.cc/dockexec@latest
   # Output-only verbosity reveals PASS/SKIP. Keep original Bash5.2 comparator image.
