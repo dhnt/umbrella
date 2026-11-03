@@ -26,6 +26,16 @@ implementation failures within the migration deliverable.
   bugs. Reproduce the failure on the unchanged frozen baseline, document the
   evidence, and defer the fix to separate work AFTER migration is complete.
   This supersedes the earlier permission to repair the baseline before migrating.
+- Before a post-migration product fix begins, establish that the bug already
+  exists in the pre-migration baseline using recorded, reproducible evidence.
+  Base the diagnosis and proposed repair on that baseline behavior and dependency
+  graph, not solely on a failure observed after migration. An unproven cause is
+  still an investigation, not authorization for a behavioral fix.
+- Check existing investigations, preserved patches, and assigned work before
+  starting a fix. Keep one coordinated record and owner for the same defect;
+  do not create duplicate implementations. Review affected callers, shared APIs,
+  and dependent components, then validate the repair across that impact before
+  integration. A local test improvement alone is insufficient.
 - If only the migrated version fails, correct the migration reference or setup,
   or revert an out-of-scope implementation change. Do not add a compensating
   behavioral fix. If the cause is unknown, investigate without changing product
