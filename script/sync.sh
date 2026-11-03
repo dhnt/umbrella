@@ -1,68 +1,112 @@
 #!/usr/bin/env bash
-# Fast-forward public subprojects and stage their gitlinks for review.
-# Dependency versions, commits and pushes remain explicit developer actions.
+# Pull each submodule's default branch (whatever origin/HEAD points at —
+# main, master, or other), stage the pin bumps in the umbrella, and print
+# what changed. Does NOT commit or push the umbrella — leaves you to
+# write one umbrella commit message covering all bumps.
+#
+# Sibling-pin propagation. After every submodule is pulled, walk each
+# consumer (a submodule with a .sibling-pins file) and, for each line
+# `<dep>=<sha>` in that file, rewrite the SHA to whatever the matching
+# submodule now points to. If anything changed, commit + push inside
+# the consumer with a small `chore: bump <dep> sibling pin` message.
+# This keeps standalone CI building against the same SHA the umbrella
+# does — without it, ycode/outpost's .sibling-pins lag the umbrella
+# and `go build` resolves a different sh/nadir than the rest of the
+# monorepo.
 set -euo pipefail
+
 cd "$(dirname "$0")/.."
 
-fail() { echo "sync: $*" >&2; exit 1; }
+# Every submodule the umbrella tracks. Keep in sync with .gitmodules —
+# a submodule missing from this list is never pulled, never has its
+# .sibling-pins propagated, and never gets its pointer staged, so its
+# changes silently vanish from `sync: bump submodule pins`. coreutils is
+# the most-changed of these; leaving it off (as an earlier revision did)
+# is the exact footgun the umbrella CLAUDE.md warns about.
+SUBMODULES="appstore bashsharp bashsharp-tests bashsharp-tour bashy bonsai coreutils filebrowser gfy nadir outpost readline sh ycode yoke"
 
-# Refuse unrelated root edits and an existing staged change. Submodule HEADs
-# are checked separately, so a previously checked-out pin need not be current.
-git diff --quiet --ignore-submodules=all || fail "umbrella files have local changes"
-git diff --cached --quiet || fail "the umbrella index has staged changes"
-[ -z "$(git ls-files --others --exclude-standard)" ] || fail "umbrella has untracked files"
-
-submodules=()
-branches=()
-while IFS=' ' read -r key sub; do
-  [ -n "$sub" ] || continue
-  [ -e "$sub/.git" ] || fail "$sub is not initialized; run script/bootstrap.sh"
-  [ -z "$(git -C "$sub" status --porcelain --untracked-files=all)" ] || fail "$sub has local changes"
-  # Include initialized nested repositories before any checkout changes.
-  git -C "$sub" submodule foreach --quiet --recursive '
-    test -z "$(git status --porcelain --untracked-files=all)" || {
-      echo "sync: nested submodule $displaypath has local changes" >&2
-      exit 1
-    }
-  ' || fail "$sub has dirty nested submodules"
-  submodules+=("$sub")
-done < <(git config -f .gitmodules --get-regexp '^submodule\..*\.path$')
-[ "${#submodules[@]}" -gt 0 ] || fail "no submodules found"
-
-# Fetch and validate every target before changing any checkout. Do not let
-# fetch recurse through obsolete nested gitlinks from the old candidate.
-for sub in "${submodules[@]}"; do
-  git -C "$sub" fetch --no-recurse-submodules origin
-  remote_head=$(git -C "$sub" symbolic-ref --quiet --short refs/remotes/origin/HEAD) || fail "$sub has no origin/HEAD"
-  branch=${remote_head#origin/}
-  case "$branch" in main|master) ;; *) fail "$sub default branch is $branch; review it explicitly" ;; esac
-  git -C "$sub" rev-parse --verify "refs/remotes/origin/$branch" >/dev/null || fail "$sub has no origin/$branch"
-  current=$(git -C "$sub" symbolic-ref --quiet --short HEAD || true)
-  [ -z "$current" ] || [ "$current" = "$branch" ] || fail "$sub is on $current; finish that work first"
-  # A detached checkout is safe to advance only if its work is already in
-  # the selected integration branch. Never strand a unique detached commit.
-  git -C "$sub" merge-base --is-ancestor HEAD "origin/$branch" || fail "$sub HEAD has work not integrated in origin/$branch"
-  if git -C "$sub" show-ref --verify --quiet "refs/heads/$branch"; then
-    git -C "$sub" merge-base --is-ancestor "$branch" "origin/$branch" || fail "$sub local $branch has unpushed or divergent work"
+# Pass 1: pull each submodule to its origin default branch.
+for sub in $SUBMODULES; do
+  if [ ! -d "$sub" ]; then
+    echo "skip: $sub (not initialized — run script/bootstrap.sh first)" >&2
+    continue
   fi
-  branches+=("$branch")
+  echo "== $sub =="
+  (
+    cd "$sub"
+    git fetch --quiet origin
+    # Resolve origin/HEAD → e.g. "origin/master" → "master"
+    branch=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')
+    if [ -z "$branch" ]; then
+      echo "  (no origin/HEAD; skipping)" >&2
+      exit 0
+    fi
+    git checkout --quiet "$branch"
+    git pull --ff-only --quiet origin "$branch"
+    # yoke carries nested submodules that bashy's go.mod path-replaces.
+    git submodule update --quiet --init --recursive
+  )
 done
 
-for ((i=0; i<${#submodules[@]}; i++)); do
-  sub=${submodules[$i]}
-  branch=${branches[$i]}
-  echo "sync: $sub -> origin/$branch"
-  if git -C "$sub" show-ref --verify --quiet "refs/heads/$branch"; then
-    git -C "$sub" switch "$branch"
-  else
-    git -C "$sub" switch --create "$branch" --track "origin/$branch"
+# Pass 2: propagate sibling SHAs into consumers' .sibling-pins. Walks
+# every submodule that contains a .sibling-pins file, rewrites each
+# `<dep>=<sha>` line to the dep's current submodule HEAD, and (if
+# anything changed) commits + pushes inside the consumer.
+for sub in $SUBMODULES; do
+  pins="$sub/.sibling-pins"
+  [ -f "$pins" ] || continue
+
+  bumped=()
+  while IFS= read -r line; do
+    case "$line" in
+      ''|'#'*) continue ;;
+    esac
+    name=${line%%=*}
+    pinned=${line#*=}
+    if [ -z "$name" ] || [ -z "$pinned" ] || [ "$name" = "$pinned" ]; then
+      continue
+    fi
+
+    # Only propagate pins for deps the umbrella mounts as siblings.
+    if [ ! -d "$name" ]; then
+      continue
+    fi
+    current=$(git -C "$name" rev-parse HEAD)
+    if [ "$current" = "$pinned" ]; then
+      continue
+    fi
+
+    # In-place rewrite of `<name>=<old>` → `<name>=<new>`. BSD sed (macOS)
+    # and GNU sed both accept `-i ''`.
+    sed -i.bak "s|^$name=.*|$name=$current|" "$pins"
+    rm -f "$pins.bak"
+    bumped+=("$name:${current:0:12}")
+  done < "$pins"
+
+  if [ ${#bumped[@]} -gt 0 ]; then
+    echo "-- $sub: bumping ${bumped[*]} in .sibling-pins"
+    (
+      cd "$sub"
+      git add .sibling-pins
+      # Compact one-line message lists each bumped dep.
+      summary=$(IFS=,; echo "${bumped[*]}")
+      git commit --quiet -m "chore: bump sibling pin(s) $summary"
+      git push --quiet origin HEAD
+    )
   fi
-  git -C "$sub" merge --ff-only "origin/$branch"
-  git -C "$sub" submodule update --init --recursive
-  [ -z "$(git -C "$sub" status --porcelain --untracked-files=all)" ] || fail "$sub is not clean after synchronization"
 done
 
-# Stage only gitlinks, and only after all projects have synchronized.
-git add -- "${submodules[@]}"
-echo "Pin bumps staged; review and commit with Sprint/Story/Story-ID trailers:"
+# Pass 3: stage every submodule pointer (catches both the direct
+# default-branch pulls from pass 1 AND the .sibling-pins follow-up
+# commits from pass 2).
+for sub in $SUBMODULES; do
+  [ -d "$sub" ] || continue
+  git add "$sub"
+done
+
+echo
+echo "Pin bumps staged. Review:"
 git diff --cached --stat
+echo
+echo "Commit when ready:"
+echo "  git commit -m 'sync: bump submodule pins'"
