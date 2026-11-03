@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, baseline-extra, baseline-extended, baseline-final, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -464,11 +464,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-        - runner: ubuntu-latest
-          arch: amd64
-        - runner: ubuntu-24.04-arm
-          arch: arm64
+        include: ${{ fromJSON(inputs.lane == 'baseline-recovered' && '[{"runner":"ubuntu-latest","arch":"amd64"}]' || '[{"runner":"ubuntu-latest","arch":"amd64"},{"runner":"ubuntu-24.04-arm","arch":"arm64"}]') }}
     runs-on: ${{ matrix.runner }}
     steps:
     - uses: actions/checkout@v7
@@ -486,7 +482,7 @@ jobs:
       run: "set -euo pipefail\nscrub=$RUNNER_TEMP/scrub-path\nmkdir -p \"$scrub\"\n# setup-go's dir FIRST: /usr/bin carries the distro\
         \ go, which is older than go.mod's floor\nfor d in \"$(dirname \"$(command -v go)\")\" /usr/local/sbin /usr/local/bin /usr/sbin\
         \ /usr/bin /sbin /bin; do\n  for f in \"$d\"/*; do\n    b=$(basename \"$f\")\n    case \"$b\" in podman|docker|podman-remote|buildah|skopeo|nerdctl)\
-        \ continue ;; esac\n    [ -e \"$scrub/$b\" ] || ln -s \"$f\" \"$scrub/$b\"\n  done\ndone\necho \"$scrub\" > \"$RUNNER_TEMP/scrub-path.txt\"\
+        \ continue ;; esac\n    [ -e \"$scrub/$b\" ] || [ -L \"$scrub/$b\" ] || ln -s \"$f\" \"$scrub/$b\"\n  done\ndone\necho \"$scrub\" > \"$RUNNER_TEMP/scrub-path.txt\"\
         \n! PATH=$scrub command -v podman\n"
     - name: The one Linux host fact (docs/airgap-image.md "What the host needs")
       shell: bash
@@ -547,14 +543,14 @@ jobs:
         name: baseline-airgap-${{ matrix.arch }}
         path: ${{ runner.temp }}/airgap.log
         if-no-files-found: warn
-    if: inputs.lane == 'baseline-final'
+    if: inputs.lane == 'baseline-final' || inputs.lane == 'baseline-recovered'
     defaults:
       run:
         working-directory: bashy
     env:
       GOWORK: 'off'
   baseline-windows-probes:
-    if: inputs.lane == 'baseline-final'
+    if: inputs.lane == 'baseline-final' || inputs.lane == 'baseline-recovered'
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
@@ -569,6 +565,10 @@ jobs:
       if: matrix.probe_mode != 'pipe'
       shell: bash
       run: ./scripts/ci-windows-filetime-probe.sh '${{ matrix.probe_mode }}'
+    - name: Hydrate the original pinned module before querying its source directory
+      if: matrix.probe_mode == 'pipe'
+      shell: bash
+      run: go mod download github.com/qiangli/coreutils
     - name: Check live and closed Windows named-pipe metadata
       if: matrix.probe_mode == 'pipe'
       shell: bash
@@ -593,12 +593,38 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        probe_mode:
-        - filetime
-        - locale
-        - pipe
+        probe_mode: ${{ fromJSON(inputs.lane == 'baseline-recovered' && '["pipe"]' || '["filetime","locale","pipe"]') }}
     defaults:
       run:
         working-directory: bashy
     env:
       GOWORK: 'off'
+
+  baseline-recovered:
+    if: inputs.lane == 'baseline-recovered'
+    strategy:
+      fail-fast: false
+      matrix:
+        contract: [uutils, yash, posix-loader]
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Recovered original fixture and separate build diagnostics
+        shell: bash
+        env:
+          BASELINE_CONTRACT: ${{ matrix.contract }}
+        run: bash script/baseline-recovered.sh "$BASELINE_CONTRACT"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-recovered-${{ matrix.contract }}
+          path: ${{ runner.temp }}/baseline-recovered
+          if-no-files-found: error
