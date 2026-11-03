@@ -1,5 +1,15 @@
 # CLAUDE.md — umbrella (public)
 
+## Migration preservation and closure policy
+
+The migration keeps the shell interpreter, POSIX Coreutils and Bash# implementation at the reviewed frozen baseline. Only necessary relocation references belong in A/B. Preserve existing patches separately; do not replay feature or bug fixes into these stages.
+
+The closure gate is no regression from that baseline: previously green tests must remain green. Preserve exact source, dependency, build, fixture and test evidence; distinguish fresh runs from unchanged-input evidence reuse. A pre-existing failure is tracked separately, not silently repaired or reported as passing. New failures, newly skipped formerly green coverage and unresolved migration regressions block closure.
+
+Small, baseline-proven repairs belong in separate C commits. Broader repairs are follow-up work; discuss costly or risky changes before implementation. Never rewrite published history or discard preserved work merely to simplify the migration. The cutover uses single-parent restoration/reference commits and keeps prior work recoverable.
+
+No official v1.0.0 release before official POSIX certification and explicit operator release approval. This migration does not authorize a release.
+
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
 `dhnt` project as a flat sibling submodule. The root `go.work` selects live
