@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, baseline-extra, baseline-extended, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, baseline-extended, baseline-final, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -378,3 +378,227 @@ jobs:
           name: baseline-extended-${{ matrix.contract }}
           path: ${{ runner.temp }}/baseline-extra
           if-no-files-found: error
+
+  baseline-final:
+    if: inputs.lane == 'baseline-final'
+    strategy:
+      fail-fast: false
+      matrix:
+        contract:
+        - bashy-zsh
+        - bashy-uutils-safety
+        - bashy-parallel
+        - bashy-license
+        - bashy-vulnerabilities
+        - outpost-license
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - uses: actions/setup-go@v6
+      with:
+        go-version: 1.27.2
+        cache: false
+    - name: Original native prerequisites and pinned Zsh reference
+      run: 'sudo apt-get update
+
+        sudo apt-get install -y --no-install-recommends libbtrfs-dev libgpgme-dev libsqlite3-dev zsh
+
+        '
+    - name: Original final frozen contract
+      shell: bash
+      env:
+        BASELINE_CONTRACT: ${{ matrix.contract }}
+      run: bash script/baseline-extra.sh "$BASELINE_CONTRACT"
+    - if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: baseline-final-${{ matrix.contract }}
+        path: ${{ runner.temp }}/baseline-extra
+        if-no-files-found: error
+  baseline-quickstart:
+    runs-on: ubuntu-latest
+    env:
+      BASHY_OCI: docker
+      GOWORK: 'off'
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - name: Confirm a usable container engine is present (this gate must run)
+      shell: bash
+      run: docker info >/dev/null
+    - name: Build and run the three FROM-scratch images
+      shell: bash
+      timeout-minutes: 30
+      run: 'set -euxo pipefail
+
+        scripts/quickstart-container-smoke.sh 2>&1 | tee /tmp/quickstart.log
+
+        grep -q ''^quickstart-container: OK'' /tmp/quickstart.log
+
+        '
+    - name: Publish sizes and SBOM to the job summary
+      if: always()
+      shell: bash
+      run: "{\n  echo '## Bash# three FROM-scratch delivery modes'\n  echo\n  echo 'Measured on this run, inside the images (`docker image\
+        \ inspect` / `docker save | gzip -9` / `wc -c` / `go version -m`).'\n  echo\n  echo '| kind | line |'\n  echo '|---|---|'\n  grep\
+        \ -E '^quickstart-container: (SIZE|SBOM)' /tmp/quickstart.log 2>/dev/null \\\n    | sed -E 's/^quickstart-container: (SIZE|SBOM)\
+        \ /| \\1 | /; s/$/ |/' \\\n    || echo '| (none) | smoke produced no size/SBOM lines \u2014 see the job log |'\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
+    - if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: baseline-quickstart
+        path: /tmp/quickstart.log
+        if-no-files-found: warn
+    if: inputs.lane == 'baseline-final'
+    defaults:
+      run:
+        working-directory: bashy
+  baseline-airgap:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - runner: ubuntu-latest
+          arch: amd64
+        - runner: ubuntu-24.04-arm
+          arch: arm64
+    runs-on: ${{ matrix.runner }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - uses: actions/setup-go@v6
+      with:
+        go-version: 1.27.2
+    - name: Build bashy
+      shell: bash
+      run: make build
+    - name: Scrub the host engines off PATH (bashy must provision its own podman)
+      shell: bash
+      run: "set -euo pipefail\nscrub=$RUNNER_TEMP/scrub-path\nmkdir -p \"$scrub\"\n# setup-go's dir FIRST: /usr/bin carries the distro\
+        \ go, which is older than go.mod's floor\nfor d in \"$(dirname \"$(command -v go)\")\" /usr/local/sbin /usr/local/bin /usr/sbin\
+        \ /usr/bin /sbin /bin; do\n  for f in \"$d\"/*; do\n    b=$(basename \"$f\")\n    case \"$b\" in podman|docker|podman-remote|buildah|skopeo|nerdctl)\
+        \ continue ;; esac\n    [ -e \"$scrub/$b\" ] || ln -s \"$f\" \"$scrub/$b\"\n  done\ndone\necho \"$scrub\" > \"$RUNNER_TEMP/scrub-path.txt\"\
+        \n! PATH=$scrub command -v podman\n"
+    - name: The one Linux host fact (docs/airgap-image.md "What the host needs")
+      shell: bash
+      run: "# Ubuntu 24.04+ moves an unconfined process that creates a user namespace\n# into the `unprivileged_userns` AppArmor profile,\
+        \ which denies exec of\n# /proc/self/exe \u2014 rootless podman from an unpackaged path dies with\n# \"failed to reexec: Permission\
+        \ denied\" (audit-log proven on this runner).\n# The distro podman escapes via its packaged profile; ours has none.\nsudo sysctl\
+        \ -w kernel.apparmor_restrict_unprivileged_userns=0\n"
+    - name: bashy podman provisions itself (cold cache, no engine on PATH)
+      shell: bash
+      run: 'set -euo pipefail
+
+        export PATH=$(cat "$RUNNER_TEMP/scrub-path.txt")
+
+        export BASHY_BIN_CACHE=$HOME/.cache/bashy-227 BASHY_TELEMETRY_QUIET=1
+
+        # a FRESH runtime dir: the runner image''s own podman leaves rootless
+
+        # state under /run/user/<uid>/libpod; bashy''s podman would join that
+
+        # foreign namespace and die on `execvp(/proc/self/exe)` ("failed to
+
+        # reexec: Permission denied"). A clean host has no such state.
+
+        export XDG_RUNTIME_DIR=$RUNNER_TEMP/xdg && mkdir -p "$XDG_RUNTIME_DIR" && chmod 700 "$XDG_RUNTIME_DIR"
+
+        bin/bashy podman --version
+
+        bin/bashy podman version
+
+        '
+    - name: Build the image and run the airgap gate
+      shell: bash
+      timeout-minutes: 30
+      run: 'set -euo pipefail
+
+        export PATH=$(cat "$RUNNER_TEMP/scrub-path.txt")
+
+        export BASHY_BIN_CACHE=$HOME/.cache/bashy-227 BASHY_TELEMETRY_QUIET=1 XDG_RUNTIME_DIR=$RUNNER_TEMP/xdg
+
+        BASHY_IMAGE_ARCH=${{ matrix.arch }} scripts/airgap-container-smoke.sh 2>&1 | tee "$RUNNER_TEMP/airgap.log"
+
+        grep -q ''^airgap: PASS'' "$RUNNER_TEMP/airgap.log"
+
+        '
+    - name: Sizes to the job summary
+      if: always()
+      shell: bash
+      run: "export PATH=$(cat \"$RUNNER_TEMP/scrub-path.txt\" 2>/dev/null || echo \"$PATH\")\nexport BASHY_BIN_CACHE=$HOME/.cache/bashy-227\
+        \ BASHY_TELEMETRY_QUIET=1 XDG_RUNTIME_DIR=$RUNNER_TEMP/xdg\nimg=$(grep -o 'localhost/bashy:[^ ]*' \"$RUNNER_TEMP/airgap.log\"\
+        \ | head -1 || true)\n{\n  echo \"## airgap image \u2014 linux/${{ matrix.arch }}\"\n  grep '^airgap: rows=' \"$RUNNER_TEMP/airgap.log\"\
+        \ || echo '(no row summary \u2014 see the log)'\n  if [ -n \"$img\" ]; then\n    echo \"- image: \\`$img\\`\"\n    echo \"- uncompressed:\
+        \ $(bin/bashy podman image inspect \"$img\" --format '{{.Size}}' | awk '{printf \"%.1f MB\", $1/1048576}')\"\n    echo \"- compressed:\
+        \ $(bin/bashy podman save \"$img\" | gzip -9 | wc -c | awk '{printf \"%.1f MB\", $1/1048576}')\"\n  fi\n} >> \"$GITHUB_STEP_SUMMARY\"\
+        \n"
+    - if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: baseline-airgap-${{ matrix.arch }}
+        path: ${{ runner.temp }}/airgap.log
+        if-no-files-found: warn
+    if: inputs.lane == 'baseline-final'
+    defaults:
+      run:
+        working-directory: bashy
+    env:
+      GOWORK: 'off'
+  baseline-windows-probes:
+    if: inputs.lane == 'baseline-final'
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - uses: actions/setup-go@v6
+      with:
+        go-version: 1.27.2
+    - name: Measure targeted Windows platform behavior
+      if: matrix.probe_mode != 'pipe'
+      shell: bash
+      run: ./scripts/ci-windows-filetime-probe.sh '${{ matrix.probe_mode }}'
+    - name: Check live and closed Windows named-pipe metadata
+      if: matrix.probe_mode == 'pipe'
+      shell: bash
+      run: 'set -o pipefail
+
+        (cd "$(go list -m -f ''{{.Dir}}'' github.com/qiangli/coreutils)" && go test -v -run ''^TestLstatNamedPipeTracksServerLifetime$''
+        ./tool) 2>&1 | tee windows-pipe-probe.log
+
+        '
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: baseline-windows-${{ matrix.probe_mode }}
+        path: 'bashy/windows-filetime-probe.log
+
+          bashy/windows-locale-probe.log
+
+          bashy/windows-pipe-probe.log
+
+          '
+        if-no-files-found: error
+    strategy:
+      fail-fast: false
+      matrix:
+        probe_mode:
+        - filetime
+        - locale
+        - pipe
+    defaults:
+      run:
+        working-directory: bashy
+    env:
+      GOWORK: 'off'

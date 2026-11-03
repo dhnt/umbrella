@@ -118,6 +118,17 @@ bashy-self-container)
   # base image, resource limits, inner target, and original test timeouts.
   run self-container bashy env BASHY_TEST_OCI=podman make test-self-container
   ;;
+bashy-zsh)
+  # Original pinned zsh-5.9 metric, not an acceptance gate. Never substitute a newer oracle.
+  zsh --version > "$EVIDENCE_DIR/zsh-version.txt"
+  grep -Eq '^zsh 5\.9([ .(]|$)' "$EVIDENCE_DIR/zsh-version.txt"
+  run zsh bashy make test-zsh "ZSH_OUT=$EVIDENCE_DIR/zsh"
+  ;;
+bashy-uutils-safety) run safety bashy make test-uutils-safety ;;
+bashy-parallel) run parallel bashy make test-bash-parallel ;;
+bashy-license) run license bashy env LICENSE_GATE_OUT="$EVIDENCE_DIR/license" make license-gate ;;
+bashy-vulnerabilities) run vulnerabilities bashy env GOVULNCHECK_OUT="$EVIDENCE_DIR/vulnerabilities" make govulncheck ;;
+outpost-license) run license outpost ./scripts/verify-license-gate.sh ;;
 confirm-verbose)
   run dockexec sh go install mvdan.cc/dockexec@latest
   # Output-only verbosity reveals PASS/SKIP. Keep original Bash5.2 comparator image.
