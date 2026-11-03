@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, baseline-windows-prepared, baseline-uutils-retained, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, baseline-windows-prepared, baseline-uutils-retained, baseline-uutils-mount, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -633,4 +633,22 @@ jobs:
         with:
           name: baseline-recovered-${{ matrix.contract }}
           path: ${{ runner.temp }}/baseline-recovered
+          if-no-files-found: error
+
+  baseline-uutils-mount:
+    if: inputs.lane == 'baseline-uutils-mount'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Inert original versus explicit-exec mount control
+        shell: bash
+        run: bash script/diagnose-uutils-mount.sh
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-uutils-mount
+          path: ${{ runner.temp }}/uutils-mount-diagnostic
           if-no-files-found: error
