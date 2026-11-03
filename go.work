@@ -1,6 +1,18 @@
-// Public sibling development workspace. Standalone builds and release dependency
-// verification use GOWORK=off and the published versions in each go.mod.
-// No private checkout is needed. Examples outside this use list run GOWORK=off.
+// The dhnt umbrella workspace: one `use` per tightly coupled module, so
+// every module builds against the live sibling trees. Each module's go.mod
+// pins its siblings at real versions for standalone clones and CI, which
+// build with GOWORK=off.
+//
+// Forks published under an upstream module path (sh, readline, filebrowser,
+// gotreesitter, goawk, ollama, podman) are pinned in each go.mod by a
+// versioned fork replace. Members may pin different fork commits, which the
+// go command reports as conflicting replacements; the version-scoped
+// replaces below send the required upstream version to the local tree,
+// which resolves that. The toolchain line matters: in workspace mode it,
+// not each go.mod, selects the toolchain.
+//
+// Modules outside this list (examples, prior-art fixtures, test caches)
+// build standalone: run them with GOWORK=off.
 go 1.27
 
 toolchain go1.27.2
@@ -20,8 +32,6 @@ use (
 	./outpost
 	./readline
 	./sh
-	./yamux
-	./yamux/v5
 	./ycode
 	./ycode/examples/genie
 	./yoke
@@ -49,6 +59,12 @@ replace go.podman.io/podman/v6 v6.0.0-20260424181651-a8c36318565d => ./yoke/exte
 
 replace github.com/qiangli/ycode/examples/genie v0.0.0 => ./ycode/examples/genie
 
+// yoke's nested modules (pkg/oci, pkg/llmgw, pkg/provider) are required by yoke at the zero
+// version and replaced there with ./pkg/... ; a standalone consumer (outpost)
+// must replace them with a published pseudo-version instead, or go list -m all
+// cannot resolve the zero version. In workspace mode those two replaces
+// conflict. Scoping the override to the zero version every member requires
+// resolves it to the live tree and keeps working when a consumer bumps its pin.
 replace github.com/qiangli/yoke/pkg/oci v0.0.0-00010101000000-000000000000 => ./yoke/pkg/oci
 
 replace github.com/qiangli/yoke/pkg/llmgw v0.0.0-00010101000000-000000000000 => ./yoke/pkg/llmgw
