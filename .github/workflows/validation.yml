@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, baseline-windows-prepared, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -550,17 +550,23 @@ jobs:
     env:
       GOWORK: 'off'
   baseline-windows-probes:
-    if: inputs.lane == 'baseline-final' || inputs.lane == 'baseline-recovered'
+    if: inputs.lane == 'baseline-final' || inputs.lane == 'baseline-recovered' || inputs.lane == 'baseline-windows-prepared'
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v7
       with:
-        submodules: recursive
+        submodules: ${{ inputs.lane == 'baseline-windows-prepared' && 'false' || 'recursive' }}
         persist-credentials: false
+    - name: Hydrate only the exact Bashy gitlink for standalone platform probes
+      if: inputs.lane == 'baseline-windows-prepared'
+      shell: bash
+      working-directory: .
+      run: git submodule update --init --recursive bashy
     - uses: actions/setup-go@v6
       with:
         go-version: 1.27.2
+        cache-dependency-path: bashy/go.sum
     - name: Measure targeted Windows platform behavior
       if: matrix.probe_mode != 'pipe'
       shell: bash
@@ -593,7 +599,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        probe_mode: ${{ fromJSON(inputs.lane == 'baseline-recovered' && '["pipe"]' || '["filetime","locale","pipe"]') }}
+        probe_mode: ${{ fromJSON(inputs.lane == 'baseline-recovered' && '["pipe"]' || inputs.lane == 'baseline-windows-prepared' && '["filetime","locale"]' || '["filetime","locale","pipe"]') }}
     defaults:
       run:
         working-directory: bashy
