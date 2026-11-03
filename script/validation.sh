@@ -170,6 +170,10 @@ fc-diagnostics)
   printf '%s\n' 'Focused interactive fc regression with explicit discovery and ten unchanged executions. No full-suite claim.' > "$EVIDENCE_DIR/coverage.md"
   ;;
 shell-repairs)
+  # Measure this timing-sensitive test before the concurrent multi-package
+  # selection. Keep its original ratio assertion and retain profiles even on
+  # failure, so CPU/GC costs can be distinguished from competing package work.
+  check spelling-scaling-profile sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -v -count=1 -timeout 60s -run '^TestSpellingShadowParseScaling$' -cpuprofile "$EVIDENCE_DIR/spelling.cpu" -memprofile "$EVIDENCE_DIR/spelling.mem" -o "$EVIDENCE_DIR/spelling.test" ./gosource
   printf '%s\n' 'Focused rerun of the seventeen observed Linux/macOS shell failures plus command-substitution EXIT-trap and unset-scanner guards. Full discovery and race gates remain separate requirements.' > "$EVIDENCE_DIR/coverage.md"
   check formatter-flags sh go test -count=1 -timeout 3m ./cmd/shfmt -run '^TestScript$/^flags$'
   check pragma-sdk sh go test -count=1 -timeout 3m ./lower -run '^TestGoSourcePragmaPosition$'
