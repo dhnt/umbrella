@@ -1,69 +1,5 @@
 # CLAUDE.md — umbrella (public)
 
-## Mandatory migration scope — operator decision
-
-Delivery has three separate stages, ordered linearly from the approved baseline:
-
-1. **A — Pure references:** repository locations, checkout paths, dependency
-   origins and external configuration, preserving the same implementation.
-2. **B — References in code:** necessary imports, embedded paths and revision
-   references, reviewed separately without changing product behavior.
-3. **C — Confirmed pre-existing bug fixes:** separate work after A and B are
-   complete, based on reproduced pre-migration evidence and dependency review.
-
-A change that repairs existing behavior belongs in C even if it edits a reference.
-Preserve existing work on separate branches; rebase reviewed commits into this
-order with no merge commits in the new stage sequence. Do not replay mixed or
-unproven fixes automatically. Preserve exact recovery refs before any reviewed
-cutover of published history. Final acceptance requires all required tests to
-pass; failed, skipped, blocked or incomplete coverage is not a substitute.
-
-Stages A and B change references and locations; they do not repair or extend
-product behavior. This rule supersedes earlier migration notes that authorized
-implementation fixes inside the reference-migration stages.
-
-- Allowed: necessary repository/module/import references, checkout locations,
-  equivalent dependency origins, and test/build harness paths or wiring needed
-  to execute the same contract after relocation. Each change must be traceable
-  to the move. A dependency-pin change must preserve the approved implementation;
-  a bug/feature upgrade hidden behind a version bump is not a reference-only move.
-- Prohibited in A and B: product implementation changes, bug fixes, features, optimizations,
-  semantic refactors, or configuration changes enabling new behavior. Apply
-  particular scrutiny to sh and POSIX-required coreutils and their shared APIs.
-- Preserve test meaning: no behavioral assertion/expected-output changes, new
-  exclusions/skips, altered fixtures/oracles, or relaxed per-test timing budgets
-  to obtain green results. Mechanical relocated-path substitutions are allowed.
-  Additional diagnostics must be separate and must not replace original verdicts.
-- Investigate failures with matched frozen/migrated controls: exact source and
-  resolved dependency graph, toolchain/compiler flags (including CGO), harness,
-  fixtures, environment and resource conditions. Distinguish standalone builds
-  from workspace builds. A failed run alone is not evidence of a product bug.
-- No product bug fixes during stages A and B, including proven pre-existing
-  bugs. Reproduce the failure on the unchanged frozen baseline, document the
-  evidence, and defer the fix to stage C AFTER A and B are complete.
-  This supersedes the earlier permission to repair the baseline before migrating.
-- Before a post-migration product fix begins, establish that the bug already
-  exists in the pre-migration baseline using recorded, reproducible evidence.
-  Base the diagnosis and proposed repair on that baseline behavior and dependency
-  graph, not solely on a failure observed after migration. An unproven cause is
-  still an investigation, not authorization for a behavioral fix.
-- Check existing investigations, preserved patches, and assigned work before
-  starting a fix. Keep one coordinated record and owner for the same defect;
-  do not create duplicate implementations. Review affected callers, shared APIs,
-  and dependent components, then validate the repair across that impact before
-  integration. A local test improvement alone is insufficient.
-- If only the migrated version fails, correct the migration reference or setup,
-  or revert an out-of-scope implementation change. Do not add a compensating
-  behavioral fix. If the cause is unknown, investigate without changing product
-  behavior or test expectations; never label it pre-existing without evidence.
-- Keep the frozen baseline immutable. A deferred bug is neither a passing test
-  nor an automatic waiver of migration acceptance. Preserve its raw result and
-  report its effect on acceptance explicitly.
-- Preserve the original frozen commit and all current work/evidence. Separate
-  existing implementation patches without deleting their history. Migration
-  acceptance requires an inspected reference-only diff against its explicit
-  baseline and passing applicable validation. No official release is authorized.
-
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
 `dhnt` project as a flat sibling submodule. The root `go.work` selects live
@@ -183,11 +119,15 @@ pointer — the edits look lost on a fresh clone. `modified content` in root
 `git status` means "finish the work inside that subproject". Never
 `git add -A` at the root; other agents work the umbrella concurrently.
 
-`script/sync.sh` discovers submodules from `.gitmodules`, checks for local or
-unintegrated work, fetches and fast-forwards their default `main`/`master`
-branches, hydrates nested pins, and stages only the resulting gitlinks. It does
-not rewrite dependency versions, create commits or push. Dependency changes
-belong to explicit subproject stories and must pass standalone checks.
+`script/sync.sh` retains the original public synchronization behavior. It
+uses its original fifteen-module list, follows each `origin/HEAD`, fast-forwards
+that branch, and hydrates nested pins. It also rewrites existing `.sibling-pins`
+to the checked-out sibling SHAs and commits and pushes those consumer changes.
+Finally it stages the umbrella gitlinks; it does not commit the umbrella.
+The later preflight guards and removal of automatic consumer commits/pushes
+are not part of this reference-only stage. The manifest has eighteen public
+modules; adding agent-bench, gotreesitter and yamux to this executable list
+is also deferred to Stage B.
 Commit message: `sync: bump submodule pins`, or `sync: bump <a> + <b> pins
 (<why>)`.
 

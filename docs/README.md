@@ -4,10 +4,7 @@ One entry per doc with its abstract. `INDEX.md` is the one-line index.
 Stories live in `docs/todo/` (the committed repo store `bashy todo --repo`
 reads and writes; a story carries its sprint as `sprint_id`).
 
-- **`build.md`** — Hydrate the public submodules and build with the root
-  `go.work` or independently with `GOWORK=off`. Covers the pinned Go toolchain,
-  nested dependencies, TTY-bound tests and remote test execution.
-- **`validation.md`** — Run the public validation workflow against exact
-  candidate commits. Describes native platforms, standalone and workspace
-  dependencies, full shell and language suites, evidence artifacts and
-  coverage limits. Licensed certification remains a separate private gate.
+- **`build.md`** — How the umbrella builds: no `go.work`, no root Makefile;
+  hydrate submodules once, then build/test each subproject from its own
+  root; the flat sibling-replace convention and its gotchas (nested `yoke`
+  externals, TTY-bound tests, foreign suites never run natively).

@@ -16,10 +16,10 @@ covered by a root `go test ./...`.
 script/bootstrap.sh
 ```
 
-Bootstrap checks initialized submodules for local edits, hydrates the committed
-pins recursively, and installs provenance and public-content hooks. It never
-force-resets an interrupted or edited checkout. Preserve and review local work
-before repairing a failed bootstrap.
+Bootstrap retains the original public behavior: hydrate committed pins
+recursively, repair a cloned-but-empty checkout with the existing forced
+checkout path, and install provenance and public-content hooks. The later
+local-edit and detached-commit preflight changes are not included in this stage.
 
 To advance the umbrella to published integration heads:
 
@@ -27,14 +27,14 @@ To advance the umbrella to published integration heads:
 script/sync.sh
 ```
 
-Sync discovers modules from `.gitmodules`, requires clean working trees, fetches
-without recursively following obsolete nested pins, and validates every target
-before switching branches. It refuses feature branches, divergent local branches
-and detached commits not integrated in the selected remote `main` or `master`.
-After fast-forwarding and hydrating nested pins, it stages only gitlinks for
-review. A network or checkout failure may leave some checkouts advanced; inspect
-them and rerun after resolving the error. Sync does not change dependency
-versions, commit or push.
+Sync retains the original public behavior and its original fifteen-module
+list. The public manifest has eighteen paths; adding agent-bench, gotreesitter
+and yamux to this executable list is held for Stage B. It follows each remote default branch,
+fast-forwards it, and hydrates nested pins. Existing `.sibling-pins` files are
+updated to the checked-out sibling SHAs; those consumer changes are committed
+and pushed. The umbrella gitlinks are then staged without committing the
+umbrella. The later all-target preflight, branch restrictions and removal of
+automatic consumer commits/pushes are deferred, not silently retained here.
 
 Changes inside a submodule must be committed and pushed **inside that submodule**
 before the parent gitlink is committed. Never use `git add -A` at the umbrella

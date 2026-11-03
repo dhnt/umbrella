@@ -23,9 +23,8 @@ jobs:
       - name: Check shell scripts
         shell: bash
         run: |
-          while IFS= read -r -d '' script; do
-            bash -n "$script"
-          done < <(find script -type f -name '*.sh' -print0)
+          mapfile -d '' scripts < <(find script -type f -name '*.sh' -print0)
+          bash -n "${scripts[@]}"
 
       - name: Check submodule pins
         shell: bash
