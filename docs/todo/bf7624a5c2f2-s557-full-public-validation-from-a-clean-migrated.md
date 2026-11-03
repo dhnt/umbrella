@@ -110,3 +110,35 @@ Every row retains its original acceptance and evidence in the named source recor
 Immediate bounded assignment: repair current shell validation failures, not the entire public matrix. Candidatecd91b04/Sh81f16692; current canonicalShd816fd72 differs bytriage docs. Read /tmp/s557-current-shell-failed.log and /tmp/s557-full64995c0-monitor/linux-review.md. (1) macOS TestBackgroundSelfSignalSurvivesExecReplacement carrier_term/carrier_usr2/carrier_handled_term replacement timeout; identify real semantic/fixturecause, preserve exactsignal assertions/deadlines. (2) raceoracle audit rejects plain buffers interp/virtual_self_signal_test.go108/118; prove ownership/synchronization and choose legitimate fix, no blanketannotation. (3) olderLinux TestGoSourceNativeMemberCancellation rejects net import asrequiringcgo; isolate prerequisite/admissionissue, preserve cancellationassertions. Work only onSh source/tests/racegate directlyneeded. Use isolated Sh worktree from $PUBLIC_ROOT/sh at publishedHEAD, e.g /tmp/s557-claude-shell-round2; do not modify canonical or frozen dhnt. Do not hydrate/build entireumbrella. Short authoredgo tests on the development host limitedGOMAXPROCS2 GOFLAGS=-p=2 GOWORK=off. No fullsuite/container/foreignsuite locally. Report source worktree and baselineprobe within five minutes, commitSHA+focusedgates within thirty minutes or exactblocker. Commits Sprint#557 Story#6 Story-IDbf7624a5c2f2 actualAgent. No newstories, push/merge, deadline/assertionweakening or testskips. Parent remainsopen. Root will independentlyreview/merge andrunhostedmatrix. Preserve failed logs.
 
 All agents: subscription-backed route only; no metered/API fallback. Do not create stories for corrections; append evidence to this parent. Manager checks concrete progress every five minutes, steers and reassigns stalled work.
+
+### 2026-11-03 07:13 UTC — remaining validation and exec repair plan
+
+Mac workspace native41586231575 passed all20 stages. Standalone failed the
+embedded source-revision guard; Bashy8f20a0f corrects metadata against unchanged
+runtime dependencies and adds a fail-closed generator. Yoke7e051e9 corrects DOM
+readiness fixtures and adds a focused20-result hosted gate; no browser pass is
+claimed yet. Normal Linux full-Sh41577969558 passed3921 top-level cases; its
+broad race phase exceeded60m, with an image callback exceeding its120s context.
+The diagnostic lane preserves that context and full-size image. Complete race
+sharding must reconcile every discovered case and retain all failures.
+
+An authored Linux probe reproduces runtime epoll corruption when true exec
+places shell redirects over runtime descriptors before syscall.Exec allocates.
+Plan under this existing parent: isolate the executing thread's descriptor
+table, snapshot/stage sources and rollback targets inside that isolated table,
+then use a prevalidated allocation-free, nosplit/norace syscall tail. Preserve
+same process PID, owned handoff, closed descriptors and CLOEXEC. On failure,
+restore the isolated table before resuming Go and retire the locked thread.
+Preserve Go's existing exec/thread-creation lock via its published runtime
+hooks. Prefer close_range's file-table-only isolation for modern containers;
+older kernels may use CLONE_FILES unshare. Denial fails closed, never falls
+back to unsafe shared-table mutation. Darwin/Windows/cgo paths remain unchanged.
+
+The proposed pure-Go Linux path preserves current kernel resource limits;
+this deliberately differs from Go's startup-soft-limit restoration in ordinary
+exec.Cmd. Verify and report this explicitly; shell ulimit setters are cosmetic,
+so use actual kernel limits and a native child for evidence. Independent source
+review permits bounded testing only. Required before integration: actual Linux
+success/rollback/descriptor/signal tests, compiler critical-section audit,
+original authored stress replay, and fresh exact-payload licensed493. No
+production acceptance, official certification or release is implied.
