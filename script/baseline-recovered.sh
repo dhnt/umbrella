@@ -33,6 +33,10 @@ export OCI="$root/script/validation-oci.sh"
 case "$1" in
 uutils)
   fixture uutils https://github.com/uutils/coreutils.git a7551d77574266075f085d7db9add85e15dec7d6 coreutils/reference/uutils-coreutils
+  export UUTILS_CAPTURE_WORK_ROOT="$EVIDENCE_DIR/owned-work"
+  export UUTILS_CAPTURE_DIR="$EVIDENCE_DIR/raw"
+  mkdir -p "$UUTILS_CAPTURE_WORK_ROOT"
+  export TMPDIR="$UUTILS_CAPTURE_WORK_ROOT" UUTILS_OCI="$root/script/baseline-uutils-oci.py"
   run prepare bashy make prepare-uutils-image
   if [ "$(tail -1 "$EVIDENCE_DIR/results.tsv" | cut -f2)" = 0 ]; then
     run suite bashy make test-uutils "UUTILS_OUT=$EVIDENCE_DIR/uutils"

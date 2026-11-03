@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, baseline-windows-prepared, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, baseline-extended, baseline-final, baseline-recovered, baseline-windows-prepared, baseline-uutils-retained, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -607,11 +607,11 @@ jobs:
       GOWORK: 'off'
 
   baseline-recovered:
-    if: inputs.lane == 'baseline-recovered'
+    if: inputs.lane == 'baseline-recovered' || inputs.lane == 'baseline-uutils-retained'
     strategy:
       fail-fast: false
       matrix:
-        contract: [uutils, yash, posix-loader]
+        contract: ${{ fromJSON(inputs.lane == 'baseline-uutils-retained' && '["uutils"]' || '["uutils","yash","posix-loader"]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
