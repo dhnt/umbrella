@@ -11,6 +11,11 @@ on:
         default: all
         options: [all, native-repairs, shell-repairs, fc-diagnostics, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, tour, candidate-prepare]
 
+      macos_only:
+        description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
+        type: boolean
+        default: false
+
       candidate_run_id:
         description: 'Successful candidate-prepare run whose immutable artifact has been reviewed and registered'
         type: string
@@ -89,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON(inputs.macos_only && '["macos-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
         mode: [workspace, standalone]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
@@ -236,7 +241,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: ${{ fromJSON(inputs.macos_only && '["macos-latest"]' || '["ubuntu-latest","macos-latest"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 240
     steps:
@@ -295,7 +300,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON(inputs.macos_only && '["macos-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     steps:
