@@ -1,0 +1,160 @@
+name: Reference-only rollback candidate validation
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: validation-${{ github.ref }}-${{ inputs.lane }}-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  GOTOOLCHAIN: go1.27.2
+  GOMAXPROCS: '2'
+  GOFLAGS: -p=2
+jobs:
+  native:
+    if: inputs.lane == 'all' || inputs.lane == 'native'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.macos_only && '["macos-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
+        mode:
+        - workspace
+        - standalone
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    env:
+      DEPENDENCY_MODE: ${{ matrix.mode }}
+    steps:
+    - name: Preserve committed fixture bytes on Windows
+      if: runner.os == 'Windows'
+      run: git config --global core.autocrlf false
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - uses: actions/setup-go@v6
+      with:
+        go-version: 1.27.2
+        cache: false
+    - name: Provision Linux native engine and locale prerequisites
+      if: runner.os == 'Linux'
+      shell: bash
+      run: "sudo apt-get update\nsudo apt-get install -y --no-install-recommends \\\n  pkg-config libgpgme-dev libbtrfs-dev\
+        \ libassuan-dev \\\n  libdevmapper-dev libseccomp-dev locales\nsudo localedef -i de_DE -f ISO-8859-1 de_DE.ISO-8859-1\n"
+    - name: Provision macOS native engine prerequisites
+      if: runner.os == 'macOS'
+      shell: bash
+      run: 'brew install pkg-config gpgme
+
+        pkg-config --exists gpgme
+
+        '
+    - name: Original git fixture identity
+      shell: bash
+      run: 'git config --global user.email ci@example.com
+
+        git config --global user.name CI
+
+        '
+    - name: Build and test existing native contracts
+      shell: bash
+      run: bash script/validation.sh native
+    - name: Retain exact candidate and native results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-${{ matrix.os }}-${{ matrix.mode }}
+        path: ${{ runner.temp }}/umbrella-validation
+        if-no-files-found: error
+  bash53:
+    if: inputs.lane == 'all' || inputs.lane == 'bash53'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.macos_only && '["macos-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+    - name: Preserve committed fixture bytes on Windows
+      if: runner.os == 'Windows'
+      run: git config --global core.autocrlf false
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        persist-credentials: false
+    - uses: actions/setup-go@v6
+      with:
+        go-version: 1.27.2
+        cache: false
+    - name: Provision Linux fixture locales
+      if: runner.os == 'Linux'
+      shell: bash
+      run: 'set -euxo pipefail
+
+        sudo apt-get -qq update
+
+        sudo apt-get -qq install -y locales
+
+        sudo tee -a /etc/locale.gen >/dev/null <<''EOF''
+
+        en_US.UTF-8 UTF-8
+
+        de_DE.UTF-8 UTF-8
+
+        fr_FR.ISO-8859-1 ISO-8859-1
+
+        ru_RU.CP1251 CP1251
+
+        zh_TW BIG5
+
+        zh_HK BIG5-HKSCS
+
+        EOF
+
+        sudo locale-gen
+
+        sudo localedef --no-warnings=ascii -i ja_JP -f SHIFT_JIS ja_JP.SJIS
+
+        LC_ALL=fr_FR.ISO8859-1 locale charmap
+
+        LC_ALL=ja_JP.SJIS locale charmap
+
+        '
+    - name: Native fixtures with Unix PTY or existing Windows measurement
+      shell: bash
+      run: '# The existing Windows measurement sets -mod=mod, so explicitly use
+
+        # its standalone published-dependency contract, not workspace mode.
+
+        if [ "$RUNNER_OS" = Windows ]; then export DEPENDENCY_MODE=standalone; fi
+
+        bash script/validation.sh bash53
+
+        '
+    - if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: bash53-${{ matrix.os }}
+        path: '${{ runner.temp }}/umbrella-validation
+
+          bashy/bash53-windows.log
+
+          bashy/bash53-windows-summary.md
+
+          bashy/bash53-windows-counts.json
+
+          '
+        if-no-files-found: error
+'on':
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: Measure reviewed rollback candidate with original frozen contracts
+        type: choice
+        default: native
+        options:
+        - native
+        - bash53
+      macos_only:
+        description: Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix
+        type: boolean
+        default: false
