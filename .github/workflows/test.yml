@@ -39,3 +39,53 @@ jobs:
 
       - name: Public-repo scrub (every tracked file)
         run: script/scrub-gate.sh --all
+
+  bashy-metadata-targeted:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GOWORK: 'off'
+      GOTOOLCHAIN: go1.27.2
+      GOFLAGS: -mod=readonly
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+      - name: Hydrate exact Bashy candidate only
+        run: git submodule update --init bashy
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache-dependency-path: bashy/go.sum
+      - name: Record source and resolved dependency identities
+        working-directory: bashy
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/metadata-evidence"
+          git rev-parse HEAD > "$RUNNER_TEMP/metadata-evidence/bashy-head.txt"
+          git hash-object go.mod go.sum > "$RUNNER_TEMP/metadata-evidence/module-hashes.txt"
+          go version > "$RUNNER_TEMP/metadata-evidence/toolchain.txt"
+          go list -m -json all > "$RUNNER_TEMP/metadata-evidence/modules.json"
+      - name: Run two original affected tests only
+        working-directory: bashy
+        shell: bash
+        run: |
+          set -euo pipefail
+          go test -json -count=1 -run '^(TestSrcPinsMatchLinkedModules|TestCommandDocSourceNames)$' ./internal/agentos | tee "$RUNNER_TEMP/metadata-evidence/tests.jsonl"
+          python3 - "$RUNNER_TEMP/metadata-evidence/tests.jsonl" <<'PYTHON'
+          import json, sys
+          events = [json.loads(line) for line in open(sys.argv[1])]
+          names = {"TestSrcPinsMatchLinkedModules", "TestCommandDocSourceNames"}
+          for name in names:
+              assert sum(e.get("Test") == name and e.get("Action") == "pass" for e in events) == 1, name
+          assert not any(e.get("Action") in ("fail", "skip") for e in events)
+          PYTHON
+          git diff --exit-code -- go.mod go.sum
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stage-c-bashy-metadata-evidence
+          path: ${{ runner.temp }}/metadata-evidence
+          if-no-files-found: error
