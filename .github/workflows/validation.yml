@@ -558,11 +558,11 @@ jobs:
       with:
         submodules: ${{ inputs.lane == 'baseline-windows-prepared' && 'false' || 'recursive' }}
         persist-credentials: false
-    - name: Hydrate only the exact Bashy gitlink for standalone platform probes
+    - name: Hydrate only the three exact gitlinks consumed by platform probes
       if: inputs.lane == 'baseline-windows-prepared'
       shell: bash
       working-directory: .
-      run: git submodule update --init --recursive bashy
+      run: git submodule update --init --recursive bashy yoke coreutils
     - uses: actions/setup-go@v6
       with:
         go-version: 1.27.2
