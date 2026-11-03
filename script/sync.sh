@@ -23,7 +23,7 @@ cd "$(dirname "$0")/.."
 # changes silently vanish from `sync: bump submodule pins`. coreutils is
 # the most-changed of these; leaving it off (as an earlier revision did)
 # is the exact footgun the umbrella CLAUDE.md warns about.
-SUBMODULES="appstore bashsharp bashsharp-tests bashsharp-tour bashy bonsai coreutils filebrowser gfy nadir outpost readline sh ycode yoke"
+SUBMODULES="agent-bench appstore bashsharp bashsharp-tests bashsharp-tour bashy bonsai coreutils filebrowser gfy gotreesitter nadir outpost readline sh yamux ycode yoke"
 
 # Pass 1: pull each submodule to its origin default branch.
 for sub in $SUBMODULES; do

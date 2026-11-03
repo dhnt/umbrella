@@ -27,9 +27,9 @@ To advance the umbrella to published integration heads:
 script/sync.sh
 ```
 
-Sync retains the original public behavior and its original fifteen-module
-list. The public manifest has eighteen paths; adding agent-bench, gotreesitter
-and yamux to this executable list is held for Stage B. It follows each remote default branch,
+Sync retains the original public behavior. Stage B adds agent-bench,
+gotreesitter and yamux to its executable module list, matching the eighteen
+public manifest paths. It follows each remote default branch,
 fast-forwards it, and hydrates nested pins. Existing `.sibling-pins` files are
 updated to the checked-out sibling SHAs; those consumer changes are committed
 and pushed. The umbrella gitlinks are then staged without committing the

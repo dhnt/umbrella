@@ -120,14 +120,13 @@ pointer — the edits look lost on a fresh clone. `modified content` in root
 `git add -A` at the root; other agents work the umbrella concurrently.
 
 `script/sync.sh` retains the original public synchronization behavior. It
-uses its original fifteen-module list, follows each `origin/HEAD`, fast-forwards
+uses its eighteen-module public list, follows each `origin/HEAD`, fast-forwards
 that branch, and hydrates nested pins. It also rewrites existing `.sibling-pins`
 to the checked-out sibling SHAs and commits and pushes those consumer changes.
 Finally it stages the umbrella gitlinks; it does not commit the umbrella.
 The later preflight guards and removal of automatic consumer commits/pushes
-are not part of this reference-only stage. The manifest has eighteen public
-modules; adding agent-bench, gotreesitter and yamux to this executable list
-is also deferred to Stage B.
+are not part of this migration. Stage B adds only agent-bench, gotreesitter
+and yamux to the original executable list so it matches the public manifest.
 Commit message: `sync: bump submodule pins`, or `sync: bump <a> + <b> pins
 (<why>)`.
 
