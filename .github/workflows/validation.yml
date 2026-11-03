@@ -9,7 +9,7 @@ on:
         description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
+        options: [all, baseline-extra, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -314,4 +314,33 @@ jobs:
         with:
           name: baseline-corpus-prerequisites
           path: ${{ runner.temp }}/umbrella-validation
+          if-no-files-found: error
+
+  baseline-extra:
+    if: inputs.lane == 'baseline-extra'
+    strategy:
+      fail-fast: false
+      matrix:
+        contract: [focused-1, focused-2, focused-4, filebrowser-race, gotreesitter-race, yamux, readline, bonsai, gfy, nadir, nadir-onnx, sh-cross, bashy-cross, confirm-verbose]
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Original frozen contract, independently accounted
+        shell: bash
+        env:
+          BASELINE_CONTRACT: ${{ matrix.contract }}
+        run: bash script/baseline-extra.sh "$BASELINE_CONTRACT"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-extra-${{ matrix.contract }}
+          path: ${{ runner.temp }}/baseline-extra
           if-no-files-found: error
