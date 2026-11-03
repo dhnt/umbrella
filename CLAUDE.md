@@ -2,16 +2,32 @@
 
 ## Mandatory migration scope — operator decision
 
-Migration changes references and locations; it does not repair or extend product
-behavior. This rule supersedes earlier migration notes that authorized fixing
-implementation failures within the migration deliverable.
+Delivery has three separate stages, ordered linearly from the approved baseline:
+
+1. **A — Pure references:** repository locations, checkout paths, dependency
+   origins and external configuration, preserving the same implementation.
+2. **B — References in code:** necessary imports, embedded paths and revision
+   references, reviewed separately without changing product behavior.
+3. **C — Confirmed pre-existing bug fixes:** separate work after A and B are
+   complete, based on reproduced pre-migration evidence and dependency review.
+
+A change that repairs existing behavior belongs in C even if it edits a reference.
+Preserve existing work on separate branches; rebase reviewed commits into this
+order with no merge commits in the new stage sequence. Do not replay mixed or
+unproven fixes automatically. Preserve exact recovery refs before any reviewed
+cutover of published history. Final acceptance requires all required tests to
+pass; failed, skipped, blocked or incomplete coverage is not a substitute.
+
+Stages A and B change references and locations; they do not repair or extend
+product behavior. This rule supersedes earlier migration notes that authorized
+implementation fixes inside the reference-migration stages.
 
 - Allowed: necessary repository/module/import references, checkout locations,
   equivalent dependency origins, and test/build harness paths or wiring needed
   to execute the same contract after relocation. Each change must be traceable
   to the move. A dependency-pin change must preserve the approved implementation;
   a bug/feature upgrade hidden behind a version bump is not a reference-only move.
-- Prohibited: product implementation changes, bug fixes, features, optimizations,
+- Prohibited in A and B: product implementation changes, bug fixes, features, optimizations,
   semantic refactors, or configuration changes enabling new behavior. Apply
   particular scrutiny to sh and POSIX-required coreutils and their shared APIs.
 - Preserve test meaning: no behavioral assertion/expected-output changes, new
@@ -22,9 +38,9 @@ implementation failures within the migration deliverable.
   resolved dependency graph, toolchain/compiler flags (including CGO), harness,
   fixtures, environment and resource conditions. Distinguish standalone builds
   from workspace builds. A failed run alone is not evidence of a product bug.
-- No product bug fixes during migration, including fixes for proven pre-existing
+- No product bug fixes during stages A and B, including proven pre-existing
   bugs. Reproduce the failure on the unchanged frozen baseline, document the
-  evidence, and defer the fix to separate work AFTER migration is complete.
+  evidence, and defer the fix to stage C AFTER A and B are complete.
   This supersedes the earlier permission to repair the baseline before migrating.
 - Before a post-migration product fix begins, establish that the bug already
   exists in the pre-migration baseline using recorded, reproducible evidence.
