@@ -9,7 +9,7 @@ on:
         description: 'Run all lanes, or rerun one lane after fixing its cause'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, fc-diagnostics, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, tour, candidate-prepare]
+        options: [all, native-repairs, shell-repairs, shell-race-image, fc-diagnostics, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, tour, candidate-prepare]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -86,6 +86,29 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shell-repairs-${{ matrix.os }}
+          path: ${{ runner.temp }}/umbrella-validation
+          if-no-files-found: error
+
+  shell-race-image:
+    if: inputs.lane == 'shell-race-image'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Profile the unchanged full-size image callback under race instrumentation
+        shell: bash
+        run: bash script/validation.sh shell-race-image
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shell-race-image-linux
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 

@@ -12,7 +12,7 @@ export DEPENDENCY_MODE=${DEPENDENCY_MODE:-workspace}
 # Full Sh enumerates moreinterp and invokes dockexec; full Bashy runs nested
 # desk modules as independent applications. Native quick tests retain workspace
 # coverage; these full release contracts use standalone module resolution.
-if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = bashy-full ] || [ "$VALIDATION_LANE" = bashy-diagnostics ]; then
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = shell-race-image ] || [ "$VALIDATION_LANE" = bashy-full ] || [ "$VALIDATION_LANE" = bashy-diagnostics ]; then
   export DEPENDENCY_MODE=standalone
 fi
 if [ "$DEPENDENCY_MODE" = standalone ]; then
@@ -73,7 +73,7 @@ yoke_native() {
 # The trimpath and replacement-tool fixtures intentionally hide or mutate
 # GOROOT. Their independent SDK must exist at the module-cache path authenticated
 # by sh's reviewed toolchain table, not merely in setup-go's installation.
-if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ]; then
+if [ "$VALIDATION_LANE" = shell-full ] || [ "$VALIDATION_LANE" = shell-repairs ] || [ "$VALIDATION_LANE" = shell-race-image ]; then
   run shell-reviewed-sdk . python script/initialize-reviewed-sdk.py "$EVIDENCE_DIR"
 fi
 
@@ -182,6 +182,12 @@ shell-repairs)
   # Timing assertions must not compete with another package's interpreter.
   # Keep every selected package/test and its existing deadlines.
   check shell-regressions sh env 'GOFLAGS=-p=1 -tags=netgo,full' go test -count=1 -timeout 20m ./gosource ./interp ./lower -run '^(TestMappedTypeNameKnownDifference|TestBashPPGoIdentityWithoutRuntimeGOROOT|TestGoSourceS281SelfReexecReplacementToolIsolation|TestGoTypesParserCheckNativeEquivalence|TestGoSourceS319UnsafeSizeofRuntimeUintptrArithmetic|TestGoSourceS319UnsafePointerAggregateValues|TestS374ImportedSliceHeaderLiteralInShortDeclaration|TestGoSourceBridgeSliceRetainedRefusal|TestGoSourceBridgeReflectRefusals|TestGoSourceLaunchBodilessCalleesThreeModes|TestGoSourceUnsafeSliceViewAllocator|TestGoSourceUnsafeSliceViewBytes|TestGoSourceUnsafeSliceViewRefusals|TestGoSourceNestedDirectionalChannel|TestBashPPImportBridgeDoesNotContaminatePackage|TestS243OriginalChannelDomainRegressions|TestSelectorResolutionScales|TestSpellingShadowParseScaling|TestConcurrencyLeakIdentity|TestCommandSubstitutionExitTrap(|Cancellation|Panic))$'
+  ;;
+shell-race-image)
+  printf '%s\n' 'Diagnostic only: original full-size image callback and unchanged 120s Runner context, race instrumentation, isolated process. This is not complete broad-race coverage.' > "$EVIDENCE_DIR/coverage.md"
+  check image-race-prepare sh bash scripts/prepare-test-oracle.sh
+  check image-race-discovery sh env 'GOFLAGS=-p=2 -tags=netgo,full' bash -euo pipefail -c 'go test -race -list "^TestGoSourceImageEncodeCallbacks$" ./interp > "$EVIDENCE_DIR/image-race-discovery.log"; grep -Fx TestGoSourceImageEncodeCallbacks "$EVIDENCE_DIR/image-race-discovery.log"'
+  check image-race sh env 'GOFLAGS=-p=2 -tags=netgo,full' go test -race -v -count=1 -timeout 3m -run '^TestGoSourceImageEncodeCallbacks$' -cpuprofile "$EVIDENCE_DIR/image-race.cpu" -memprofile "$EVIDENCE_DIR/image-race.mem" -o "$EVIDENCE_DIR/image-race.test" ./interp
   ;;
 shell-full)
   printf '%s\n' 'Full Sh release suite, nested moreinterp, race and confirm gates use standalone module resolution (GOWORK=off). Workspace quick coverage remains in the native lane. No packages or tests excluded.' > "$EVIDENCE_DIR/coverage.md"
