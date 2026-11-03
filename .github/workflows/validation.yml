@@ -5,7 +5,7 @@ on:
       lane:
         type: choice
         default: all
-        options: [all, module-tests, bash53]
+        options: [all, module-tests, bash53, bash53-windows]
 permissions:
   contents: read
   actions: read
@@ -51,11 +51,11 @@ jobs:
           if-no-files-found: error
 
   bash53:
-    if: inputs.lane == 'all' || inputs.lane == 'bash53'
+    if: inputs.lane == 'all' || inputs.lane == 'bash53' || inputs.lane == 'bash53-windows'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ${{ fromJSON(inputs.lane == 'bash53-windows' && '["windows-latest"]' || '["ubuntu-latest","macos-latest","windows-latest"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     steps:
