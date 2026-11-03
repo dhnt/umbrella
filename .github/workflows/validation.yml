@@ -1,4 +1,4 @@
-name: Migrated workspace validation
+name: Frozen public baseline measurement
 
 # Manual only: a candidate is selected by this workflow's ref and its exact
 # recursive gitlinks. No tags, releases, deployment, or private fixtures.
@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       lane:
-        description: 'Run all lanes, or rerun one lane after fixing its cause'
+        description: 'Measure frozen baseline contracts; no migration fixes'
         type: choice
         default: all
-        options: [all, native-repairs, shell-repairs, shell-race-image, fc-diagnostics, modernish-diagnostics, strict-posix-diagnostics, native, module-tests, bashy-full, bashy-diagnostics, shell-full, bash53, bash53-redir-diagnostics, free-posix, bashsharp, tour, candidate-prepare]
+        options: [all, native, module-tests, bashy-full, shell-full, shell-race, shell-broad-race, shell-confirm, bash53, free-posix, bashsharp, tour]
 
       macos_only:
         description: 'Restrict native, full-shell and Bash5.3 reruns to macOS after a Darwin-only fix'
@@ -35,83 +35,6 @@ env:
   GOFLAGS: '-p=2'
 
 jobs:
-  fc-diagnostics:
-    if: inputs.lane == 'fc-diagnostics'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Discover and execute the original interactive fc test
-        shell: bash
-        run: bash script/validation.sh fc-diagnostics
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: fc-diagnostics-${{ matrix.os }}
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
-  shell-repairs:
-    if: inputs.lane == 'shell-repairs'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Recheck observed full-shell failures
-        shell: bash
-        run: bash script/validation.sh shell-repairs
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: shell-repairs-${{ matrix.os }}
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
-  shell-race-image:
-    if: inputs.lane == 'shell-race-image'
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Profile the unchanged full-size image callback under race instrumentation
-        shell: bash
-        run: bash script/validation.sh shell-race-image
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: shell-race-image-linux
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
   native:
     if: inputs.lane == 'all' || inputs.lane == 'native'
     strategy:
@@ -150,6 +73,11 @@ jobs:
         run: |
           brew install pkg-config gpgme
           pkg-config --exists gpgme
+      - name: Original git fixture identity
+        shell: bash
+        run: |
+          git config --global user.email ci@example.com
+          git config --global user.name CI
       - name: Build and test existing native contracts
         shell: bash
         run: bash script/validation.sh native
@@ -158,35 +86,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.os }}-${{ matrix.mode }}
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
-  native-repairs:
-    if: inputs.lane == 'native-repairs'
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-    steps:
-      - name: Preserve committed fixture bytes
-        run: git config --global core.autocrlf false
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Verify focused native repairs
-        shell: bash
-        run: bash script/validation.sh native-repairs
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: native-repairs-${{ matrix.os }}
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 
@@ -276,7 +175,7 @@ jobs:
         with:
           go-version: 1.27.2
           cache: false
-      - name: Existing full interpreter suite and Linux race/confirm gates
+      - name: Original full interpreter suite (race and confirm are independent jobs)
         shell: bash
         run: bash script/validation.sh shell-full
       - if: always()
@@ -289,14 +188,15 @@ jobs:
             sh/artifacts/bashpp-race-gate.txt
           if-no-files-found: error
 
-  bash53-redir-diagnostics:
-    if: inputs.lane == 'bash53-redir-diagnostics'
-    runs-on: windows-latest
-    timeout-minutes: 45
-    env:
-      DEPENDENCY_MODE: standalone
+  shell-baseline-contracts:
+    if: inputs.lane == 'all' || inputs.lane == 'shell-race' || inputs.lane == 'shell-broad-race' || inputs.lane == 'shell-confirm'
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [shell-race, shell-broad-race, shell-confirm]
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v7
         with:
           submodules: recursive
@@ -305,17 +205,19 @@ jobs:
         with:
           go-version: 1.27.2
           cache: false
-      - name: Original redirect measurement and separate CLI diagnostics
+      - name: Original frozen contract (independent of normal full suite)
+        if: inputs.lane == 'all' || inputs.lane == matrix.lane
         shell: bash
-        run: bash script/validation.sh bash53-redir-diagnostics
-      - if: always()
+        env:
+          BASELINE_LANE: ${{ matrix.lane }}
+        run: bash script/validation.sh "$BASELINE_LANE"
+      - if: always() && (inputs.lane == 'all' || inputs.lane == matrix.lane)
         uses: actions/upload-artifact@v4
         with:
-          name: bash53-redir-windows
+          name: baseline-${{ matrix.lane }}-linux
           path: |
             ${{ runner.temp }}/umbrella-validation
-            bashy/bash53-windows.log
-            bashy/bash53-windows-counts.json
+            sh/artifacts/bashpp-race-gate.txt
           if-no-files-found: error
 
   bash53:
@@ -398,102 +300,18 @@ jobs:
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
 
-  posix-diagnostics:
-    if: inputs.lane == 'modernish-diagnostics' || inputs.lane == 'strict-posix-diagnostics'
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Measure the selected contained POSIX diagnostic
-        env:
-          DIAGNOSTIC_LANE: ${{ inputs.lane }}
-        run: bash script/validation.sh "$DIAGNOSTIC_LANE"
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.lane }}-linux
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
-  candidate-prepare:
-    if: inputs.lane == 'candidate-prepare'
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - name: Build and export unapproved exact candidate
-        run: bash script/validation.sh candidate-prepare
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bashsharp-candidate-linux
-          path: ${{ runner.temp }}/umbrella-validation
-          if-no-files-found: error
-
-  bashsharp:
+  corpus-prerequisites:
     if: inputs.lane == 'all' || inputs.lane == 'bashsharp' || inputs.lane == 'tour'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          persist-credentials: false
-      - uses: actions/setup-go@v6
-        with:
-          go-version: 1.27.2
-          cache: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.14
-      - name: Require reviewed candidate selection
-        env:
-          CANDIDATE_RUN_ID: ${{ inputs.candidate_run_id }}
-        run: test -n "$CANDIDATE_RUN_ID"
-      - uses: actions/download-artifact@v5
-        with:
-          name: bashsharp-candidate-linux
-          run-id: ${{ inputs.candidate_run_id }}
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/reviewed-candidate
-      # The existing harness owns its full fixture manifest, oracle pins and
-      # PASS/FAIL/PLANNED accounting. Missing external fixture prerequisites
-      # fail closed; this workflow does not invent a reduced green corpus.
-      - name: Selected full Bash# corpus or complete Tour replay
-        shell: bash
-        env:
-          CANDIDATE_BUNDLE: ${{ runner.temp }}/reviewed-candidate
-          SELECTED_LANE: ${{ inputs.lane }}
+      - name: Report unfulfilled frozen corpus prerequisite explicitly
         run: |
-          if [ "$SELECTED_LANE" = tour ]; then
-            bash script/validation.sh tour
-          else
-            bash script/validation.sh bashsharp
-          fi
+          mkdir -p "$RUNNER_TEMP/umbrella-validation"
+          printf '%s\n' 'BLOCKED: frozen Bash# corpus/Tour needs an independently authenticated baseline artifact and its original registry/layout. No newer harness, approval row, assertions, or evidence are substituted. These tests have not run.' > "$RUNNER_TEMP/umbrella-validation/coverage.md"
+          exit 1
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bashsharp-corpus-linux
+          name: baseline-corpus-prerequisites
           path: ${{ runner.temp }}/umbrella-validation
           if-no-files-found: error
-          include-hidden-files: true
