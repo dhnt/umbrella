@@ -282,6 +282,17 @@ PYRESTORE
   ;;
 bashsharp)
   export SH_ROOT="$root/sh" BASHY_ROOT="$root/bashy"
+  # The full corpus includes a GNU Bash 5.3 start-site/POSIX oracle.
+  # Use the existing checksum-verified reference provisioner on hosted Linux.
+  run bash53-oracle sh bash -euo pipefail -c '
+    bash scripts/prepare-bash-reference.sh > "$EVIDENCE_DIR/bash53-oracle-path.txt"
+    oracle=$(cat "$EVIDENCE_DIR/bash53-oracle-path.txt")
+    test -x "$oracle"
+    "$oracle" --version
+    sha256sum "$oracle" > "$EVIDENCE_DIR/bash53-oracle-sha256.txt"
+  '
+  BASH53=$(cat "$EVIDENCE_DIR/bash53-oracle-path.txt")
+  export BASH53
   export BASHY_BIN="$root/bashy/bin/bashy" BASHY_AGENTOS_BIN="$root/bashy/bin/bashy"
   export NANOCHAT_ROOT="${RUNNER_TEMP:?}/bashsharp-fixtures/nanochat"
   export MINISWE_ROOT="$RUNNER_TEMP/bashsharp-fixtures/mini-swe-agent"
