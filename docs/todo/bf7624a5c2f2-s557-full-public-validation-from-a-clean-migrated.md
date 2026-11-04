@@ -13,6 +13,76 @@ sprint_id: f5ccf563-f5d1-5b94-8be4-9388e51ef86d
 sprint_title: 'Bashy v1.0.0 preparation: split private/public development and retire qiangli/dhnt'
 ---
 
+## Current operator acceptance — supersedes earlier plans (2026-11-03)
+
+The operator narrowed this story to **reference-only migration with no
+regression from the frozen baseline**. This section supersedes every earlier
+implementation assignment, unchecked repair checklist and pending full-matrix
+plan below. Those entries are historical evidence, not active authorization
+to modify the interpreter, POSIX Coreutils or Bash# implementation. Preserved
+repair branches remain recoverable; broader preexisting issues belong to
+followup Sprint 560. Lifecycle acceptance is performed by the manager, not by
+manually changing this record's status.
+
+The published public integration reviewed for closure is umbrella
+`d99602557b7a3b60c38e0b1d03068fffce39f8c2`. Validation used the pure Stage B
+content at `927df5400e89e2041a148c5b5e0fc6f0dec6b6e9`, with Bashy
+`5a4bd03ffb28eea556ab2486c6f0f4f51f9da301`. Subsequent integration identities
+must be interpreted through the reviewed source-equivalence record, not as
+claims that each published commit was separately executed. Protected runtime
+sources, dependency versions and original test contracts remain at the frozen
+baseline; necessary checkout references are the migration changes. The two
+separately validated C metadata/inventory repairs are excluded from this
+migration acceptance and retained for post-migration followup.
+
+### Final public outcomes and their limits
+
+- [Run 41705603801](https://github.com/dhnt/umbrella/actions/runs/41705603801):
+  Linux and macOS each passed all **86 named Bash 5.3 cases**, matching the
+  frozen baseline. Both original module comparison lanes retained every
+  previously green test stage: **4 workspace + 6 standalone = 10**, plus
+  **2 grammar-preparation stages**. Known Gotreesitter failures and workspace
+  Yamux setup failures remain visible; the original module jobs are not
+  reported as wholly passing.
+- The first Windows attempt ran zero cases because an orchestration helper
+  was omitted. Its failure remains recorded. Restoring the exact original
+  helper produced [run 41708335900](https://github.com/dhnt/umbrella/actions/runs/41708335900):
+  **84 PASS / 2 FAIL / 0 SKIP / 0 TIMEOUT**, with the baseline `glob-test`
+  failure and a `printf` timestamp mismatch. The raw 84/86 result is retained;
+  it is not rewritten as a green suite or replaced by a later diagnostic.
+- A bounded native Windows diagnostic compared the original frozen and pure B
+  binaries with the same original `printf` fixture, harness, userland and
+  60-second fixture bound. The initial ten pairs yielded frozen **10 PASS**
+  and B **9 PASS / 1 FAIL**. A predetermined crossover used the same executable
+  path, reversed arm order and fixed launch phases: frozen **8 PASS / 2 FAIL**,
+  B **7 PASS / 3 FAIL**, with no skips or timeouts. Every failure added the
+  same three diagnostic lines: the external date sample was one second later
+  than the stored shell-start timestamp. Frozen occurrence is therefore
+  established. These small samples do **not** establish equal failure rates.
+  The original Windows failure remains evidence of a preexisting timing
+  mechanism, assigned to followup rather than repaired during migration.
+
+The relevant source and dependency comparison is exact. The inspected
+`printf` formatting, runner initialization and command entrypoint disassemblies
+contain 7,121 identical symbolic rows after removing addresses and relocated
+bytes. This is scoped evidence, not whole-binary identity: executable build
+paths, debug data and relocations differ. The fleet diagnostic used Windows
+binaries cross-built with Go 1.27.2 and isolated locale prerequisites, so it
+is not a byte-identical replay of the hosted build.
+
+Acceptance combines these fresh measurements with explicitly reviewed
+**unchanged-input evidence reuse** for unaffected baseline contracts. Original
+nonverbose package logs do not enumerate every individual passing or skipped
+test; no such pass set is invented. Known baseline failures, unavailable
+prerequisites and informational measurements retain their original
+classification. No assertion, expected output, timeout, oracle or skip was
+changed to obtain closure. This is migration acceptance, not an all-tests-pass
+claim, official certification, release approval or authorization to resume
+historical implementation repairs. Prefer established self-hosted validation
+venues for subsequent followup work.
+
+## Historical scope and execution record — superseded
+
 Provide reproducible manual CI validation on public hosted runners for the migrated umbrella, using existing subproject test entrypoints and exact gitlink candidate identities. Cover independent GOWORK=off build resolution plus workspace unit suites and Bashy make test, Bash compatibility, Bash# corpus and relevant public conformance runners. Linux/macOS/Windows native coverage must report real results with explicit platform applicability. Run foreign suites only in existing containment runners. Licensed VSC remains private and separate. No release tags or publishing. Keep all paths/host references public-safe. Manager will dispatch and inspect actual results.
 
 2026-11-01 SDK prerequisite repair: focused run 41333468936 exposed raw
@@ -105,7 +175,7 @@ Every row retains its original acceptance and evidence in the named source recor
 - [ ] `f15099d20dc3` (yoke #3048): S557 repair native census and chat cleanup ownership. Reconcile existing evidence and any remaining verification.
 - [ ] `6848aa300e5f` (yoke #3049): S557 isolate macOS delegate timing and Linux graph fixture environments. Reconcile existing evidence and any remaining verification.
 
-## Active bounded worker assignment — 2026-11-02
+## Historical bounded worker assignment — 2026-11-02 (inactive)
 
 Immediate bounded assignment: repair current shell validation failures, not the entire public matrix. Candidatecd91b04/Sh81f16692; current canonicalShd816fd72 differs bytriage docs. Read /tmp/s557-current-shell-failed.log and /tmp/s557-full64995c0-monitor/linux-review.md. (1) macOS TestBackgroundSelfSignalSurvivesExecReplacement carrier_term/carrier_usr2/carrier_handled_term replacement timeout; identify real semantic/fixturecause, preserve exactsignal assertions/deadlines. (2) raceoracle audit rejects plain buffers interp/virtual_self_signal_test.go108/118; prove ownership/synchronization and choose legitimate fix, no blanketannotation. (3) olderLinux TestGoSourceNativeMemberCancellation rejects net import asrequiringcgo; isolate prerequisite/admissionissue, preserve cancellationassertions. Work only onSh source/tests/racegate directlyneeded. Use isolated Sh worktree from $PUBLIC_ROOT/sh at publishedHEAD, e.g /tmp/s557-claude-shell-round2; do not modify canonical or frozen dhnt. Do not hydrate/build entireumbrella. Short authoredgo tests on the development host limitedGOMAXPROCS2 GOFLAGS=-p=2 GOWORK=off. No fullsuite/container/foreignsuite locally. Report source worktree and baselineprobe within five minutes, commitSHA+focusedgates within thirty minutes or exactblocker. Commits Sprint#557 Story#6 Story-IDbf7624a5c2f2 actualAgent. No newstories, push/merge, deadline/assertionweakening or testskips. Parent remainsopen. Root will independentlyreview/merge andrunhostedmatrix. Preserve failed logs.
 
