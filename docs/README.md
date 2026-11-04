@@ -1,6 +1,8 @@
 # Umbrella docs — catalog
 
 One entry per doc with its abstract. `INDEX.md` is the one-line index.
+
+- **`plan-s568-master-execution.md`** — Sprint 568's operator-agreed design scope, six-story sequence and acceptance matrix for ordinary human/agent membership, service-specific accounts, and bidirectional routing between application conversations and local MB, Meet and sprint sessions. Preserves direct human use of bashy and existing local workflows; implementation follows separately.
 Stories live in `docs/todo/` (the committed repo store `bashy todo --repo`
 reads and writes; a story carries its sprint as `sprint_id`).
 
