@@ -10,3 +10,5 @@ reads and writes; a story carries its sprint as `sprint_id`).
   hydrate submodules once, then build/test each subproject from its own
   root; the flat sibling-replace convention and its gotchas (nested `yoke`
   externals, TTY-bound tests, foreign suites never run natively).
+
+- **`plan-s571-posix-certification-readiness.md`** — Seven-story follow-up to S561: reconcile exact residual identities, obtain and apply VSC rulings, review nine current-journal manual decisions, verify resulting repairs and prepare an independently reviewed certification dossier. Keeps raw results and approved dispositions separate, with explicit evidence reuse and authorization boundaries.
