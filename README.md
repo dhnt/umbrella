@@ -25,7 +25,7 @@ workspace) → **p2p sphere / ollama sharding** → **k8s cluster**.
 | `bashsharp/` | Bash# language front door: front · transpile · cmd (`github.com/bashsharp/bashsharp`) |
 | `bashsharp-tests/` | Bash# conformance gate (Go-profile + POSIX-2016 suite) |
 | `bashsharp-tour/` | the Bash# tour + install-matrix CI (repo `bashsharp/tour`) |
-| `coreutils/` | the certified POSIX package (116 POSIX names ∪ GNU coreutils); stable |
+| `coreutils/` | the POSIX implementation package (116-name catalog ∪ GNU coreutils); certification pending |
 | `yoke/` | agentic userland — everything non-POSIX; imports `coreutils`, never the reverse |
 | `outpost/` | home-host agent (bridge); the peer side of the mesh |
 | `ycode/` | local agentic dev tool |

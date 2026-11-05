@@ -29,10 +29,13 @@ remain in the private harness kit. No current raw result changes by planning.
 | R5 | `bf5e89e38c78` | Apply supported manual decisions to the nine current INSPECT results |
 | R6 | `60e864ce9f7a` | Implement and verify repairs required by residual decisions |
 | R7 | `2f848bba27c7` | Verify the resolved candidate and prepare the POSIX certification dossier |
+| R8 | `18eec4b91f9e` | Reconcile public POSIX test status and certification references across submodules (operator-requested documentation follow-up) |
 
 R1 is the P0 entry gate. Once its ledger and ownership are reviewed, R2-R5
 can proceed independently. R6 handles only evidence-supported repairs, as
 findings arise. R7 depends on all required resolutions and verified repairs.
+R8 updates public references now; it does not resolve test outcomes or start
+the licensed/authority execution lanes.
 R1 must reconcile existing S371/S385 external-decision ownership with the
 S355 packets and S377 decisions, avoiding duplicate authority cases.
 
