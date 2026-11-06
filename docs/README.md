@@ -12,3 +12,5 @@ reads and writes; a story carries its sprint as `sprint_id`).
   externals, TTY-bound tests, foreign suites never run natively).
 
 - **`plan-s571-posix-certification-readiness.md`** — Seven-story follow-up to S561: reconcile exact residual identities, obtain and apply VSC rulings, review nine current-journal manual decisions, verify resulting repairs and prepare an independently reviewed certification dossier. Keeps raw results and approved dispositions separate, with explicit evidence reuse and authorization boundaries.
+
+- **`plan-windows-csharp-powershell-followup.md`** — Sprint 573 preserves outstanding Windows, C# and PowerShell inventories, source-bound evidence and required modes while Sprint 562 completes its remaining language work. Describes safe test-host execution, exact carryover and final acceptance without treating deferral as a pass.
