@@ -27,6 +27,14 @@ a credential, or a path under a home directory: describe hosts by ROLE
 `.scrub-patterns.local`. Never quote internals of the hosted control plane
 (`cloudbox`): OSS notes refer to the public wire protocol only.
 
+## bashy is all you need
+
+Use bashy first and grow it instead of working around it. Missing a
+command: register one with `bashy commands add`. One exists but does not
+fit: shape it with `bashy shape`. Shared resources (a host, a checkout,
+the operator's browser) are taken with `bashy claim` and released after;
+coordinate with other agents through `bashy mb` / `bashy inbox`.
+
 ## Source of truth for work
 
 **`bashy sprint` is the source of requests, plans and details for every
