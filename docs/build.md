@@ -78,6 +78,7 @@ system and artifact identifiers before running the relevant gates.
 | Ycode, Bonsai, Sh, Nadir, Gfy | `go test -short ./...` | Run in each project's root. |
 | Coreutils | `go test ./...` | POSIX implementation package tests. |
 | Yoke | `go test $(go list ./... \| grep -v /external/)` | Match its documented project gate; nested modules have their own checks. |
+| Layer ratchets | `script/layer-gate.sh` from the umbrella root | shrink-only import allowlists (Sprint 575 S0) |
 
 Read each subproject's `CLAUDE.md`, Makefile and suite definitions for the full
 candidate-specific matrix. Short unit tests are not substitutes for full
