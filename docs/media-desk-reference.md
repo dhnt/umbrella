@@ -82,6 +82,7 @@ All Desk tools share `bashy/examples/desk/kit` (`kit.css`, `kit.js`, `desk-kit/r
 - **`form` & `replyform` (`bashy/examples/desk/form`, `replyform`)**: Persistent multi-round questionnaires, rubrics, and many-respondent polls for human/agent review gates.
 - **`chart` (`bashy/examples/desk/chart`)**: Offline SVG chart generator and fence renderer (`--desk-data-1..8` palette in light and dark themes).
 - **`whiteboard` (`bashy/examples/whiteboard`)**: Shared freehand drawing canvas and sticky-note board for architecture sketching and brainstorming.
+- **`brainstorm` (`bashy/examples/brainstorm`)**: Multi-participant LAN/Desk card ideation and voting board (`write -> discuss -> vote -> closed`) with Markdown/chart card rendering, invite-only sessions, and JSON/Markdown export.
 - **`tutor` (`bashy/examples/tutor`)**: Timeboxed classroom/workshop sessions (`plan`, `apply`, `serve`, `join`, `stop`) with teacher, projector, and student views, guardrailed nudges, and tempo controls.
 - **Software Shaping (`bashy shape`, `bashy/docs/shaping-trial.md`)**: Team members can customize Desk apps (`notepad`, `form`) and the launcher (`console`) in isolated per-user versions (`wish -> verify -> preview -> approve`) and share vetted versions across the team (`bashy src offer|adopt`, `bashy shape push|pull`).
 
@@ -159,3 +160,7 @@ All Desk tools share `bashy/examples/desk/kit` (`kit.css`, `kit.js`, `desk-kit/r
 5. **Video — Image/Slide Cards & Subtitle Burn-In (`srt`/`vtt`)**
    - *Finding*: `card` in `video.sh` only renders terminal text via `agg`; it cannot insert a static PNG slide, chart, or rendered PDF page, nor burn in `.srt`/`.vtt` captions produced by `bashy transcribe`.
    - *Fix*: Add a `slide <image.png> <seconds> [audio.m4a]` directive and a `--subtitles <file.srt>` option in `video.sh`.
+
+6. **Desk `brainstorm` — Preset Seed Cards, Multi-Round Ideation/Voting, Filtering & Session Carry-Forward**
+   - *Finding*: `bashy/examples/brainstorm` (`server/main.go`) currently enforces a strictly one-way phase progression (`write -> discuss -> vote -> closed`) with no preset/example cards at session start, no multi-round ideation or runoff voting, and no built-in way to filter/carry selected cards into a subsequent round or restart from a saved session's cards and votes.
+   - *Fix*: Support preset/seed cards, repeatable rounds (opening another card-writing phase or skipping directly to a new voting round), between-round card filtering (by manual selection, vote threshold/top-N, column, or other fields), and saving/restarting sessions from prior session state (`8d7d48eeae63`).
