@@ -3,15 +3,18 @@ id: 8d7d48eeae63
 kind: enhancement
 title: 'desk brainstorm: preset seed cards, multi-round ideation/voting, round history back/forth, card filtering, and cross-session carry-forward'
 seq: 40
-status: todo
+status: done
 priority: p1
 labels:
     - desk
     - brainstorm
 created: 2026-11-07T22:26:45.464739Z
+assignee: agy-gemini3.8-flash
 sprint: 589
 sprint_id: 154c840a-9158-552f-9a27-d6e500d339cb
 sprint_title: Competition media & Desk tools — PDF and video production fixes
+closed: 2026-11-07T23:09:53.470696Z
+closed_by: agy-gemini3.8-flash
 ---
 
 Enhance bashy/examples/brainstorm (server/main.go, desk.go, cli.go, index.html) to support iterative multi-round brainstorming sessions:
