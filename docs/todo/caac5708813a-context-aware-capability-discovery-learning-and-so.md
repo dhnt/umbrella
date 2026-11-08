@@ -3,12 +3,15 @@ id: caac5708813a
 kind: feature
 title: Context-aware capability discovery, learning and software shaping
 seq: 52
-status: todo
+status: done
 priority: p1
 created: 2026-11-08T09:52:36.734034Z
+assignee: s595-manager
 sprint: 595
 sprint_id: a8bd6c0a-b86c-5928-84b5-21c8bb2865b2
 sprint_title: Yoke CLI consistency and coherence
+closed: 2026-11-08T17:58:54.640163Z
+closed_by: s595-manager
 ---
 
 Goal: make bashy all you need through rod-not-fish capability acquisition and software shaping, with minimal third-party harness setup. Connect existing install-agent, skill export, inspection, command/adapter registration, skill learn and shape mechanisms through consistent machine-readable responses.
