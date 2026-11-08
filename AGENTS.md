@@ -10,3 +10,8 @@ full agent-facing brief — it is the one file to read; this one only redirects.
   submodule, then `git add <subproject>` at the root and commit the pin bump.
 - **Everything in this repo is public.** No machine names, OS logins,
   addresses or credentials — `script/scrub-gate.sh` refuses the commit.
+
+## Code Map
+
+- `docs/` — project documentation
+- `.github/` — project configuration
