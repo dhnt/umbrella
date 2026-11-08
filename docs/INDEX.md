@@ -9,3 +9,4 @@
 
 - `plan-windows-csharp-powershell-followup.md` — Sprint 573 continuation of Windows, C# and PowerShell coverage deferred explicitly from Sprint 562
 - `media-desk-reference.md` — Reference for PDF, drawing, image, audio, video, and Desk team-collaboration tools, plus verification and competition workflows
+- `plan-s595-master-execution.md` — Sprint 595 bashy CLI consistency fixes and capability-shaping plan: root causes, scopes, delegation, gates

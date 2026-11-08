@@ -3,9 +3,10 @@ id: 6ee2c2552c16
 kind: test
 title: Verified capability activation, nonactivation and rollback
 seq: 56
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-08T10:09:32.601833Z
+assignee: opencode-deepseek-v4-pro
 sprint: 595
 sprint_id: a8bd6c0a-b86c-5928-84b5-21c8bb2865b2
 sprint_title: Yoke CLI consistency and coherence
