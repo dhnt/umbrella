@@ -14,3 +14,4 @@
 - `sprint-598-master-execution-plan.md` — Sprint 598 satellite CLI scope, managed delivery sequence, and verification plan
 - `satellite-operations-workflow.md` — Account selection, satellite discovery, paired-host inspection, explicit invite/transfer, and software shaping
 - `sprint-598-verification.md` — Exact candidate revisions and remote fixture, regression, and read-only service smoke results
+- `research-xonsh-python-fence.md` — Research: which xonsh Python/shell interop features the Bash# Python fence should adopt (two gaps; rest already covered)
