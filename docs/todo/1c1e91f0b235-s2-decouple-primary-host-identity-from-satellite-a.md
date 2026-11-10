@@ -17,7 +17,7 @@ sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
 ---
 
-Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210). No coding in planning turn.
+Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).
 Dependencies: S1.
 
 Scope

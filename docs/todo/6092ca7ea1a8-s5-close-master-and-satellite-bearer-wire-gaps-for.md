@@ -3,7 +3,7 @@ id: 6092ca7ea1a8
 kind: enhancement
 title: S5 Close Master and Satellite Bearer wire gaps for host assignment, satellite detail, and self-unpair
 seq: 73
-status: assigned
+status: done
 priority: p1
 labels:
     - satellite
@@ -15,9 +15,11 @@ assignee: codex-gpt6-astra
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T05:33:18.439394Z
+closed_by: claude-opus5.5-s606
 ---
 
-Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210). No coding in planning turn.
+Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).
 Dependencies: S1.
 
 Scope
