@@ -56,3 +56,6 @@ Before implementation, preserve the baseline candidate and controlled task input
 
 ## Execution plan
 Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.
+
+## Baseline update (manager, 2026-11-10)
+Re-measured on bashy a9958c91, sealed container, Linux test host, non-root testee: dialect OFF 86/86, dialect ON 86/86. The G3 row's "79 + 7 vs 86/86" is stale (v0.27.0); S14 is re-scoped to a regression guard plus targeted probes (see its re-baseline section). Recurring "79/86" readings were four disjoint failure sets: (A) root/no-hexdump/no-locale venue: execscript, glob-test, intl, new-exp, printf, redir, test; (B) historical dialect-on reserved `func`: comsub, comsub2, errors, func, trap, type, varenv; (C) a July 2026 engine regression (fixed); (D) Windows native gaps (S253). Compare by fixture identity, never by count.
