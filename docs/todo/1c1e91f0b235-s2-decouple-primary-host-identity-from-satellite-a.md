@@ -22,10 +22,11 @@ Dependencies: S1.
 Scope
 - Keep Outpost's primary agent.json anchored to the host owner's canonical Master / home portal account so bashy coordination (MB, inbox, sprint, fleet) always authenticates via the primary host identity.
 - Introduce a dedicated satellites[] (or attachments[]) configuration list in Outpost for secondary satellite endpoints and credentials so attaching to a satellite never overwrites the primary agent.json or breaks Master authentication in yoke/pkg/fleet/pairing.go.
-- The primary pairing may itself be on a satellite: a member pairs on the owner's satellite with a code from their own account there (the general owner/member model; the satellite records the host with the master's host-to-satellite assignment). Today that points agent.json at the satellite, and master coordination survives only through master-token. Resolve the coordination base for such a host from the canonical config (portal_url + the account's master), not from the tunnel server.
+- Design decision (operator, 2026-11-09): an outpost pairs ONCE, with cloudbox under the user's email account. That pairing is the host's identity and ownership everywhere; satellites are attachments of the account (membership), never a second pairing.
+- Today a member pairs on the owner's satellite with a code from their own account there (verified in code; the satellite records the host with the master's host-to-satellite assignment), which points agent.json at the satellite and leaves master coordination to master-token. Such hosts migrate: they pair once with cloudbox and the satellite becomes an attachment; existing satellite-primary agent.json keeps working until migrated.
 - Keep ~/.config/bashy/master-token as a read-only legacy fallback during transition and deprecate bashy fleet master-token save/mint.
 
 Acceptance
 - Attaching a host to a satellite preserves primary Master coordination without requiring a separate master-token file.
-- A member host paired on a satellite with its own account keeps master coordination (mb, inbox, sprint) with no master-token file, and stays owned by the member.
+- A host paired once with cloudbox reaches master coordination (mb, inbox, sprint) and its attached satellites with no master-token file and no satellite pairing code, and stays owned by its account.
 - Account discovery in yoke/pkg/accounts/adapters/cloudbox enumerates both the primary host account and all attached satellites from canonical Outpost config.
