@@ -24,3 +24,5 @@ CONTRACT (owner Bearer, master and standalone; add to yoke docs/cloudbox-members
 - DELETE /api/v1/hosts/:host/shares/:id (scope hosts:write) -> 204, idempotent.
 - Same HostShare table and semantics as the cookie /api/hosts/:host/shares; never the bottom-up host:grants path (that one deliberately skips the member list).
 Verbs: bashy paired-host share HOST --app APP --email EMAIL [--dry-run] [--json]; bashy paired-host unshare HOST ID|--app APP --email EMAIL [--dry-run]; bashy paired-host shares HOST [--json].
+
+Design correction (manager, 2026-11-10): shares live where the host row lives (standalone/satellite), never on the master (identity-only hosts, no share sync). Server on standalone+satellite builds; auth = owner Bearer OR the host's own token for its own host. Verb = outpost apps share|unshare|shares (bashy outpost apps ...) using the attachment endpoint+token; satellite-member publish can then complete the share. The paired-host share verb is dropped.
