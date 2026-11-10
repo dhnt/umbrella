@@ -3,7 +3,7 @@ id: 0ada8418d6e6
 kind: doc
 title: S6 Consolidate outpost and bashy CLI surfaces, MCP metadata, and satellite runbooks
 seq: 74
-status: todo
+status: assigned
 priority: p2
 labels:
     - satellite
@@ -11,6 +11,7 @@ labels:
     - docs
     - satellite-cli
 created: 2026-11-10T01:43:06.799342Z
+assignee: muse-spark1.3
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
@@ -22,6 +23,8 @@ Dependencies: S1, S2, S3, S4, S5.
 Scope
 - Consolidate the two-layer CLI model: local host daemon verbs on outpost (register, unpair, satellite attach|detach|list, peers) and account/fleet verbs on bashy (login, satellite, paired-host).
 - Reconcile help text, JSON schemas, and MCP tool metadata across yoke and bashy.
+- No cobra `completion` subcommand anywhere on the bashy surface (operator: generated completion scripts are for old-fashioned shells; bashy does better through its own discovery: --skill, help --format=mcp, the manifest, hints, and the shell's built-in completion from command metadata). Today it shows on `bashy satellite`, `bashy fleet` and the fronted `bashy outpost`, while weave/kb/chat/meet/ask disable it one by one. Fix it in ONE place for every Go front-door verb (and outpost's root), with a test that walks the whole tree and finds no `completion` command.
+- Agent-first check (operator): every owner/member journey (pair once, attach/detach, member invite/accept/circle, share, LLM peer) runs end to end through bashy verbs with --json, with no web UI step and no ad hoc HTTP; list any gap as a story.
 - Update docs/satellite-operations-workflow.md and KB pages to reflect single-daemon multi-satellite attachments and member sharing without master-token or outpost-profile workarounds.
 
 Acceptance

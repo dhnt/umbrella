@@ -3,7 +3,7 @@ id: 3d35fb51e01a
 kind: feature
 title: S1 Persist canonical portal_url in agent.json and unify Outpost server discovery
 seq: 69
-status: todo
+status: assigned
 priority: p0
 labels:
     - satellite
@@ -11,6 +11,7 @@ labels:
     - fleet
     - satellite-cli
 created: 2026-11-10T01:43:06.701041Z
+assignee: codex-gpt5.6-sol
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
