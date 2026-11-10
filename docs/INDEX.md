@@ -23,3 +23,4 @@
 
 - `sprint-610-master-execution-plan.md` — Sprint 610 story sequence, planned ownership, compatibility gates and planning-only scope
 - `bash53-gate-79-86-findings.md` — why the Bash 5.3 gate kept reading 79/86 (four disjoint fixture sets, wrong venue, stale claim) and the guards that keep it 86/86
+- `bash-command-invocation-counts.md` — Every bash command sorted by invocations from the bashy execlog (2.84 M records, Aug–Nov 2026) plus the one-day OTel spool; where command telemetry actually lives and how to reproduce the tally
