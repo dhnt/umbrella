@@ -22,3 +22,4 @@
 - `bashsharp-review-codex.md` — Bash# agentic-era gap evaluation by `codex`: current-source reproductions, checking and runtime boundaries, research basis, and prioritized recommendations
 
 - `sprint-610-master-execution-plan.md` — Sprint 610 story sequence, planned ownership, compatibility gates and planning-only scope
+- `bash53-gate-79-86-findings.md` — why the Bash 5.3 gate kept reading 79/86 (four disjoint fixture sets, wrong venue, stale claim) and the guards that keep it 86/86
