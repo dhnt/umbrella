@@ -26,3 +26,6 @@ Extend existing environment plans rather than creating a parallel planner. Speci
 
 No runtime, toolchain, provisioning or lock implementation in this story.
 Planned owner: agy (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

@@ -16,7 +16,7 @@ sprint_title: Bash# correctness, checking, and execution guarantees
 ## Outcome
 Consolidate executable examples, compatibility evidence and accurate execution-mode guarantees using existing corpora.
 
-Dependencies: S4/S5/S7/S8.
+Dependencies: S4/S5/S7/S8/S14. Final compatibility claims require S14 acceptance evidence.
 
 ## Acceptance
 - Verify formatter idempotence and parse/print semantics across supported shell, typed and fence constructs.
@@ -29,3 +29,6 @@ Dependencies: S4/S5/S7/S8.
 
 New deprecation registries, alias warnings and governance mechanisms remain deferred.
 Planned owner: muse (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

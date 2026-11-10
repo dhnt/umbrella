@@ -26,3 +26,6 @@ Dependencies: S3/S5.
 - M12 belongs to S2. Keyword-call expressions and negative numeric arguments remain separately recorded deferred parser repairs, not implicit S7 scope.
 
 Planned owner: codex (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

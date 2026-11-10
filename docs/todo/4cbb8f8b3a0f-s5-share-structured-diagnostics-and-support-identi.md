@@ -28,3 +28,6 @@ Dependencies: S3. Establish the presentation contract before final S4/S8 integra
 
 LSP, semantic navigation, machine-applicable edits and a new AST CLI are separate deferred proposals; do not imply implementation by adding hints.
 Planned owner: glm (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

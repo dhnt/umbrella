@@ -28,3 +28,6 @@ Dependencies: S3/S4/S5. Supply provider checks used by S6.
 
 External dependency: Sprint 600 UUID 1b4d2326-3a0e-583e-9cdf-358f396c39e3 owns fence routing, per-call environment and worker lifecycle. Claim only guarantees supported by its delivered evidence; PATH/SHELL shims are not universal containment. No authority/default changes.
 Planned owner: codex (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

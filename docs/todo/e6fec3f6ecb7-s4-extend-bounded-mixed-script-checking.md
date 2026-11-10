@@ -24,7 +24,12 @@ Dependencies: S3; integrate diagnostics with S5.
 - Potential mutation, closures and unknown side effects invalidate facts that are no longer justified; unresolved/dynamic regions report unchecked coverage rather than false certainty.
 - Known enum locals/expressions receive exhaustiveness checks; dynamic enum membership guards remain a separate deferred runtime proposal.
 - Discarded-write warnings preserve snapshot semantics and avoid claiming compiled/interpreted sharing equivalence.
-- Warn with a positioned S5 code on E-live Bash# forms (`import "…"`, `type T …`, `func() {…}`) in non-.bsh files; no warning for .bsh files or shebang/option-activated Bash#.
+- Warn with a positioned S5 code on E-live Bash# forms (`import "…"`, `type T …`, and other actually recognized dialect forms) in non-.bsh files; no warning for .bsh files or shebang/option-activated Bash#.
 - No ADTs, new null syntax or general effect/type-safety claim.
 
 Planned owner: claude (reviewer, gate and merge: claude).
+
+S14 owns func lookahead: ordinary Bash `func() {…}` and `func () {…}` definitions must not receive a Bash#-form warning solely for that spelling. Recheck diagnostic fixtures after S14 integration.
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

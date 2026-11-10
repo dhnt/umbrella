@@ -29,3 +29,6 @@ Own the shared result contract: positioned source diagnostics with stable identi
 - The union of current checks is described as bounded checking, not full Go type safety.
 
 Planned owner: claude (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

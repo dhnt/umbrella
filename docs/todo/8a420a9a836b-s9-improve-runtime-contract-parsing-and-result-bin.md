@@ -29,3 +29,6 @@ Preserve RESULT and STATUS. Add RESULT_0, RESULT_1, ... and ERR for typed error 
 - Contracts remain runtime shell checks; no purity, rollback or static-proof claim.
 
 Planned owner: codex (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

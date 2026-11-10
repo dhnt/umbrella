@@ -51,3 +51,8 @@ Record exact candidate SHAs, known failures, evidence locations and commands. Hi
 
 Dependencies: none. S2 follows S1; S3 follows S2 by sprint delivery policy.
 Planned owner: claude (reviewer, gate and merge: claude).
+
+Before implementation, preserve the baseline candidate and controlled task inputs required by S13, including model/tool/policy identities and budgets. This is evidence planning; do not launch benchmarks during this planning-only update. Reconcile S14 parser expectations and the strict parity gate before delivery starts.
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

@@ -27,3 +27,6 @@ Dependencies: S3/S4/S5/S8.
 - No new errexit/nounset/pipefail defaults; no universal safety claim.
 
 Planned owner: claude (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

@@ -26,3 +26,6 @@ Dependencies: S1; consume S11's mode guarantees before finalizing.
 
 External extraction ownership: Sprint 575 UUID 65ce85f5-87c0-5863-bf55-62de86f5df36 and Sprint 581 UUID cb7f2d66-9c30-5d68-9cbc-ec76c9f7f6d7. Do not duplicate extraction or authorize runtime redesign, reclamation experiments or worker conversion here.
 Planned owner: agy (reviewer, gate and merge: claude).
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.

@@ -27,3 +27,8 @@ Dependencies: S2-S9 and S11. S10/S12 are design-only limitations, not implemente
 - Bound any fence-security claims to the delivered Sprint 600 evidence.
 
 Planned owner: claude (reviewer, gate and merge: claude).
+
+Consume the baseline identities and experiment protocol preserved under S1. Compare baseline and delivered candidates under the same controlled inputs; distinguish any newly executed baseline runs from historical evidence.
+
+## Execution plan
+Follow [Sprint 610 master execution plan](../sprint-610-master-execution-plan.md). Planning only: retain todo status and planned ownership; no implementation, workers, benchmarks or release are authorized. Dependencies and story acceptance remain authoritative.
