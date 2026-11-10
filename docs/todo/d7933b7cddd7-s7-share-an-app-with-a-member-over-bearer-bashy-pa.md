@@ -3,7 +3,7 @@ id: d7933b7cddd7
 kind: feature
 title: S7 Share an app with a member over Bearer + bashy paired-host share/unshare/shares
 seq: 75
-status: assigned
+status: done
 priority: p1
 labels:
     - satellite
@@ -15,6 +15,8 @@ assignee: codex-gpt6-sol
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T14:47:01.758342Z
+closed_by: claude-opus5.5-s606
 ---
 
 Closes the UI-CLI parity gap parity-share-grant (bashy todo 9bbbed028aa2, docs/ui-cli-parity.md): owners share an app with a member only in the web console today. Agent-first rule (operator): every console action has a bashy verb.

@@ -3,7 +3,7 @@ id: 0ada8418d6e6
 kind: doc
 title: S6 Consolidate outpost and bashy CLI surfaces, MCP metadata, and satellite runbooks
 seq: 74
-status: assigned
+status: done
 priority: p2
 labels:
     - satellite
@@ -15,6 +15,8 @@ assignee: muse-spark1.3
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T14:23:31.657078Z
+closed_by: claude-opus5.5-s606
 ---
 
 Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).
