@@ -11,7 +11,7 @@ labels:
     - fleet
     - satellite-cli
 created: 2026-11-10T01:43:06.806217Z
-assignee: claude-opus5.5
+assignee: claude-opus5.5-s606s2
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
