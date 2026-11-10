@@ -3,7 +3,7 @@ id: 1c1e91f0b235
 kind: feature
 title: S2 Decouple primary host identity from satellite attachments and retire master-token split-brain
 seq: 70
-status: assigned
+status: done
 priority: p0
 labels:
     - satellite
@@ -15,6 +15,8 @@ assignee: claude-opus5.5-s606s2
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T12:34:14.271375Z
+closed_by: claude-opus5.5-s606
 ---
 
 Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).
