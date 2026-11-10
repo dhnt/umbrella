@@ -3,7 +3,7 @@ id: 0bde32fb727c
 kind: feature
 title: S3 Support native multi-satellite tunnel and app attachments in a single Outpost daemon
 seq: 71
-status: assigned
+status: done
 priority: p1
 labels:
     - satellite
@@ -14,6 +14,8 @@ assignee: claude-opus5.5-s606s2
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T13:49:31.720645Z
+closed_by: claude-opus5.5-s606
 ---
 
 Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).

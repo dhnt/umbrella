@@ -3,7 +3,7 @@ id: 748f23cc0790
 kind: feature
 title: S4 Disentangle owner node-provisioning codes from satellite member invitations
 seq: 72
-status: assigned
+status: done
 priority: p1
 labels:
     - satellite
@@ -15,6 +15,8 @@ assignee: opencode-glm-5.3
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
 sprint_title: Streamline Cloudbox master, satellite, and outpost relationships
+closed: 2026-11-10T13:49:32.180939Z
+closed_by: claude-opus5.5-s606
 ---
 
 Sprint 606 (ebee3343-b774-520a-9d53-b57b306f4210).
