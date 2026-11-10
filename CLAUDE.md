@@ -12,6 +12,27 @@ No official v1.0.0 release before official POSIX certification and explicit oper
 
 Prefer the established self-hosted machine fleet for validation. Hosted CI billing must not be a default dependency. Use existing working execution routes while the self-hosted scheduler is being completed; preserve source identities, isolation and raw test evidence.
 
+## Root cause before any fix
+
+When a test that was green fails, investigate before changing anything —
+no fix, workaround, skip, quarantine or re-baseline until the root cause is
+identified and recorded. In order:
+
+1. **Identify the failure by name**: the failing tests or fixtures, compared
+   with the last green evidence. A matching count is not a match.
+2. **Check the venue**: same commit, same lane, same environment as the
+   green run (uid, image, locale, tools, terminal, network)? Reproduce in
+   the authoritative lane at the same commit before blaming the code.
+3. **Bisect the change**: which commit, pin or environment difference turned
+   it red.
+4. **Classify and record the cause** on the todo/story: product defect,
+   test defect, or environment. Then fix it where the cause lives. A venue
+   problem is fixed in the venue or a preflight, never in product code; a
+   product gap a realistic environment exposes is fixed in the product.
+
+A fix with no recorded root cause is not accepted. Findings that motivated
+this rule: `docs/bash53-gate-79-86-findings.md`.
+
 Guidance for Claude Code and other agentic tools (Codex, OpenCode, ycode) in
 `dhnt/umbrella`: a thin git superproject that mounts every **open-source**
 `dhnt` project as a flat sibling submodule. The root `go.work` selects live
