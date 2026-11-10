@@ -15,3 +15,4 @@
 - `satellite-operations-workflow.md` — Account selection, satellite discovery, paired-host inspection, explicit invite/transfer, and software shaping
 - `sprint-598-verification.md` — Exact candidate revisions and remote fixture, regression, and read-only service smoke results
 - `research-xonsh-python-fence.md` — Research: which xonsh Python/shell interop features the Bash# Python fence should adopt (two gaps; rest already covered)
+- `agentic-cli-support.md` — Reference for bashy agentic CLI support across the built-in fleet catalog, install-agent wiring, ambient detection, and custom examples/fleet/tools/ recipes (including dsh)
