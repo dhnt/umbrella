@@ -27,4 +27,4 @@ Dependencies: S3. Establish the presentation contract before final S4/S8 integra
 - Verify current runtime refusal fixtures against generated support metadata, not metadata consistency alone.
 
 LSP, semantic navigation, machine-applicable edits and a new AST CLI are separate deferred proposals; do not imply implementation by adding hints.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: glm (reviewer, gate and merge: claude).

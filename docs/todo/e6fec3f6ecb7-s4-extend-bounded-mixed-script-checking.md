@@ -24,6 +24,7 @@ Dependencies: S3; integrate diagnostics with S5.
 - Potential mutation, closures and unknown side effects invalidate facts that are no longer justified; unresolved/dynamic regions report unchecked coverage rather than false certainty.
 - Known enum locals/expressions receive exhaustiveness checks; dynamic enum membership guards remain a separate deferred runtime proposal.
 - Discarded-write warnings preserve snapshot semantics and avoid claiming compiled/interpreted sharing equivalence.
+- Warn with a positioned S5 code on E-live Bash# forms (`import "…"`, `type T …`, `func() {…}`) in non-.bsh files; no warning for .bsh files or shebang/option-activated Bash#.
 - No ADTs, new null syntax or general effect/type-safety claim.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: claude (reviewer, gate and merge: claude).

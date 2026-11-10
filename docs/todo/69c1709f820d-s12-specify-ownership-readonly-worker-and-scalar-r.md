@@ -25,4 +25,4 @@ Dependencies: S1; consume S11's mode guarantees before finalizing.
 4. Non-recursive scalar evaluation: interpreted correctness identity plus workload-specific timing, allocations and recursion-stack measurements. No automatic substitution of compiled execution.
 
 External extraction ownership: Sprint 575 UUID 65ce85f5-87c0-5863-bf55-62de86f5df36 and Sprint 581 UUID cb7f2d66-9c30-5d68-9cbc-ec76c9f7f6d7. Do not duplicate extraction or authorize runtime redesign, reclamation experiments or worker conversion here.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: agy (reviewer, gate and merge: claude).

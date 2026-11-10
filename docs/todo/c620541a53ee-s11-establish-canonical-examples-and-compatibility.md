@@ -28,4 +28,4 @@ Dependencies: S4/S5/S7/S8.
 - Recognize existing structured command results, task cleanup, C# fences and examples; do not build a duplicate corpus.
 
 New deprecation registries, alias warnings and governance mechanisms remain deferred.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: muse (reviewer, gate and merge: claude).

@@ -25,4 +25,4 @@ Dependencies: S3/S5.
 - Do not address M09 by increasing arbitrary lookahead.
 - M12 belongs to S2. Keyword-call expressions and negative numeric arguments remain separately recorded deferred parser repairs, not implicit S7 scope.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: codex (reviewer, gate and merge: claude).

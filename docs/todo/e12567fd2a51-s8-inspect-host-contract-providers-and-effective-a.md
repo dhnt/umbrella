@@ -27,4 +27,4 @@ Dependencies: S3/S4/S5. Supply provider checks used by S6.
 - Record decorated-shell lowering and compiled policy-advice limitations without implementing them here.
 
 External dependency: Sprint 600 UUID 1b4d2326-3a0e-583e-9cdf-358f396c39e3 owns fence routing, per-call environment and worker lifecycle. Claim only guarantees supported by its delivered evidence; PATH/SHELL shims are not universal containment. No authority/default changes.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: codex (reviewer, gate and merge: claude).

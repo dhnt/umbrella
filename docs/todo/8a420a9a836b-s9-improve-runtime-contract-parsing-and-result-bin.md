@@ -28,4 +28,4 @@ Preserve RESULT and STATUS. Add RESULT_0, RESULT_1, ... and ERR for typed error 
 - Validate interpreted and compiled hosts separately, including missing-provider limitations.
 - Contracts remain runtime shell checks; no purity, rollback or static-proof claim.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: codex (reviewer, gate and merge: claude).

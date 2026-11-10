@@ -26,4 +26,4 @@ Dependencies: S1.
 - Preserve ordinary shell return behavior and typed value identity.
 
 S3 follows S2 by sprint delivery policy.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: codex (reviewer, gate and merge: claude).

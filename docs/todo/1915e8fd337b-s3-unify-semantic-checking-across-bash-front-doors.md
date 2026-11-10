@@ -28,4 +28,4 @@ Own the shared result contract: positioned source diagnostics with stable identi
 - Retain package-led Go checking and existing source-profile identities.
 - The union of current checks is described as bounded checking, not full Go type safety.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: claude (reviewer, gate and merge: claude).

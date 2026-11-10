@@ -28,7 +28,7 @@ Maintain the authoritative reconciliation of all four docs/bashsharp-review-*.md
 | codex G7; claude concurrency/explicitness findings; agy G7; muse concurrency unknowns | Existing structured command results, task cancellation/joining and host memory guards are recognized; S4 discarded-write warning and S11 mode matrix. Snapshot semantics remain; guest race detection and changed sharing are deferred. |
 | codex G8; agy G3/G10; muse performance/cost unknowns | S11 measured performance boundaries; S12 scalar and persistent-worker designs; S13 maintenance cost measurement. No universal historical speed ratio. |
 | codex agent-outcome evidence; claude token/benefit findings; muse measurement gap | Existing agent benchmarks recognized; S13 controlled maintenance comparison, no superiority/equivalence claim from equal small samples. |
-| claude G3; muse corpus/idiomaticity/stability gaps | S11 existing executable corpus, formatter round trips, collision policy and accurately qualified compatibility claims. Dialect activation stays unchanged. |
+| claude G3; muse corpus/idiomaticity/stability gaps | S11 existing executable corpus, formatter round trips, collision policy and accurately qualified compatibility claims; S14 dialect-on parsing. Dialect activation stays unchanged. |
 | claude G5 | S11 version/claim reconciliation and current compatibility policy. New deprecation registry, warnings for silent aliases and new governance mechanisms are deferred. |
 | claude G7 | Preserve failure defaults. Discarded mixed-task-write diagnostics belong to S4; S11 documents them. |
 | agy G1/G2 | S12 separate bridge ownership and readonly retention/identity designs, including clone remapping and zero-size cases. |
@@ -37,6 +37,11 @@ Maintain the authoritative reconciliation of all four docs/bashsharp-review-*.md
 | agy G8 keyword-call expressions and negative numeric arguments | Deferred parser repair proposals; no implicit expansion of S7. |
 | agy G9 engine modularity | Sprints 575/581 own extraction; S3 must respect current dependency direction. |
 | agy external traits; muse ADT/null/type-system aspirations; claude formal verification | ADTs, new null syntax, ownership types, algebraic effects, static contract proofs/invariants, Wasm/zero-copy ABI, accelerator lowering and incremental semantic tooling deferred. Existing runtime checks are not proofs. |
+| claude G3 dialect-on Bash compatibility (79 + 7 vs 86/86) | S14 parser lookahead (`func`, `//`) gated by dialect-on fail-set comparison; S4 warns on E-live forms in non-.bsh files. Activation itself unchanged. |
+| claude G4 whole-script cap (`bashy run --cap ...`) | Deferred proposal; S8 records it in the authority matrix. |
+| claude memory-safety note: unmarked `unsafe` in compiled Go/cgo/C/C++/Rust islands | S11 documents it in the mode matrix. |
+| agy G6.4 null checking of top-level statements and nullable call returns | S4 covers provable cases; the remainder is a deferred proposal. |
+| agy G7.3 `go` statements outliving a `@timeout`/`@guard` frame | S11 lifetime matrix; no structured-concurrency change. |
 | muse missing JSON, C# fences, concurrency, performance and benchmark evidence | Incomplete evidence, not absence. Recognize existing capabilities and their bounded evidence in S5/S10/S11/S13. |
 
 This register groups duplicate claims; before closure, check every substantive recommendation and unresolved item in all four reviews against these rows and add any omitted item with its disposition. Research rankings remain review opinions, not implementation requirements or revalidated external research.
@@ -45,4 +50,4 @@ This register groups duplicate claims; before closure, check every substantive r
 Record exact candidate SHAs, known failures, evidence locations and commands. Historical review pins: bashsharp 45ae8e2d0f1d0ad384355859a8f0eb4fed2a893c; sh d2913001421b8a2a6b247ee9953ca89c84ff2868; bashy a9958c91e4853206a45b4ec20e5aecc894b89453; bashsharp-tests 6d414e2ec30d34f4b382f0966acf1ff840c330d1. Revalidate at execution time. Distinguish fresh results from inspected/reused evidence. Every finding has one owner/disposition; implementation claims require candidate-bound evidence.
 
 Dependencies: none. S2 follows S1; S3 follows S2 by sprint delivery policy.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: claude (reviewer, gate and merge: claude).

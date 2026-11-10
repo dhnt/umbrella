@@ -26,4 +26,4 @@ Dependencies: S3/S4/S5/S8.
 - Preserve unchecked streaming execution, shell failure options, dialect activation and legacy aliases.
 - No new errexit/nounset/pipefail defaults; no universal safety claim.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: claude (reviewer, gate and merge: claude).

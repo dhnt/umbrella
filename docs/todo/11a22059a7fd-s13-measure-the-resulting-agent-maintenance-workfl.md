@@ -26,4 +26,4 @@ Dependencies: S2-S9 and S11. S10/S12 are design-only limitations, not implemente
 - Run costly campaigns on existing remote infrastructure; no duplicate benchmark framework.
 - Bound any fence-security claims to the delivered Sprint 600 evidence.
 
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: claude (reviewer, gate and merge: claude).

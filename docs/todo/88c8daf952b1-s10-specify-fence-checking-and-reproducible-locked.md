@@ -25,4 +25,4 @@ Cover every shipped fence language, compiler/syntax-only/type-check coverage, op
 Extend existing environment plans rather than creating a parallel planner. Specify exact toolchain identities, trusted digest provenance, dependency locks, relevant environment inputs, ambient inheritance, PATH resolution, overrides and transfer of resolved identity into execution. Record floating Rust/Python selections and remote checksum retrieval as gaps; choose exact versions and trusted digest artifacts before implementation.
 
 No runtime, toolchain, provisioning or lock implementation in this story.
-Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
+Planned owner: agy (reviewer, gate and merge: claude).
