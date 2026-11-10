@@ -11,8 +11,8 @@ from it.
 |---|---|---|
 | Claude private memory, `bashy kb recall`, `yc recall` | nothing about command counts or telemetry | — |
 | OTel spool `~/.agents/otel/spool/spans.jsonl` | 24,482 `exec` spans (`cmd_name`, `cmd_argv`, `cmd_exit_code`, `cmd_duration_ms`), 160 distinct names; the spool is per-day | 2026-11-10 only |
-| VictoriaTraces behind the `otel-stack` service (`/traces` prefix) | 76,215 spans, all outpost HTTP (`GET /apps`, `GET /app/:name/*p`); zero exec spans | 2026-11-03 → 2026-11-10 |
-| VictoriaLogs behind the same service (`/logs` prefix) | empty | — |
+| OTel trace store behind the `otel-stack` service (`/traces` prefix) | 76,215 spans, all outpost HTTP (`GET /apps`, `GET /app/:name/*p`); zero exec spans | 2026-11-03 → 2026-11-10 |
+| OTel log store behind the same service (`/logs` prefix) | empty | — |
 | **bashy execlog** `~/.bashy/exec/<date>/ep-*.jsonl` (schema `bashy-execlog-v1`, one record per executed command with `cmd`, `template`, `argv`, `exit`, `effects`) | **2,841,986** episode records, **1,245** distinct command names — the complete history | 2026-08-05 → 2026-11-10 |
 
 The exec spans never reach the trace store, so the OTel side only answers

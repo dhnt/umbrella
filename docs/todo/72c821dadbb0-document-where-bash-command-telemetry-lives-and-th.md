@@ -1,7 +1,7 @@
 ---
 id: 72c821dadbb0
 kind: doc
-title: Document where bash command telemetry lives and the full command invocation tally (execlog vs OTel spool vs VictoriaTraces)
+title: Document where bash command telemetry lives and the full command invocation tally (execlog vs OTel spool vs OTel trace store)
 seq: 94
 status: todo
 priority: p2

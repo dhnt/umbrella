@@ -16,7 +16,7 @@ works for a bashy session today.
 | Stage | Surface | Reads | Works for a bashy session today? |
 |---|---|---|---|
 | Detect, live | space-time advisor hints on stderr; `service.status` state-change rollups; coach intervention spans | the failing command's own result; status state machine; tool-call stream | yes |
-| Detect, post | `bashy otel failed`, `bounds`, `guessed`, `cost`, `why-slow` | VictoriaTraces and VictoriaMetrics only | no: every verb returns 0 matches |
+| Detect, post | `bashy otel failed`, `bounds`, `guessed`, `cost`, `why-slow` | the OTel trace and metrics stores only | no: every verb returns 0 matches |
 | Detect, post | `bashy graph history --failed --since D --episode E` | execlog, 91 days | yes, verified live |
 | Explain | `why-slow` trace tree; `bound.*` and `value.*` spans | the stack | only for outpost HTTP spans |
 | Recover | `bashy skill run --adapt --repair-agent` | the skill's own contract and effect cap | yes, but reads no telemetry |
@@ -82,8 +82,8 @@ carries the stories. Ids are the story files' `id:` in each repo's
 
 | Gap | Story | Repo | Kind |
 |---|---|---|---|
-| VictoriaLogs empty: outpost never installs its slog bridge | `1003a2cac080` | outpost | bug |
-| Exec spans never reach the stack | `12e9009d3244` drain the span spool into VictoriaLogs | yoke | feature |
+| OTel log store empty: outpost never installs its slog bridge | `1003a2cac080` | outpost | bug |
+| Exec spans never reach the stack | `12e9009d3244` drain the span spool into the OTel log store | yoke | feature |
 | Verbs blind to bashy (finding 1) | `0d43fd1f9d65` answer `failed`/`bounds`/`guessed`/`why-slow` from spool and execlog when the stack has no exec spans | yoke | feature |
 | Error spans say nothing (finding 3) | `742fd57377db` exec error spans carry episode, principal, template and a scrubbed stderr excerpt | yoke | enhancement |
 | Recovery reads no telemetry (finding 4) | `55730ebaf952` hand a failed command trajectory to the repair loop | yoke | feature |

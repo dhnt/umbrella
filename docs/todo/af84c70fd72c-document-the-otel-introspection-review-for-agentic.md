@@ -8,5 +8,5 @@ priority: p2
 created: 2026-11-10T20:07:27.206543Z
 sprint: 611
 sprint_id: 7de44c27-d277-58b6-b42d-e5fabc9d668f
-sprint_title: 'OTel logs signal: wire outpost''s slog bridge and drain the bashy span spool into VictoriaLogs'
+sprint_title: 'OTel logs signal: wire outpost''s slog bridge and drain the bashy span spool into the OTel log store'
 ---
