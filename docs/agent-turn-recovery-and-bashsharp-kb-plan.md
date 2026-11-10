@@ -70,7 +70,7 @@ When a third-party coding agent (`claude`, `codex`, `opencode`, `gemini`, `agy`,
 - **`yoke/pkg/execlog/transitions.go`**:
   - Chain sequential commands across distinct `bashy -c` PIDs within the same `(Episode, TurnID)`.
 - **`yoke/pkg/otelquery`**:
-  - Add `bashy otel recovered` querying VictoriaTraces when available and falling back to scanning `~/.agents/otel/spool/spans.jsonl` offline.
+  - Add `bashy otel recovered` querying the OTel trace store when available and falling back to scanning `~/.agents/otel/spool/spans.jsonl` offline.
 
 ### Story S4 — Auto-Compose & Evolve Wiki-Versioned KB Runbooks with `Bash#` Script/Skill Drafts
 - **`yoke/pkg/execlog/turnkb.go`**:
