@@ -9,6 +9,7 @@ labels:
     - satellite
     - cli
     - docs
+    - satellite-cli
 created: 2026-11-10T01:43:06.799342Z
 sprint: 606
 sprint_id: ebee3343-b774-520a-9d53-b57b306f4210
@@ -25,3 +26,4 @@ Scope
 
 Acceptance
 - Help, schema, and docs match the consolidated CLI surface; end-to-end HTTP fixture tests verify primary pairing, multi-satellite attachment, and member sharing.
+- Owner/member regression (reuse the S587 members sandbox e2e, no new harness): a member reaches a shared app; the shared LLM through the satellite answers 200 for a shared member, 403 for an unshared member, 401 without a credential; a member without an outpost reaches the pooled /v1 with only their satellite credential; S602 per-peer limits still apply.
