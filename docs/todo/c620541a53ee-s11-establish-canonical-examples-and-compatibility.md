@@ -13,7 +13,19 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S5/S7/S8. Curate executable examples from existing corpora and verify formatter idempotence and parse/print semantics across supported shell, typed and fence constructs. Publish execution-mode and concurrency guarantees.
-Acceptance: mixed/unit/compiled/fence matrices state sharing, lifetime, cancellation and cleanup boundaries; checker warns about mixed-task writes discarded by snapshot semantics without changing those semantics. Reconcile version claims and distinguish current behavior from historical measurements. Keep legacy aliases silent. Record compatibility/collision policy without changing dialect activation or claiming dialect-on parity not proved by tests.
-Do not invent a new corpus when existing fixtures/examples cover the requirement.
-Planning-only creation.
+## Outcome
+Consolidate executable examples, compatibility evidence and accurate execution-mode guarantees using existing corpora.
+
+Dependencies: S4/S5/S7/S8.
+
+## Acceptance
+- Verify formatter idempotence and parse/print semantics across supported shell, typed and fence constructs.
+- Publish mixed/unit/compiled/fence matrices for sharing, lifetime, cancellation, cleanup, runtime dependencies and deployment boundaries.
+- Document S4's discarded-write warning; S4 owns checker implementation.
+- Reconcile version drift and current claims; historical performance and conformance evidence retains its candidate/date and limits.
+- State workload-specific performance cliffs and explicit compiled alternatives without silently substituting compiled runs for interpreted correctness.
+- Record syntax collisions and compatibility policy; preserve dialect activation and silent aliases. Do not claim unproved dialect-on parity.
+- Recognize existing structured command results, task cleanup, C# fences and examples; do not build a duplicate corpus.
+
+New deprecation registries, alias warnings and governance mechanisms remain deferred.
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

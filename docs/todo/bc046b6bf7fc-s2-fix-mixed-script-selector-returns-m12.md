@@ -13,6 +13,17 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S1. Evaluate struct selectors in typed returns as typed expressions rather than literal shell text.
-Acceptance: existing M12 prints k=7, with nested-selector and pointer-selector regression cases. Update the fixture currently expecting k=j.ID and regenerate the support ledger from its source. Check interpreted and compiled routes separately and preserve documented differences. No silent fallback from an unsupported typed expression to successful literal text.
-Planning-only creation; implementation requires a later execution instruction. S3 follows S2.
+## Outcome
+Repair M12 successful wrong-result behavior: typed selector returns evaluate values rather than returning literal source text.
+
+Dependencies: S1.
+
+## Acceptance
+- Existing M12 prints k=7; cover nested selectors and pointer selectors.
+- Update the fixture currently expecting k=j.ID and regenerate the support ledger from its source.
+- Typed expressions evaluate correctly or refuse explicitly; no successful literal-text fallback.
+- Verify mixed interpreted, package-led and compiled routes independently where applicable; retain documented route differences.
+- Preserve ordinary shell return behavior and typed value identity.
+
+S3 follows S2 by sprint delivery policy.
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

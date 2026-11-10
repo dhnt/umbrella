@@ -13,6 +13,16 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S3/S5. Implement M10 range loops and M11 union constraints within typed constructs. Keep M09 top-level Go control flow unsupported with a specific positioned diagnostic and tested workaround; preserve the streaming parser boundary.
-Acceptance: range and union cases have correct output/type behavior, malformed variants refuse clearly, and shell pipe/control syntax stays compatible. Update fixtures, generated Go-delta docs and refusal lookup together. Do not solve top-level ambiguity by increasing arbitrary lookahead or changing dialect activation.
-Planning-only creation; M12 is owned by S2.
+## Outcome
+Implement M10 range loops and M11 union constraints within typed constructs; retain M09 top-level Go control flow as unsupported with a positioned diagnostic and tested workaround.
+
+Dependencies: S3/S5.
+
+## Acceptance
+- Range and union fixtures produce correct output/type behavior; malformed variants refuse clearly.
+- Preserve shell pipes, control syntax, dialect activation and streaming parser boundaries.
+- Update fixtures, generated Go-delta docs and refusal lookup together.
+- Do not address M09 by increasing arbitrary lookahead.
+- M12 belongs to S2. Keyword-call expressions and negative numeric arguments remain separately recorded deferred parser repairs, not implicit S7 scope.
+
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

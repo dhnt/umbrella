@@ -13,7 +13,16 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S1/S5/S8; coordinate with Sprint 600. Design deliverable only in this sprint: an implementation-ready specification for opt-in fence checking and locked execution, extending existing environment plans rather than adding a parallel planner.
-Acceptance: define coverage for every shipped fence language, strict TypeScript checking as an opt-in, syntax-only versus type-check coverage, missing-tool behavior, explicit provisioning policy, exact toolchain identities, digest provenance, relevant environment inputs, override identities and lock handling. Specify source-mapped diagnostics and how resolved execution identity reaches the run. Checking never invokes fence entry points or silently provisions tools. Python type checking must identify its selected checker and availability.
-Record current floating Rust/Python selections and remote checksum retrieval as concrete gaps; select exact versions and trusted digest artifacts in the specification before implementation.
-No runtime/toolchain changes in this story.
+## Outcome
+Design-only deliverable with two independently reviewable sections: optional fence verification and reproducible locked execution.
+
+Dependencies: S1/S5/S8; coordinate with Sprint 600.
+
+## Fence verification acceptance
+Cover every shipped fence language, compiler/syntax-only/type-check coverage, opt-in strict TypeScript, selected optional Python checker, missing-tool behavior and source-mapped diagnostics. Checking never invokes fence entry points or silently provisions tools.
+
+## Locked execution acceptance
+Extend existing environment plans rather than creating a parallel planner. Specify exact toolchain identities, trusted digest provenance, dependency locks, relevant environment inputs, ambient inheritance, PATH resolution, overrides and transfer of resolved identity into execution. Record floating Rust/Python selections and remote checksum retrieval as gaps; choose exact versions and trusted digest artifacts before implementation.
+
+No runtime, toolchain, provisioning or lock implementation in this story.
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

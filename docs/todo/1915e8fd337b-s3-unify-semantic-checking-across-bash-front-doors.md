@@ -13,6 +13,19 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S2. Introduce one shared analysis entry point combining existing CheckProfile and CheckBashSharp obligations; reuse from standalone checking, bashy check and transpilation.
-Acceptance: equivalent inputs produce equivalent semantic verdicts, stable diagnostic identities and consistent source locations. Keep lowering-only limitations separate from source semantic rejections. Checking builds no runner and executes no program. Retain package-led Go checking. Do not describe the union of existing checks as full Go type safety.
-Planning-only creation. S4-S6 follow this shared foundation.
+## Outcome
+Establish one semantic analysis entry point combining CheckProfile and CheckBashSharp, reused by standalone checking, bashy check and transpilation.
+
+Dependencies: S2 by required delivery sequence.
+
+## Interface ownership
+Own the shared result contract: positioned source diagnostics with stable identities, checked/unchecked coverage, and explicit host-capability inputs. S4/S8 own added checks; S5 owns presentation. Keep bashy/yoke policy dependencies out of the standalone language.
+
+## Acceptance
+- Equivalent source and analysis context produce equivalent semantic verdicts and locations across front doors.
+- Source semantic rejection remains distinct from lowering/toolchain limitations; transpilation may still refuse otherwise valid source for those limitations.
+- Analysis builds no runner and performs no user execution, shell expansion or implicit provisioning.
+- Retain package-led Go checking and existing source-profile identities.
+- The union of current checks is described as bounded checking, not full Go type safety.
+
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

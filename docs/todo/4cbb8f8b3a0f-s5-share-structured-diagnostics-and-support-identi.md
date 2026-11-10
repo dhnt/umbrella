@@ -13,6 +13,18 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S3; integrate S4 diagnostics. Add bashsharp --check --json. Preserve bashy-check-v1 with additive fields for shared diagnostic identities, source ranges, checked coverage and workaround hints.
-Acceptance: parser positions survive both front doors, text and JSON agree on verdict, deterministic results cover file/stdin/-c, and Go-delta lookup uses codes where available rather than depending on exact diagnostic prose. Existing consumers and exit statuses remain compatible. Keep source and lowering limitations distinguished.
-Planning-only creation. LSP and semantic navigation remain separate follow-ups.
+## Outcome
+Unify machine-readable diagnostics and support identities using S3's analysis contract. Add bashsharp --check --json and additive fields to bashy-check-v1.
+
+Dependencies: S3. Establish the presentation contract before final S4/S8 integration; S4/S8 can add diagnostic producers without a circular dependency.
+
+## Acceptance
+- Preserve parser source positions, stable codes, source ranges, coverage and workaround hints.
+- File, stdin and -c inputs produce deterministic reports; text and JSON agree on verdict.
+- Existing bashy fields/consumers and exit statuses remain compatible.
+- Go-delta lookup uses stable codes where available; retain a compatibility fallback for older text-only refusals.
+- Source errors and lowering restrictions remain distinguishable.
+- Verify current runtime refusal fixtures against generated support metadata, not metadata consistency alone.
+
+LSP, semantic navigation, machine-applicable edits and a new AST CLI are separate deferred proposals; do not imply implementation by adding hints.
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

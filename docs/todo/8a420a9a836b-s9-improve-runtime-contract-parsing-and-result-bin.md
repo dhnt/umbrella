@@ -13,6 +13,19 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S8. Cache parsed contract checks within the owning runtime lifecycle. Preserve RESULT and STATUS; add RESULT_0, RESULT_1, ... and an error binding for typed error results.
-Acceptance: multi-result (T,error) contracts can inspect each result and the error; repeated calls reuse parsed checks without leaking variable state or unbounded cache growth. Preserve precondition body suppression, body failure, cancellation, exit and yield semantics. Validate interpreted and compiled hosts separately. Contracts remain runtime shell checks, without purity, rollback or static-proof claims.
-Planning-only creation.
+## Outcome
+Cache parsed runtime contract checks within the owning lifecycle and expose multi-result bindings.
+
+Dependencies: S8.
+
+## Interface
+Preserve RESULT and STATUS. Add RESULT_0, RESULT_1, ... and ERR for typed error results; document rendering and nil/error behavior without changing when postconditions execute.
+
+## Acceptance
+- Contracts on (T,error) inspect each result and the error through documented bindings.
+- Repeated calls reuse parsed checks with bounded retention and no variable-state leakage between invocations.
+- Preserve precondition body suppression, body failure, cancellation, exit and yield behavior.
+- Validate interpreted and compiled hosts separately, including missing-provider limitations.
+- Contracts remain runtime shell checks; no purity, rollback or static-proof claim.
+
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.

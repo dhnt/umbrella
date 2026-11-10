@@ -13,7 +13,16 @@ sprint_id: 225786a1-0676-58ef-9bdf-e3e1018c3818
 sprint_title: Bash# correctness, checking, and execution guarantees
 ---
 
-Depends on S1; use S11 mode guarantees. Design deliverables only: separate briefs for bridge pointer-origin/closure ownership; readonly retention and identity remapping; persistent C/C++/Go workers; non-recursive scalar evaluation.
-Acceptance: each brief gives baseline evidence, safety invariants, dependencies, test commands and measurable acceptance. Ownership preserves retained native pointers and cross-call identity; no call-scoped/weak-reference cleanup that repeats rejected designs. Readonly covers cloned identity, owner attribution and zero-size cases. Workers cover cancellation, process groups, lifecycle bounds, per-call env and Sprint 600 routing. Scalar work preserves original interpreted correctness identities and reports workload-specific performance, allocation and stack measurements.
-Link extraction to Sprint 575 (65ce85f5-87c0-5863-bf55-62de86f5df36) and Sprint 581 (cb7f2d66-9c30-5d68-9cbc-ec76c9f7f6d7); do not duplicate or authorize extraction.
-No speculative reclamation, worker conversion or evaluator redesign implementation in this sprint.
+## Outcome
+Design-only deliverable: four separate repair briefs, each with baseline evidence, safety invariants, dependencies, test commands and measurable acceptance.
+
+Dependencies: S1; consume S11's mode guarantees before finalizing.
+
+## Required briefs
+1. Bridge pointer-origin/closure ownership: preserve retained native pointers and cross-call identity; do not repeat rejected call-scoped or weak-reference cleanup designs.
+2. Readonly lifetime/identity: retained bindings, cloned identity remapping, owner attribution, zero-size slice cases and compiled negative-case execution.
+3. Persistent C/C++/Go workers: cancellation, process groups, bounded lifetime, per-call environment and Sprint 600 routing; preserve actual language/runtime behavior.
+4. Non-recursive scalar evaluation: interpreted correctness identity plus workload-specific timing, allocations and recursion-stack measurements. No automatic substitution of compiled execution.
+
+External extraction ownership: Sprint 575 UUID 65ce85f5-87c0-5863-bf55-62de86f5df36 and Sprint 581 UUID cb7f2d66-9c30-5d68-9cbc-ec76c9f7f6d7. Do not duplicate extraction or authorize runtime redesign, reclamation experiments or worker conversion here.
+Planning record only: implementation requires a separate execution instruction. Leave this story todo and unassigned; no code, worker launch or release is authorized by this rewrite.
