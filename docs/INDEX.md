@@ -18,3 +18,4 @@
 - `agentic-cli-support.md` — Reference for bashy agentic CLI support across the built-in fleet catalog, install-agent wiring, ambient detection, and custom examples/fleet/tools/ recipes (including dsh)
 - `bashsharp-review-agy.md` — External SOTA research (by `agy`) on modern programming language traits (2025–2026) and architectural/codebase gap evaluation for `Bash#` (`G1`–`G11`)
 - `bashsharp-review-muse.md` — Agentic-era language trait re-ranking (by `muse`) from MultiPL-E / type-constrained generation evidence, plus Bash# gap evaluation (traits 1–11)
+- `bashsharp-review-claude.md` — Bash# gap evaluation (by `claude`) against an evidence-ranked agentic-era trait list; G1–G7 with dialect-on superset path
