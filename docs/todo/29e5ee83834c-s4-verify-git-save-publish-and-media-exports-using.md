@@ -3,14 +3,17 @@ id: 29e5ee83834c
 kind: enhancement
 title: S4 Verify Git save/publish and media exports using existing tool contracts
 seq: 102
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.535651Z
+assignee: codex-gpt6-luna
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T07:11:59.953721Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S1. Reuse native autosave, export, Git and Desk mechanisms. Explicitly saved artifacts live in local Git repos with KB short-note/reference records; Publish explicitly synchronizes a configured remote. GitHub is optional. Preserve original tool authority and source/revision provenance. Large binary media uses Git LFS; never put credentials, private share tokens or app databases into exported repo content. Cover structured and readable outputs from boards/forms/charts plus recordings, transcripts/captions, video and necessary build inputs. Acceptance: local save/commit and explicit remote round trip retain usable references/assets; concurrent edits, offline/remote errors and missing LFS objects surface without silent overwrite or native-content loss. Repair only evidenced gaps; no new sync daemon.

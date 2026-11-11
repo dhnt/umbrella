@@ -3,15 +3,18 @@ id: ca38c672e617
 kind: bug
 title: S11 Close desk-app web-to-CLI parity gaps (whiteboard, brainstorm, form answer, chart join)
 seq: 109
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
     - parity
 created: 2026-11-11T04:01:42.389783Z
+assignee: codex-gpt6-sol-w91
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:40:04.916511Z
+closed_by: claude-opus5.5-s614
 ---
 
 Found by S1 (53b78fabbe9f; audit in bashy docs/ui-cli-parity.md, "Sprint 614 S1" section). Parity is one-way: every web/app action needs a bashy CLI path; CLI-only features need no page. Four desk apps expose page/HTTP actions with no CLI verb:

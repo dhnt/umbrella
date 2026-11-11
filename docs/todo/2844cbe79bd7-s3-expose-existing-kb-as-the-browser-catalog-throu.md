@@ -3,14 +3,17 @@ id: 2844cbe79bd7
 kind: enhancement
 title: S3 Expose existing KB as the browser catalog through Klatch and Viewer
 seq: 101
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.392532Z
+assignee: claude-fable5.1
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T07:14:38.117205Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S1 and relevant S2 fixes. KB is the primary catalog of short notes/references, using existing kind/filter/link/scope operations. Original content stays authoritative in its repo/app. Reuse Klatch navigation, Viewer rendering and Notepad editing; no Library database, second wiki store or alternate link syntax. Verify browse/filter/open/backlinks for personal/team/session materials; add only missing adapters/UI paths. KB record writes must use kb verbs, not hand-edited store files. Keep Viewer report-book history intact. Acceptance: a user opens KB from Klatch, finds a relevant record and follows its existing ref to original content; scoped access is honored and no full-content duplication is required.

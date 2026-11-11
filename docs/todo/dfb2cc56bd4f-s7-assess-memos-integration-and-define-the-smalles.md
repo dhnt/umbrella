@@ -3,7 +3,7 @@ id: dfb2cc56bd4f
 kind: spike
 title: S7 Assess Memos integration and define the smallest supported adapter
 seq: 105
-status: assigned
+status: done
 priority: p2
 labels:
     - collaboration-mvp
@@ -12,6 +12,8 @@ assignee: agy-gemini3.8-flash
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:40:04.059903Z
+closed_by: claude-opus5.5-s614
 ---
 
 Inspect whether Memos is already packaged, deployed or integrated before proposing work. Evaluate https://github.com/usememos/memos at an explicit supported release. Accept author-owned editing: shared co-editing is not required. Reuse existing app hosting/auth/sharing patterns and Memos API/MCP; keep notes native, with explicit KB short-note/reference registration and optional Git snapshot export. Verify team/private visibility mapping, identity/source preservation, token handling and existing refs adapter needs. Acceptance: evidence-backed exists/missing matrix, pinned compatibility recommendation and minimal follow-up stories for actual gaps. No fork, deployment, two-way content sync or separate notes catalog authorized by this spike.

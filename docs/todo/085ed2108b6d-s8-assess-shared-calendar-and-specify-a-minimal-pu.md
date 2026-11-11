@@ -3,14 +3,17 @@ id: 085ed2108b6d
 kind: spike
 title: S8 Assess shared Calendar and specify a minimal pure-Go option if absent
 seq: 106
-status: todo
+status: done
 priority: p2
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:37.117163Z
+assignee: claude-fable5.1
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:40:04.373279Z
+closed_by: claude-opus5.5-s614
 ---
 
 Inspect all existing app/example/schedule capabilities first. Current schedule command is command automation; determine whether a shared human calendar exists elsewhere. Calendar should reference existing Session/Klatch/KB entities and use existing store/ref/access conventions. MVP needs shared dated sessions, timezone-aware display, participant access and links to materials. Recurrence and per-occurrence exceptions are optional follow-ups unless already available at negligible integration cost. Scheduling must not implicitly launch agents. Prefer existing functionality; if genuinely missing, assess a small pure-Go backend with browser UI and Git-managed durable event definitions, recording minimum dependencies and implementation stories. Reminder automation may reuse schedule but must be explicit. Acceptance: evidence-backed reuse/build decision and bounded MVP follow-up; no full calendar build, deployment or third-party integration undertaken in this discovery story.

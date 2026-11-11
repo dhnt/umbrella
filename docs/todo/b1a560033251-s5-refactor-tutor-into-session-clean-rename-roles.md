@@ -3,14 +3,17 @@ id: b1a560033251
 kind: refactor
 title: S5 Refactor Tutor into Session (clean rename, roles from formats)
 seq: 103
-status: todo
+status: done
 priority: p2
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.680429Z
+assignee: codex-gpt6-luna
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:39:49.87725Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S1 (name-collision check only). Operator decision 2026-11-11: refactor, not alias. Tutor is new and has no field use or tested stored state, so rename it outright to Session — no tutor alias, no compatibility shim, no migration of stored state. Scope: move examples/tutor -> examples/session (tutor.bsh -> session.bsh, register.sh registers `session`, skill name, contract, prompts, content, server, browser test, Python tests and README); rename every user-visible string, identifier, state/data directory and env name from tutor to session; update live references (docs/setup.md, examples/record, examples/shaping/hello-world/register.sh, skills/bashy recipes, kb pages found by `bashy kb search tutor`). Historical records (CHANGELOG, release notes, closed todos, past sprint plans) stay unchanged. Role labels are not hardcoded: the organizer/participant names come from each format's `roles` (class: teacher/student; meeting/session/solo as defined), and generic text uses "session"/"organizer". Hosts that registered the old example drop it explicitly (`bashy commands rm tutor`, `bashy skill rm tutor`) — documented in the README, not automated.

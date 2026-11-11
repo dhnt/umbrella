@@ -3,15 +3,18 @@ id: "219450271297"
 kind: bug
 title: S10 Circles are owner-defined names; the four are defaults (wire, fake, docs)
 seq: 108
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
     - boundary
 created: 2026-11-11T03:31:16.652956Z
+assignee: opencode-kimi-k3
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:39:50.914159Z
+closed_by: claude-opus5.5-s614
 ---
 
 Operator intent (2026-11-10): a circle is any owner-chosen name; family, friend, team and guest are only the default circles. Root cause: the W0 wire-review ruling (cloudbox ticket a99e88ac item 3a, 2026-11-09) narrowed the original ask ("family|friend|team|guest; optional team:<name>") to a closed set, and the public wire contract, the fake and the docs followed it. Classified as a spec defect; the access rule is already generic (yoke pkg/boundary Allowed matches `g == m.Circle`; `llm peer --circle` passes any name).

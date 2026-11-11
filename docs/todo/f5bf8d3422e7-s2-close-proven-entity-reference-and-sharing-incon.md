@@ -3,14 +3,17 @@ id: f5bf8d3422e7
 kind: bug
 title: S2 Close proven entity-reference and sharing inconsistencies across existing apps
 seq: 100
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.247539Z
+assignee: codex-gpt6-sol
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T07:18:03.719416Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S1. Correct only demonstrated gaps in existing parsers, store resolvers, emitters and app links. Reuse canonical kind:id and [[kind:id]], existing UUID/UID, slug and scoped sequence semantics; do not mint a parallel artifact identity. Extend the existing closed registry only for a demonstrated unrepresented entity, with owning resolver and existing ratchet tests. Preserve identity across exports and clones; do not use host-local sequence as portable identity. Sharing/opening uses existing routing and audience checks. Acceptance: affected CLI/JSON/browser paths resolve the same entity; unresolved, ambiguous and denied references are explicit; references never grant access; unchanged tools verified without edits.

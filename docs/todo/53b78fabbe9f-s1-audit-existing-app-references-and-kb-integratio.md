@@ -3,14 +3,17 @@ id: 53b78fabbe9f
 kind: requirement
 title: S1 Audit existing app references and KB integration; identify only proven gaps
 seq: 99
-status: todo
+status: done
 priority: p0
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.124074Z
+assignee: codex-gpt6-sol-w84
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T04:40:03.743789Z
+closed_by: claude-opus5.5-s614
 ---
 
 Inventory actual registered commands, code and existing acceptance evidence for Klatch, Tutor/Session, KB, Viewer, Notepad, Brainstorm, Whiteboard, Form, charts, recording, transcription and video. Record per tool: owning entity/store, accepted/emitted refs and UUID/UID/slug/scoped seq behavior, define resolver, browser open/share, audience checks, output/export, Git support and known defects. Reuse yoke/pkg/ref, bashy/docs/command-atlas.md section 2.8, script/e2e-refs.sh and existing Desk tests. Do not infer all tools are integrated merely because a common grammar exists. Acceptance: one compact matrix on this story with code/evidence refs; each gap mapped to S2-S6 or explicitly deferred; passing existing behavior needs no rewrite. Audit Memos/Calendar via S7/S8. No parallel identity/catalog design.
