@@ -14,6 +14,11 @@ sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
 ---
 
+Depends on S10 (219450271297): circles are owner-defined names, so a suite can be shared with a named circle such as `s587-class`.
+
+Grant rule (reuse, do not reinvent): an app or suite share grants to an email or a circle with exactly the semantics of yoke pkg/boundary Allowed (active, mutual member whose email or current circle matches), the rule `llm peer --circle` already enforces. Suite expansion: sharing a suite materializes per-app circle share rows (source suite) that are rebuilt-and-replaced whenever the suite or grant changes, following the scopedpairing.Sync pattern; the access check only gains the circle match.
+
+
 Operator requirement 2026-11-11: an owner groups account members into circles (exists) and groups apps into a suite, then shares one suite with one circle instead of granting each app to each member. Bashy CLI and the cloudbox web UI both support it with identical entities, permissions and approval rules.
 
 Existing, reused (verified 2026-11-11): circles via `bashy member invite|set|ls --circle`; `llm share --email/--circle` member binding; per-app host shares `outpost apps share APP --email E` over the public wire `POST /api/v1/hosts/{host}/shares {app,email}`. Missing: a suite entity, a circle share target for apps, and suite share grants.
