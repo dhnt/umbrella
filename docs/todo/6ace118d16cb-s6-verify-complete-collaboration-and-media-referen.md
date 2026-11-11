@@ -3,14 +3,17 @@ id: 6ace118d16cb
 kind: test
 title: S6 Verify complete collaboration and media reference journeys
 seq: 104
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.829218Z
+assignee: claude-opus5.5-s614
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T09:32:42.787021Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S2-S5 as applicable. Use existing Desk/reference/browser harnesses and established test hosts; no heavy suites on the dev host. Exercise Klatch -> Session -> KB references -> Memos if already available -> brainstorming/whiteboard/forms -> chart -> recording/transcript/video -> linked Viewer report -> local Git save -> explicit publish -> fresh checkout. Calendar/Memos gaps discovered in S7/S8 must be named as absent/deferred, not reported passing or used to block verification of existing apps. Check scope/permission denial, stale/dangling refs, revision provenance, renamed content, concurrent saves, offline publishing and LFS retrieval. Acceptance: concise per-tool evidence tied to candidate versions; no failures silently skipped; docs distinguish working flows from remaining gaps.

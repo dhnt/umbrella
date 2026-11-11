@@ -3,15 +3,18 @@ id: 11bbc9f6c56b
 kind: feature
 title: S9 Share a suite of apps with a circle of members (CLI + web parity)
 seq: 107
-status: todo
+status: done
 priority: p1
 labels:
     - collaboration-mvp
     - parity
 created: 2026-11-11T03:19:34.906929Z
+assignee: codex-gpt6-sol
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
+closed: 2026-11-11T09:02:10.526757Z
+closed_by: claude-opus5.5-s614
 ---
 
 Depends on S10 (219450271297): circles are owner-defined names, so a suite can be shared with a named circle such as `s587-class`.
