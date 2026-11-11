@@ -9,9 +9,9 @@ labels:
     - shaping
     - dogfood
 created: 2026-11-11T20:10:51.364024Z
-sprint: 617
-sprint_id: 08692c1f-daed-5ad4-831e-c24feb4b9ac8
-sprint_title: 'Bashy dogfooding: software shaping from local installations through staging to upstream'
+sprint: 618
+sprint_id: deff293a-cb7b-552c-9392-3edf1b388c44
+sprint_title: 'Bashy shaping wave 2: coupled-source pilot, dhnt release ownership, shaping-first enforcement'
 ---
 
 Depends on P4/P7. Adapt existing build-once/byte-promotion mechanism for qiangli staging artifacts -> dhnt official releases. Verify repository identity, exact source, complete assets, hashes and provenance across that boundary before publication; preserve historical qiangli release URLs/assets. Preserve existing module paths for this transition; ensure consumer commits remain resolvable there. No bashsharp/* release or organization changes.

@@ -9,9 +9,9 @@ labels:
     - shaping
     - dogfood
 created: 2026-11-11T20:10:51.520591Z
-sprint: 617
-sprint_id: 08692c1f-daed-5ad4-831e-c24feb4b9ac8
-sprint_title: 'Bashy dogfooding: software shaping from local installations through staging to upstream'
+sprint: 618
+sprint_id: deff293a-cb7b-552c-9392-3edf1b388c44
+sprint_title: 'Bashy shaping wave 2: coupled-source pilot, dhnt release ownership, shaping-first enforcement'
 ---
 
 Depends on P5/P6/P7/P8. Update contributor/agent instructions and existing delivery guards so covered skill/script, CLI and coupled changes carry shaping provenance and trusted qualification. Sprint/todo remains source of work requests; weave and Git remain isolation/review mechanisms. No parallel SDLC or second backlog. Old entrypoints may delegate to the shaping path; do not break established users silently.

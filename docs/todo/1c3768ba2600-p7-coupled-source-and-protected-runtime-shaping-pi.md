@@ -9,9 +9,9 @@ labels:
     - shaping
     - dogfood
 created: 2026-11-11T20:10:51.205017Z
-sprint: 617
-sprint_id: 08692c1f-daed-5ad4-831e-c24feb4b9ac8
-sprint_title: 'Bashy dogfooding: software shaping from local installations through staging to upstream'
+sprint: 618
+sprint_id: deff293a-cb7b-552c-9392-3edf1b388c44
+sprint_title: 'Bashy shaping wave 2: coupled-source pilot, dhnt release ownership, shaping-first enforcement'
 ---
 
 Depends on P6. Deliver one bounded change spanning bashy and a necessary dependency, with an immutable multi-repository source/dependency manifest. Publish staging dependency commits before consumer pins; verify standalone GOWORK=off and integrated behavior; qualify exact integrated source before dhnt promotion. Preserve existing published histories and frozen-baseline policy.
