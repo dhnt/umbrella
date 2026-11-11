@@ -22,6 +22,7 @@
 - `bashsharp-review-codex.md` — Bash# agentic-era gap evaluation by `codex`: current-source reproductions, checking and runtime boundaries, research basis, and prioritized recommendations
 
 - `sprint-610-master-execution-plan.md` — Sprint 610 story sequence, planned ownership, compatibility gates and planning-only scope
+- `sprint-617-master-execution-plan.md` — Sprint 617 bashy shaping dogfood: source-verified baseline, P0–P6 wave with P7–P9 split off, vendor lanes, readiness ladder, session-slot workspaces and the classgo example split (planning only)
 - `bash53-gate-79-86-findings.md` — why the Bash 5.3 gate kept reading 79/86 (four disjoint fixture sets, wrong venue, stale claim) and the guards that keep it 86/86
 - `bash-command-invocation-counts.md` — Every bash command sorted by invocations from the bashy execlog (2.84 M records, Aug–Nov 2026) plus the one-day OTel spool; where command telemetry actually lives and how to reproduce the tally
 - `otel-agent-introspection-review.md` — What bashy's OTel machinery gives agentic tools for self-healing during and after a session, stage by stage; six gaps measured live and mapped to Sprint 611 stories
