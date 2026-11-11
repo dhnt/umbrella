@@ -3,16 +3,19 @@ id: 26831ffd110a
 kind: bug
 title: 'S583/S606 carry-over: member-bound door peer through the satellite, plus closing verification'
 seq: 98
-status: todo
+status: done
 priority: p1
 labels:
     - llm
     - satellite
     - carryover
 created: 2026-11-10T22:14:46.774113Z
+assignee: claude-opus5.5-s613
 sprint: 613
 sprint_id: 0072ec8f-a661-5f88-9ee1-e43cae87349f
 sprint_title: 'lern-psic UAT: full-suite close-out of the S607 candidate and member go-live guards'
+closed: 2026-11-11T15:03:54.351305Z
+closed_by: claude-opus5.5-s613
 ---
 
 Carried over when Sprints 583 and 606 were closed on 2026-11-10 at operator direction. The design rule holds: once an outpost is paired and access is shared, permission is assumed, and the door authorizes each request itself (yoke 2eb6733da6ad).
