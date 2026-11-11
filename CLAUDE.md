@@ -186,7 +186,7 @@ dependency pins. Go baseline: Go 1.27 with toolchain go1.27.2. Nested examples
 outside the workspace also use `GOWORK=off`. Full reference: `docs/build.md`.
 
 ```bash
-cd bashy    && make test && make test-bash-container && make test-bash-container-bashpp # sealed, both modes 86/86 = the release gate (docs/bash53-gate-79-86-findings.md)
+cd bashy    && make test && make test-bash-gate   # sealed, both modes 86/86 with fixture-name evidence = the release gate (docs/bash53-gate-79-86-findings.md)
 cd bashsharp && go test ./...
 bashsharp-tests/harness/run.sh            # supply the exact built candidate via BASHY_BIN
 cd outpost  && go test -short ./...       # internal/agent/shell needs a controlling TTY (hangs headless)
