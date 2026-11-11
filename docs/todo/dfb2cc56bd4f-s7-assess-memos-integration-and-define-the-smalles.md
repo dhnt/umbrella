@@ -3,11 +3,12 @@ id: dfb2cc56bd4f
 kind: spike
 title: S7 Assess Memos integration and define the smallest supported adapter
 seq: 105
-status: todo
+status: assigned
 priority: p2
 labels:
     - collaboration-mvp
 created: 2026-11-11T00:52:36.973539Z
+assignee: agy-gemini3.8-flash
 sprint: 614
 sprint_id: b3f5559a-e4b3-5d6a-9e1a-bdd0c3e7afd3
 sprint_title: 'Collaboration MVP: consistent app references, KB catalog, and Memos/Calendar discovery'
@@ -22,3 +23,5 @@ Agent-first CLI parity (operator requirement): everything a human can see or do 
 Audience/interface requirement: Bashy is built for agentic tools to easily discover, use and manage all features through its CLI. Humans can also run the same CLI normally; it is not agent-exclusive, although human-oriented ergonomics are not its design priority. Bashy app/* web interfaces are designed to be human-friendly. Every web-visible capability and management action must have equivalent Bashy CLI support, with the same entities, permissions and approval rules. Agents may also inspect or operate web apps using bashy browser --live, REST APIs or web URLs; these are valid alternative paths, but can be more cumbersome or error-prone and do not substitute for CLI parity. Prioritize agent usability, discoverable help, scriptable/composable operations, structured inputs/outputs and actionable errors. Human TUI polish is not required; a CLI-only calendar does not supply the human-friendly web app.
 
 Placement and graduation requirement: Calendar and Notes/Memos integrations start under bashy/examples/ as independently usable, software-shapeable examples with Bash# command/skill/script wrappers. They are not linked into or made required dependencies of the Bashy core. Reuse existing example registration, app hosting and contract patterns. Graduation is examples -> optional add-on -> foundation/core, following the existing evidence and platform/license/build requirements; this sprint does not authorize automatic graduation. Discovery recommendations and any implementation follow-up must state example-level placement. See [[kb:bashy/extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]].
+
+Operator decision 2026-11-10: PARKED. The S7 spike (bashy docs/memos-decision.md, weave #86) recommends a Memos 26.11.0 example under examples/memos; the operator parked it. No follow-up story is filed; revisit only on an explicit operator request. S7 closes on the decision doc.
