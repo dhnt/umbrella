@@ -3,11 +3,12 @@ id: 5a3c262770b1
 kind: doc
 title: 'L1 product marks: logo/icon/favicon for cloudbox, satellite, outpost, bashy'
 seq: 169
-status: todo
+status: assigned
 priority: p1
 labels:
     - software-shaping
 created: 2026-11-12T19:29:38.851664Z
+assignee: claude-opus5.5
 sprint: 622
 sprint_id: 03e47ab4-d1a0-5152-97e2-eee6dcb08395
 sprint_title: 'Software Shaping one theme: definition, READMEs, qiangli/bash, product marks'
