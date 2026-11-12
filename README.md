@@ -16,6 +16,11 @@ computers you already own into one coherent, self-hostable, agent-operable
 mesh. Build stack: **bash** (pure-Go foundation) → **weave** (git-isolated
 workspace) → **p2p sphere / ollama sharding** → **k8s cluster**.
 
+The theme across all of it is software shaping:
+
+> **Software shaping lets anyone tell an agent, in plain words, how a running tool should work, and get their own verified, reversible version, while everyone else keeps theirs.**
+> [What shaping is →](https://github.com/qiangli/bashy/blob/main/docs/software-shaping.md)
+
 ## What is here
 
 | dir | what |
@@ -25,14 +30,14 @@ workspace) → **p2p sphere / ollama sharding** → **k8s cluster**.
 | `bashsharp/` | Bash# language front door: front · transpile · cmd (`github.com/bashsharp/bashsharp`) |
 | `bashsharp-tests/` | Bash# conformance gate (Go-profile + POSIX-2016 suite) |
 | `bashsharp-tour/` | the Bash# tour + install-matrix CI (repo `bashsharp/tour`) |
-| `coreutils/` | the POSIX implementation package (116-name catalog ∪ GNU coreutils); certification pending |
-| `yoke/` | agentic userland — everything non-POSIX; imports `coreutils`, never the reverse |
+| `coreutils/` | the POSIX implementation package (116-name catalog ∪ GNU coreutils); certification pending. With `sh` it forms [qiangli/bash](https://github.com/qiangli/bash) |
+| `yoke/` | agentic userland and the software shaping engine — everything non-POSIX; imports `coreutils`, never the reverse |
 | `outpost/` | home-host agent (bridge); the peer side of the mesh |
 | `ycode/` | local agentic dev tool |
 | `readline/` `filebrowser/` `nadir/` `bonsai/` `gfy/` | forks and deps pinned as siblings |
 | `appstore/` | DKS app catalog — Helm chart pointers |
 
-The hosted control plane (`cloudbox`, the portal at `tessaro.sh`) and two
+The hosted control plane (`cloudbox`, the portal at `ai.dhnt.io`) and two
 other proprietary projects are **not** in this repo. Nothing here needs them
 to build. If you have access, clone them beside the others — the directories
 are gitignored and resolve as siblings the same way.
