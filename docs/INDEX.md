@@ -32,5 +32,7 @@
 - `bashy-agent-permissions.md` — per-agent authorization discussion: full CRUD+X command/flag matrix vs binding existing Atlas effect caps to the principal (recommended MVP), the bashy-as-sole-gateway vision, and HTTP method semantics incl. QUERY (RFC 10008) as prior art; discussion only
 - `comms-strategy.md` — Sprint 620 strategy for two-way human/agent communications: CLI for agents + required web UI (PWA) for humans, instant clipboard/link switching into Klatch or the web UI, US-legal channel waves (web UI, ntfy, email, Klatch; then Discord/Slack/Telegram, SMS); planning only
 - `sprint-621-master-execution-plan.md` — Sprint 621 master execution plan for Software Shaping TDD (`Red → Green → Refactor`), `shape-tdd.bsh` Bash# skill-script, `dag.md` test graph, and sprint retro loop; planning only
+- `sprint-626-master-execution-plan.md` — Sprint 626 vendor services through one generic service door (`--provider`/`--route`, `bashy-svc-v1`), vendor lanes and measured seeds; planning only
+- `sprint-627-master-execution-plan.md` — Sprint 627 music-video showcase: `film` pipeline, oss draft → commercial final, permissive open-model picks; planning only
 - `brand/README.md` — product marks for cloudbox, satellite, outpost and bashy: rules (45° mirror axis, one square size, shape before color) and per-mark files
 - `sprint-622-master-execution-plan.md` — Sprint 622 master execution plan: software shaping as the one theme (canonical definition, aligned READMEs, qiangli/bash for sh + coreutils, cloudbox/satellite/outpost/bashy product marks); planning only
