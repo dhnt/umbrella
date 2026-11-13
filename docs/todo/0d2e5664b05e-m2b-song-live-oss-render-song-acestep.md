@@ -8,9 +8,13 @@ priority: p1
 labels:
     - media
 created: 2026-11-13T04:13:35.815761Z
+weave: 33
+assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
 sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
+resolution: fixed
+closed_by: codex-gpt6-sol-g
 ---
 
 Split of M2b (eb5e0303) per operator mb:13600. Windows test host (alias in operator mb:13586): 'bashy claim host:<alias>' first, release on every exit; native bashy.exe/.bsh/uv first, WSL only with a recorded reason (mb:13598); never touch the default podman machine; no WSL config change; disk preflight; no AWS; nothing heavy on the dev host. Reuse weights already on the host (do not re-download). Commit evidence as soon as it lands. If a render legitimately needs more than the run's max-runtime, stop, record why, and ask the conductor to raise it explicitly.
@@ -19,3 +23,9 @@ Depends on M2b-w. Render one song clip (bashy song --route oss --json) with weig
 NEVER RE-DOWNLOAD (operator mb:13612): weights are already staged on the Windows test host in the WSL rod cache (BASHY_OSS_CACHE root /root/s627-m2b/cache; ~54 GB: song-acestep 18G, narrate-local 8.6G, transcribe-whisperx 6.2G, image-qwen 20G partial; plus 5.9G HF cache) with per-file SHA256 in docs/sprint-627-m2b-weights-evidence.md. When running rods natively, COPY the staged files (verify the recorded checksums) or point native rods at one shared cache - never fetch them again.
 
 NETWORK (operator mb:13613): never "outpost ssh exec <alias>" (relayed via the cloud satellite). Use only the ad-hoc direct form "outpost ssh <user>@<host> -- ..." (mesh/LAN, ~3-4 s per call) and batch probes into ONE call (one script piped to bash -s, or one powershell -EncodedCommand).
+
+RETRY 1 (conductor, 2026-11-13): run #33 blocked on VENUE setup, not the product (evidence docs/sprint-627-m2b-song-evidence.md; the weave merge auto-closed the story, reopened). Root causes found by the conductor:
+1. "GPU unavailable": ROCm in WSL needs HSA_ENABLE_DXG_DETECTION=1 (AMD ROCDXG bridge, librocdxg 1.2.0 installed). With it, rocminfo lists gfx1151; without it hsa_init fails. Export it in every session/script.
+2. "song command missing": the isolated BASHY_COMMANDS_DIR was empty. Run 'bashy-defaults apply' (or register song + song-acestep) into that isolated ring first.
+3. ACE-Step uv env is CUDA-only: install the pinned ROCm PyTorch wheel into that env (as M3 did: PyTorch 2.9.1+rocm7.2.1), record it.
+Elevation cookie: refresh it yourself when it expires: bashy secret exec <HOST>_SSH_PW=PW -- /bin/sh -c 'printf "%s" "$PW" | outpost connect --stdin <host>' (never print the value).
