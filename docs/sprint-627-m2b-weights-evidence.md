@@ -28,9 +28,10 @@ committed to this public repository.
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/s3gen.pt` | 1,057,165,844 | `9b9ff07e60b20c136e2b1b3d7563a24604e8d2c4c267888d1ee929dd0151d2a3` | included above |
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/t3_cfg.pt` | 1,064,892,246 | `0b2dd5439fe7e94f379561419847a45bf2c79d0e8ea751c6bbe947ce337789cc` | included above |
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/ve.pt` | 5,698,626 | `4b16d836bc598509860f6fa068165a8bb5e9ac84f05582dfcf278a5a372879f1` | included above |
+| transcribe-whisperx / faster-whisper large-v3 | `edaa852ec7e145841d8ffdb056a99866b5f0a478` | `transcribe-whisperx/models/faster-whisper-large-v3/model.bin` | 3,087,284,237 | `69f74147e3334731bc3a76048724833325d2ec74642fb52620eda87352e3d4f1` | 4 s |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
-were downloaded in their respective snapshots. ACE-Step, Qwen Image and
-Whisper large-v3 remain to be staged and verified. These local snapshots
+were downloaded in their respective snapshots. ACE-Step and Qwen Image
+remain to be staged and verified. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
