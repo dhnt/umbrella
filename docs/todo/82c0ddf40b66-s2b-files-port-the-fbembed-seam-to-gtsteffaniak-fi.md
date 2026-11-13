@@ -20,7 +20,7 @@ READ docs/shapeable-apps-worker-brief.md for the sprint-wide rules (license, Lin
 Record of design, evidence, cost and plan: docs/files-fbembed-quantum-port.md.
 
 - License re-verified by reading LICENSE at tag v2.0.2-stable (2c071d1e): Apache-2.0; GitHub API spdx Apache-2.0, 9,146 stars, pushed 2026-11-12, latest release v2.0.2-stable 2026-10-23; no ee/premium/enterprise directories.
-- Fork: qiangli/filebrowser-quantum, branch fbembed on v2.0.2-stable. Commits b8ca4bdf (four behavior-preserving upstream seams: web.NewHandler, settings.InitializeEmbedded, X-Forwarded-Prefix in the index page, preview.StopPreviewGenerator) and 92eae5c2 (backend/fbembed package + committed dist.zip of the built frontend).
+- Fork: qiangli/filebrowser-quantum (GitHub fork of gtsteffaniak/filebrowser, pushed 2026-11-13), branch fbembed on v2.0.2-stable, head 92eae5c2; consumer pin v0.0.0-20261113123010-92eae5c2a3af. Commits b8ca4bdf (four behavior-preserving upstream seams: web.NewHandler, settings.InitializeEmbedded, X-Forwarded-Prefix in the index page, preview.StopPreviewGenerator) and 92eae5c2 (backend/fbembed package + committed dist.zip of the built frontend).
 - Fresh evidence on the dev box (darwin/arm64, Go 1.27.2, CGO_ENABLED=0): go build ./... ok; go vet ./fbembed ok; go test -v ./fbembed 11/11 pass; upstream suites internal/web, pkg/settings, internal/preview, internal/state ok.
 - Binary cost measured (stripped, trimpath, CGO off): old seam 14.9 MB / 90 non-stdlib packages; new seam 42.9 MB / 299. Decision for the S2 owner.
 - NOT done: consumer moves (outpost, yoke, bashy, ycode), umbrella layout (new sibling submodule recommended), frontend re-work (Apps header, theme following, dotfiles pref, hidden login/users/share routes). Listed in the doc.

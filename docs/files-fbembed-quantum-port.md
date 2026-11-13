@@ -42,9 +42,11 @@ name `filebrowser` is taken by the old fork). Branch `fbembed` on
 | `b8ca4bdf` | `feat(embed): seams for in-process embedding` — four small upstream patches |
 | `92eae5c2` | `feat(fbembed): in-process embedding package with committed frontend` |
 
-Push status: the fork is created and the branch pushed by the agent that holds
-the shared GitHub account lease; until then the branch lives in a persistent
-scratch clone on the dev box and this record names the commits by SHA.
+Push status: fork created and branch `fbembed` pushed on 2026-11-13; the
+branch head on GitHub is `92eae5c2a3af8c1c356a838d5164274fbb3db559`. The
+pseudo-version a consumer pins is
+`v0.0.0-20261113123010-92eae5c2a3af` (resolved with `go list -m` against the
+fork, module path `github.com/qiangli/filebrowser-quantum/backend`).
 
 The module path is unchanged (`github.com/gtsteffaniak/filebrowser/backend`);
 consumers point at the fork with a `replace`, exactly as they do for the
@@ -128,8 +130,7 @@ Four consumers import the old seam:
 | ycode | `go.mod` replace only | replace line |
 
 Each consumer gets `replace github.com/gtsteffaniak/filebrowser/backend =>
-github.com/qiangli/filebrowser-quantum/backend <pseudo-version>` once the
-branch is pushed; the umbrella `go.work` needs a `use` entry for the fork's
+github.com/qiangli/filebrowser-quantum/backend v0.0.0-20261113123010-92eae5c2a3af`; the umbrella `go.work` needs a `use` entry for the fork's
 `backend/` directory if the fork is mounted as a sibling.
 
 Open decisions for the S2 owner:
