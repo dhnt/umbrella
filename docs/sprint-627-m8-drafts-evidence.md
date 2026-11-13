@@ -1,5 +1,12 @@
 # Sprint 627 M8: two oss drafts and the storyboard lock
 
+**Current state (revision run, 2026-11-13 17:50Z):** the storyboard is
+re-locked on draft 08 (project `lanterns-r3`, render `03`). That lock
+supersedes the draft-06 lock below. Drafts 07, 08 and 09 are copied to the
+dev box review directory for operator review. See
+[Revision run](#revision-run-2026-11-13-1630-1750z-product-fixes-drafts-0709-re-lock).
+The AWS proof slice (step D) was not started.
+
 Story `efd9bc004b56` (#188). Scope: the two free oss drafts with
 `examples/film/film.bsh` on the Windows test host, the storyboard lock, then
 stop. The commercial `--final` stays an operator-approved remaining check.
@@ -12,6 +19,228 @@ run, and the host did not reboot. Cost was zero. No browser, api or vendor
 stage ran, `--yes` was never passed, and no model weights were downloaded.
 The first attempt, earlier the same day, was blocked; its record is kept
 below under [First attempt](#first-attempt-blocked-by-a-gpu-hang-that-rebooted-the-host).
+
+## Revision run (2026-11-13 16:30–17:50Z): product fixes, drafts 07–09, re-lock
+
+Brief: operator review of drafts 05/06. Fix the two product defects (card
+video too short; one overflowing single-language subtitle cue), then draft
+07 as an animatic with a real shot list, shot numbers, a look sheet, a
+contact sheet and a storyboard table, then re-lock. Zero spend: no browser,
+api or vendor route, no `--yes`, no weights downloaded.
+
+### Product changes (bashy, branch `agent/weave-issue-59-film`, not pushed)
+
+| Commit | Change | Test |
+|---|---|---|
+| `9c078226` | `media cards` holds the card frame for the full `--secs` (`tpad` clone). Root cause, measured before the fix: a 3 s card had 30 decoded video frames (1 s) and 3.02 s of audio | `examples/media/test.sh` counts decoded frames (about 120 for two 2 s cards); all media tests pass |
+| `328453f2` | film keeps the rod's transcript as `transcript.srt`. When its cue count differs from the lyrics, film times each lyric line to the sung words, using a semi-global word alignment and interpolating the lines it cannot match. `media subs` wraps each language to the frame (at most 46 columns) and sizes the banner to its rows | `TestDraftTimesLyricLinesToTranscript` (one merged cue → two bilingual cues) |
+| `31178155` | animatic drafts: `stills[]`, `shots[].still` / `kind` / `beat`, `song.bpm` beat grid, `draft.still_size`, burned `SHOT NN \| KIND \| still` (draft default), plus `storyboard.md`, `contact.png` and `looksheet.png` written for every render; the lock keeps every still | `TestDraftAnimatic`; the whole film suite (6 tests) passes |
+
+### Venue
+
+- **Same host, same native image path:** the Windows test host was claimed
+  for the run. The elevation cookie was refreshed from the vault with
+  `bashy secret exec --stdin`; its value was never printed. The draft
+  reused the previous run's isolated area. It used the same `bashy` binary
+  (SHA-256 `1d37d58c…`), the same native ROCm 10 shim (`ae878007…`), the
+  pinned `image-klein.py` (`24ebedae…`) and the same staged weights. The
+  film/media/door tree is new: the `examples/` tar of bashy `31178155`,
+  SHA-256 `49ce608f…f795f7`.
+- **WSL reason (unchanged):** ACE-Step and WhisperX are staged only in the
+  WSL distro, and both run on the CPU there. Only `image.generate` uses the
+  GPU, and it runs in the native venv. One GPU job runs at a time: the
+  ACE-Step server is stopped as soon as the song envelope lands.
+- **GPU gate before work:** the System log had no new 41/6008/4101 events,
+  and `LiveKernelReports\WATCHDOG` held only the two old dumps (the first
+  attempt's and the previous day's). Two WER 1001 `LiveKernelEvent 141`
+  records appeared at the moment of elevation. Both reference those old
+  dump files and carry "Response: Not available". They are queued reports
+  being re-submitted, not new TDRs.
+- **Run 1 of draft 07 lost to a venue defect (environment):**
+  `outpost ssh exec` caps a remote command at 1 minute by default (10 min
+  server-side maximum). The keepalive client therefore ended after about
+  55 s, and WSL powered the distro off 15 s later. That stopped the film
+  unit during the song (journal: unit `Stopping` at 16:52:27Z, then
+  `System Power Off`). A detached `cmd start` keepalive also failed to start
+  from this session. Fix in the venue: a chain of overlapping keepalive
+  sessions, each 10 minutes (`--timeout 10m`), a new one every 9 minutes,
+  bounded to 90 minutes. The failed render is `lanterns-r3/drafts/01`
+  (no manifest).
+
+### Draft 07 (project `lanterns-r3`, render `02`)
+
+Storyboard v3 (SHA-256 `63163131…c2e2f342beae`): the same characters,
+bibles and seeds as before. It adds `song.bpm` 92, `draft.still_size`
+768×432, four reusable stills (`harbor` wide set, `duet` two-shot,
+`lanterns` and `boats` inserts) and a 15-shot list: 3 wide, 5 insert,
+2 ensemble, 5 close.
+
+| Measure | Value |
+|---|---|
+| Film wall time (`/usr/bin/time -v`) / manifest `elapsed` | 8:32.18 / 512 s, outcome success |
+| Peak RSS | 4,009,196 KiB |
+| `song` (song-acestep, oss, CPU) | 234 s |
+| 6 stills at 768×432 (image-klein, oss, native GPU) | 46 + 28 + 28 + 29 + 28 + 28 s |
+| `transcribe` (whisperx, oss, CPU) | 25 s |
+| 15 still-pan shots + numbering + assembly + sheets | about 70 s |
+| Render/runtime ratio | 512 s / 81.1 s ≈ 6.3 |
+| `cost_classes` | `local`, `oss` (zero cost) |
+| `film.mp4` | 1280×720 h264, AAC, mov_text. Video 81.133 s and audio 81.130 s: the card fix holds (draft 06 had 79.07 s video against 81.06 s audio) |
+
+| Artifact | SHA-256 |
+|---|---|
+| `film.mp4` | `9619010b3ff74ea021b795db53ce1ea0ed3411ff2156b88ef7d5f56556f3bf8f` |
+| `contact.png` (15 shots, numbered) | `5987b0ce011e2c71ec85965bef9202653e908079f36264752b8c5e2c66879f65` |
+| `looksheet.png` (6 stills) | `f20ac72b226134f5343dba4b3b87a8d35f70cbeb9d5b5a9d61a793e6b8c4797d` |
+| `storyboard.md` | `09ca26ecc918855053dbcfc8c3d802f1521eb49e346c47bae8b748d0463a9060` |
+| `timing.srt` / `transcript.srt` | `1ca41c46…` / `03a16b8b…` |
+| `manifest.json` | `eecd835aa69188bc4b8288ba89573a4ea9bf67e889a0bb3dbb307d40986182ff` |
+| `lock.json` (re-lock on this render) | `decf1ba25a7afc0814dce517969c0d49a8bc752b595dc681c8696a4e56e375ce` |
+
+**What draft 07 fixes:** a burned shot number and kind on every shot; a
+varied shot list that reuses its stills; a look sheet and a numbered contact
+sheet; a storyboard table; bilingual subtitle events, one per lyric line
+(eight); card video at full length.
+
+**Defect found in draft 07 (product, in `328453f2`):** WhisperX returned two
+cues. The first ran from 0.031 s to 29.8 s but held only lines 5–6 ("Paper
+boats…"): the VAD folded the intro into the segment. Interpolating by
+character offset placed "Paper" at 0.03 s, which squeezed lyric lines 1–4
+into 0–31 ms, so they are invisible. Because those line anchors were then not
+increasing, `shot_bounds` fell back to even shots. The cuts are beat-snapped
+(8 and 7 beats at 92 bpm), but the lengths are near-equal. Being fixed next
+(draft 08).
+
+### Draft 08 (project `lanterns-r3`, render `03`): timing fixed, storyboard re-locked
+
+Commit `4c17f122` fixes the timing defect: a cue more than twice as long as
+its words take to sing holds them at its end, and every cue lasts at least
+1 s. `TestDraftTimingIntroFoldedIntoCue` covers it. Replayed on draft 07's
+transcript, the fix gives eight visible lines of 3–3.5 s each. Draft 08 ran
+the same storyboard and venue from the `examples/` tar of `4c17f122`
+(SHA-256 `aee1957c…a2bcf`). The System and WER logs showed no new entries
+after draft 07's GPU work.
+
+| Measure | Value |
+|---|---|
+| Wall / manifest `elapsed` | 8:19.33 / 499 s, success; peak RSS 4,009,056 KiB |
+| Stages | song 234 s (CPU); 6 stills 29–30 s each (native GPU); transcribe and assembly as in draft 07 |
+| Render/runtime ratio | 499 / 81.1 ≈ 6.2; cost zero (`local`, `oss`) |
+| Stills | byte-identical to draft 07 (same seeds, same native path) |
+| Transcript | 2 cues (0.74–25.8 s "Hold the light and singing low"; 36.6–53.0 s, three lines) |
+| Timing | 8 cues, one per lyric line, 09.06–53.02 s, 4.5–6.5 s each, all visible |
+| Shot list | line anchors valid, so cuts land on the lyric lines, snapped to the 92 bpm grid. Shot lengths vary from 2.6 s to 9.1 s (4–14 beats) |
+| `film.mp4` | 1280×720, video 81.133 s, audio 81.139 s, mov_text with 8 bilingual events |
+
+| Artifact | SHA-256 |
+|---|---|
+| `film.mp4` | `97c2e19012444dd862972010157fcf902920985b0ee2f0eecda0c15dc62b9613` |
+| `contact.png` | `1eda30e8604c026a330f923794a135a1039b05cfdeaad4496ebb54e21300352d` |
+| `looksheet.png` | `f20ac72b226134f5343dba4b3b87a8d35f70cbeb9d5b5a9d61a793e6b8c4797d` (same stills as draft 07) |
+| `storyboard.md` | `c6899a34beeabb06466281a81565a50a0b18c41d920a82e291b7172139ebbbb3` |
+| `timing.srt` / `transcript.srt` / `subs.ass` | `e8306beb…` / `17310a3a…` / `5a6224bf…` |
+| `manifest.json` | `d87cac791d61ff46d472f8c1fbc5bcefa7064a21196797981bca91b75dcbc447` |
+| **`lock.json` (storyboard re-locked on draft 08)** | `8b3f45570f33ca27dc820fd647e01c48306cb1dd725e33ca9b763f119b0e7d8b` |
+
+The lock holds `storyboard.json` `63163131…`, the six stills, `shots.tsv`
+`6dd59ecd…` and `timing.srt` `e8306beb…`.
+
+**Defect found in draft 08's burn-in (product, pre-existing in
+`media subs`):** the burned banner shows only the second-language (Spanish)
+line. `burn_cues` writes each banner cast with a trailing CRLF, in a
+terminal exactly as tall as its lines. That last newline scrolls the first
+line off the top. It was never visible before, because film fell back to
+single-language subtitles (one line plus a blank row). The soft mov_text
+track and `subs.ass` are bilingual and correct.
+
+### Draft 09 (project `lanterns-r3`, render `04`): bilingual burn-in fixed
+
+Commit `3695ae31` drops the trailing newline from the banner cast, and
+`examples/media/test.sh` now requires a white first-language line in the
+burned banner. Draft 09 ran from the `examples/` tar of `3695ae31`
+(SHA-256 `89642673…f6bb185`); the GPU gate was again clean beforehand.
+
+| Measure | Value |
+|---|---|
+| Wall / manifest `elapsed` | 8:09.96 / 489 s, success; zero cost (`local`, `oss`) |
+| Stages | song 234 s; 6 stills 28–31 s each, byte-identical to drafts 07/08; transcribe 21 s |
+| `film.mp4` | 1280×720, video 81.133 s, audio 81.139 s; burned banners show English (bold white) above Spanish (yellow), checked on a frame at 22.5 s |
+| Transcript | **1 cue** (10.1–18.8 s, lyric lines 1–3); the new CPU song differs from draft 08's |
+| Timing | 8 cues, but lines 4–8 have no transcript words. They are extrapolated at the singing rate, so all eight lines fall in 11.1–31.3 s, and the unanchored shots 13–15 run about 15 s each |
+
+| Artifact | SHA-256 |
+|---|---|
+| `film.mp4` | `afac15ab4664097dfb2a5c27bc204dce968a8c839ad2f29fe0731083a4b4c074` |
+| `contact.png` | `5cac56c9d27631ba72cabb12061bf791eb4640a6f10207ae8ed282c173dfa38b` |
+| `storyboard.md` | `44762fc64aa104e0b1a41aad3886cfa7db5fc1a2df14414e665e3ae646836525` |
+| `timing.srt` / `transcript.srt` / `manifest.json` | `7d2c5dc4…` / `9a13c915…` / `b5ac91d5…` |
+
+### The lock: draft 08
+
+Draft 08 has the timing and cut distribution that best fit its song: eight
+lines spread across 9–53 s, and cuts from 2.6 s to 9.1 s on the lyric lines.
+Its only defect is the burned-in banner, which a final re-renders with the
+fixed media. The collect script first locked draft 09 automatically. The
+storyboard was then re-locked on draft 08 with
+`film lock lanterns-r3 --draft 03`, which reproduced `lock.json` byte for byte
+(SHA-256 `8b3f45570f33ca27dc820fd647e01c48306cb1dd725e33ca9b763f119b0e7d8b`).
+The operator can switch to draft 09 with `--draft 04`.
+
+### Delivered for review (dev box, gitignored `.agents/s627-m8-review/`)
+
+Each `draftNN/` holds `film.mp4`, `contact.png`, `looksheet.png`,
+`storyboard.md`, `timing.srt`, `transcript.srt`, `subs.ass`, `shots.tsv`,
+`manifest.json` and the run's `stderr.log`, `timeline.txt` and `time.txt`.
+`draft08/lock.json` is the lock. The files were fetched from a Windows-side
+staging directory with `outpost ssh sftp get`, and the SHA-256 values on
+the dev box match the host's.
+
+| Path | SHA-256 |
+|---|---|
+| `draft07/film.mp4` | `9619010b…6bf3bf8f` |
+| `draft08/film.mp4` | `97c2e190…dcbc9613` |
+| `draft09/film.mp4` | `afac15ab…4b4c074` |
+| `draft0{7,8,9}/looksheet.png` | `f20ac72b…c4797d` (identical) |
+| `draft07/contact.png` / `draft08/contact.png` / `draft09/contact.png` | `5987b0ce…` / `1eda30e8…` / `5cac56c9…` |
+| `draft08/lock.json` | `8b3f4557…7e7d8b` |
+
+### Cleanup
+
+- **Host state:** the System and WER logs held no new entries during the
+  whole run. The newest System 41/6008 events are still those of 11:05Z,
+  and the newest WER 1001 records are the two re-submissions seen at
+  elevation. `LiveKernelReports\WATCHDOG` still holds only the two old
+  dumps. The boot time is unchanged (12:06:36Z). No native python process
+  remained, and no film unit was loaded.
+- **Keepalive:** the chain was stopped. Its last WSL client outlived its
+  ssh session, so it was killed by its recorded pid; a check then found no
+  keepalive process left. The host claim was released.
+- **Not touched:** WSL configuration and the default podman machine.
+- **A wrong claim, corrected:** a different Windows resource was claimed
+  briefly by mistake and released before any use; it was never contacted.
+
+### Remaining checks
+
+- **Operator review** of drafts 07–09 and acceptance of the lock on draft
+  08; side-by-side against the reference frames.
+- **Subtitle timing ±150 ms: not met.** WhisperX without an alignment model
+  recognises only part of the sung lyrics (2, 2 and 1 cues in drafts
+  07/08/09). Lines it misses are interpolated or extrapolated. Meeting the
+  bar needs word-level timing: either the WhisperX alignment model (staging
+  it needs approval) or a corrected timing via `film lock --timing`.
+- **The beat grid is the requested tempo** (`song.bpm` 92, downbeat at 0).
+  It is not detected from the audio.
+- **The ACE-Step song on the CPU is not reproducible with the same seed**,
+  so each draft has a new song, transcript and timing. The stills are
+  reproducible.
+- **AWS lip-sync proof slice (step D): not started.** The run time went
+  into the defects above. It needs a relaunch under the AWS rules.
+- **Commercial final:** operator-approved; never run with `--yes` by an
+  agent.
+- **bashy branch** `agent/weave-issue-59-film` (`9c078226`, `328453f2`,
+  `31178155`, `4c17f122`, `3695ae31`) is committed in the workspace's bashy
+  checkout and is **not pushed**. The umbrella pin names `3695ae31`, so the
+  conductor must push that branch before the pin is usable.
 
 ## Step 1: native ROCm 10 GPU verification
 
