@@ -1,0 +1,35 @@
+# Tool-command overlay example (Sprint #324 / #626).
+#
+# The baseline (yoke pkg/fleet/baseline/tools/<tool>.yaml) seeds only commands
+# measured on the wire, and a tool has ONE command per name. This file holds
+# the other spellings and the unmeasured commands. A local tool YAML replaces
+# the whole record, so a file holding only `name:` and `commands:` loses the
+# launch templates (a tui command is then invalid: no steer_exec). Start from
+# the full record (`bashy tool edit TOOL`, or `bashy tool show TOOL`), then
+# put a block's entries under its `commands:` — replace the entry with the
+# same name, or add a new one. Check with `bashy tool cmd list TOOL` and
+# `bashy tool cmd run TOOL:NAME --dry-run`.
+# Design: yoke docs/tool-commands-design.md.
+---
+name: claude
+commands:
+  # The /plan TUI spelling. The baseline claude:plan is the print spelling
+  # (`claude -p --permission-mode plan`, measured 2026-11-12, 12.4 s); use
+  # this one only when you want the interactive /plan built-in.
+  # MEASURED 2026-09-28 (claude 2.1.284, Sprint #324 S3 live smoke
+  # TestLiveTUIPlan): `claude -p "/plan …"` answers "/plan isn't available in
+  # this environment." with num_turns 0, so /plan is mode tui. Driven through
+  # steer_exec with exactly these steps and quit, a three-line plan request
+  # returned outcome success in 39.7 s. The steps are the measured sequence
+  # verbatim (esc included). steer_exec skips permissions, so the launch
+  # guard applies: run contained, or set BASHY_ALLOW_UNSAFE_AGENT_LAUNCH=1.
+  - name: plan
+    slash: /plan {args}
+    mode: tui
+    capability: planning
+    output: turn
+    steps:
+      - wait_idle: 25s
+      - key: esc
+      - wait_idle: 3s
+    quit: /exit
