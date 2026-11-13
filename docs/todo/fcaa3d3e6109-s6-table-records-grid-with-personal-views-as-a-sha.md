@@ -3,12 +3,11 @@ id: fcaa3d3e6109
 kind: feature
 title: 'S6 table: records grid with personal views as a shapeable custom command'
 seq: 212
-status: assigned
+status: todo
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:33:42.183391Z
-weave: 49
 assignee: codex-gpt6-sol
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
@@ -20,3 +19,5 @@ READ docs/shapeable-apps-worker-brief.md FIRST (rules, shaping contract, done me
 TEMPLATE (S3, accepted 2026-11-13): copy bashy/examples/notes (notes.bsh install/start/stop/status/source, pinned fork under qiangli/<name>-shape, install-time pin + LICENSE + no ee/ checks, web-prefix.patch, shaped.json, contract.bsh, checks/, register.sh, notes_test.sh). Also run script/no-phone-home.sh on the pinned source and explain every hit; remove third-party telemetry and use bashy OTel (owner-only, env-gated).
 
 VENUE (conductor 2026-11-13): a demo container ran on the dev box during run #49; the conductor stopped and removed it. Runtime/container proof only on the claimed gate host; dev-box container evidence does not count. If no gate host is available, finish code + unit tests and mark the runtime proof open.
+
+RELAUNCH (conductor 2026-11-13): run #49 was stopped for running containers on the dev box (venue rule, see brief). Start from bashy branch salvage/s6-table-run49 (9f2570c3: examples/table wip, fork qiangli/grist-core-shape @a3c557a). Linux runtime proof only on the claimed gate-linux resource; otherwise finish code + unit tests and mark the runtime proof open.
