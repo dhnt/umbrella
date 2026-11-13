@@ -39,10 +39,11 @@ bytes are committed to this public repository.
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-5Hz-lm-1.7B/model.safetensors` | 3,708,521,528 | `f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8` | included above |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-v15-turbo/model.safetensors` | 4,787,825,604 | `3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7` | included above |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/vae/diffusion_pytorch_model.safetensors` | 337,431,388 | `da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0` | included above |
+| image-qwen / Qwen-Image (partial) | `75e0b4be04f60ec59a75f475837eced720f823b6` | `image-qwen/models/Qwen-Image/text_encoder/model-00004-of-00004.safetensors` | 1,691,924,384 | `5dd068336d14d45ffb43cef374d286cc6ba9d8741b028f90a7d040d847961f4a` | download in progress |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
-were downloaded in their respective snapshots. Qwen Image remains to be
-staged and verified. These local snapshots
+were downloaded in their respective snapshots. Qwen Image generation and edit
+downloads are in progress; only completed files are listed. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
 
