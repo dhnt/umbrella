@@ -3,7 +3,7 @@ id: 94f21a1883bb
 kind: feature
 title: 'B1 publish-outpost: one shared helper in examples/desk/kit puts any catalog app on outpost''s app list (login-required by default)'
 seq: 242
-status: assigned
+status: done
 priority: p1
 labels:
     - app
@@ -14,6 +14,8 @@ assignee: claude-opus5.5
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
+closed: 2026-11-13T18:28:29.359272Z
+closed_by: claude-fable5.1-s632
 ---
 
 READ docs/shapeable-apps-worker-brief.md and outpost/docs/cooperative-web-apps.md. bashy's app registry (yoke/pkg/fleet/apps.go; console serves /<name>/ on CONSOLE_PORT, default 22749) and outpost's (conf.AppConfig; outpost apps add|rm|list|share) are separate; today only site (examples/site/site.bsh:150-156 publish-outpost) and vlog bridge them, each with its own copy of `outpost apps add NAME --url http://127.0.0.1:22749/NAME/`.

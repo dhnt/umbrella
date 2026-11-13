@@ -3,15 +3,19 @@ id: c49679cb7173
 kind: feature
 title: 'A4 table: verbs over the grist fork API (documents, tables, records list, show, add, set, rm, export csv)'
 seq: 239
-status: todo
+status: done
 priority: p1
 labels:
     - parity
     - app
 created: 2026-11-13T17:39:23.381062Z
+weave: 70
+assignee: claude-sonnet5.5
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
+closed: 2026-11-13T18:28:30.17115Z
+closed_by: claude-fable5.1-s632
 ---
 
 READ docs/shapeable-apps-worker-brief.md. Custom command only: extend bashy/examples/table/table.bsh (currently install/start/stop/status/source), never the bashy core. Add the verbs a table user has on the page: docs list/add/show; tables list/add; columns list/add; records list/add/set/rm (with --where filters); views list; export (csv/json); import csv. Same rules as A2: call the pinned fork's own REST API on the running local instance with the principal's local API key, --json envelope, --dry-run on writes, page-equivalent denied result. Follow A2's verb grammar.

@@ -3,7 +3,7 @@ id: 8ab0eb81a08e
 kind: task
 title: 'A1 parity audit of the eight catalog apps: one row per web action in bashy/docs/ui-cli-parity.md'
 seq: 236
-status: assigned
+status: done
 priority: p1
 labels:
     - parity
@@ -14,6 +14,8 @@ assignee: agy-gemini3.8-flash
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
+closed: 2026-11-13T18:22:53.979343Z
+closed_by: claude-fable5.1-s632
 ---
 
 READ docs/shapeable-apps-worker-brief.md and bashy/docs/ui-cli-parity.md (rule at lines 1-30; pattern = the "Sprint 614 S1" section and done story ca38c672). Parity is one-way: every web/page/HTTP action of a catalog app needs a bashy verb (--json; --dry-run on writes; same owner/member checks and the same denied result as the page). CLI-only features need no page.
