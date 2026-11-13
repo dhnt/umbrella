@@ -3,13 +3,14 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: todo
+status: assigned
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
-assignee: claude-opus5.5
+weave: 61
+assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
 sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
@@ -49,3 +50,5 @@ OPERATOR DECISIONS (mb:13762, 2026-11-13; r3 draft 04 reviewed, all four review 
 1. Subtitles = English + Simplified Chinese, both lines on screen together, English on top, one cue per lyric line (replace Spanish). Use a CJK-capable font in the .ass style (bundle/declare it; cross-OS) and CHECK the glyphs render (spot frames in the evidence).
 2. LOCK the storyboard: the r3 shot list as in draft 04 (15 shots: kinds, stills, prompts, seeds, cue times) is the contract; record its SHA-256 via film lock (fix the stale "draft 03" label).
 Then, in order: re-render that draft with EN+ZH subs (no other changes) -> look sheet -> the approved AWS lip-sync proof slice on ONE locked close-up with clear vocals (shot 03 or 04), per the AWS rules above (one g6e.xlarge us-west-2, tag sprint=627, self-terminating, est USD 1-2, stop at USD 40). Copy review files (film.mp4, contact, look sheet, storyboard.md, proof clip) to the dev box review dir. Commercial final stays deferred. Commit evidence after every step.
+
+AWS PROOF SLICE UNBLOCKED (operator mb:13794, grant verified as the automation user; exact bucket name and account details are in that message - never commit them): AMI from the public SSM parameter /aws/service/deeplearning/ami/x86_64/oss-nvidia-driver-gpu-pytorch-2.7-ubuntu-22.04/latest/ami-id; run-instances us-west-2 g6e.xlarge, --iam-instance-profile Name=dhnt-gpu-runner, --instance-initiated-shutdown-behavior terminate, root gp3 <= 200 GB, NO key pair, default security group (no inbound). REQUIRED tags on instance AND volume: dhnt:managed=true and sprint=627 (the missing dhnt:managed tag caused the earlier RunInstances deny). All work via user-data: fetch inputs, render the ~5 s lip-sync clip of locked shot 04 (InfiniteTalk or Wan2.2-S2V), aws s3 cp results to the runner bucket under sprint-627/, then shutdown -h; in-guest timer <= 90 min. Read results with the automation user (sprint-* prefixes only; 14-day expiry). Watch with describe-instances / get-console-output. Check budget sprint-627-gpu-cap-50 first; cap USD 50, STOP at USD 40; one instance; record instance id, start/stop, cost, clip SHA-256; copy the clip to the dev box review dir.
