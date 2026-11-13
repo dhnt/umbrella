@@ -1,8 +1,13 @@
 # Sprint 634 master execution plan — film follow-ups: local, recorded translation and text stages; subtitle font fix
 
-Status: approved by the operator 2026-11-13; sprint started under the
-conductor `claude-fable5.1-s634`. Carried from Sprint 627 M8
-(`docs/sprint-627-m8-drafts-evidence.md`).
+Status: DELIVERED 2026-11-13. All three stories accepted on bashy main
+(font fix 6ea39609; translate stage 54f796c1 + repairs 62bc2816, 5c2e9fdc,
+ab8567b9; text drafting 8ce7462f, merge 43c08f51). Evidence: bashy
+`docs/sprint-634-translate-evidence.md` and `docs/sprint-634-text-evidence.md`.
+The live runs on the Windows test host exposed six native-Windows gaps,
+each root-caused in the translate evidence; the shared `has=jq` probe gap
+is bashy todo `f9e0a8bd`. Conductor `claude-fable5.1-s634`. Carried from
+Sprint 627 M8 (`docs/sprint-627-m8-drafts-evidence.md`).
 
 ## Outcome
 
