@@ -4,7 +4,7 @@ kind: task
 title: 'E0 plan from the 2026-11-13 commercialization brainstorm: E1 as wish-log replay, E3 regenerate arm, DIY-starter catalog, first-bet sequence'
 seq: 235
 status: todo
-priority: p1
+priority: p3
 labels:
     - shaping-eval
     - planning

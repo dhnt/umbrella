@@ -4,7 +4,7 @@ kind: spike
 title: 'E2 data-safe shaping: wishes that touch data on a running app with seeded data'
 seq: 228
 status: todo
-priority: p1
+priority: p3
 labels:
     - shaping-eval
 created: 2026-11-13T14:34:20.244527Z

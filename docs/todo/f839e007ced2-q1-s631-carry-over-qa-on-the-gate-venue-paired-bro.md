@@ -4,7 +4,7 @@ kind: test
 title: 'Q1 S631 carry-over QA on the gate venue: paired-browser preview assertions (S6 table, S9b chat) and live-tunnel e2e of the outpost ingress hardening (S2a, S2d)'
 seq: 233
 status: todo
-priority: p1
+priority: p3
 labels:
     - qa
 created: 2026-11-13T15:05:57.0985Z

@@ -4,11 +4,10 @@ kind: feature
 title: 'S10 blog: personal blog/wiki with rich media as a variant of site'
 seq: 218
 status: todo
-priority: p2
+priority: p3
 labels:
     - shaping
 created: 2026-11-13T11:41:58.613382Z
-assignee: opencode-glm-5.3
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

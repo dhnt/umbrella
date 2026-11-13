@@ -13,4 +13,6 @@ sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
 ---
 
-Conductor gate before accepting any S3-S10 or S2b delivery: script/no-phone-home.sh <app dir> must have zero unexplained hits, plus a runtime check that the app makes no unexpected outbound connections. Third-party telemetry, analytics and update checks are removed; bashy OTel (env-gated OTLP to the owner's store, W3C propagation; pattern filebrowser/telemetry) replaces them and is added where useful. Rules: docs/shapeable-apps-worker-brief.md. Next: register the gate as a bashy custom command (bashy commands add).
+Conductor gate (phase 1 of Sprint 632) before accepting any delivery that touches a fork (S4b board, S5b whiteboard, S2c files, and the parity stories A2-A5): script/no-phone-home.sh <app dir> must have zero unexplained hits, plus a runtime check on the gate venue that the app makes no unexpected outbound connections. Third-party telemetry, analytics and update checks are removed, not disabled; bashy OTel (env-gated OTLP to the owner's store, W3C propagation; pattern filebrowser/telemetry) replaces them where useful. Rules: docs/shapeable-apps-worker-brief.md.
+
+Run the gate with the fixed script from origin/main (or PATH=/usr/bin:/bin); an older copy fails open. Record the gate output on each accepted story. Deferred to phase 2: registering the gate as a bashy custom command (bashy commands add).

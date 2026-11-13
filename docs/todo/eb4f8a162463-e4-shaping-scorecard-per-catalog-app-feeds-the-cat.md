@@ -4,7 +4,7 @@ kind: task
 title: E4 shaping scorecard per catalog app (feeds the catalog-moat metrics)
 seq: 230
 status: todo
-priority: p2
+priority: p3
 labels:
     - shaping-eval
 created: 2026-11-13T14:34:20.590011Z

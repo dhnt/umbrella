@@ -4,7 +4,7 @@ kind: spike
 title: 'E3 beachhead scenario vs baseline: unpaid-orders reminder + stats page, shaping vs AI coding agent + SaaS config'
 seq: 229
 status: todo
-priority: p1
+priority: p3
 labels:
     - shaping-eval
 created: 2026-11-13T14:34:20.439103Z

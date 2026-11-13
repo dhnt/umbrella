@@ -4,7 +4,7 @@ kind: spike
 title: 'E1 upgrade survival: personal shapes survive an upstream upgrade of each catalog app'
 seq: 227
 status: todo
-priority: p1
+priority: p3
 labels:
     - shaping-eval
 created: 2026-11-13T14:34:20.095378Z
