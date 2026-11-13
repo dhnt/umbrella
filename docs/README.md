@@ -61,6 +61,10 @@ The one brief every Sprint 631 worker reads first: the Linux + web UI scope; the
 
 Sprint 631 story S2b record: the base verified (Apache-2.0, 9.1k stars, `v2.0.2-stable`), the fork branch and its two commits (four behavior-preserving upstream seams; the `backend/fbembed` package with a committed frontend), the old-vs-new seam behavior table, fresh test and build evidence, the measured binary cost of the move (14.9 MB to 42.9 MB stripped, 90 to 299 packages), the four-consumer migration plan, the decisions left to the S2 owner and the frontend work still to port.
 
+## whiteboard-fork-no-phone-home.md
+
+Sprint 632 story S5b record. Why the whiteboard pin was not safe on its own (a plain build of it embedded the Sentry DSN, the Firebase hosts, the analytics loader and the Google Fonts preconnect; only the install-time patch removed them), and the two review premises that did not survive checking (`build:app` forced tracking on, and the fonts came from a vendor CDN the scrub gate does not know about). Lists the three fork commits and the new pin, what was removed and what was deliberately kept, the before/after gate and bundle evidence, the by-name comparison that proved the pre-existing 306-failure vitest set is an environment problem rather than a regression, the consumer changes in `bashy/examples/whiteboard` (patch 358 → 31 lines), the runtime proof still owed on the gate venue, and the whiteboard UI→CLI parity re-check that found no CLI path for any board, scene or room action.
+
 ## shapeable-app-catalog.md
 
 The first batch of shapeable apps (Sprint 631): eight bashy custom commands (notes, form, clips, site with a chat template, board, whiteboard, table) and the files app on the maintained File Browser fork. For each: the job, the pinned permissive fork or own build, and the license. Lists the shared rules (shapeable, fork-or-build, no hidden phone-home, owner-only OTel, Linux + web UI) and the items still open in Sprint 632.
