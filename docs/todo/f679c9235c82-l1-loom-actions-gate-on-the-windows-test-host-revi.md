@@ -9,9 +9,6 @@ labels:
     - loom
     - gate
 created: 2026-11-13T18:11:12.870932Z
-sprint: 632
-sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
-sprint_title: 'Shapeable apps phase 1: CLI parity, outpost integration, bugs'
 ---
 
 Operator ask (2026-11-13): after the conductor reviews and merges, push to loom and have build/test run there automatically (Gitea Actions), on the Windows test host (the heavy gate venue). Exploration facts (conductor, read-only):
