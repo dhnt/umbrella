@@ -8,7 +8,7 @@ priority: p1
 labels:
     - media
 created: 2026-11-13T01:29:16.115475Z
-weave: 30
+weave: 31
 assignee: muse-conductor
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -22,3 +22,5 @@ VENUE (conductor per operator mb:13586, 2026-11-13): the Windows test host (alia
 PLATFORM RULE (operator mb:13598, kb decision windows-native-first-wsl-only-with-a-recorded-reason, bashy 7fea18e8): native bashy.exe + .bsh + uv + Windows builds FIRST; use WSL only with a recorded reason (why native failed or is unavailable) in the evidence.
 
 RETRY NOTE (conductor, 2026-11-13): run #30 hit the 48 min max-runtime with nothing committed and its host claim left stale (conductor reclaimed it). This run has a larger budget. COMMIT evidence after EACH rod (works/blocked + numbers) so progress survives a kill; release the host claim before you finish or on any exit.
+
+SPLIT (operator mb:13600, 2026-11-13): delivered through M2b-w fb563eb2 (pre-stage weights + checksums) then one run per rod: M2b-song 0d2e5664, M2b-image c8204201, M2b-narrate b268cd00, M2b-transcribe 9e5df5c4. This story closes when all four rod stories close.
