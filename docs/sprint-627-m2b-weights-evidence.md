@@ -40,6 +40,8 @@ bytes are committed to this public repository.
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-v15-turbo/model.safetensors` | 4,787,825,604 | `3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7` | included above |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/vae/diffusion_pytorch_model.safetensors` | 337,431,388 | `da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0` | included above |
 | image-qwen / Qwen-Image (partial) | `75e0b4be04f60ec59a75f475837eced720f823b6` | `image-qwen/models/Qwen-Image/text_encoder/model-00004-of-00004.safetensors` | 1,691,924,384 | `5dd068336d14d45ffb43cef374d286cc6ba9d8741b028f90a7d040d847961f4a` | download in progress |
+| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00002-of-00004.safetensors` | 4,991,495,816 | `b1830db6908dcc76df3a71492acbcf2b8cac130114cf1f3c2d9edae8de8c6de3` | download in progress |
+| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00003-of-00004.safetensors` | 4,932,751,040 | `09c1807c6d00d7cab94f7db39d4c02ebb8537225ccde383861ac48db97945aa6` | download in progress |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
 were downloaded in their respective snapshots. Qwen Image generation and edit
