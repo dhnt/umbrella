@@ -72,3 +72,11 @@ The first batch of shapeable apps (Sprint 631): eight bashy custom commands (not
 ## sprint-632-master-execution-plan.md
 
 Sprint 632, phase 1 (operator re-scope 2026-11-13): bashy CLI parity for the eight catalog apps, one verb that puts any catalog app on outpost's app list, and the carried bugs. States what the code showed (lifecycle-only commands, two separate app registries, the outpost URL-path bug, the goal-link bug), the stories in three waves with their lanes and dependencies, the per-story and close gates, and what is deferred to phase 2.
+
+## agentic-command-skill-scripts-design.md
+
+Design of record for Sprint 633. Reverses the usual tool loop: instead of a central agent repeating the same probing rounds, `agentic <command> [request...]` runs the command's own Bash# skill-script `<command>.bsh`, forging it with a training model when it does not exist and correcting it when it fails, so the learned script is the calling agent's muscle memory and every agent on the host benefits. Covers the resolution ring and the one core hook, the worth-it gate that never forges a simple command, the forge verbs with their gates and ledger, the three training tiers (caller via the `input_required` yield, vendor CLI, door or local model) and why MCP sampling is not one of them, the `ssh.bsh` example as a superset face over outpost, the micro-shaping loop, the research it builds on, and the follow-ups.
+
+## sprint-633-master-execution-plan.md
+
+Sprint 633: `agentic ssh "connect to host gatehost"` answers in one tool call, forging `ssh.bsh` on the first call and running it with no model on the second, correcting it on failure. States what the probes showed on the dev box (which training tiers work, the `ycode btw` flag bug, guard-cap behaviour), the nine stories in four waves with lanes and dependencies, the shaping hook and composition note, the per-story and close gates, and the decisions reserved for the operator.
