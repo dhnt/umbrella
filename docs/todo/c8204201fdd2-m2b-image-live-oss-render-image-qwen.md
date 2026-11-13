@@ -17,3 +17,5 @@ Split of M2b (eb5e0303) per operator mb:13600. Windows test host (alias in opera
 Depends on M2b-w. Render one image generate + one image edit (bashy image --route oss --json) with weights from M2b-w; record works/blocked, wall time, peak memory, disk, the bashy-svc-v1 envelope, and the artifact checksum.
 
 MODEL CHANGE (operator mb:13610): the oss image route is for DRAFTS. Render with the light model staged by M2b-w (FLUX.2 klein-4B or Z-Image Turbo, Apache-2.0), which needs a light image rod (provides image.generate, route oss) beside image-qwen; Qwen-Image stays an optional quality upgrade, not a draft dependency.
+
+NEVER RE-DOWNLOAD (operator mb:13612): weights are already staged on the Windows test host in the WSL rod cache (BASHY_OSS_CACHE root /root/s627-m2b/cache; ~54 GB: song-acestep 18G, narrate-local 8.6G, transcribe-whisperx 6.2G, image-qwen 20G partial; plus 5.9G HF cache) with per-file SHA256 in docs/sprint-627-m2b-weights-evidence.md. When running rods natively, COPY the staged files (verify the recorded checksums) or point native rods at one shared cache - never fetch them again.
