@@ -44,6 +44,6 @@
 - `sprint-627-m2b-transcribe-evidence.md` — Offline WhisperX SRT render on the Windows test host: local model binding, service envelope, time, memory, disk and checksum.
 - `sprint-627-m2b-song-b-evidence.md` — Offline-by-default OSS rod fix, hermetic fixture gate and ACE-Step Windows-host render with zero transfer markers.
 - `sprint-627-m3b-animate-evidence.md` — Native Windows Wan2.2 spike: GPU VAE decode stall, reused weights, bounded render and route decision.
-- `sprint-627-m8-drafts-evidence.md` — M8 oss drafts blocked: song rendered, then a 1280×720 FLUX VAE-decode GPU hang (TDR) rebooted the Windows test host; timeline, root cause and options.
+- `sprint-627-m8-drafts-evidence.md` — M8: native ROCm 10 1280×720 FLUX verify passed, two oss drafts rendered and the storyboard locked (zero cost, no TDR); earlier blocked attempt kept.
 - `shapeable-apps-worker-brief.md` — Sprint 631 worker brief: fork-or-build rules (permissive license only, custom command in bashy/examples, job-only wording), shaping contract pointers, done means.
 - `files-fbembed-quantum-port.md` — Sprint 631 S2b: the fbembed seam ported into a fork of the active Apache-2.0 File Browser upstream (four small patches + `backend/fbembed`), evidence, binary cost, consumer migration plan and open decisions

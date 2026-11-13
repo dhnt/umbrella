@@ -51,7 +51,7 @@ reads and writes; a story carries its sprint as `sprint_id`).
 - **`sprint-627-m2b-transcribe-evidence.md`** — Evidence for one offline WhisperX SRT from a speech fixture on the Windows test host. Records the staged checkpoint check, venue, service envelope, wall time, peak memory, disk change, artifact hash and focused gate limitation.
 - **`sprint-627-m2b-song-b-evidence.md`** — Evidence for the offline-by-default OSS rod fix, hermetic no-fetch fixture, and live ACE-Step render with staged weights and LM disabled.
 - **`sprint-627-m3b-animate-evidence.md`** — Native Windows Wan2.2 GPU spike: post-denoise VAE decode stall, verified reuse of staged weights, bounded render and no OSS animate route.
-- **`sprint-627-m8-drafts-evidence.md`** — The M8 two-draft run on the Windows test host: venue, isolated candidate, storyboard, draft 01's successful offline song stage and failed 1280×720 portrait. Records the GPU VAE-decode TDR that rebooted the host, its timeline and classification, and the options left for the operator.
+- **`sprint-627-m8-drafts-evidence.md`** — The M8 two-draft run on the Windows test host. After the operator's GPU fix, a native ROCm 10 FLUX.2 klein 1280×720 verify passed with no TDR. Two oss drafts then rendered (wall time, per-stage time, SHA-256, zero cost) and the storyboard was locked. Also records four root-caused venue failures before the drafts, the `media cards` short-video defect, the subtitle-timing gap, and the remaining checks. The first, blocked attempt (GPU VAE-decode TDR that rebooted the host) is kept as history.
 
 ## shapeable-apps-worker-brief.md
 
