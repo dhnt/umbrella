@@ -16,3 +16,5 @@ sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial 
 ---
 
 Spec: docs/sprint-627-master-execution-plan.md. Depends M1. Effects include spend; --yes required; --dry-run prints cost class without calling.
+
+SPEND/VENUE RULE (conductor, 2026-11-13): tests stub the HTTP layer (fixture responses, no network); never commit or print a key (vault-bound only). No paid API call without operator consent: a live call needs --yes AND is limited to ONE minimal-cost smoke per rod, recorded with its cost in the submit; otherwise leave the live smoke as a remaining check. No model downloads or live model/ollama/podman runs on this dev host (operator mb:13538). Contract: bashy docs/service-rod-contract.md (M1).
