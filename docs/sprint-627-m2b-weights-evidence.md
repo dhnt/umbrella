@@ -29,9 +29,13 @@ committed to this public repository.
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/t3_cfg.pt` | 1,064,892,246 | `0b2dd5439fe7e94f379561419847a45bf2c79d0e8ea751c6bbe947ce337789cc` | included above |
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/ve.pt` | 5,698,626 | `4b16d836bc598509860f6fa068165a8bb5e9ac84f05582dfcf278a5a372879f1` | included above |
 | transcribe-whisperx / faster-whisper large-v3 | `edaa852ec7e145841d8ffdb056a99866b5f0a478` | `transcribe-whisperx/models/faster-whisper-large-v3/model.bin` | 3,087,284,237 | `69f74147e3334731bc3a76048724833325d2ec74642fb52620eda87352e3d4f1` | 4 s |
+| song-acestep / ACE-Step 1.5 | `19671f406d603126926c1b7e2adc169acbcade22` | `song-acestep/models/Ace-Step1.5/Qwen3-Embedding-0.6B/model.safetensors` | 1,191,586,416 | `0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd` | 133 s for snapshot |
+| song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-5Hz-lm-1.7B/model.safetensors` | 3,708,521,528 | `f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8` | included above |
+| song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-v15-turbo/model.safetensors` | 4,787,825,604 | `3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7` | included above |
+| song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/vae/diffusion_pytorch_model.safetensors` | 337,431,388 | `da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0` | included above |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
-were downloaded in their respective snapshots. ACE-Step and Qwen Image
-remain to be staged and verified. These local snapshots
+were downloaded in their respective snapshots. Qwen Image remains to be
+staged and verified. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
