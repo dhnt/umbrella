@@ -3,15 +3,18 @@ id: 6bde7278808d
 kind: spike
 title: 'M3b native-Windows oss animate spike: Bash# .bsh rod run by native bashy.exe (no WSL cap)'
 seq: 197
-status: assigned
+status: done
 priority: p2
 labels:
     - media
 created: 2026-11-13T03:26:57.195206Z
+weave: 40
 assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
 sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
+closed: 2026-11-13T10:14:59.025177Z
+closed_by: claude-opus5.5-s627
 ---
 
 Operator mb:13597 (2026-11-13). Follows M3 (76dd8d43, recorded blocker). Time-boxed spike on the Windows test host (alias in operator mb:13586), queued AFTER M2b releases the host claim.

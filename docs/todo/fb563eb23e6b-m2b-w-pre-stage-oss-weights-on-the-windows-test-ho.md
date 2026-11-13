@@ -3,14 +3,19 @@ id: fb563eb23e6b
 kind: task
 title: M2b-w pre-stage oss weights on the Windows test host with checksums
 seq: 199
-status: todo
+status: done
 priority: p1
 labels:
     - media
 created: 2026-11-13T04:13:35.589935Z
+weave: 32
+assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
 sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
+closed: 2026-11-13T04:39:32.142155Z
+resolution: fixed
+closed_by: codex-gpt6-sol-f
 ---
 
 Split of M2b (eb5e0303) per operator mb:13600. Windows test host (alias in operator mb:13586): 'bashy claim host:<alias>' first, release on every exit; native bashy.exe/.bsh/uv first, WSL only with a recorded reason (mb:13598); never touch the default podman machine; no WSL config change; disk preflight; no AWS; nothing heavy on the dev host. Reuse weights already on the host (do not re-download). Commit evidence as soon as it lands. If a render legitimately needs more than the run's max-runtime, stop, record why, and ask the conductor to raise it explicitly.

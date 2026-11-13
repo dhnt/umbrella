@@ -3,14 +3,18 @@ id: 9e5df5c4e139
 kind: test
 title: 'M2b-transcribe live oss render: transcribe-whisperx'
 seq: 203
-status: todo
+status: done
 priority: p1
 labels:
     - media
 created: 2026-11-13T04:13:36.475906Z
+weave: 38
+assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
 sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
+closed: 2026-11-13T09:00:20.46515Z
+closed_by: claude-opus5.5-s627
 ---
 
 Split of M2b (eb5e0303) per operator mb:13600. Windows test host (alias in operator mb:13586): 'bashy claim host:<alias>' first, release on every exit; native bashy.exe/.bsh/uv first, WSL only with a recorded reason (mb:13598); never touch the default podman machine; no WSL config change; disk preflight; no AWS; nothing heavy on the dev host. Reuse weights already on the host (do not re-download). Commit evidence as soon as it lands. If a render legitimately needs more than the run's max-runtime, stop, record why, and ask the conductor to raise it explicitly.
