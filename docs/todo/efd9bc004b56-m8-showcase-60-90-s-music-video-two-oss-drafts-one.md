@@ -3,12 +3,13 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: todo
+status: assigned
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
+weave: 55
 assignee: claude-opus5.5
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -26,3 +27,5 @@ RETRY AFTER GPU FIX (operator approved 2026-11-13, mb:13700 + "yes"): the Window
 2. If ANY Event 141/TDR appears: stop all GPU work immediately, do not retry or probe, record it, release the claim, and tell the conductor (the operator handles reboot and Klatch restore - never touch the default podman machine). Fall back to proven-size render + ffmpeg upscale only with conductor approval.
 3. Only if step 1 passes: the two FREE oss drafts per the scope above (song-acestep, image-klein, narrate-local, transcribe-whisperx offline from staged weights; labelled still+pan animate; no browser/api; never --yes; zero spend), ONE GPU job at a time, native venv first (WSL only with a recorded reason). Lock the storyboard, then STOP; commercial final stays operator-approved.
 Claim the host first, release on every exit; direct outpost ssh, batched; refresh the elevation cookie from the vault yourself.
+
+DRAFT = ANIMATIC (operator mb:13723 + review request, 2026-11-13): purpose is to approve/change the plan before the commercial final. Required: locked shot list with cuts on the song beats, bilingual lyric subtitles, title/character cards, a visible shot number on every shot; stills small/fast (768x432 or 512-wide upscaled, fewer steps) after the one 1280x720 safety decode. Deliver for review: MP4 path (copied to the dev box, outside git), contact sheet of all shots, storyboard table (shot#/time/lyric/prompt) so the final re-renders exactly those shots. Zero spend.
