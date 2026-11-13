@@ -38,3 +38,4 @@
 - `sprint-627-master-execution-plan.md` — Sprint 627 music-video showcase: `film` pipeline, oss draft → commercial final, permissive open-model picks; planning only
 - `brand/README.md` — product marks for cloudbox, satellite, outpost and bashy: rules (45° mirror axis, one square size, shape before color) and per-mark files
 - `sprint-622-master-execution-plan.md` — Sprint 622 master execution plan: software shaping as the one theme (canonical definition, aligned READMEs, qiangli/bash for sh + coreutils, cloudbox/satellite/outpost/bashy product marks); planning only
+- `sprint-627-m2b-weights-evidence.md` — Windows test host model staging: disk preflight, immutable revisions, sizes, hashes and elapsed time.
