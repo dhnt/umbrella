@@ -3,13 +3,12 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: assigned
+status: todo
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
-weave: 59
 assignee: claude-opus5.5
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -45,3 +44,8 @@ A. Product fixes first (bashy, with tests, separate commits): (1) media cards mu
 B. Draft 07 (zero spend): beat-locked cuts (media cut --beats) on a varied shot list - wide / ensemble / close / insert - not equal-length alternating close-ups; burned-in shot number on every shot; reuse stills for repeated sections; look sheet (one medium-res still per character + the set); contact sheet of ALL shots with shot#; storyboard table (shot#/time/lyric/prompt/seed). The draft-06 lock was premature: re-lock on draft 07.
 C. Deliver for review: copy draft07 film.mp4 + contact sheet + look sheet to the dev box review dir .agents/s627-m8-review/ (gitignored) via outpost scp from a Windows-side staging path (stdout over ssh truncates at 1 MiB); list paths + SHA256 in the submit.
 D. Then the approved AWS lip-sync proof slice per the AWS rules above (one ~5 s locked shot, one g6e.xlarge, stop at USD 40). If time runs short, commit + submit after C; the conductor relaunches for D.
+
+OPERATOR DECISIONS (mb:13762, 2026-11-13; r3 draft 04 reviewed, all four review points met):
+1. Subtitles = English + Simplified Chinese, both lines on screen together, English on top, one cue per lyric line (replace Spanish). Use a CJK-capable font in the .ass style (bundle/declare it; cross-OS) and CHECK the glyphs render (spot frames in the evidence).
+2. LOCK the storyboard: the r3 shot list as in draft 04 (15 shots: kinds, stills, prompts, seeds, cue times) is the contract; record its SHA-256 via film lock (fix the stale "draft 03" label).
+Then, in order: re-render that draft with EN+ZH subs (no other changes) -> look sheet -> the approved AWS lip-sync proof slice on ONE locked close-up with clear vocals (shot 03 or 04), per the AWS rules above (one g6e.xlarge us-west-2, tag sprint=627, self-terminating, est USD 1-2, stop at USD 40). Copy review files (film.mp4, contact, look sheet, storyboard.md, proof clip) to the dev box review dir. Commercial final stays deferred. Commit evidence after every step.
