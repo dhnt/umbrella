@@ -3,12 +3,13 @@ id: f397d1cd72f6
 kind: enhancement
 title: 'Landing page: move Apps up under Recent (Cloud and Neighborhood below)'
 seq: 256
-status: todo
+status: assigned
 priority: p1
 labels:
     - app
     - web
 created: 2026-11-13T20:51:42.456931Z
+assignee: claude-fable5.1-s636
 sprint: 636
 sprint_id: 3a22a674-3f50-586e-914a-4be22f7e6de5
 sprint_title: 'bashy apps UI: landing section order + Flow mark on the Shape button'

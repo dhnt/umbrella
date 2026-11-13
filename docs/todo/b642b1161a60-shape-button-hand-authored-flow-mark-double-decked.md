@@ -3,13 +3,14 @@ id: b642b1161a60
 kind: enhancement
 title: 'Shape button: hand-authored Flow mark (double-decked S) in genie and the Shape page'
 seq: 257
-status: todo
+status: assigned
 priority: p1
 labels:
     - app
     - web
     - software-shaping
 created: 2026-11-13T20:51:42.611929Z
+assignee: claude-fable5.1-s636
 sprint: 636
 sprint_id: 3a22a674-3f50-586e-914a-4be22f7e6de5
 sprint_title: 'bashy apps UI: landing section order + Flow mark on the Shape button'
