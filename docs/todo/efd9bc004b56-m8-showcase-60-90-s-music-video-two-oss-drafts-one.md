@@ -3,13 +3,12 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: assigned
+status: todo
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
-weave: 73
 assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -52,3 +51,8 @@ OPERATOR DECISIONS (mb:13762, 2026-11-13; r3 draft 04 reviewed, all four review 
 Then, in order: re-render that draft with EN+ZH subs (no other changes) -> look sheet -> the approved AWS lip-sync proof slice on ONE locked close-up with clear vocals (shot 03 or 04), per the AWS rules above (one g6e.xlarge us-west-2, tag sprint=627, self-terminating, est USD 1-2, stop at USD 40). Copy review files (film.mp4, contact, look sheet, storyboard.md, proof clip) to the dev box review dir. Commercial final stays deferred. Commit evidence after every step.
 
 AWS PROOF SLICE UNBLOCKED (operator mb:13794, grant verified as the automation user; exact bucket name and account details are in that message - never commit them): AMI from the public SSM parameter /aws/service/deeplearning/ami/x86_64/oss-nvidia-driver-gpu-pytorch-2.7-ubuntu-22.04/latest/ami-id; run-instances us-west-2 g6e.xlarge, --iam-instance-profile Name=dhnt-gpu-runner, --instance-initiated-shutdown-behavior terminate, root gp3 <= 200 GB, NO key pair, default security group (no inbound). REQUIRED tags on instance AND volume: dhnt:managed=true and sprint=627 (the missing dhnt:managed tag caused the earlier RunInstances deny). All work via user-data: fetch inputs, render the ~5 s lip-sync clip of locked shot 04 (InfiniteTalk or Wan2.2-S2V), aws s3 cp results to the runner bucket under sprint-627/, then shutdown -h; in-guest timer <= 90 min. Read results with the automation user (sprint-* prefixes only; 14-day expiry). Watch with describe-instances / get-console-output. Check budget sprint-627-gpu-cap-50 first; cap USD 50, STOP at USD 40; one instance; record instance id, start/stop, cost, clip SHA-256; copy the clip to the dev box review dir.
+
+LIP-SYNC EXPLORATION (operator decision 2026-11-13 ~12:15 PST, relayed by the supervising session): try a few TRUE image+audio-to-video models on AWS - not dubbing models (TBDub showed no motion from a still). Budget: the sprint-627 total of USD 50 is the HARD STOP (already ~USD 0.65 spent); at USD 40 cumulative, report to the conductor as a checkpoint and continue only if budget remains. Billing lags: track cumulative cost as max(budget actual, sum of runtime x on-demand price) and stop BEFORE a launch could cross USD 50.
+Candidates (verify each licence permits commercial use and pin the revision; skip non-commercial): InfiniteTalk and Wan2.2-S2V on g6e (48 GB) first; then any other viable audio-driven portrait/singing animation model that fits 24-48 GB (e.g. EchoMimic-class or FantasyTalking-class, licence permitting); a 24 GB g6/g5 fallback only for models documented to fit.
+Same recipe as above: tags dhnt:managed=true + sprint=627 on instance and volume, profile dhnt-gpu-runner, no key pair, no inbound, user-data + S3 return, shutdown=terminate + in-guest timer, ONE instance at a time, g6e preferred with AZ/type fallback. Input: locked shot 03 (Nova, mouth visible) still + its song segment, ~5 s.
+Record per attempt: model + licence + revision, instance type + AZ, start/stop in PST, measured cost, clip SHA-256, mouth-grid verdict (visible lip sync yes/no). Stop exploring at the first clearly visible lip sync or when the budget stops it; copy clips + mouth grids to the dev box review dir. No commercial final; no --yes for any other spend.
