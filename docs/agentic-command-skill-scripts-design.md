@@ -298,3 +298,44 @@ behind their door later; design doc first.
   with a "do not run commands, answer with the script" instruction.
 - Dev box has no engines build: live checks use a door model; local-model runs
   belong on gatehost or a droplet.
+
+## 5. Designated feedback inbox per genie-enabled command (operator addition, design)
+
+Requirement (operator, 2026-11-13): other agents must be able to report and
+give feedback on a genie-enabled command in real time; the same channel
+carries software-shaping requests from humans on the web UI and reports from
+agents that are themselves driven by another agent; `refine` consumes all of
+it. Nothing new is invented; the forge wires four surfaces that exist:
+
+| Source | Entry | Lands in | Consumed by |
+|---|---|---|---|
+| human on the web console, or any CLI user | `bashy shape wish CMD "…" [--evidence --expected --reproduction]` (the console wish form is the same call) | the command's shaping candidates/wish log; every forged `CMD.bsh` is registered as a shaped app (`bashy app add CMD --type shaped`, source = the overlay dir) | `refine` reads open wishes; an accepted version is `shape approve`, a bad one `shape undo` |
+| the script itself, or a worker that ran it | `bashy shape incident CMD "message" --kind script` | incidents (existing repair policy: root cause before fix) | `refine` reproduces first, then corrects; closes the incident with evidence |
+| another agent on the host, real time | `bashy bus publish --topic agentic.CMD '{"who","argv","exit","stderr_tail","host_role","version"}'` (one line, scrubbed) | the host room timeline (no daemon to be down) | `agentic-forge run` drains `bus watch --topic agentic.CMD` before deciding to refine; dedup by (argv template, exit, version) |
+| an agent driven by another agent | the forge's own `input_required` yield already carries the report; the driver may forward it with `agentic-forge report CMD --from AGENT …` | same as the bus line | same |
+| status to the human | `bashy inbox human send --topic agentic --ref <overlay path> "…"` | the human mailbox | the human acks; nothing waits on it |
+
+Rules: reporters are identified by their bashy principal; reports are
+scrubbed (hosts by role, secrets as refs) before they are stored; the same
+failure from many agents collapses to one open item with a count; a rate
+limit (N refines per command per hour) stops a loop from flooding the forge;
+versions produced from a report are still gated (S2) and, when the forge is
+fronted by `bashy mcp serve`, a human approval can be asked through MCP
+elicitation before the version is accepted. Open points for the design doc
+delivered by story D1: cross-host reporter identity, which reports need a
+human before acceptance, and whether a wish from the web UI should run the
+caller tier (the human's own agent) or the command's declared model.
+
+## 3c. The second exemplar: `agentic oci` / `agentic sandbox` (operator addition)
+
+The gate venue's podman machine has no bashy on PATH, which blocked every
+runtime proof in Sprint 632 and has hurt earlier sprints; agents never learn
+it. `oci.bsh` is the genie-enabled face of `bashy oci` (alias `sandbox`):
+native argv passes through (`agentic oci run --rm IMG CMD`), a sentence fills
+slots (`agentic sandbox "run the bash gate in the gate machine"`), and the
+script encodes what the kb already knows and keeps learning: put the exact
+candidate binary on PATH inside the machine and record where, one podman
+machine per host, never the default podman of a host that runs live services,
+claim the venue first and release after, apply memory/cpu/pids caps, no
+`make` inside the VM. Every failure is a pitfall that `refine` folds into the
+next version. Story S5b.

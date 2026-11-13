@@ -24,6 +24,8 @@ Plan of record (research, probes, design): `docs/agentic-command-skill-scripts-d
 | 1 | bug `e100211d` `bashy ycode -m MODEL btw` rejects the flags (root cause first) | — | muse |
 | 2 | S3 `4725a53d` forge run/accept/undo/where + caller-tier yield | S2 | codex |
 | 2 | S5 `5efc76fc` exemplars ssh.bsh (superset face) + kb.bsh, stub-outpost tests | S2 | agy |
+| 2 | S5b `0d32efa5` exemplar oci.bsh: the gate venue's podman machine learned once (bashy on PATH inside the machine, one machine per host, claim, caps) | S2 | agy |
+| 2 | D1 `cdae01f2` design: designated feedback inbox per command (web wish, incident, bus topic agentic.CMD, yield report) feeding refine | — | claude |
 | 3 | S4 `bafd5252` forge make/refine, vendor + door tiers, `--deep` opt-in | S2, S3, bug | glm |
 | 3 | S6 `4a826c0d` packaging: register, dag, defaults row, README, docs copy, kb page | S1–S5 | claude |
 | 4 | S7 `f5647e3b` live demo cold/warm/refine on the dev box against gatehost | S6 | conductor |
@@ -40,3 +42,8 @@ Per story: the targeted tests of the package or example (`GOWORK=off go -C examp
 - Pushing `bashy` main and bumping the umbrella pin (one gated step at a time after review).
 - Binding the door credential on the dev box for the door tier; any paid training run beyond the vendor seats already in use.
 - Graduating the free-text form into a core verb (`bashy connect "..."`) — not in this sprint.
+
+## Operator additions (2026-11-13, after filing)
+
+- **oci.bsh as an exemplar (S5b `0d32efa5`).** The gate venue's podman machine has no bashy on PATH, which blocked every runtime proof in Sprint 632 and has hurt many sprints before; agents never learn it. `agentic oci` / `agentic sandbox` is the genie-enabled face of `bashy oci` that learns the venue once (binary on PATH inside the machine, one machine per host, claim first, caps, no make in the VM) and keeps the pitfalls.
+- **Designated feedback inbox (D1 `cdae01f2`, design only).** Other agents report failures in real time, humans file wishes on the web UI, agents driven by another agent forward the yield report; `refine` consumes them. Reuses the shaping lifecycle (a forged `CMD.bsh` is a shaped app: `shape wish/incident/suggest/approve/undo`), the bus topic `agentic.CMD`, and the human inbox for status. Goal `feedback`.
