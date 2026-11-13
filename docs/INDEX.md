@@ -41,3 +41,4 @@
 - `sprint-627-m2b-weights-evidence.md` — Windows test host model staging: disk preflight, immutable revisions, sizes, hashes and elapsed time.
 - `sprint-627-m2b-image-evidence.md` — Windows test host image draft: pinned model completion, offline generate/edit results, envelopes, timing, memory and checksums.
 - `sprint-627-m2b-narrate-evidence.md` — Live offline Chatterbox narration render on the claimed Windows test host, with envelope, resource measurements and artifact checksum.
+- `sprint-627-m2b-transcribe-evidence.md` — Offline WhisperX SRT render on the Windows test host: local model binding, service envelope, time, memory, disk and checksum.
