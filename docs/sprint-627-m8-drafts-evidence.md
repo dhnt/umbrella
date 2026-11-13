@@ -1,15 +1,76 @@
 # Sprint 627 M8: two oss drafts and the storyboard lock
 
-**Current state (revision run, 2026-11-13 17:50Z):** the storyboard is
-re-locked on draft 08 (project `lanterns-r3`, render `03`). That lock
-supersedes the draft-06 lock below. Drafts 07, 08 and 09 are copied to the
-dev box review directory for operator review. See
-[Revision run](#revision-run-2026-11-13-1630-1750z-product-fixes-drafts-0709-re-lock).
-The AWS proof slice (step D) was not started.
+**Current state (2026-11-13 18:10Z):** by the operator's r3 review decision,
+the storyboard is now locked on draft 09 (project `lanterns-r3`, render `04`),
+with the same 15 shots and cut times. An English + Simplified Chinese revision
+of that render is in the dev-box review directory; the song, images, cards,
+shot assembly and cue times are byte-for-byte the render-04 sources. The
+approved AWS lip-sync proof slice is blocked by IAM before launch. See
+[Render-04 lock and EN+ZH revision](#render-04-lock-and-enzh-revision-2026-11-13).
 
 Story `efd9bc004b56` (#188). Scope: the two free oss drafts with
 `examples/film/film.bsh` on the Windows test host, the storyboard lock, then
 stop. The commercial `--final` stays an operator-approved remaining check.
+
+## Render-04 lock and EN+ZH revision (2026-11-13)
+
+The operator reviewed r3 render `04` and accepted its 15-shot list as the
+contract. `film lock lanterns-r3 --draft 04` produced `lock.json` SHA-256
+`3b8ea8cb3cf22e15d8397f3869fc9e33e339b9391975b261674e88ac1555c869`.
+The locked storyboard SHA-256 is
+`63163131961c38ce5e2eb04bbf87c10a36122737bcb6044532a0c2e2f342beae`;
+the locked cut list and timing SHA-256 values are `3f971767...` and
+`7d2c5dc4...`. This replaces the stale render-03 lock label below; that
+earlier lock remains historical evidence.
+
+For English above Simplified Chinese, `media subs` was run against render
+`04`'s clean `assembly/joined.mp4`, retaining its exact audio and numbered
+shots. The English `assembly/subs.srt` timestamps were copied exactly, and
+the eight translated lines use those same timestamps. The revision required
+14.40 s wall time, 626,700 KiB peak RSS, and cost USD 0. The `media` gate
+passed (`ALL MEDIA TESTS PASSED`). The subtitle renderer now pins Noto
+Sans SC under the SIL Open Font License, verifies its SHA-256 on first-use
+cache fetch or from an offline staged copy, and declares that family for the
+secondary `.ass` style (bashy `f31b01ee`). The offline missing-font path
+fails with a prefetch command; a first-use fetch succeeded and passed the
+hash check. Spot frames at 20 s and 28 s were inspected: both
+lines and Chinese glyphs are visible, with shot numbers `05` and `10`.
+
+| Review artifact (`.agents/s627-m8-review/draft04-en-zh/`, gitignored) | SHA-256 |
+|---|---|
+| `film.mp4` (81.139 s, 1280x720 H.264/AAC, soft subtitle track) | `65ee6d791c131a99f5b5fc4d798408ddbaf580630249192bb8dec203a50aa4fa` |
+| `contact.png` (all 15 numbered shots) | `5cac56c9d27631ba72cabb12061bf791eb4640a6f10207ae8ed282c173dfa38b` |
+| `looksheet.png` (Nova, Ash and four set/inserts) | `f20ac72b226134f5343dba4b3b87a8d35f70cbeb9d5b5a9d61a793e6b8c4797d` |
+| `storyboard.md` (shot/time/lyric/prompt/seed) | `44762fc64aa104e0b1a41aad3886cfa7db5fc1a2df14414e665e3ae646836525` |
+| `spot20.png` / `spot28.png` (glyph checks) | `9ba9b740...` / `12f54ba3...` |
+
+WhisperX had recognised only one group of sung lyrics in render `04`, so
+the eight cue times after that group remain extrapolations; the ±150 ms
+vocal timing requirement is not verified. The proof slice will use a locked
+close-up with clear vocals. No browser/API/vendor stage or commercial final
+was run for this revision.
+
+### AWS proof slice preflight (blocked before launch)
+
+The approved source is locked close-up shot `04` (Ash). Its portrait is
+`a8479458e036ca4d69e481458b1a77732b6c53342670012095157af764eb3a02`.
+A 5.000 s, 16 kHz mono audio slice, with the shot's 2.609 s of vocals and
+silence padding, has SHA-256
+`df627c449bca4dc73ab933d57035f44abead5d8143f470f6942a0bc565521738`.
+Both are in the gitignored review directory beside the film.
+
+The vault automation user authenticated to AWS. `sprint-627-gpu-cap-50`
+reported actual USD `0.36` against USD `50.0` (hard stop USD 40); there were
+no running EC2 instances in the target region, and `g6e.xlarge` was offered.
+The planned launch used one instance, tag `sprint=627` and
+`instance-initiated-shutdown=terminate`. **It was not launched:**
+`ec2:RunInstances --dry-run` returned `UnauthorizedOperation` because the
+automation user has no identity-based `ec2:RunInstances` permission on
+`instance/*`. `ec2:CreateKeyPair` and `ec2:CreateSecurityGroup` dry-runs
+were also denied. No instance ID, proof clip or incremental AWS cost exists.
+The conductor was notified. The next run needs an IAM grant and a clip-return
+path before attempting the one allowed instance; this run did not consume an
+instance attempt.
 
 **Result (retry after the GPU fix, 2026-11-13 14:30–15:45Z):** the GPU
 verification passed, and two oss drafts rendered successfully (renders `05`
