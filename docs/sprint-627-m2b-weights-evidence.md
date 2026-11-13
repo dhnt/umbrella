@@ -42,12 +42,16 @@ bytes are committed to this public repository.
 | image-qwen / Qwen-Image (partial) | `75e0b4be04f60ec59a75f475837eced720f823b6` | `image-qwen/models/Qwen-Image/text_encoder/model-00004-of-00004.safetensors` | 1,691,924,384 | `5dd068336d14d45ffb43cef374d286cc6ba9d8741b028f90a7d040d847961f4a` | download in progress |
 | image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00002-of-00004.safetensors` | 4,991,495,816 | `b1830db6908dcc76df3a71492acbcf2b8cac130114cf1f3c2d9edae8de8c6de3` | download in progress |
 | image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00003-of-00004.safetensors` | 4,932,751,040 | `09c1807c6d00d7cab94f7db39d4c02ebb8537225ccde383861ac48db97945aa6` | download in progress |
+| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00001-of-00004.safetensors` | 4,968,243,304 | `d725335e4ea2399be706469e4b8807716a8fa64bd03468252e9f7acf2415fee4` | download in progress |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
 were downloaded in their respective snapshots. Qwen Image generation and edit
 downloads are in progress; only completed files are listed. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
+The four Qwen text encoder shards have identical Hub SHA-256 values in the
+generation and edit repositories. They were hard-linked into the edit cache
+after verifying the generation files, so no second encoder download occurred.
 
 ## Reuse on native Windows
 
