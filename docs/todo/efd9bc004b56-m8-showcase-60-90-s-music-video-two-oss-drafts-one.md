@@ -3,13 +3,12 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: assigned
+status: todo
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
-weave: 41
 assignee: claude-opus5.5
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -21,3 +20,9 @@ Spec: docs/sprint-627-master-execution-plan.md (verification). Original fictiona
 SCOPE FOR THIS RUN (conductor, 2026-11-13; draft first, final once): produce the TWO oss DRAFTS only, then STOP. Use examples/film film.bsh on the Windows test host (claim it; native-first, WSL with a recorded reason; never touch the default podman machine; no WSL config change; batch probes over the direct outpost ssh form; refresh the elevation cookie from the vault yourself). Rods: song-acestep, image-klein (FLUX.2 klein-4B), narrate-local, transcribe-whisperx - all offline from the staged cache (never re-download). animate: NO oss route exists (M3/M3b: VAE decode stall) - use the labelled still-image slow-pan fallback; do NOT use the browser (Kling) or any paid/api route. Original fictional characters only; AI-generated disclaimer card; bilingual subtitles via media subs; 60-90 s; 1280x720 or better. Record per draft: wall time, per-stage time, artifacts + SHA256, cost (zero). Lock the storyboard after the drafts. The commercial --final is an operator-approved REMAINING CHECK: never pass --yes yourself.
 
 RUN 2026-11-13 (claude-opus5.5): BLOCKED, no draft completed; evidence docs/sprint-627-m8-drafts-evidence.md. Draft 01: song ok (oss, 240 s, 75 s WAV), then portrait 1280x720 FLUX.2 klein GPU VAE decode hung -> TDR (LiveKernelEvent 141) and, after a bounded tiled-decode probe, an unexpected reboot of the Windows test host (11:05Z). Root cause class: environment (gfx1151 WSL ROCm VAE decode at 1280x720; 512x512 decodes). Remaining: operator picks an option (512 portraits + aspect-correct still-pan in film.bsh; CPU VAE decode in image-klein.py; another image host; driver investigation), then two drafts + lock. No GPU work on that host for M8 until then. --final untouched, no --yes, zero cost.
+
+RETRY AFTER GPU FIX (operator approved 2026-11-13, mb:13700 + "yes"): the Windows test host now has AMD driver 26.10.1 + a NATIVE ROCm 10.0 venv (C:\rocm10\venv, torch 2.13.0+rocm10.0.0, HIP 7.15); bashy todo 69e99cd6. Order:
+1. VERIFY FIRST: one real FLUX.2 klein-4B 1280x720 generate + VAE decode in that native venv, as a single GPU job. Record time, peak memory, and the Windows System log (no Event 141 / TDR).
+2. If ANY Event 141/TDR appears: stop all GPU work immediately, do not retry or probe, record it, release the claim, and tell the conductor (the operator handles reboot and Klatch restore - never touch the default podman machine). Fall back to proven-size render + ffmpeg upscale only with conductor approval.
+3. Only if step 1 passes: the two FREE oss drafts per the scope above (song-acestep, image-klein, narrate-local, transcribe-whisperx offline from staged weights; labelled still+pan animate; no browser/api; never --yes; zero spend), ONE GPU job at a time, native venv first (WSL only with a recorded reason). Lock the storyboard, then STOP; commercial final stays operator-approved.
+Claim the host first, release on every exit; direct outpost ssh, batched; refresh the elevation cookie from the vault yourself.
