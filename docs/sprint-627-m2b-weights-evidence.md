@@ -1,16 +1,22 @@
 # Sprint 627 M2b-w: model weight staging
 
 Story `fb563eb23e6b`, Windows test host. No renders. Paths below are relative
-to the WSL rod cache root `/root/s627-m2b/cache/bashy/oss`; no model bytes are
-committed to this public repository.
+to `$BASHY_OSS_CACHE/bashy/oss` in the existing WSL M2b workspace; no model
+bytes are committed to this public repository.
 
 ## Venue and preflight
 
-- Exclusive `host:elephant` claim held during all host operations.
-- Native Windows `bashy.exe` was tried first. The native rod cache was empty,
-  and `uv` was absent from its PATH. The previous M2b run had already created
-  pinned package environments in the WSL rod cache. WSL was used to reuse
-  those environments; no WSL configuration or Podman machine was changed.
+- Exclusive Windows test host claim held during all host operations.
+- Native Windows `bashy.exe` was tried first. Its rod cache was empty and
+  `uv` was absent from its PATH; both can be provisioned, so neither alone
+  justifies WSL. The previous M2b run had already created pinned package
+  environments in WSL. GPU PyTorch ROCm was verified in WSL by M3, while
+  native Windows GPU support remains unverified pending M3b. Staging the
+  song, image and narration models beside those existing environments avoids
+  a second package/weight transfer before GPU rendering. WhisperX's rod is
+  CPU-bound on both venues; its WSL placement reuses the previous run's
+  WhisperX environment and avoids provisioning a second Torch stack.
+  No WSL configuration or Podman machine was changed.
 - Native C: free space: 924,795,293,696 bytes (861.2 GiB). WSL root free
   space before downloads: 264,452,880 KiB (252.2 GiB). This exceeds the
   rods' 25/35/12/10 GiB individual preflight thresholds.
@@ -39,3 +45,17 @@ were downloaded in their respective snapshots. Qwen Image remains to be
 staged and verified. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
+
+## Reuse on native Windows
+
+If M3b establishes a native GPU path, copy the model directories from the
+existing WSL cache through `\\wsl.localhost\Ubuntu-24.04\<WSL-cache-root>\bashy\oss`
+to the native rod cache selected by `BASHY_OSS_CACHE` (the default is under
+`LOCALAPPDATA`). Keep each relative path in the table unchanged. Use a copy
+that preserves files without contacting the Hub, then run native
+`bashy sha256sum` on each listed checkpoint and compare both byte count and
+SHA-256 with this table before any render. Point the rod at the copied local
+model files (or populate a Hugging Face Hub cache and bind `HF_HUB_CACHE`);
+a plain rod invocation currently uses its default Hub model ID and can fetch
+again. The specific WSL cache root is recorded in
+the host-local M2b workspace, not this public repo.
