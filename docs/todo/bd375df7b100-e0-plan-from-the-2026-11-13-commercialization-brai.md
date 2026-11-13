@@ -14,7 +14,7 @@ sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
 ---
 
-PLANNING STORY. Adjust the Sprint 632 plan before E1-E4 run. The requirements are the OPERATOR POSITIONS below. The 2026-11-13 brainstorm (meet room 46) is background information only: its polls, cards and reviewer books carry no decisions and set no requirements. For information: docs/meetings/meeting-note-2026-11-13T07-09-commercializing-bashy-software-shaping-product-a.md (minutes, polls, 25-card board) and docs/shaping-commercialization-analysis.md (compiled analysis of the minutes, the board and the four reviewer books).
+PLANNING STORY. Adjust the Sprint 632 plan before E1-E4 run. The requirements are the OPERATOR POSITIONS below. The 2026-11-13 brainstorm (meet room 46) is background information only: its polls, cards and reviewer books carry no decisions and set no requirements. For information: dhnt-docs docs/meetings/meeting-note-2026-11-13T07-09-commercializing-bashy-software-shaping-product-a.md (private) (minutes, polls, 25-card board) and dhnt-docs docs/shaping-commercialization-analysis.md (private) (compiled analysis of the minutes, the board and the four reviewer books).
 
 OPERATOR POSITIONS (the requirements; where the meeting notes differ, these win):
 1. Receivers of a shaped app never pay; charge for operation, governance and evidence, in flat units, never per seat or per wish.
