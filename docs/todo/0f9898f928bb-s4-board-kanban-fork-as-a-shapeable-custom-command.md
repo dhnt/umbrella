@@ -3,11 +3,13 @@ id: 0f9898f928bb
 kind: feature
 title: 'S4 board: kanban fork as a shapeable custom command'
 seq: 210
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:33:41.915952Z
+weave: 50
+assignee: muse-conductor
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
 sprint_title: 'Shapeable apps: fork-or-build first batch'

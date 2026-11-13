@@ -3,9 +3,11 @@ id: 82c0ddf40b66
 kind: task
 title: 'S2b files: port the fbembed seam to gtsteffaniak/filebrowser (Apache-2.0), multi-day'
 seq: 216
-status: todo
+status: assigned
 priority: p2
 created: 2026-11-13T11:41:20.525051Z
+weave: 46
+assignee: claude-fable5.1
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
 sprint_title: 'Shapeable apps: fork-or-build first batch'

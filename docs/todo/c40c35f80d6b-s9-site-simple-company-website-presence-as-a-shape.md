@@ -3,11 +3,13 @@ id: c40c35f80d6b
 kind: feature
 title: 'S9 site: simple company website/presence as a shapeable custom command'
 seq: 217
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:41:34.072356Z
+weave: 45
+assignee: agy-gemini3.8-flash
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
 sprint_title: 'Shapeable apps: fork-or-build first batch'

@@ -3,11 +3,13 @@ id: 032b83ec6219
 kind: feature
 title: 'S8 clip: build async screen/video clips on cast/record/video/vlog as a shapeable custom command'
 seq: 214
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:33:42.438038Z
+weave: 44
+assignee: opencode-glm-5.3
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
 sprint_title: 'Shapeable apps: fork-or-build first batch'
