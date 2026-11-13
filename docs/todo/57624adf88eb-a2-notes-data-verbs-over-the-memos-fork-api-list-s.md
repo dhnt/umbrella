@@ -3,12 +3,14 @@ id: 57624adf88eb
 kind: feature
 title: 'A2 notes: data verbs over the memos fork API (list, show, add, set, archive, search, export)'
 seq: 237
-status: todo
+status: assigned
 priority: p1
 labels:
     - parity
     - app
 created: 2026-11-13T17:39:23.094789Z
+weave: 64
+assignee: codex-gpt6-astra
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

@@ -3,11 +3,13 @@ id: 88e824369d27
 kind: task
 title: 'S5b whiteboard: remove inert Firebase and analytics code; refresh ui-cli-parity whiteboard rows'
 seq: 232
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T14:52:38.388904Z
+weave: 68
+assignee: claude-opus5
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

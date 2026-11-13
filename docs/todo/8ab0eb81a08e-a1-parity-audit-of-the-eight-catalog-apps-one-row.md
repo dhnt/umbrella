@@ -3,12 +3,14 @@ id: 8ab0eb81a08e
 kind: task
 title: 'A1 parity audit of the eight catalog apps: one row per web action in bashy/docs/ui-cli-parity.md'
 seq: 236
-status: todo
+status: assigned
 priority: p1
 labels:
     - parity
     - app
 created: 2026-11-13T17:39:22.949144Z
+weave: 62
+assignee: agy-gemini3.8-flash
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

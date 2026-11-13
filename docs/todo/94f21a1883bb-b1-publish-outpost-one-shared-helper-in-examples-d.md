@@ -3,12 +3,14 @@ id: 94f21a1883bb
 kind: feature
 title: 'B1 publish-outpost: one shared helper in examples/desk/kit puts any catalog app on outpost''s app list (login-required by default)'
 seq: 242
-status: todo
+status: assigned
 priority: p1
 labels:
     - app
     - outpost
 created: 2026-11-13T17:39:23.811656Z
+weave: 66
+assignee: claude-opus5.5
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

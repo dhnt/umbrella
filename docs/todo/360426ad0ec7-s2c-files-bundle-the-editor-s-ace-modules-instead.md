@@ -3,11 +3,13 @@ id: 360426ad0ec7
 kind: bug
 title: 'S2c files: bundle the editor''s Ace modules instead of loading them from a public CDN'
 seq: 220
-status: todo
+status: assigned
 priority: p1
 labels:
     - shaping
 created: 2026-11-13T12:18:16.36813Z
+weave: 63
+assignee: opencode-glm-5.3
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'

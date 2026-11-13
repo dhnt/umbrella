@@ -3,12 +3,14 @@ id: af8ee492004f
 kind: bug
 title: bashy sprint goal link never stores a first-time story link (thread says linked, story stays UNCOVERED)
 seq: 243
-status: todo
+status: assigned
 priority: p1
 labels:
     - sprint
     - bashy
 created: 2026-11-13T17:41:56.776224Z
+weave: 65
+assignee: muse-conductor
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shapeable apps phase 1: CLI parity, outpost integration, bugs'

@@ -3,11 +3,13 @@ id: 152dcd981ebd
 kind: task
 title: 'S4b board: stub the web crash-report SDK too; make board-console buildable in-repo'
 seq: 231
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T14:50:31.758229Z
+weave: 67
+assignee: codex-gpt5.6-sol
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
