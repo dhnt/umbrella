@@ -73,6 +73,9 @@ SHA-256. This is a fresh file transfer; its measured rate is meaningful.
 Native C: had 869,457,514,496 free bytes before this transfer, above the
 35 GiB image rod threshold. This checkpoint is staged only; M2b-image must
 wire its light-model inference path and verify a real artifact separately.
+After all listed hashes had been recorded, the host access cookie expired and
+a final remote disk-usage read could not run. The exclusive host claim was
+released. The preserved optional Qwen partial files were not deleted.
 
 ## Reuse on native Windows
 
