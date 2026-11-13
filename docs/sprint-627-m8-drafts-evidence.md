@@ -1,11 +1,13 @@
 # Sprint 627 M8: two oss drafts and the storyboard lock
 
-**Current state (2026-11-13 18:10Z):** by the operator's r3 review decision,
+**Current state (2026-11-13 20:05Z):** by the operator's r3 review decision,
 the storyboard is now locked on draft 09 (project `lanterns-r3`, render `04`),
 with the same 15 shots and cut times. An English + Simplified Chinese revision
 of that render is in the dev-box review directory; the song, images, cards,
 shot assembly and cue times are byte-for-byte the render-04 sources. The
-approved AWS lip-sync proof slice is blocked by IAM before launch. See
+approved AWS lip-sync proof slice rendered and was returned from the sole
+allocated fallback instance. Frame inspection found almost no mouth motion,
+so the visible lip-sync bar remains open. See
 [Render-04 lock and EN+ZH revision](#render-04-lock-and-enzh-revision-2026-11-13).
 
 Story `efd9bc004b56` (#188). Scope: the two free oss drafts with
@@ -71,6 +73,118 @@ were also denied. No instance ID, proof clip or incremental AWS cost exists.
 The conductor was notified. The next run needs an IAM grant and a clip-return
 path before attempting the one allowed instance; this run did not consume an
 instance attempt.
+
+### AWS proof slice after the IAM grant (2026-11-13)
+
+The operator's grant made the exact launch request pass EC2 `--dry-run`. Its
+AMI came from the approved public SSM parameter. The request specified one
+`g6e.xlarge` in the approved region, the approved instance profile, no key
+pair, the default no-inbound security group, a 180 GB gp3 root volume, both
+required tags on both the instance and volume, and
+`instance-initiated-shutdown-behavior=terminate`. User-data had an 85-minute
+shutdown timer and a 78-minute work bound, with an output/log upload and
+shutdown on exit. Its script passed `bash -n` before launch. The input was
+the locked shot `04` portrait and its exact 5.000 s audio slice, with the
+SHA-256 values above. The script selected the published InfiniteTalk
+single-person image-to-video route at 480p, with a single locked seed. This
+route did **not** run because no instance was allocated.
+
+At approximately 19:36Z, the **one** live `RunInstances` request returned
+`InsufficientInstanceCapacity` (the AWS CLI reports two internal retries).
+There is no instance ID or start/stop time, no generated clip and no clip
+SHA-256. A subsequent `describe-instances` found no pending, running or
+stopping instances. The budget's reported actual spend was USD 0.36 before
+and after the request, below the USD 40 stop threshold. No second live
+launch was attempted. The AWS resource claim was released and the conductor
+was notified. The conductor then authorized a bounded capacity search.
+
+The ignored dev-box review directory was restored from the Windows-side
+staging path for this workspace, and local SHA-256 checks matched the prior
+record: `film.mp4` `65ee6d79...aa4fa`, `contact.png` `5cac56c9...3dfa38b`,
+`looksheet.png` `f20ac72b...6b8c4797d`, and `storyboard.md`
+`44762fc6...836525`. The shot-04 portrait and audio hashes also match the
+prior proof preflight. The commercial final remains deferred.
+
+### Conductor-authorized capacity search and fallback launch
+
+The conductor authorized one further launch sequence after the first capacity
+error, with at most **one allocated instance**. All four default availability
+zones returned `InsufficientInstanceCapacity` for `g6e.xlarge`; a regional
+`g6.xlarge` request returned the same. The subsequent regional `g5.xlarge`
+request succeeded at **2026-11-13 19:42:53Z**, allocating instance
+`i-0f2e89d5d03f13090` (initial state `pending`). The launch kept the
+approved role, no key pair, default no-inbound security group, termination
+on in-guest shutdown, both required tags on instance and volume, and a
+100 GB gp3 root volume. No other instance was allocated.
+
+On the conductor's instruction, this attempt uses locked **shot 03**. The
+shot-04 still has a microphone covering Ash's mouth; Nova's mouth is visible
+above the microphone in shot 03, making lip sync review possible. A 5 s,
+512×512 still-derived source video and an exact 5 s audio slice (1.956 s of
+the shot's vocals plus silence) were staged. Their SHA-256 values are
+`f3bf6247773bdf0df560b2eccf443da6cd56829665bf914b0845cee8c4686ae8`
+and `e6bfa573d7dc8fb2437fc9b63546752cb6c8f08f538c8833b7c4f173e421138b`.
+
+The fallback model is **TBDub Student**, source revision
+`19e18e4ba8e2a19e6716cb38110ee2de1dae9bb3`, with its model and auxiliary
+weights pinned to specific Hugging Face revisions. Its code and weights,
+and the required X-Dub VAE and HuBERT weights, declare Apache-2.0. The
+weight revisions are `TaoLiveAIGC/TBDub` `b1ac43698859d35bca475301834be9d6133472e2`,
+`KlingTeam/X-Dub` `c84e9612b7c1160f06ea609882e12efd83cacbbe`, and
+`facebook/hubert-large-ll60k` `ff022d095678a2995f3c49bab18a96a9e553f782`.
+The [TBDub source](https://github.com/TaoLiveAIGC/TBDub/blob/19e18e4ba8e2a19e6716cb38110ee2de1dae9bb3/README.md)
+documents its license, checkpoint list and measured memory use. The
+published Student configuration uses two diffusion steps; the run requests
+CPU offload at 512×512 and seed `7011`. It is visual dubbing of the locked
+still as a 5 s video with the locked audio. The model's published measured
+GPU peak with offload is about 15 GiB on a 512×512 workload. This was chosen
+because InfiniteTalk's official low-VRAM mode does not document a 24 GB
+configuration for this host and requires about 94 GB of downloads. The
+user-data has an 85-minute shutdown timer, a 78-minute worker bound and
+uploads the clip or failure logs before shutdown. At launch, budget reported
+USD 0.36 actual against USD 50, below the USD 40 stop threshold.
+
+### Proof result and visual check
+
+The user-data returned `exit=0` at **2026-11-13 19:59:58Z**, 17 minutes
+5 seconds after launch. The clip is 5.000 s, 125 frames at 512×512,
+H.264 video with AAC audio. Its SHA-256, verified after download, is
+`b2cc55d9e2d14bc5b6c52a631ed768a389e065c93cc21b164da5cf69fb091740`.
+The ignored review directory contains `proof-shot03.mp4`, the render log,
+status, and the kept `proof-frames.png` and `proof-mouth-grid.png` frame
+grids alongside the draft review files. The model log confirms MediaPipe
+landmarks on all 125 source frames, two Student clips at two steps each,
+and a successful output save.
+
+| Kept proof artifact | SHA-256 |
+|---|---|
+| `proof-shot03.mp4` | `b2cc55d9e2d14bc5b6c52a631ed768a389e065c93cc21b164da5cf69fb091740` |
+| `proof-frames.png` | `ebaa17e0667ccf13d6612ff4e8acc1326a5b655fe4767c87fb8e7e8d29b35683` |
+| `proof-mouth-grid.png` | `f7251bdd70c790d70de2859e3167c5e9a7b6a8fec4e9e0fb3bbfdf02af25ff9d` |
+| `proof-run.log` / `proof-status.txt` | `38e3ccf79b855003a76a015982cddde663887a4a862a2305851ecb6dafa13920` / `3500ff521bbfbb2ad06397aed3993437eb0282f268de6b5ea25276e1ebeeccf8` |
+
+The 0.2 s mouth-region frame grid shows Nova's lips staying essentially
+in the same open shape across the 5 s output. The source is a held still;
+its consecutive mouth-region luma difference is zero. The generated clip's
+mean consecutive difference in that region is only 0.174 on an 8-bit
+0–255 scale (maximum 0.710). Thus the generated clip demonstrates a real
+audio-driven model run and output return, but **does not demonstrate visible
+lip sync**. The 1.956 s source vocal segment is non-silent; the rest is
+padding. No second model run was attempted under the one-instance limit.
+The operator's side-by-side review against reference frames and the ±150 ms
+subtitle check remain open.
+
+User-data requested immediate shutdown after upload; the EC2 state became
+`shutting-down`. A direct `terminate-instances` call was also made in that
+state to enforce cleanup. **Terminated** state was verified by
+2026-11-13 20:05:19Z; AWS did not expose a more precise stop timestamp in
+`describe-instances`. The budget service still reported USD 0.36 actual
+after the run (delayed billing). The AWS Price List API returned USD 1.006
+per hour for Linux `g5.xlarge` in the target region; 17 minutes 5 seconds
+to completed user-data and at most 22 minutes 26 seconds to the termination
+verification bound imply approximately **USD 0.29–0.38 EC2 compute**, plus
+a small gp3 storage charge. The reported actual charge must be reconciled
+when billing updates. The hard stop at USD 40 was never approached.
 
 **Result (retry after the GPU fix, 2026-11-13 14:30–15:45Z):** the GPU
 verification passed, and two oss drafts rendered successfully (renders `05`
