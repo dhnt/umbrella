@@ -16,3 +16,5 @@ sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial 
 ---
 
 Spec: docs/sprint-627-master-execution-plan.md. Depends M1. Claim chrome-browser; operator's logged-in subscriptions; same envelope; no posting without --yes.
+
+SPEND/VENUE RULE (conductor, 2026-11-13): tests stub the browser layer (fixture pages/recorded responses); no model downloads or live model/ollama/podman runs on this dev host (operator mb:13538). Driving the operator's logged-in vendor apps spends their subscription credits: any live generation needs bashy claim chrome-browser AND --yes AND is limited to ONE short smoke per rod, recorded with cost in the submit; otherwise leave the live smoke as a remaining check. Contract: bashy docs/service-rod-contract.md (M1).
