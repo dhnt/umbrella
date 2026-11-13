@@ -3,17 +3,16 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: done
+status: todo
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
 assignee: codex-gpt6-sol
-sprint: 627
-sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
-sprint_title: 'Music-video showcase: film pipeline with oss draft -> commercial final (song, image, animate, narrate, subtitles)'
-closed: 2026-11-13T20:34:20.398716Z
+sprint: 635
+sprint_id: b2a7f529-ebc1-5236-9cb0-1327ba3c2e8c
+sprint_title: 'M8 showcase: commercial final + lip sync (carried from Sprint 627, operator decision)'
 closed_by: claude-opus5.5-s627
 ---
 
@@ -60,3 +59,5 @@ Same recipe as above: tags dhnt:managed=true + sprint=627 on instance and volume
 Record per attempt: model + licence + revision, instance type + AZ, start/stop in PST, measured cost, clip SHA-256, mouth-grid verdict (visible lip sync yes/no). Stop exploring at the first clearly visible lip sync or when the budget stops it; copy clips + mouth grids to the dev box review dir. No commercial final; no --yes for any other spend.
 
 CLOSED AT SPRINT END (operator, 2026-11-13: close 627; supersedes further AWS model exploration): delivered - native-ROCm safety decode; free oss animatic drafts (05-09, zero spend) with the operator's review points met; r3 storyboard locked (film lock SHA-256 3b8ea8cb...); EN over Simplified-Chinese subtitle render; look + contact sheets + storyboard table; AWS proof slice (one g5.xlarge, TBDub Student, ~USD 0.29, instance terminated) - ran clean but no visible lip sync. Exploration run #74 stopped before any launch. AWS spend: budget actual USD 0.36 + ~0.29 unbilled = ~USD 0.65 of 50. MOVED to backlog follow-up 91b6919a: real lip sync + the operator-approved commercial final.
+
+CORRECTION (operator mb:13813, 2026-11-13): the instruction was to close the SPRINT, not this story. The sprint-end acceptance of M8 is UNDONE: M8 is OPEN work again, carried off Sprint 627 to the follow-up backlog Sprint 635 ("M8 showcase: commercial final + lip sync"), with all delivered evidence kept here and in docs/sprint-627-m8-drafts-evidence.md (drafts 05-09, r3 lock 3b8ea8cb, EN+ZH render, look/contact sheets, AWS proof-slice finding: TBDub on g5.xlarge ran clean, no visible lip sync, ~USD 0.65 total S627 AWS spend). Remaining: real visible lip sync + the operator-approved commercial final. The split-out follow-up 91b6919a was withdrawn (this story carries the work).
