@@ -3,11 +3,12 @@ id: fcaa3d3e6109
 kind: feature
 title: 'S6 table: records grid with personal views as a shapeable custom command'
 seq: 212
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:33:42.183391Z
+weave: 54
 assignee: codex-gpt6-sol
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
