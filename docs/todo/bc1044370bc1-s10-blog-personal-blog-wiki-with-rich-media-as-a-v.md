@@ -3,11 +3,13 @@ id: bc1044370bc1
 kind: feature
 title: 'S10 blog: personal blog/wiki with rich media as a variant of site'
 seq: 218
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
 created: 2026-11-13T11:41:58.613382Z
+weave: 58
+assignee: opencode-glm-5.3
 sprint: 631
 sprint_id: c3371fe2-016d-501e-8cf4-fb570a3cca03
 sprint_title: 'Shapeable apps: fork-or-build first batch'

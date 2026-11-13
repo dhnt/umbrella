@@ -3,7 +3,7 @@ id: fcaa3d3e6109
 kind: feature
 title: 'S6 table: records grid with personal views as a shapeable custom command'
 seq: 212
-status: assigned
+status: done
 priority: p2
 labels:
     - shaping
@@ -27,6 +27,8 @@ shape:
       actor: codex-gpt6-sol
       represented_user: device:requester
       evidence: shape-evidence:85d4e5af6e743929629bd2af524e1bd3d1710289
+closed: 2026-11-13T14:26:49.158395Z
+closed_by: claude-opus5.5-s631
 ---
 
 READ docs/shapeable-apps-worker-brief.md FIRST (rules, shaping contract, done means). Scope: Linux + web UI only this sprint. Fork-or-build rule: permissive license only (MIT/Apache-2.0/BSD/ISC, LICENSE file read, no open-core ee/), >=1k stars, maintained -> fork + make shapeable; else build. Ships as a custom command in bashy/examples/<job>/, never core. Neutral job-only wording in public files. Candidate review: private spec of Sprint 631. Done = shaping demo (wish, candidate, verify, preview, approve, undo; visible only to the requester) + license re-verified. Base: gristlabs/grist-core (Apache-2.0); fallback Baserow MIT core only. Uses the S3 template.
