@@ -64,3 +64,7 @@ Sprint 631 story S2b record: the base verified (Apache-2.0, 9.1k stars, `v2.0.2-
 ## shapeable-app-catalog.md
 
 The first batch of shapeable apps (Sprint 631): eight bashy custom commands (notes, form, clips, site with a chat template, board, whiteboard, table) and the files app on the maintained File Browser fork. For each: the job, the pinned permissive fork or own build, and the license. Lists the shared rules (shapeable, fork-or-build, no hidden phone-home, owner-only OTel, Linux + web UI) and the items still open in Sprint 632.
+
+## sprint-632-master-execution-plan.md
+
+Sprint 632, phase 1 (operator re-scope 2026-11-13): bashy CLI parity for the eight catalog apps, one verb that puts any catalog app on outpost's app list, and the carried bugs. States what the code showed (lifecycle-only commands, two separate app registries, the outpost URL-path bug, the goal-link bug), the stories in three waves with their lanes and dependencies, the per-story and close gates, and what is deferred to phase 2.

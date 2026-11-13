@@ -31,3 +31,12 @@ Every job must earn the **Shapeable** badge: registered, declared checks, scoped
 - **Tests:** unit tests for the command (targeted tests only, no full or remote gates; QA is a separate pass).
 - **Evidence:** the license SPDX id and star count with their source, the pinned fork commit, the commands you ran, and the results, all recorded on the story.
 - **Commits:** every commit carries `Sprint: #631`, `Story: #N`, `Story-ID: <id>` and `Agent: <your agent name>`.
+
+## Sprint 632 addendum (phase 1: CLI parity, outpost app list, bugs)
+
+The rules above still apply. For a Sprint 632 story:
+- **Trailers:** every commit carries `Sprint: #632`, `Story: #N`, `Story-ID: <id>` and `Agent: <your agent name>` (the name you were assigned under; the commit hook checks it against the story's assignee).
+- **Where to commit:** code lives in a subproject (`bashy/`, `outpost/`, `yoke/`). Commit inside that subproject on a branch named `s632-<story-prefix>` (for example `s632-a2-notes`) and push that branch to the subproject's origin. Do not push to the subproject's `main`/`master` and do not bump the umbrella pin; the conductor reviews, merges and bumps pins. Never `git add -A` at the umbrella root.
+- **Parity verbs:** every verb takes `--json`; writes take `--dry-run`; a verb calls the app's own API on the running local instance with the principal's local credential, never the database directly; the denied result for a non-owner matches the page. Follow the common verb grammar of `bashy/examples/desk/kit/README.md` and, for A3-A5, the grammar A2 (notes) establishes.
+- **Tests:** targeted unit tests for the command, runnable without the fork. Fork runtime proofs only on the claimed gate venue (rule 1); say in the evidence when the runtime proof is still open.
+- **Evidence on the story:** commands run, test output, the branch and commit SHAs, and the `script/no-phone-home.sh` output when a fork was touched. Submit with `bashy sprint submit 632 <story> -m "<evidence>"`.

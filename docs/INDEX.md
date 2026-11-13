@@ -45,6 +45,7 @@
 - `sprint-627-m2b-song-b-evidence.md` — Offline-by-default OSS rod fix, hermetic fixture gate and ACE-Step Windows-host render with zero transfer markers.
 - `sprint-627-m3b-animate-evidence.md` — Native Windows Wan2.2 spike: GPU VAE decode stall, reused weights, bounded render and route decision.
 - `sprint-627-m8-drafts-evidence.md` — M8: native ROCm 10 1280×720 FLUX verify passed, two oss drafts rendered and the storyboard locked (zero cost, no TDR); earlier blocked attempt kept.
-- `shapeable-apps-worker-brief.md` — Sprint 631 worker brief: fork-or-build rules (permissive license only, custom command in bashy/examples, job-only wording), shaping contract pointers, done means.
+- `shapeable-apps-worker-brief.md` — Sprint 631 worker brief (+ Sprint 632 addendum): fork-or-build rules (permissive license only, custom command in bashy/examples, job-only wording), shaping contract pointers, done means.
 - `files-fbembed-quantum-port.md` — Sprint 631 S2b: the fbembed seam ported into a fork of the active Apache-2.0 File Browser upstream (four small patches + `backend/fbembed`), evidence, binary cost, consumer migration plan and open decisions
 - `shapeable-app-catalog.md` — the shapeable app catalog from Sprint 631: notes, form, clips, site (+ chat template), board, whiteboard, table, plus files on the maintained fork; shared rules and what is still open.
+- `sprint-632-master-execution-plan.md` — Sprint 632 shapeable apps phase 1: CLI parity for the eight catalog apps, outpost app-list integration, bugs; waves, lanes, gate; evaluation deferred to phase 2

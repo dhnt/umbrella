@@ -9,6 +9,9 @@ labels:
     - sprint
     - bashy
 created: 2026-11-13T17:41:56.776224Z
+sprint: 632
+sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
+sprint_title: 'Shapeable apps phase 1: CLI parity, outpost integration, bugs'
 ---
 
 Root cause (recorded 2026-11-13 while planning Sprint 632, read-only): yoke/pkg/weave/weave_story_goal.go linkSprintGoalStory (~line 696-730) rebuilds g.Stories from the existing entries and only replaces an entry whose id already matches (the repo-healing path). When no entry matches (`!matched`), it appends the thread line "linked story X to goal G" and returns "linked", but never appends sprintStoryRef{Repo: root, ID: it.ID} to g.Stories. Only `sprint goal add --story` (line ~627) appends. Effect: every story linked with `sprint goal link` stays in the card's "UNCOVERED by the plan" list and would trip the close gate (weave_story_coverage.go sprintCoverageGate) although the thread records the link.
