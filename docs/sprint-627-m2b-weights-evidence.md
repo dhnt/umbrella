@@ -1,7 +1,7 @@
 # Sprint 627 M2b-w: model weight staging
 
-Story `fb563eb23e6b`, Windows test host. No renders. Paths below are relative
-to `$BASHY_OSS_CACHE/bashy/oss` in the existing WSL M2b workspace; no model
+Story `fb563eb23e6b`, Windows test host. No renders. WSL paths below are relative
+to `$BASHY_OSS_CACHE/bashy/oss` in the existing M2b workspace; no model
 bytes are committed to this public repository.
 
 ## Venue and preflight
@@ -56,6 +56,23 @@ future render to guarantee they use the same revisions without downloading.
 The four Qwen text encoder shards have identical Hub SHA-256 values in the
 generation and edit repositories. They were hard-linked into the edit cache
 after verifying the generation files, so no second encoder download occurred.
+
+## Native Windows light draft image checkpoint
+
+The operator selected one light draft model in `mb:13610`. FLUX.2 klein-4B's
+[model card](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B)
+declares Apache-2.0 and commercial use. The single-file checkpoint was fetched
+directly to the native rod cache after a second native disk preflight. Native
+`bashy.exe sha256sum` and PowerShell `Get-FileHash` agreed with the Hub's LFS
+SHA-256. This is a fresh file transfer; its measured rate is meaningful.
+
+| Model | Hub revision | Native path relative to `LOCALAPPDATA` | Bytes | SHA-256 | Download wall time / rate |
+|---|---|---|---:|---|---:|
+| FLUX.2 klein-4B, single-file checkpoint | `e7b7dc27f91deacad38e78976d1f2b499d76a294` | `bashy/oss/image-qwen/models/FLUX.2-klein-4B/flux-2-klein-4b.safetensors` | 7,751,105,712 | `ec3d4e733a771f61c052fb4856c48b336c55eaf2c65487c2a1faeb9bbda7a343` | 113.55 s / 68.26 MB/s |
+
+Native C: had 869,457,514,496 free bytes before this transfer, above the
+35 GiB image rod threshold. This checkpoint is staged only; M2b-image must
+wire its light-model inference path and verify a real artifact separately.
 
 ## Reuse on native Windows
 
