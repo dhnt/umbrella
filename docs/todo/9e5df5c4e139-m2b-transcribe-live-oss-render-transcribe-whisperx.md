@@ -17,3 +17,5 @@ Split of M2b (eb5e0303) per operator mb:13600. Windows test host (alias in opera
 Depends on M2b-w. Render one SRT from the song clip or a fixture (bashy providers select transcribe + rod) with weights from M2b-w; record works/blocked, wall time, peak memory, disk, the bashy-svc-v1 envelope, and the artifact checksum.
 
 NEVER RE-DOWNLOAD (operator mb:13612): weights are already staged on the Windows test host in the WSL rod cache (BASHY_OSS_CACHE root /root/s627-m2b/cache; ~54 GB: song-acestep 18G, narrate-local 8.6G, transcribe-whisperx 6.2G, image-qwen 20G partial; plus 5.9G HF cache) with per-file SHA256 in docs/sprint-627-m2b-weights-evidence.md. When running rods natively, COPY the staged files (verify the recorded checksums) or point native rods at one shared cache - never fetch them again.
+
+NETWORK (operator mb:13613): never "outpost ssh exec <alias>" (relayed via the cloud satellite). Use only the ad-hoc direct form "outpost ssh <user>@<host> -- ..." (mesh/LAN, ~3-4 s per call) and batch probes into ONE call (one script piped to bash -s, or one powershell -EncodedCommand).
