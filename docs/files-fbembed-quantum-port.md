@@ -1,10 +1,9 @@
 # Files: porting the fbembed seam to the active File Browser upstream
 
 Sprint 631, story S2b (#216, `82c0ddf40b66`). Companion to
-`shapeable-apps-worker-brief.md`. This records the first slice of a
-multi-day port: the seam itself, built and tested inside a fork of the new
-upstream. Consumers have not moved yet; the second half of this document is
-the plan and the open decisions for whoever continues.
+`shapeable-apps-worker-brief.md`. Slice 1 is the seam itself, built and
+tested inside a fork of the new upstream. Slice 2 (the last section) removes
+the upstream's phone-home, adds owner-only OTel and moves the consumers.
 
 ## Why
 
@@ -35,18 +34,20 @@ operator decides.
 
 Fork target: `qiangli/filebrowser-quantum` (a GitHub fork of the base; the
 name `filebrowser` is taken by the old fork). Branch `fbembed` on
-`v2.0.2-stable`, two commits:
+`v2.0.2-stable`, three commits:
 
 | Commit | Content |
 |--------|---------|
 | `b8ca4bdf` | `feat(embed): seams for in-process embedding` — four small upstream patches |
 | `92eae5c2` | `feat(fbembed): in-process embedding package with committed frontend` |
+| `88b90a50` | `feat(no-phone-home): remove analytics, update check and CDN origins; add owner-only OTel` (slice 2) |
 
-Push status: fork created and branch `fbembed` pushed on 2026-11-13; the
-branch head on GitHub is `92eae5c2a3af8c1c356a838d5164274fbb3db559`. The
-pseudo-version a consumer pins is
-`v0.0.0-20261113123010-92eae5c2a3af` (resolved with `go list -m` against the
-fork, module path `github.com/qiangli/filebrowser-quantum/backend`).
+Push status: branch `fbembed` pushed on 2026-11-13; the branch head on
+GitHub is `88b90a50350df8b59b367ce3d16142d4ac1fece3`. The pseudo-version the
+consumers pin is `v0.0.0-20261113140828-88b90a50350d` (resolved with
+`go list -m` against the fork, module path
+`github.com/qiangli/filebrowser-quantum/backend`). Slice 1's head was
+`92eae5c2` (`v0.0.0-20261113123010-92eae5c2a3af`).
 
 The module path is unchanged (`github.com/gtsteffaniak/filebrowser/backend`);
 consumers point at the fork with a `replace`, exactly as they do for the
@@ -166,3 +167,102 @@ cd frontend && npm ci && npm run build
 cd backend && CGO_ENABLED=0 go build ./... && CGO_ENABLED=0 go test -v ./fbembed
 CGO_ENABLED=0 go test ./internal/web/ ./pkg/settings/ ./internal/preview/ ./internal/state/
 ```
+
+## Slice 2 (2026-11-13): no phone-home, owner-only OTel, consumers moved
+
+Fork commit `88b90a50` on `fbembed`. The S11 gate
+(`script/no-phone-home.sh`) found third-party telemetry in the upstream that
+had to be removed from the fork, not merely left disabled.
+
+### Removed from the fork
+
+| Upstream feature | Where it lived | What happened |
+|------------------|----------------|---------------|
+| Deployment analytics reporter (posted snapshots to the vendor API) | `backend/internal/analytics`, started in `cmd/root.go`, toggle API in `internal/web/analytics.go`, state keys in `internal/state/analytics.go`, System Admin toggle + diagnostic prompt in the SPA, seven i18n keys in every locale | deleted |
+| Update check (polled the GitHub releases API) | `backend/internal/utils/checkForUpdates.go`, start in `cmd/root.go` | deleted; the page's `updateAvailable` is always empty; `server.disableUpdateCheck` is still accepted (YAML parsing is strict) and documented as a no-op |
+| CSP `script-src` allowing the public CDN and two Google origins | `internal/web/static.go` | now `'self'` + nonce only; nothing loaded a reCAPTCHA script, so the Google origins were dead; the OnlyOffice origins the owner configures remain the one opt-in exception |
+| Ace editor modules fetched from the public CDN (S2c on the old fork) | `frontend/src/views/files/Editor.vue` | `vite.config.ts` emits `ace-builds`' mode files under `ace/` in the dist (pre-gzipped like every script); the editor's `basePath` is `<baseURL>public/static/ace/` |
+| Vendor canonical link in the SPA shell | `frontend/public/index.html` | dropped |
+
+Added: `backend/telemetry` (copied from the old fork's `filebrowser/telemetry`
+pattern). The W3C propagator is always installed; spans are exported only
+when `OTEL_EXPORTER_OTLP_ENDPOINT` names a collector the owner runs, with no
+default endpoint and no vendor host. `web.NewHandler` wraps the router so
+the CLI server and an embed both carry it; `StartHttp` flushes on shutdown.
+The embed does not shut the provider down in its closer (the provider is
+once-per-process and an embed can be restarted).
+
+### Gate evidence
+
+`script/no-phone-home.sh filebrowser-quantum` after the change reports hits
+that are all explained; none is an outbound call:
+
+| Hit | Explanation |
+|-----|-------------|
+| `backend/telemetry/*`, `internal/web/server.go`, `go.mod` OTel lines | the bashy OTel the brief mandates (word `telemetry`, `go.opentelemetry.io` paths); env-gated, no endpoint |
+| `disableUpdateCheck` in `pkg/settings/structs.go`, the generated swagger files and `config.generated.yaml` | the retained no-op config key |
+| `frontend/scripts/build-icon-subset.js` (`fonts.googleapis.com`) | a developer script (`npm run icons:sync`) that regenerates the committed icon-font subset; not part of `npm run build` and never run by the app |
+| `plyrViewer.vue` "update checked states" comments, `pkg/indexing` "plausible" | words, not calls |
+| `_docker/src/settings/backend/database.db.old` | an upstream sample database in the docker scaffolding; not built into anything |
+
+Static check of the built binary (`strings` over a stripped build): the
+vendor analytics host, `api.github.com`, the CDN, the Google origins and
+`fonts.googleapis.com` do not appear. The three remaining vendor-domain
+strings are documentation URLs in log messages and the Help prompt's link.
+
+Runtime check: a linux/arm64 build of the CLI server run in podman with
+`--network=none` boots against a scratch source, answers `/api/health` and
+`/` (CSP `script-src 'self' 'nonce-…'`), and shuts down cleanly; at debug
+log level there is no connection attempt or failure.
+
+Fresh runs on the dev box (darwin/arm64, Go 1.27.2, CGO_ENABLED=0,
+GOWORK=off): `go build ./...` ok; `go test ./telemetry ./internal/web
+./internal/state ./internal/utils ./pkg/settings ./fbembed` ok (fbembed
+12/12, the new `TestNoThirdPartyOrigins` pins the CSP, the empty update URL,
+the locally served Ace mode and the absence of the analytics API); frontend
+`npm run lint` 0 errors, `vitest` 225/225. `dist.zip` grew from 5.7 to
+7.2 MB (the Ace modes).
+
+### Consumers moved
+
+Layout (conductor decision 2026-11-13): no new umbrella submodule. The fork is
+a plain GitHub repo (`qiangli/filebrowser-quantum`, branch `fbembed`); every
+consumer reaches it through its own `go.mod` `replace` to the pinned
+pseudo-version, so standalone (`GOWORK=off`) and workspace builds both
+resolve it from the module proxy. The old `filebrowser/` submodule stays
+recoverable. Final pin: fork `88b90a50` (adds "no logging from package init",
+which broke `outpost status --json`).
+
+| Consumer | Commit | Change |
+|----------|--------|--------|
+| yoke | `dead1ea3` | `pkg/webconsole/panel_files.go` imports the new seam; the engine boots on the first `/files/` request (lazy) because booting indexes the scope in the background and a home directory is large; the folder-icon override moves from `/static/img/logo.svg` to `/public/static/favicon.svg` (the SPA has no header mark); e2e tests use `<mount>/public/static/`, `?path=&source=files`, no token (noauth), and tear down one console before booting the next (one instance per process) |
+| outpost | `23712869` | `cmd/outpost/capability_files.go` imports the new seam and keeps the engine's state under `<cache>/files`; the folder-download test drives the fixed zip and tar.gz set through the mounted handler (the nine-format claim and `-tags fb_archives` guard are gone; the tag in `Makefile`/`scripts/lib.sh` is inert and untouched); capability tests redirect `XDG_CACHE_HOME` |
+| bashy | `32d937cc`, `ac14ec11` | inert `replace` for the new module (the pinned yoke still imports the old fork), SBOM license entry and sibling path |
+| ycode | `654495a` | inert `replace` (bashy's does not propagate to embedding modules) |
+
+Evidence: yoke `go test ./pkg/webconsole` 292 pass + 1 pre-existing failure
+(`TestShapeSubmitHTTPMatchesLocalAndDoesNotActivate`, identical on a pristine
+worktree at the previous commit); `-tags e2e` files tests pass. Before the
+lazy boot the same package ran 10 minutes into its timeout because every
+`Handler()` booted the engine over the home directory — the cost noted as
+open decision 3 above, now paid only when the tile is opened. outpost
+`go test -short ./cmd/outpost -run 'FilesCapability|FolderDownload'` 4/4.
+Workspace mode (`go.work`): yoke, outpost, bashy and the seam build and the
+same tests pass against the live sibling.
+
+### Open items after slice 2
+
+- **bashy yoke-pin bump**: `internal/agentos/src_mount.go` pins the
+  filebrowser source module and fails closed on an unpaired bump; with the
+  bump it must move to `github.com/qiangli/filebrowser-quantum/backend`
+  (module root is the `backend/` subdirectory, which `self build --local
+  --repo filebrowser` and `yoke/pkg/src/repos.go` do not yet expect).
+  `TestSrcPinsMatchLinkedModules` already fails at bashy `cd391b5e` (pin
+  `d1d2feab` vs linked `c7e10f7a` after the S2 catch-up): pre-existing,
+  tracked separately, not repaired here.
+- The frontend re-work list above (Apps header, theme following, dotfiles
+  preference, hidden login/users/share routes, title quoting) is unchanged.
+- The outpost S2a loopback gate precondition is the conductor's call; the
+  consumer flips here are on the branch, not released.
+- The engine's home-directory index on first open (CPU and disk under the
+  state dir) is the remaining cost of open decision 3.

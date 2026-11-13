@@ -13,7 +13,7 @@
 //
 // Modules outside this list (examples, prior-art fixtures, test caches)
 // build standalone: run them with GOWORK=off.
-go 1.27
+go 1.27.0
 
 toolchain go1.27.2
 
