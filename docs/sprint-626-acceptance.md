@@ -124,3 +124,16 @@ story. Classification follows CLAUDE.md "Root cause before any fix".
 - **genie and ycode:** shell 9/9; llm API 6/9 (ycode) and 5/9 (genie, which also hits F9), but only on the variant (F7) and through the preflight envelope (F2). With the shipped harness, the shell door gives genie and ycode 0/9 when commands are sent as written (F2 denies each). With the envelope it gives 3/9: image dry-run, video and transcribe. The claude-backed six fail with "Not logged in" (F7). MCP is N/A (F8).
 - **Story acceptance:** the matrix is recorded and every failure has a root cause. Product defects F1, F2, F3, F7 (and minors F6 catalog, F10, F11) are open follow-ups; none are fixed here. F1 is the priority: it is an argument-injection path on the llm API door.
 - **Follow-up todos:** F1 `c9f0a2d5`, F7 `2b89b64e`, F2 `5f878447`, F3 `eb02f440`. F6 overlay: reported to its owner. F4, F5 and F10–F11: open spec or minor items for the sprint owner.
+
+## Resolved after the S7 run (conductor, 2026-11-12)
+
+- **F1 fixed.** yoke `0f81d705` (`cligw: a slash= chat message is one
+  operand`), shipped in bashy `be603558`: the message is `Argv[0]`, so no
+  word of it can become a vendor flag. `TestSlashMessageIsOneOperand` fails
+  without the change. Follow-up `c9f0a2d5` closed by it.
+- **F6, catalog half, fixed.** yoke `a3a85324` rejects an invalid tool
+  command on its own; bashy `bcfcb050` reports catalog errors as warnings,
+  so one broken user tool record no longer takes every role down. The
+  overlay itself was quarantined by its owner (S627).
+- Still open as follow-ups: F2 (`5f878447`), F3 (`eb02f440`), F7
+  (`2b89b64e`), F10, F11; F4 and F5 are spec questions for the sprint owner.
