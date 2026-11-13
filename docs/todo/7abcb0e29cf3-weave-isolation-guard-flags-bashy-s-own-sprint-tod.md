@@ -30,3 +30,16 @@ run can never auto-submit) and no signal (returns nil, so
    isolation caveat and paths in the submission evidence.
 3. The false-positive fix (store writes excluded) stays, so the hatch is
    rare rather than routine.
+
+## Evidence: a real escape the detector cannot see (2026-11-13)
+
+Sprint 627 M5 (codex weave run #26) wrote
+`~/.config/bashy/tools/replicate-media.yaml` in the operator's home config.
+The record failed fleet validation, and `bashy providers select` then failed
+for every role on the host until a manager quarantined it. The isolation
+detector only fingerprints the live repo checkout, so this escape (outside
+the repo, into the user ring) was not flagged, while harmless `docs/todo`
+store writes were. Scope addition: per-run isolated `BASHY_HOME` /
+`BASHY_TOOLS_DIR` (or watch the user asset rings) for weave workers.
+Related robustness defect, tracked by Sprint 626: one invalid tool record
+must be skipped and reported, not take down selection for all roles.
