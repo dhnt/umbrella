@@ -56,3 +56,7 @@ reads and writes; a story carries its sprint as `sprint_id`).
 ## shapeable-apps-worker-brief.md
 
 The one brief every Sprint 631 worker reads first: the Linux + web UI scope; the hard permissive-license rule; each job ships as a custom command in bashy/examples (never core) with job-only wording; fork targets are pinned forks under our account, build targets extend an existing example; how to earn the Shapeable badge (docs/software-shaping.md, yoke/pkg/shape, the hello-world reference); and what done means (shaping demo, targeted tests, evidence, commit trailers).
+
+## files-fbembed-quantum-port.md
+
+Sprint 631 story S2b record: the base verified (Apache-2.0, 9.1k stars, `v2.0.2-stable`), the fork branch and its two commits (four behavior-preserving upstream seams; the `backend/fbembed` package with a committed frontend), the old-vs-new seam behavior table, fresh test and build evidence, the measured binary cost of the move (14.9 MB to 42.9 MB stripped, 90 to 299 packages), the four-consumer migration plan, the decisions left to the S2 owner and the frontend work still to port.
