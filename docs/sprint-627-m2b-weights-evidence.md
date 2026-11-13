@@ -23,6 +23,10 @@ bytes are committed to this public repository.
 - Hub revisions are immutable commit IDs resolved before downloads. Files
   below were fetched into their rod cache via `hf download --revision ...
   --local-dir ...` and checked with `sha256sum` on the Windows test host.
+- Operator decision `mb:13610` replaced the full Qwen Image staging target
+  with one light native Windows draft model. Both Qwen downloads were stopped;
+  the completed, checksummed shards remain for an optional quality upgrade.
+  They are not a dependency of the draft image story.
 
 ## Verified files
 
@@ -34,19 +38,19 @@ bytes are committed to this public repository.
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/s3gen.pt` | 1,057,165,844 | `9b9ff07e60b20c136e2b1b3d7563a24604e8d2c4c267888d1ee929dd0151d2a3` | included above |
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/t3_cfg.pt` | 1,064,892,246 | `0b2dd5439fe7e94f379561419847a45bf2c79d0e8ea751c6bbe947ce337789cc` | included above |
 | narrate-local / Chatterbox | same | `narrate-local/models/chatterbox/ve.pt` | 5,698,626 | `4b16d836bc598509860f6fa068165a8bb5e9ac84f05582dfcf278a5a372879f1` | included above |
-| transcribe-whisperx / faster-whisper large-v3 | `edaa852ec7e145841d8ffdb056a99866b5f0a478` | `transcribe-whisperx/models/faster-whisper-large-v3/model.bin` | 3,087,284,237 | `69f74147e3334731bc3a76048724833325d2ec74642fb52620eda87352e3d4f1` | 4 s |
+| transcribe-whisperx / faster-whisper large-v3 | `edaa852ec7e145841d8ffdb056a99866b5f0a478` | `transcribe-whisperx/models/faster-whisper-large-v3/model.bin` | 3,087,284,237 | `69f74147e3334731bc3a76048724833325d2ec74642fb52620eda87352e3d4f1` | 4 s (pre-existing cache reuse inferred; not transfer speed) |
 | song-acestep / ACE-Step 1.5 | `19671f406d603126926c1b7e2adc169acbcade22` | `song-acestep/models/Ace-Step1.5/Qwen3-Embedding-0.6B/model.safetensors` | 1,191,586,416 | `0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd` | 133 s for snapshot |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-5Hz-lm-1.7B/model.safetensors` | 3,708,521,528 | `f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8` | included above |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/acestep-v15-turbo/model.safetensors` | 4,787,825,604 | `3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7` | included above |
 | song-acestep / ACE-Step 1.5 | same | `song-acestep/models/Ace-Step1.5/vae/diffusion_pytorch_model.safetensors` | 337,431,388 | `da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0` | included above |
-| image-qwen / Qwen-Image (partial) | `75e0b4be04f60ec59a75f475837eced720f823b6` | `image-qwen/models/Qwen-Image/text_encoder/model-00004-of-00004.safetensors` | 1,691,924,384 | `5dd068336d14d45ffb43cef374d286cc6ba9d8741b028f90a7d040d847961f4a` | download in progress |
-| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00002-of-00004.safetensors` | 4,991,495,816 | `b1830db6908dcc76df3a71492acbcf2b8cac130114cf1f3c2d9edae8de8c6de3` | download in progress |
-| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00003-of-00004.safetensors` | 4,932,751,040 | `09c1807c6d00d7cab94f7db39d4c02ebb8537225ccde383861ac48db97945aa6` | download in progress |
-| image-qwen / Qwen-Image (partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00001-of-00004.safetensors` | 4,968,243,304 | `d725335e4ea2399be706469e4b8807716a8fa64bd03468252e9f7acf2415fee4` | download in progress |
+| image-qwen / Qwen-Image (optional partial) | `75e0b4be04f60ec59a75f475837eced720f823b6` | `image-qwen/models/Qwen-Image/text_encoder/model-00004-of-00004.safetensors` | 1,691,924,384 | `5dd068336d14d45ffb43cef374d286cc6ba9d8741b028f90a7d040d847961f4a` | stopped per operator |
+| image-qwen / Qwen-Image (optional partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00002-of-00004.safetensors` | 4,991,495,816 | `b1830db6908dcc76df3a71492acbcf2b8cac130114cf1f3c2d9edae8de8c6de3` | stopped per operator |
+| image-qwen / Qwen-Image (optional partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00003-of-00004.safetensors` | 4,932,751,040 | `09c1807c6d00d7cab94f7db39d4c02ebb8537225ccde383861ac48db97945aa6` | stopped per operator |
+| image-qwen / Qwen-Image (optional partial) | same | `image-qwen/models/Qwen-Image/text_encoder/model-00001-of-00004.safetensors` | 4,968,243,304 | `d725335e4ea2399be706469e4b8807716a8fa64bd03468252e9f7acf2415fee4` | stopped per operator |
 
 Kokoro's other voice files and configuration, and Chatterbox's tokenizer,
 were downloaded in their respective snapshots. Qwen Image generation and edit
-downloads are in progress; only completed files are listed. These local snapshots
+snapshots are incomplete by operator direction; only completed files are listed. These local snapshots
 are staged bytes; the rods need explicit local model/cache binding before a
 future render to guarantee they use the same revisions without downloading.
 The four Qwen text encoder shards have identical Hub SHA-256 values in the
