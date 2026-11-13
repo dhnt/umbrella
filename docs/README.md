@@ -52,3 +52,7 @@ reads and writes; a story carries its sprint as `sprint_id`).
 - **`sprint-627-m2b-song-b-evidence.md`** — Evidence for the offline-by-default OSS rod fix, hermetic no-fetch fixture, and live ACE-Step render with staged weights and LM disabled.
 - **`sprint-627-m3b-animate-evidence.md`** — Native Windows Wan2.2 GPU spike: post-denoise VAE decode stall, verified reuse of staged weights, bounded render and no OSS animate route.
 - **`sprint-627-m8-drafts-evidence.md`** — The M8 two-draft run on the Windows test host: venue, isolated candidate, storyboard, draft 01's successful offline song stage and failed 1280×720 portrait. Records the GPU VAE-decode TDR that rebooted the host, its timeline and classification, and the options left for the operator.
+
+## shapeable-apps-worker-brief.md
+
+The one brief every Sprint 631 worker reads first: the Linux + web UI scope; the hard permissive-license rule; each job ships as a custom command in bashy/examples (never core) with job-only wording; fork targets are pinned forks under our account, build targets extend an existing example; how to earn the Shapeable badge (docs/software-shaping.md, yoke/pkg/shape, the hello-world reference); and what done means (shaping demo, targeted tests, evidence, commit trailers).
