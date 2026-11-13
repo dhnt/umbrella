@@ -3,12 +3,13 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: todo
+status: assigned
 priority: p2
 labels:
     - vendor-services
     - media
 created: 2026-11-12T23:18:29.254656Z
+weave: 74
 assignee: codex-gpt6-sol
 sprint: 627
 sprint_id: 21c05c41-833f-598c-ab0b-3aab12cfbd8f
@@ -56,3 +57,5 @@ LIP-SYNC EXPLORATION (operator decision 2026-11-13 ~12:15 PST, relayed by the su
 Candidates (verify each licence permits commercial use and pin the revision; skip non-commercial): InfiniteTalk and Wan2.2-S2V on g6e (48 GB) first; then any other viable audio-driven portrait/singing animation model that fits 24-48 GB (e.g. EchoMimic-class or FantasyTalking-class, licence permitting); a 24 GB g6/g5 fallback only for models documented to fit.
 Same recipe as above: tags dhnt:managed=true + sprint=627 on instance and volume, profile dhnt-gpu-runner, no key pair, no inbound, user-data + S3 return, shutdown=terminate + in-guest timer, ONE instance at a time, g6e preferred with AZ/type fallback. Input: locked shot 03 (Nova, mouth visible) still + its song segment, ~5 s.
 Record per attempt: model + licence + revision, instance type + AZ, start/stop in PST, measured cost, clip SHA-256, mouth-grid verdict (visible lip sync yes/no). Stop exploring at the first clearly visible lip sync or when the budget stops it; copy clips + mouth grids to the dev box review dir. No commercial final; no --yes for any other spend.
+
+CLOSED AT SPRINT END (operator, 2026-11-13: close 627; supersedes further AWS model exploration): delivered - native-ROCm safety decode; free oss animatic drafts (05-09, zero spend) with the operator's review points met; r3 storyboard locked (film lock SHA-256 3b8ea8cb...); EN over Simplified-Chinese subtitle render; look + contact sheets + storyboard table; AWS proof slice (one g5.xlarge, TBDub Student, ~USD 0.29, instance terminated) - ran clean but no visible lip sync. Exploration run #74 stopped before any launch. AWS spend: budget actual USD 0.36 + ~0.29 unbilled = ~USD 0.65 of 50. MOVED to backlog follow-up 91b6919a: real lip sync + the operator-approved commercial final.
