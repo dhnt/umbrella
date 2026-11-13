@@ -26,3 +26,4 @@ REWORK 1 (conductor review of run umbrella#22, bashy f131d2a5, 2026-11-13): requ
 3. No '|| true' on live browser steps (song-suno.bsh:169 and siblings): a failed step exits non-zero with the step named (fail, not degrade).
 4. Tests: add recorded fixtures for the completed/result page so the submit -> wait -> download -> verify path is exercised offline. You still must NOT submit any live generation, never pass --yes yourself, and claim chrome-browser before any live-mode action.
 5. Rebase onto current bashy origin/main before submitting.
+6. Start from your first attempt: bashy branch s627-m4-rework-base (f131d2a5), not from scratch.
