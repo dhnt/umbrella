@@ -15,13 +15,18 @@ evidence). The trove presents that collection the same way to agents (small
 and to humans (an explorer web page). Any entry can be **presented on the
 fly** in another form (a summary, a note, another language, a poster, audio,
 video), served canned when the producer prepared it and generated when they
-did not. That last part is what software shaping adds: a producer can never
-prepare every form for every reader, so the reader's agent makes the one they
-need, under the owner's grants, and the recipe that makes it is itself
-shapeable.
+did not. Members and agents **contribute** into it under the owner's grants, so the
+trove grows over time rather than mirroring one source. That last part is
+what software shaping adds: a producer can never prepare every form for every
+reader, so the reader's agent makes the one they need, and the recipe that
+makes it is itself shapeable. The app, too, takes any form: how the tree is
+shown, how entries are presented and which sources exist are all shaping
+hooks, so each user ends with their own trove app.
 
-The trove is for every owner and member. The classroom scenarios in this
-sprint are acceptance tests, not the audience.
+The trove is a general app for every bashy user, owner or member. The two
+scenarios at the end of this document are **test cases** of the general
+verbs, needed within weeks; they are not the audience and no product
+decision is taken from them alone.
 
 ## Why "trove"
 
@@ -80,7 +85,6 @@ An **entry** is a `bashy-node-v1` node plus trove attributes:
 | `grant` | the caller's resolved mode (`read`, `write`, or absent) |
 | `provenance` | `producer: human\|agent`, the `app:<command>/<id>` ref, the run or story that made it |
 | `renders[]` | presentations already available (canned by the producer or cached) |
-| `subject` | the person an entry is about (an email), used by `only: self` |
 
 Reference form: `trove:<mount>/<path>`. Agents walk the tree with
 `trove ls|find|stat|cat --json` and get the same rows `bashy lens -t listing`
@@ -100,9 +104,13 @@ change is needed to start:
 | `app:` | viewer books, notepad items, kb pages, film drafts, run evidence through their own `--json` verbs | none (apps own their items) |
 | `mail:`, `cal:` (p2) | `gmail-list\|gmail-get`, `calendar-list` | none |
 
-`trove add URL|FILE --to MOUNT` ingests content (web pages through
-`bashy fetch --md`) into a mount the caller may write. Every write verb takes
-`--dry-run` and refuses without a write grant.
+**Contributing.** `trove add SRC --to MOUNT` is a first-class operation for
+the owner, a member or an agent acting as a principal: `SRC` is a URL (through
+`bashy fetch --md`), a local file, stdin or an `app:<command>/<id>` artifact;
+`trove put` copies an entry's bytes to another writable mount. Every
+contribution records provenance (principal, agent tool and model if any, time,
+source ref, digest) on the entry. Every write verb takes `--dry-run` and
+refuses without a write grant, with the same result on the CLI and over HTTP.
 
 **Optional core seam (S10).** External recipe admission in `yoke/cmds/lens`: a
 `recipes.json` under the bashy home maps a scheme to an argv that prints
@@ -115,10 +123,12 @@ later example. Small, separately committed, and the conductor may defer it.
 
 The smallest model consistent with cloudbox membership:
 
-- `who` is `owner`, `member:<email>` or `circle:<name>`; `mode` is `read` or
-  `write`. One per-entry rule, `only: self`, admits the entries whose
-  `subject` equals the caller. Membership and circles come from the cloudbox
-  grant copy outpost already holds; the trove never redefines them.
+- `who` is `owner`, `member:<email>` or `circle:<name>`; `mode` is `read`
+  (see and present) or `write` (contribute). Membership and circles come from
+  the cloudbox grant copy outpost already holds; the trove never redefines
+  them. Per-entry visibility rules are not part of the product model: when a
+  trove needs one, its owner adds it as a shaped grant rule for that trove,
+  and it is generalized only when a second case appears.
 - The caller is `Remote-User` / `Remote-Groups` on the web (stamped only
   through the tunnel) and `--principal` / `BASHY_PRINCIPAL` on the CLI, as
   `bashy shape` does. The owner is always admitted. A denied entry is the same
@@ -163,55 +173,90 @@ box they print the plan and exit 3.
 bullets, in Spanish" gets their own verified version of the presenter, and
 everyone else keeps theirs.
 
+## Rod, not fish
+
+The rule that governs every bashy app governs the trove: the product is a set
+of small verbs (`mount`, `ls`, `find`, `stat`, `cat`, `add`, `put`, `present`,
+`share`), each with `--json`, `--dry-run` where it writes, and meaningful exit
+codes (0 done, 3 pending or refused by venue, 1 error). No finished flow is
+built in. A flow such as "turn this page into a note and mail it" or "review
+the submissions and show each reader their view" is a short Bash# skill-script
+that composes those verbs, and the script is itself shapeable. The two test
+cases below are written exactly that way, so passing them proves the rods,
+not a canned feature.
+
+## The app in any form: the shaping hooks
+
+The trove ships as a **starter** that each user shapes into their own app.
+Three hooks, each a file or a verb and never Go:
+
+| hook | declares | example wish |
+|---|---|---|
+| `views.json` | how the tree is shown: list, gallery, cards, timeline; columns, sort, grouping; the default view per mount | "show the photos mount as a gallery, newest first" |
+| `presenters/<form>.bsh` + `presenters.json` | how an entry is presented: forms, audience variants, language, length, scoring guides | "summaries for the family: three bullets, in Spanish" |
+| source adapters (recipes) | which sources exist: a scheme mapped to an argv that prints `bashy-node-v1` rows | "add my podcast feed as a source" |
+
+All three are `shaped.json` properties, so the Genie and `bashy shape` know
+them, and `contract.bsh` and `checks/` keep the engine-facing parts out of
+reach. A member's shaped view, presenter or adapter is theirs alone, verified
+before activation and one step from undo; the owner's trove is unchanged.
+
 ## The explorer page
 
 A small Go server on the desk kit, registered `--type shaped` with
 `shaped.json` (`server.main`, `genie.examples`, `properties`), `contract.bsh`
-and `checks/smoke.bsh`. Layout: mounts tree, entry list, preview pane
-(`lens` → markdown → the kit renderer; `<video>`, `<audio>` and `<img>` for
-media), a **Present as…** menu and a provenance strip. Every page action posts
+and `checks/smoke.bsh`. Layout, rendered from `views.json`: mounts tree, entries in the chosen
+view, preview pane (`lens` → markdown → the kit renderer; `<video>`,
+`<audio>` and `<img>` for media), a **Present as…** menu, a **Contribute**
+action and a provenance strip. Every page action posts
 to `/api/action` and runs the same trove verb (parity rows in
 `bashy/docs/ui-cli-parity.md`); identity comes from the tunnel only;
 `publish-outpost` puts the page behind the owner's door. Editing in the
 browser links out to notepad and to the `files` app; the trove builds no
 second editor, and the File Browser stays as it is.
 
-## Acceptance scenarios
+## Test cases (needed within weeks; not the product)
 
-**Note to an interested party.** `trove add <the AP CSP redesign page> --to
-inbox`, then `trove present trove:inbox/ap-csp-redesign.md --as note --for
-teacher`, then `bashy email --role email.send` as a Gmail draft. The operator
-reviews the draft and sends once with `--yes`. Zero spend; the recipient is
-named by role in the public record.
+Both exercise only the general verbs. They are filed as stories T1 and T2 at
+p2, after the product lane.
 
-**Club submissions.** A `dir:` mount of **synthetic** submissions (short clips,
-a blurb, a `subject` per entry; committed fixtures, no personal data).
-`trove present trove:club/ --as review` runs the review presenter
-(`transcribe`, `video.understand`, `text` against a shapable `rubric.json`)
-and produces, per submission, a summary and rubric scores marked
-`advisory: true`, never a grade of record. Grants give four views: a student
-sees their own entry (`only: self`), a parent their child's (`only: self`
-through the subject map), staff everything, and the public showcase only the
-entries the owner marked. Media stages run on the claimed GPU gate host; the
-text path runs on the dev box.
+**T1, a web page becomes a note for someone.** `trove add <public page URL>
+--to inbox`, `trove present trove:inbox/<entry> --as note --for <audience>`
+(oss route, dry-run first), `bashy email --role email.send` as a draft, the
+operator reviews, one send with `--yes`. First instance: the AP Computer
+Science Principles redesign page summarized for a teacher. Zero spend; the
+recipient is named by role in the public record.
+
+**T2, members contribute project submissions and each consumer sees their
+view.** Members contribute **synthetic** submissions (short clips and a
+blurb; committed fixtures, no personal data) into the owner's `projects`
+mount. The owner shapes a `review` presenter (`transcribe`,
+`video.understand`, `text` against the group's own scoring guide in
+`presenters.json`) whose output per submission is a summary and scores
+labelled as presenter output, never a grade of record. Grants give staff
+everything and the public showcase only the entries the owner marked; if
+contributors must see only their own entries, the owner adds a shaped grant
+rule for this trove. Media stages run on the claimed GPU gate host; the text
+path on the dev box. First instance: a film-making club.
 
 ## Risks
 
 - gws bring-your-own-project credentials cannot run in tests; S4 and S12 use
   hermetic fakes and the operator records one live smoke.
-- `only: self` needs a subject convention on entries; the fixtures carry it
-  explicitly and the synthetic subject map is committed with them.
+- A per-trove visibility rule (T2) must stay a shaped rule, not a product
+  feature, until a second case appears.
 - The kit server must build inside the verifier's scrubbed environment; the
   contract follows `desk/viewer` (`read,write,exec,net`).
 - The S10 seam touches the locator scheme set; it is optional and separate.
-- Generated ratings are model output. They are labelled advisory everywhere
-  and never leave the host without `--yes` (the operator decides whether they
-  may be emailed at all).
+- Presenter output that scores or ranks content is model output; it is
+  labelled as presenter output wherever it appears and never leaves the host
+  without `--yes`.
 
 ## Follow-ups, noted not planned
 
 Per-path access lists; writes to mail, calendar or GitHub; a FUSE mount; a
 second text editor; replacing the `files` app; a core permission policy
-(`docs/bashy-agent-permissions.md`); wish-log replay; index or embedding
-search over the trove; real student data; paid finals without `--yes`;
-agent principals.
+(`docs/bashy-agent-permissions.md`); per-entry visibility rules in the
+product model; wish-log replay; index or embedding search over the trove;
+real personal data in fixtures; paid finals without `--yes`; agent
+principals.
