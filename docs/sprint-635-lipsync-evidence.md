@@ -7,7 +7,9 @@ time, cap USD 50 carried from S627, report at 40).
 
 ## Result
 
-**Visible lip sync achieved at 2026-11-14 04:43Z (20:43 PST)**, attempt 12.
+**Visible lip sync achieved at 2026-11-14 04:43Z (20:43 PST)**, attempt 12, on a rented GPU; and
+**again locally at zero cost at 14:30Z (06:30 PST)** on the first Windows test host (see
+"Local venue" below).
 EchoMimicV3 Flash animated Nova's locked shot-03 still to the first 5.0 s of
 the locked song's sung segment: lips open and close through distinct shapes,
 head turns, blinks. Review files on the dev box in the umbrella's gitignored
@@ -65,6 +67,36 @@ Spend: sprint-635 attempts about USD 4.4 by runtime and on-demand price (billing
 budget showed USD 0.36 billed throughout); about USD 5.05 against the carried USD 50 cap including
 Sprint 627. No instance left running; every one self-terminated or was verified terminated.
 
+## Local venue (zero spend)
+
+The same model, revisions and inputs ran natively on the first Windows test host (AMD unified-memory
+GPU, ROCm 10, 128 GB) on 2026-11-14 and produced the 5 s shot-03 clip: 125 frames at 384x384,
+25 fps, 2541 s of generation, exit 0, no GPU timeout or reset events in the system log; sha256
+`4c7f835c898bce0a6f99995f9772bc7f40526349d20b87b2cafd5b498f930371`; mouth-region motion 2.06
+(rented GPU 1.64, TBDub 0.12). Review files on the dev box: `.agents/s635-review/echomimicv3-local-01/`,
+viewer book `s635-lipsync-local`.
+
+Host recipe, all inside an isolated `C:\s635` folder, Python packages provisioned through `bashy uv`:
+
+- The operator's ROCm 10 venv supplies torch (2.13 rocm); the pinned model stack (diffusers 0.33.1,
+  transformers 4.51.3, accelerate 1.6.0, numpy 1.26.4, scipy 1.13.1, huggingface_hub 0.30.2,
+  pyloudnorm) lives in a side directory on `PYTHONPATH`. `uv pip install --target` installs torch
+  into the side directory even with `--override`; delete torch/torchvision/torchgen/functorch there
+  after every install, or the CPU torch shadows the ROCm one.
+- `low_cpu_mem_usage=False`; no offloader (the whole pipeline fits unified memory, 28.7 GiB resident).
+- `--sample_size 384 384` and `pipeline.decode_latents` overridden to run the Wan VAE on the CPU in
+  float32. Both because the Windows HIP driver caps a single allocation at about 2.5 GiB on this host
+  (adapter reports 4 GB dedicated, 64 GB shared; torch sees 99.7 GiB): the VAE encoder's conv
+  activation is 5.06 GiB at 512 and the decoder's 2.85 GiB at 384. 512x512 needs a larger UMA frame
+  buffer in the host BIOS or VAE tiling in the model code.
+- Launch the generator synchronously from the run script: PowerShell's detached launcher joins
+  arguments without quoting and split the prompt; it also drops empty-string arguments.
+
+Local attempts: 512 failed in the VAE encoder (OOM 5.06 GiB), 384 denoised fully then failed in the
+VAE decoder (OOM 2.85 GiB), 384 with CPU decode succeeded. The second Windows host (8 GB GPU, 16 GB
+RAM) cannot hold the 20 GB weight set and was dropped. Speed: about 8 minutes of GPU time per second
+of video at 384, so the six full-length close-ups (about 26 s) are roughly 3.5 hours on this host.
+
 ## Also this sprint
 
 - `animate-prerendered` rod + `film --takes` (story `4981fca468a1`, merged into bashy main at
@@ -76,9 +108,8 @@ Sprint 627. No instance left running; every one self-terminated or was verified 
 
 ## Remaining
 
-1. Full-length performance shots (six close-ups, about 26 s of singing) with this recipe; per-shot
-   inputs are already in the runner bucket under `sprint-635/inputs/shots/`. At attempt 12's speed
-   that is several hours on g5.xlarge, chunked to the 90-minute in-guest limit; a g6e would be
-   several times faster when capacity returns.
+1. Full-length performance shots (six close-ups, about 26 s of singing), first on the Windows test
+   host at zero cost (about 3.5 hours at 384), with the rented-GPU recipe as the 512 fallback;
+   per-shot inputs are in the runner bucket under `sprint-635/inputs/shots/` and on the dev box.
 2. Assembly through `film draft --takes`, EN + ZH subtitles, operator review.
 3. The commercial final (Kling API + Suno browser route) after the operator creates both accounts.
