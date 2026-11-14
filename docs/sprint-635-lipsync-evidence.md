@@ -97,6 +97,37 @@ VAE decoder (OOM 2.85 GiB), 384 with CPU decode succeeded. The second Windows ho
 RAM) cannot hold the 20 GB weight set and was dropped. Speed: about 8 minutes of GPU time per second
 of video at 384, so the six full-length close-ups (about 26 s) are roughly 3.5 hours on this host.
 
+## The full film, locally (zero spend)
+
+All six singing close-ups of the locked `lanterns-r3` render 04 (shots 03, 04, 09, 10, 12, 13; 24.8 s
+of singing) were rendered as EchoMimicV3 takes on the Windows test host on 2026-11-14 and assembled
+into the full 81 s film with the English + Simplified Chinese subtitles of the accepted revision.
+Review files on the dev box: `.agents/s635-review/film-local-02/` (film sha256 `496291fc…`,
+manifest, takes.json), takes in `.agents/s635-review/takes-local/`; viewer book
+`s635-film-lipsync-full` (the five-take interim cut: `s635-film-lipsync`).
+
+- Takes come out 16:9 (512x288) when the input still is the locked 768x432 portrait: the model keeps
+  the still's aspect ratio at the requested pixel budget (384x384 here). Short shots took 251 to
+  789 s each.
+- Shot 13 (15.65 s, 389 frames) ran out of memory in the transformer at about 31 GiB allocated
+  ("expandable_segments: memory mapping failed"): this host's usable GPU budget per process is
+  about 31 GiB, so long shots are chunked. Four 3.88 s chunks, each continuing from the previous
+  chunk's last frame (continuity), 1586 s each, joined under the shot's own audio.
+- `film draft --locked` (bashy `5c43cb08`) assembles on the lock: the locked draft's song, the
+  locked timing, translation, portraits and shot bounds (what a final reuses), so takes cut from
+  the locked song land on their shots in sync; only the animate stage runs a rod. Reused stages
+  record provider `film-locked`, the manifest carries `lock_sha256`.
+- Input defects found and fixed before the renders (both mine, both verified by RMS-envelope
+  cross-correlation against the song): the per-shot audio had been cut from the review film,
+  which opens with a 3 s title card, so every slice began 3 s early; and the Nova still was a
+  512x512 crop instead of the locked portrait. The pipeline's own per-shot cuts
+  (`drafts/04/shots/NN/audio.wav`) are the correct slices.
+- Two rod findings (todo `dd8e6264`): the authors' script exits 1 on Windows at its final temp-file
+  removal although the output is complete; and the 4n+1 frame rounding leaves a take up to 0.16 s
+  shorter than its shot.
+- Ash's locked portrait has the microphone over his mouth, so his lip motion is partly hidden by
+  the still's own framing; Nova's shots show it clearly.
+
 ## Also this sprint
 
 - `animate-prerendered` rod + `film --takes` (story `4981fca468a1`, merged into bashy main at
@@ -108,8 +139,6 @@ of video at 384, so the six full-length close-ups (about 26 s) are roughly 3.5 h
 
 ## Remaining
 
-1. Full-length performance shots (six close-ups, about 26 s of singing), first on the Windows test
-   host at zero cost (about 3.5 hours at 384), with the rented-GPU recipe as the 512 fallback;
-   per-shot inputs are in the runner bucket under `sprint-635/inputs/shots/` and on the dev box.
-2. Assembly through `film draft --takes`, EN + ZH subtitles, operator review.
-3. The commercial final (Kling API + Suno browser route) after the operator creates both accounts.
+1. Operator review of the local full film (viewer book `s635-film-lipsync-full`).
+2. The commercial final (Kling API + Suno browser route) after the operator creates both accounts;
+   it redoes exactly these six shots at full quality through the same `--takes` assembly.

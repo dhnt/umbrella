@@ -37,7 +37,7 @@
 - `tool-commands-overlay-example.yaml` — tool-command spellings and unmeasured commands kept out of the yoke baseline (one command per name); the claude `/plan` TUI spelling
 - `sprint-627-master-execution-plan.md` — Sprint 627 music-video showcase: `film` pipeline, oss draft → commercial final, permissive open-model picks; planning only
 - `sprint-634-master-execution-plan.md` — Sprint 634 film follow-ups: local recorded translate + text stages, bilingual subtitle Latin-font fix; approved plan
-- `sprint-635-lipsync-evidence.md` — Sprint 635: first visible lip sync (EchoMimicV3 on one rented GPU, then locally at zero cost on the Windows test host), pinned recipe, the twelve attempts root-caused, spend, what remains
+- `sprint-635-lipsync-evidence.md` — Sprint 635: first visible lip sync (EchoMimicV3 on one rented GPU, then the full film with six lip-synced close-ups at zero cost on the Windows test host), pinned recipe, the twelve attempts root-caused, spend, what remains
 - `sprint-636-master-execution-plan.md` — Sprint 636 bashy apps UI: Apps under Recent on the landing page, hand-authored Flow mark on the Shape button; filed plan
 - `brand/README.md` — product marks for cloudbox, satellite, outpost and bashy: rules (45° mirror axis, one square size, shape before color) and per-mark files
 - `sprint-622-master-execution-plan.md` — Sprint 622 master execution plan: software shaping as the one theme (canonical definition, aligned READMEs, qiangli/bash for sh + coreutils, cloudbox/satellite/outpost/bashy product marks); planning only
