@@ -128,6 +128,13 @@ manifest, takes.json), takes in `.agents/s635-review/takes-local/`; viewer book
 - Ash's locked portrait has the microphone over his mouth, so his lip motion is partly hidden by
   the still's own framing; Nova's shots show it clearly.
 
+Archive (the dev-box review files are gitignored): the final film, takes, local proof and the
+complete `lanterns-r3` draft 03 render directory are in the runner bucket under
+`sprint-635/film-local/` (151 objects, 109 MB): `film-local-02/film-en-zh.mp4` sha256
+`496291fc6bd96202…`, `takes-local/` (six takes + takes.json + shot 13 chunks), `proof-local-01/`,
+`lanterns-r3-draft-03/`. The locked project itself stays on the Windows test host (WSL distro,
+`/root/s627-m8/proj/lanterns-r3`; native copy `C:\s635\proj\lanterns-r3`).
+
 ## Also this sprint
 
 - `animate-prerendered` rod + `film --takes` (story `4981fca468a1`, merged into bashy main at

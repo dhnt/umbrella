@@ -3,7 +3,7 @@ id: efd9bc004b56
 kind: test
 title: 'M8 Showcase: 60-90 s music video, two oss drafts + one commercial final, cost/time recorded'
 seq: 188
-status: todo
+status: done
 priority: p2
 labels:
     - vendor-services
@@ -13,7 +13,8 @@ assignee: codex-gpt6-sol
 sprint: 635
 sprint_id: b2a7f529-ebc1-5236-9cb0-1327ba3c2e8c
 sprint_title: 'M8 showcase: commercial final + lip sync (carried from Sprint 627, operator decision)'
-closed_by: claude-opus5.5-s627
+closed: 2026-11-14T21:54:30.822563Z
+closed_by: claude-fable5.1-s635
 ---
 
 Spec: docs/sprint-627-master-execution-plan.md (verification). Original fictional characters, AI-generated disclaimer card, >=1280x720, visible lip sync, subtitles within 150 ms, operator side-by-side vs reference frames with a kept frame grid.
