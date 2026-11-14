@@ -83,3 +83,11 @@ Design of record for Sprint 633. Reverses the usual tool loop: instead of a cent
 ## sprint-633-master-execution-plan.md
 
 Sprint 633: `agentic ssh "connect to host gatehost"` answers in one tool call, forging `ssh.bsh` on the first call and running it with no model on the second, correcting it on failure. States what the probes showed on the dev box (which training tiers work, the `ycode btw` flag bug, guard-cap behaviour), the nine stories in four waves with lanes and dependencies, the shaping hook and composition note, the per-story and close gates, and the decisions reserved for the operator.
+
+## website-shaping-integration.md
+
+Design of record for Sprint 638. How an existing live website, hosted wherever it is, joins software shaping with close to zero change: reviews what the engine does today (managed checkout, per-principal lines, static tree, Go-only servers, the six-repo promotion list, the Genie's same-origin reach), surveys the 2026 approaches (DOM-patching widgets, per-user AI userscripts, click-to-source editors, edge injection, WebMCP, widget hygiene) and why the runtime ones fail "fool-proof", and decides on an engine-hosted shaped copy plus a link badge in two tiers. States the public link contract, how a built single-page app is hosted, the shaping levels (owner, member, public) with the invariants that hold at every level and a public level that never creates code, the company-website dogfood, risks and follow-ups.
+
+## sprint-638-master-execution-plan.md
+
+Sprint 638, planning only: a member clicks Shape on the company website and approves their own verified version at the engine; the owner pushes a pull request; visitors only personalize what the owner declared. States what the code showed, the nine stories in three lanes with vendor and acceptance (Shape page prefill, badge, website scaffold, SPA fallback, promotion remote, policy levels, public personalization, docs, dogfood), the gates and venues, the seven verification steps and the decisions reserved for the operator.
