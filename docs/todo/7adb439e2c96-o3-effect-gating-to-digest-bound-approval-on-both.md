@@ -30,3 +30,13 @@ Done when: unit tests show an approval refused when the digest is stale, a decis
 - Commit trailers: Sprint: #646, Story/Story-ID for this story, Agent: <your agent name>.
 - Never read, print or commit a credential value. Never fall back to an API key for a subscription worker.
 - Submit with `bashy sprint submit 646 <story> -m "<evidence: commits, tests run>"`.
+
+## Integration notes from the merged O0, O1 and O2 work (manager, 2026-11-15)
+- Pull route: yoke pkg/weave/gateway_directive.go gatewayRunEffects currently fails gated verbs with state failed and reason gated-effect. Replace that with ask.Raise:
+  - The digest is sha256 over the exact argv, host and task id.
+  - Emit state needs-approval and an approval event {approval_id, digest, summary, effects}.
+  - Run only after the approve directive settles through ask.ApplyRemote with a matching digest. A stale digest or a deny ends the task as cancelled/failed with a reason.
+  - DenyUnanswered applies after a bounded wait.
+- Sync route: bashy mcp serve --outpost (bashy internal/agentos/mcp_outpost.go, yoke mcp/policy.go) denies gated effects outright. Give it the same ask.Raise path, so a sync call returns needs-approval with the same approval event shape, and settle the approval through the same digest.
+- One digest function shared by both routes, unit-tested.
+- Shaping walkthrough: add a section to umbrella docs/vendor-chat-gateway-mvp.md walking `run shape wish` -> candidate -> approve(digest) -> activate -> undo through the tools, naming which effects gate where. Use real bashy shape verbs; check them with `bashy shape --help`.
