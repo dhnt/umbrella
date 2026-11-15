@@ -17,6 +17,12 @@ sprint_title: 'Claude clients to the full stack: one Cloudbox remote MCP gateway
 ## Request and scope
 Any Claude client — claude.ai web, desktop and mobile apps, Cowork, Claude Code on any machine, Claude Code on the web and scheduled tasks, the Agent SDK, the Messages API MCP connector and Managed Agents — must be able to call out to Cloudbox, satellites, outposts and Bashy from any remote machine. Sibling of Sprint 642 (ChatGPT/dots); the gateway designed here serves both vendors. Planning only: no coding, deployment, provisioning, live account checks or agent launches.
 
+## Goal (operator, 2026-11-15)
+Two pieces on one Cloudbox identity:
+- (a) **UI**: the claude.ai web chat and mobile apps are the user interface for the full cloudbox/bashy stack — one custom connector to the Cloudbox gateway, MCP Apps cards inline, no web UI of ours required in the loop.
+- (b) **Executor**: Claude (the owner's Claude subscription) is the agentic tool on the outpost — the outpost supervises a Claude Code worker authenticated by `claude setup-token` that does the delegated work with bashy verbs on the host.
+The broad client matrix stays as context; the pilot and the story designs optimize for (a)+(b). Headless API/SDK rows become secondary consumers, not the execution engine.
+
 ## Claude equivalent of OpenAI dots
 Claude Duet (research preview since 2026-10-21; US Pro/Max/Ultra waitlist; iOS/Android): always-on cloud agent on its own VM and browser, memory, account connectors, approval before sending, paying, signing or deleting. It is a possible later front end on top of this gateway, not the target.
 
@@ -48,13 +54,21 @@ Verified 2026-11-15 (web+mobile research pass):
 ## Recommended architecture to evaluate
 One Cloudbox-hub-hosted remote MCP gateway: one sign-in reaches every host of the user; the hub routes tool calls to satellites and outposts over the existing hub-outpost link where bashy verbs do the work; host-side MCP stays loopback. Two auth modes on one identity (the Cloudbox account): OAuth 2.1 for interactive clients, scoped Cloudbox bearer tokens for headless clients. Agent-mediated tool set; MCP Apps where rendered, text elsewhere; Claude skill package; shared with Sprint 642.
 
+Pilot shape per the goal: claude.ai web/mobile custom connector → Cloudbox gateway → hub-outpost link → outpost-supervised Claude Code worker (subscription) → bashy verbs on the host.
+
+## Outpost executor on the Claude subscription (verified 2026-11-15, code.claude.com/docs/en/authentication)
+- `claude setup-token` mints a one-year OAuth token (browser flow once, on any machine), set as `CLAUDE_CODE_OAUTH_TOKEN` on the outpost; documented for "CI pipelines, scripts, or other environments where interactive browser login isn't available". Requires Pro/Max/Ultra/Team/Enterprise; usage draws on the plan's limits, no per-token API billing.
+- Token scope: model requests only — no Remote Control, no claude.ai connectors, no `/schedule` routines from the worker; locally configured MCP servers still work. Bare mode (`--bare`) does not read the token.
+- Policy boundary: Anthropic's Authentication and Credential Use policy (2026-02) restricts subscription OAuth tokens to official Anthropic clients. Claude Code CLI on the outpost is compliant; subscription auth through the Agent SDK was explicitly disallowed and the restriction's wording changed 2026-10-26 — treat SDK-on-subscription as verify-before-use and design the worker around the CLI.
+- Operational design inputs: credential lives in the vault and lands on the host as env (Linux fallback store is `~/.claude/.credentials.json` 0600); `CLAUDE_CONFIG_DIR` isolates the worker's account/config from any interactive login on the same host; expiring/expired credential halts unattended work, so the outpost needs a credential-expiry probe wired to Sprint 620 alerts; renewal is re-running setup-token (operator action), about once a year.
+
 ## Alternatives to record
 - Satellite-hosted gateway: owner-run variant of the same contract.
 - Per-outpost endpoints: rejected (many endpoints and sign-ins, relay traffic).
 - Bashy skill in the claude.ai code-execution sandbox with a pasted scoped token: zero-server-code throwaway pilot; token enters the sandbox, egress allow-list issues reported.
 - Claude Code self-hosted runner or Remote Control on an outpost: real-host path; runners are Team/Enterprise beta.
 - Claude in Chrome driving web consoles: rejected by the agentic-way rule (bashy verbs only).
-- Managed Agents doing the work instead of the steward: optional, per-token cost; steward is the default.
+- Managed Agents doing the work instead of the outpost worker: optional, per-token API cost; the outpost-supervised subscription worker is the default per the goal.
 
 ## Deliverables
 Verified matrix with sources; cost, plan gate and exposure per option; shaping lifecycle (wish -> candidate -> verify -> preview -> approve -> activate -> undo) from one interactive and one headless client; pilot recommendation with dependencies and open decisions. Relate to Sprint 642 and Sprint 620 (docs/comms-strategy.md) rather than duplicating them.
@@ -69,6 +83,7 @@ Verified matrix with sources; cost, plan gate and exposure per option; shaping l
 - https://claude.com/resources/articles/interactive-tools-in-claude
 - https://claude.com/docs/connectors/building/mcp-apps/design-guidelines
 - https://code.claude.com/docs/en/channels-reference
+- https://code.claude.com/docs/en/authentication (setup-token, credential precedence/storage)
 - https://code.claude.com/docs/en/routines
 - https://code.claude.com/docs/en/self-hosted-environments
 - https://code.claude.com/docs/en/remote-control

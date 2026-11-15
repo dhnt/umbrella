@@ -23,6 +23,7 @@ Design the gateway's authentication and identity; design only, public wire contr
 - One identity: the Cloudbox account; stable opaque profile id across reconnects. Both modes map onto the same scopes, revocation and audit trail.
 - Decide with evidence: reuse the existing WorkOS AuthKit integration as the MCP authorization server if it qualifies, otherwise a minimal authorization server in Cloudbox.
 - Preserve local MCP boundaries: host-side loopback endpoints and the yoke/mcp/transport.go public-bind refusal stay unchanged.
+- Third credential, outside the gateway: the outpost executor's Claude subscription token (`claude setup-token` → `CLAUDE_CODE_OAUTH_TOKEN`, one-year lifetime, model requests only). Design its handling — vault storage, delivery to the host as env, `CLAUDE_CONFIG_DIR` isolation from interactive logins, expiry probe wired to Sprint 620 alerts, operator renewal — without ever passing it through the gateway or conflating it with the Cloudbox identity. Subscription tokens are restricted to official Anthropic clients: the worker is the Claude Code CLI; Agent-SDK-on-subscription needs a policy re-check before any use.
 
 ## Done when
 A public wire-contract draft covers both modes, scopes, token lifetime, revocation, error semantics and the AuthKit-or-minimal decision. No implementation.

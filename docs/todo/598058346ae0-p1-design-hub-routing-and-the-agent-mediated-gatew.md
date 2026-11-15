@@ -21,6 +21,7 @@ Design hub routing and the gateway tool set; design only.
 - Routing: the hub resolves the caller's satellites and outposts by membership and forwards over the existing hub-outpost link; bashy verbs execute on the host; host MCP stays loopback.
 - Tools: list_hosts; delegate (client idempotency key -> one task id; repeated submission never duplicates execution); status; clarify; approve (bound to the reviewed candidate digest); cancel (recorded outcome); result; bounded read-only bashy queries under the yoke/mcp/direct.go effect policy.
 - Execution ownership: one owner per task (steward, conductor or an explicitly delegated coding agent); ownership transfer is explicit and never leaves two coordinators driving one task.
+- Goal (operator, 2026-11-15): the default delegated executor on the host is a Claude Code worker running under the owner's Claude subscription (`CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`), launched and supervised by the outpost. Design `delegate` to hand the task to that worker through outpost/bashy (weave/sprint verbs), keep the supervisor and the worker distinct in the state machine, and record the worker-unavailable states (no credential, expired credential, plan limit exhausted) as honest task states.
 - Honest states: offline host, unknown, asserted vs verified success. Conversational context stays separate from the authoritative execution record.
 - Map each tool onto existing steward, `bashy sprint` and weave verbs; list gaps.
 
