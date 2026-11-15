@@ -1,7 +1,7 @@
 ---
 id: 700a039a4994
 kind: feature
-title: 'T4 Composable CLI flags (--phase, --contract) and shapeable Bash# skill-script (shape-tdd.bsh + shape-tdd.json)'
+title: T4 Composable CLI flags (--phase, --contract) and shapeable Bash# skill-script (shape-tdd.bsh + shape-tdd.json)
 seq: 160
 status: todo
 priority: p1
