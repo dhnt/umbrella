@@ -187,13 +187,21 @@ Groups and emails narrow access *within* a circle; they never widen it across
 one. A member of the `family` circle who also sits in an `editors` group
 listed on a `company` mount is still refused, because the circle gate comes
 first and is absolute; content shared with `family` is never reachable from
-`company`, and the reverse. Consequences for the trove: every mount rule must
-name at least one circle, and a rule with an empty `circles` list is refused
-at `trove share` and at load (cloudbox's grammar reads an empty list as "any
-circle", which would breach the boundary; the trove does not inherit that
-case, and the difference is recorded as a note for the hosted plane's wire
-doc, outside this repository). The `anonymous: true` flag is the only way to
-publish past every circle, and it is a separate, explicit act by the owner.
+`company`, and the reverse.
+
+**The special circle `*`.** On the wire an empty `circles` list means "any
+circle": it is the opposite pole of owner-only, every active mutual member
+regardless of label. Bashy makes that pole explicit instead of letting it
+happen by omission: the trove spells it `*` (`trove share MOUNT --mode read
+--circle '*'`, `"circles": ["*"]` in `trove.json`), shows it as "every circle
+(all members)" in `who` and the picker, and translates it to the empty list
+on the wire; `*` is not a valid slug, so it cannot collide with a named
+circle. A rule that names no circle at all is refused as ambiguous at
+`trove share` and at load. The audience ladder is therefore explicit at every
+step: no rule (owner only) → named circles → `*` (every member) →
+`anonymous: true` (no sign-in, a separate act by the owner). The same
+explicit spelling is proposed for `bashy share add` and `bashy suite share`
+as a family-wide follow-up outside this sprint.
 
 **Alternatives considered.**
 
