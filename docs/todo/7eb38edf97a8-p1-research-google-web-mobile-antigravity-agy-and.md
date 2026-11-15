@@ -3,7 +3,7 @@ id: 7eb38edf97a8
 kind: spike
 title: P1 Research Google web, mobile, Antigravity (agy) and Gemini CLI compatibility and recommend a full-stack pilot
 seq: 341
-status: todo
+status: wontfix
 priority: p1
 labels:
     - software-shaping
@@ -13,6 +13,7 @@ created: 2026-11-15T13:36:48.150909Z
 sprint: 644
 sprint_id: 7d2c534d-c52e-5ee5-83dd-fa7ce89c3e4e
 sprint_title: 'Google clients to the full Cloudbox stack: web, mobile, Antigravity (agy) and Gemini CLI through one shared remote gateway'
+closed: 2026-11-15T15:08:20.751469Z
 ---
 
 ## Request and boundary
@@ -40,3 +41,6 @@ Source-backed compatibility matrix covering `gemini.google.com`, Gemini Android/
 ## Sources inspected 2026-11-15
 - Local: `bashy/internal/agentos/installagent.go`, `yoke/mcp/transport.go`, `yoke/mcp/direct.go`, `outpost/docs/mcp.md`, `agy --help`, `agy mcp add --help`, `antigravity-guide` & `agy-customizations` builtin skills, Sprint 642 (`f0cabeb9c6e3`), Sprint 643 (`50291ed35646`).
 - Web: Google Gemini Connected Apps & Mobile docs, Gemini Enterprise / Vertex AI MCP & MCP Apps docs, Gemini CLI MCP docs, Antigravity MCP docs, Google ADK / GenAI SDK docs, Jules MCP docs.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

@@ -3,7 +3,7 @@ id: 712cbab264f1
 kind: test
 title: P2 Specify gateway acceptance scenarios for Claude clients
 seq: 334
-status: todo
+status: wontfix
 priority: p2
 labels:
     - software-shaping
@@ -12,6 +12,7 @@ created: 2026-11-15T13:12:33.304363Z
 sprint: 643
 sprint_id: b3afcef3-bce0-5e7f-bbe0-400e1c629958
 sprint_title: 'Claude clients to the full stack: one Cloudbox remote MCP gateway for web, desktop, mobile and remote machines'
+closed: 2026-11-15T15:08:20.181497Z
 ---
 
 ## Scope
@@ -24,3 +25,6 @@ Specify acceptance scenarios for the gateway; specify, not run.
 
 ## Done when
 Each scenario has preconditions, steps, expected evidence and venue. Running them is implementation-phase work.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

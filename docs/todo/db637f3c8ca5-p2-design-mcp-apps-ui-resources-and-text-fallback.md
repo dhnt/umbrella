@@ -3,7 +3,7 @@ id: db637f3c8ca5
 kind: feature
 title: P2 Design MCP Apps UI resources and text fallback for the gateway
 seq: 331
-status: todo
+status: wontfix
 priority: p2
 labels:
     - software-shaping
@@ -12,6 +12,7 @@ created: 2026-11-15T13:12:32.855812Z
 sprint: 643
 sprint_id: b3afcef3-bce0-5e7f-bbe0-400e1c629958
 sprint_title: 'Claude clients to the full stack: one Cloudbox remote MCP gateway for web, desktop, mobile and remote machines'
+closed: 2026-11-15T15:08:20.375759Z
 ---
 
 ## Scope
@@ -26,3 +27,6 @@ Design MCP Apps UI resources for the gateway and the text fallback; design only.
 
 ## Done when
 Resource list, payloads and fallback text are specified. No implementation.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

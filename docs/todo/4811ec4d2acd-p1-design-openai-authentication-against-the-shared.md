@@ -3,7 +3,7 @@ id: 4811ec4d2acd
 kind: spike
 title: P1 Design OpenAI authentication against the shared Cloudbox gateway
 seq: 335
-status: todo
+status: wontfix
 priority: p1
 labels:
     - openai-integration
@@ -11,6 +11,7 @@ created: 2026-11-15T13:18:37.599279Z
 sprint: 642
 sprint_id: 7b4a9392-be5f-5398-a236-fba1d0868fae
 sprint_title: 'OpenAI clients to the full Cloudbox stack: access from any supported machine through one shared remote gateway'
+closed: 2026-11-15T15:08:19.234171Z
 ---
 
 Planning/design only; no implementation, deployment, provisioning, live account checks or agent launches. Keep sprint in backlog without appointing a manager. Research/spec: story f0cabeb9c6e3.
@@ -22,3 +23,6 @@ Separate three authorizations: OpenAI account/workspace access, device pairing f
 
 ## Operator clarification: UI plus Outpost agent (2026-11-15)
 Treat subscription sign-in for the Codex worker on each Outpost as a fourth identity boundary, separate from the UI account, gateway principal and any optional device pairing. Specify account/seat ownership, supported noninteractive provisioning after authorized login, credential storage/isolation, refresh/revocation and attribution. The UI caller's gateway grant must not implicitly grant another subscription identity. Qualify plan and workspace eligibility; do not assume unlimited usage or silently fall back to API billing.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

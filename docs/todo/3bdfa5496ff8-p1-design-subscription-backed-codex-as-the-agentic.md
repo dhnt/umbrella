@@ -3,7 +3,7 @@ id: 3bdfa5496ff8
 kind: spike
 title: P1 Design subscription-backed Codex as the agentic tools on Outposts
 seq: 356
-status: todo
+status: wontfix
 priority: p1
 labels:
     - openai-integration
@@ -11,6 +11,7 @@ created: 2026-11-15T13:47:49.887811Z
 sprint: 642
 sprint_id: 7b4a9392-be5f-5398-a236-fba1d0868fae
 sprint_title: 'OpenAI clients to the full Cloudbox stack: access from any supported machine through one shared remote gateway'
+closed: 2026-11-15T15:08:19.139258Z
 ---
 
 ## Required outcome B
@@ -27,3 +28,6 @@ https://learn.chatgpt.com/docs/auth distinguishes ChatGPT subscription login fro
 
 ## Acceptance
 A source-backed Outpost OS/client-version/plan/auth matrix; existing-capability/gap inventory; launch/session/tool/approval/result contracts; subscription limits and recovery behavior; onboarding and reproducible future qualification scenarios. End-to-end design must show an OpenAI web/mobile request reaching subscription-backed Codex on an authorized Outpost, using Bashy and returning verified evidence through the shared gateway. UI workstation can be offline while the selected Outpost continues. Keep all live feasibility claims unverified until tested.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

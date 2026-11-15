@@ -3,7 +3,7 @@ id: 50291ed35646
 kind: spike
 title: P1 Evaluate Claude client options for the full stack and recommend a gateway pilot
 seq: 328
-status: todo
+status: wontfix
 priority: p1
 labels:
     - software-shaping
@@ -12,6 +12,7 @@ created: 2026-11-15T13:12:32.37057Z
 sprint: 643
 sprint_id: b3afcef3-bce0-5e7f-bbe0-400e1c629958
 sprint_title: 'Claude clients to the full stack: one Cloudbox remote MCP gateway for web, desktop, mobile and remote machines'
+closed: 2026-11-15T15:08:19.992445Z
 ---
 
 ## Request and scope
@@ -93,3 +94,6 @@ Verified matrix with sources; cost, plan gate and exposure per option; shaping l
 
 ## Completion boundary
 Completes when the comparison and pilot recommendation are documented with evidence and remaining decisions. Implementation and live or paid account checks need separate operator authorization. Keep private Cloudbox implementation details out of this public repository.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

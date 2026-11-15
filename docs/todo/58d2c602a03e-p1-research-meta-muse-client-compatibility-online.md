@@ -3,7 +3,7 @@ id: 58d2c602a03e
 kind: spike
 title: P1 Research Meta Muse client compatibility (online chatboxes and mobile clients) and recommend pilots for the UI and outpost-agent goals
 seq: 347
-status: todo
+status: wontfix
 priority: p1
 labels:
     - software-shaping
@@ -12,6 +12,7 @@ created: 2026-11-15T13:44:52.759914Z
 sprint: 645
 sprint_id: a9bec834-6066-56ee-971d-8cd0d412222b
 sprint_title: 'Meta Muse to the full Cloudbox stack: Muse clients as the user interface, Muse Code CLI as the outpost agent'
+closed: 2026-11-15T15:08:21.322435Z
 ---
 
 ## Request and scope
@@ -71,3 +72,6 @@ Verified matrix with sources and evidence levels; pilot recommendation in gating
 
 ## Completion boundary
 Completes when the comparison and pilot recommendation are documented with evidence and remaining decisions. Implementation and live or paid account checks need separate operator authorization.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).

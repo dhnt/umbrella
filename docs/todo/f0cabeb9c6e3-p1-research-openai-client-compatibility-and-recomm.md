@@ -3,7 +3,7 @@ id: f0cabeb9c6e3
 kind: spike
 title: P1 Research OpenAI client compatibility and recommend a full-stack remote-access pilot
 seq: 324
-status: todo
+status: wontfix
 priority: p1
 labels:
     - software-shaping
@@ -13,6 +13,7 @@ created: 2026-11-15T07:29:24.506109Z
 sprint: 642
 sprint_id: 7b4a9392-be5f-5398-a236-fba1d0868fae
 sprint_title: 'OpenAI clients to the full Cloudbox stack: access from any supported machine through one shared remote gateway'
+closed: 2026-11-15T15:08:19.709269Z
 ---
 
 ## Request and boundary
@@ -93,3 +94,6 @@ Use text results first; rich widgets, notifications and MCP Events each need the
 ### Review gaps and required completion evidence
 The previous broad client list hid Cloud versus remote-control mobile behavior. Expand the final matrix into iOS/Android x Cloud/host-connected plus mobile browser, regular Chat, Work web, Codex Cloud and legacy Cloud where applicable. Record OS/app/browser build, plan/seat, workspace controls, setup location, execution host, auth principal, tools/UI/events, limits/billing basis and dated source. Use documented / unsupported / unverified / live-proven verdicts explicitly.
 Remaining work: exact per-plan/per-build availability, hosted gateway packaging/auth feasibility, Android Cloud details, mobile browser behavior, legacy/new Cloud differences and actual account qualification. No integration is live-proven and no story is closed by this review.
+
+## Superseded (2026-11-15)
+Superseded by Sprint 646 (2167db86-22b7-5429-9bfe-b96a8d93a353), the buildable MVP that merges Sprints 642-645; design of record docs/vendor-chat-gateway-mvp.md. The research above remains the reference; open live checks moved to Sprint 646 stories C1 (6f2d02f6be96) and E1 (a0a72ad338de).
