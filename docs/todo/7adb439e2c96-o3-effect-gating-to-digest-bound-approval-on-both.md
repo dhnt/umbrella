@@ -3,12 +3,14 @@ id: 7adb439e2c96
 kind: feature
 title: O3 Effect gating to digest-bound approval on both routes, plus a shaping lifecycle walkthrough
 seq: 361
-status: todo
+status: assigned
 priority: p1
 labels:
     - software-shaping
     - vendor-gateway
 created: 2026-11-15T15:07:43.344434Z
+weave: 79
+assignee: muse-conductor
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'

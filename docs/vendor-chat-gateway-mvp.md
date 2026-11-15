@@ -39,15 +39,17 @@ The research in the stories of those four sprints stays as reference. The disput
    - **Pull** is used otherwise. The master records a durable task with a directive, and the outpost's conductor
      pulls it over its existing session.
    - A failed sync call falls back to pull with the same idempotency key, so the work runs exactly once.
+     A gated sync call is likewise re-dispatched over pull with the same key: a gated call always
+     settles on the pull route (decision 3).
    - Every reply reports `route: sync|pull`.
-   - Every delegation or gated action is a master task on either route. So any client can resume it by task id,
-     including another vendor's client.
+   - Every delegation or gated action is a master task. A gated sync call claims the same task before the
+     pull route settles it, so any client can resume it by task id, including another vendor's client.
 3. **Seven tools, text first, the same for every vendor.**
 
    | Tool | What it does |
    |---|---|
    | `hosts` | Lists reachable outposts with their workers and credential state. |
-   | `run` | Runs any bashy verb through the MCP verb atlas, gated by the verb's effects: `read` runs, writes are audited, `destroy`/`spend`/`cred`/`priv` raise an approval. |
+   | `run` | Runs any bashy verb through the MCP verb atlas, gated by the verb's effects: `read` runs, writes are audited, `destroy`/`spend`/`cred`/`priv` gate to a pull-route approval (decision 3: one approval path, always on the pull route). |
    | `delegate` | Starts a worker on a host (claude, codex, agy or muse; default: the host's preference) with an idempotency key, and returns a task id. |
    | `task` | Shows a task's status, result or event tail; lists recent tasks. |
    | `reply` | Steers or clarifies a running task. |
@@ -107,6 +109,52 @@ G2 writes this contract and O1 reads it. Both build against it independently.
 **Idempotency.**
 - A second directive with the same `idempotency_key` returns the existing `task_id`. It never starts new work.
 - A sync call records the same task with `route: sync`, so a fallback to pull can find it and skip it.
+
+## Shaping walkthrough: wish → candidate → approve → activate → undo
+
+Shaping runs entirely through the `run` and `approve` tools. The atlas entry
+for `shape` carries `read, write, destroy, net, exec, spend, persist,
+remote`, so every `run shape …` gates on `destroy` (versions activate and
+roll back irreversibly) and `spend` (generation burns metered inference);
+`write` is audited. The gate is per verb, not per subverb: even read-only
+inspection (`show`, `diff`) gates, with its own digest. There is ONE
+approval path: a gated call always settles on the pull route. The sync
+route (`bashy mcp serve --outpost`) answers `{state: "gated",
+effects: [...]}` (exit 126), executes nothing and raises nothing; the
+master's router re-dispatches the same call over the pull route with the
+same idempotency key, and the pull conductor raises the task-bound
+digest-bound approval there.
+
+1. **Wish.** The caller sends `run` with
+   `argv: ["shape", "wish", "hello-world", "Change the greeting to Hello, Shaping!"]`.
+   On the sync route the outpost answers `gated` with
+   `effects: ["destroy", "spend"]` and stops. On the pull route the gateway
+   resolves `shape` in the atlas, sees `destroy`/`spend`, and raises an
+   `ask` approval (`source: gateway`) with
+   `digest = sha256(argv, host, task_id)`. The task moves to
+   `state: needs-approval` and the outpost emits
+   `approval: {approval_id, digest, summary, effects: ["destroy", "spend"]}`.
+   Nothing executes on either route until the approval settles.
+2. **Candidate.** A second client resumes by task id (`task` shows the
+   `needs-approval` state and the approval event) and settles it with
+   `approve: {approval_id, digest, decision: "approve"}`. The owning host
+   applies the decision through `ask.ApplyRemote`, which fails closed: a
+   stale digest (the candidate changed, or the answer names another host
+   or task), an unknown or expired approval, and an unallowed author are
+   all refused, and the candidate never runs. On allow the conductor runs
+   the wish; the candidate id comes back in `result`.
+3. **Inspect.** `run shape show/diff/verify/preview hello-world CANDIDATE`
+   each gate again under their own digests, then report the candidate,
+   the patch, the verifier verdict, or the preview URL.
+4. **Activate.** `run shape approve hello-world CANDIDATE` (shape's own
+   approve verb, the sealed activation gate) gates on `destroy`, settles
+   through `approve(digest)` a second time, and activates the candidate.
+5. **Undo.** `run shape undo hello-world` gates the same way and restores
+   the previous version through the trusted gate.
+6. **Refusals.** `decision: "deny"` ends the task as `cancelled` with
+   reason `denied`. An approval nobody answers is denied after the bounded
+   wait (`DenyUnanswered`) and the task ends as `cancelled` with reason
+   `approval-unanswered`. Either way the candidate never executes.
 
 ## Clients in the MVP
 
