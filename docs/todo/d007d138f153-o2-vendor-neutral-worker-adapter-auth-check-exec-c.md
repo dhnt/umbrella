@@ -3,7 +3,7 @@ id: d007d138f153
 kind: feature
 title: 'O2 Vendor-neutral worker adapter: auth.check_exec/config_dir_env, vault subscription credential projection, worker-state JSON'
 seq: 360
-status: assigned
+status: done
 priority: p1
 labels:
     - software-shaping
@@ -14,6 +14,8 @@ assignee: muse-conductor
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'
+closed: 2026-11-15T16:06:54.911796Z
+closed_by: claude-opus5.5-s646
 ---
 
 Spec: docs/vendor-chat-gateway-mvp.md (decisions 4-5).
