@@ -3,13 +3,12 @@ id: 54914406d25c
 kind: task
 title: 'S14 Company identity: superadmin allowlist + mutual membership + transfer zoo and zoo-aws to the company account'
 seq: 261
-status: assigned
+status: todo
 priority: p1
 created: 2026-11-13T21:29:28.305822Z
-assignee: claude-fable5.1-s630
-sprint: 630
-sprint_id: 106504a0-f6e4-55e5-9736-d8f2bd1ef052
-sprint_title: 'S619 follow-up: signed identity, master mode, outpost URL path, rc.34'
+sprint: 647
+sprint_id: 5870e910-cf7b-5b7b-ba25-6a0424321901
+sprint_title: 'S630 carry-over: signed identity, company identity, apps --url acceptance, satellite names, ssh alias elevation'
 ---
 
 status    assigned
