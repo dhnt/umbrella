@@ -22,6 +22,7 @@ Design MCP Apps UI resources for the gateway and the text fallback; design only.
 - Text fallback with the same information for every other client (Claude Code, SDK, API).
 - An MCP App interaction is a request; Cloudbox-side approval remains authoritative and binds to the reviewed candidate.
 - Follow the suite web UI rules (consistent chrome, distinct palette) where applicable.
+- Verified 2026-11-15: MCP Apps render from a private custom connector without directory listing — serve a `ui://` resource with mime `text/html;profile=mcp-app`, rendered in a sandboxed iframe; available on web, desktop, mobile and Cowork on all plans. Mobile renders inline only (no side panel or full-site views yet), so the approval card and task board must work as inline cards; directory submission review applies only if we later list publicly.
 
 ## Done when
 Resource list, payloads and fallback text are specified. No implementation.

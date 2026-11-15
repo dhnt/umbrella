@@ -25,20 +25,25 @@ Claude Duet (research preview since 2026-10-21; US Pro/Max/Ultra waitlist; iOS/A
 - Cloudbox issues scoped bearer tokens (public draft contract yoke/docs/cloudbox-members-attach-wire.md) and is an OAuth client only; it runs no OAuth authorization server and no remote MCP endpoint.
 - Result: no Claude client off-host reaches the stack unless bashy is installed locally.
 
-## Client support matrix (docs revalidated 2026-11-14; rows marked verify need a live check)
+## Client support matrix (docs revalidated 2026-11-15; rows marked verify need a live check)
 | Claude client | Remote MCP | Auth | MCP Apps UI |
 |---|---|---|---|
-| claude.ai web | custom connector | OAuth 2.1 + PKCE, callback claude.ai/api/mcp/auth_callback; Free = 1 connector | yes |
-| desktop / mobile apps | account connectors | same OAuth | yes (mobile since 2026-03) |
-| Cowork | custom connectors | same OAuth | yes |
-| Claude Duet | account connectors; custom: verify | same OAuth | n/a |
+| claude.ai web | custom connector, add + use; all plans incl. Free (Free = 1 custom connector; Team adds are Owner-only, Enterprise needs the libraries permission) | OAuth 2.1 + PKCE, callback claude.ai/api/mcp/auth_callback | yes; side panel + full-site views rolling out with the new Claude experience |
+| desktop app / Cowork | custom connector, add + use | same OAuth | yes |
+| mobile apps (iOS/Android) | use connectors added on web/desktop/Cowork; adding on mobile is beta — point setup guides at the web | same OAuth | yes, inline, all plans since 2026-01-26 launch; no side panel or full-site views on mobile yet |
+| Claude Duet | reuses connectors already connected in the Claude account (official doc names directory apps only; custom connector reuse: verify live); mobile-only, US research preview, Pro/Max/Ultra, no Team/Enterprise | same OAuth | n/a |
 | Claude in Chrome / Slack / Office add-ins | account connectors: verify per surface | same OAuth | varies |
 | Claude Code CLI, any machine | `claude mcp add --transport http` | OAuth or bearer header | n/a |
 | Claude Code on the web / scheduled tasks / self-hosted runners | connectors or repo .mcp.json | OAuth or env-secret bearer | n/a |
 | Agent SDK | HTTP MCP config | bearer | n/a |
 | Messages API MCP connector | mcp_servers | authorization_token (bearer) | n/a |
 | Managed Agents API | remote HTTP MCP only | vault credentials | n/a |
-Connector calls originate from Anthropic's cloud, so the endpoint must be public HTTPS. No Claude client supports MCP Events yet (anthropics/claude-code#101434; ChatGPT has since 2026-09-29).
+Connector calls originate from Anthropic's cloud, so the endpoint must be public HTTPS. No Claude client supports MCP Events yet (anthropics/claude-code#101434; ChatGPT has since 2026-09-29; rechecked 2026-11-15, spec still draft).
+
+Verified 2026-11-15 (web+mobile research pass):
+- Custom-connector MCP Apps need no directory listing: any MCP server may serve a `ui://` resource (mime `text/html;profile=mcp-app`) that Claude renders in a sandboxed iframe on web, desktop, mobile and Cowork; directory submission adds design/security/testing review but a private custom connector renders without it. Feeds story db637f3c.
+- OAuth client registration options per the official custom-connector guide: Claude's published identity (recommended), dynamic client registration, or your own OAuth client with the allow-listed claude.ai callback. Feeds story 31424ce6.
+- New since filing: Claude Code channels (research preview) — a local stdio MCP server pushes events into an interactive Claude Code session (`notifications/claude/channel`), optionally two-way with a reply tool, sender allowlist gating, and permission-prompt relay to a remote approver. Custom channels sit behind an allowlist/dev flag (org `allowedChannelPlugins` on Team/Enterprise) and are ignored in `-p`/Agent SDK headless mode. This is a push path into Claude Code on a user's machine, not into claude.ai web or mobile. Feeds story 71e63b97.
 
 ## Recommended architecture to evaluate
 One Cloudbox-hub-hosted remote MCP gateway: one sign-in reaches every host of the user; the hub routes tool calls to satellites and outposts over the existing hub-outpost link where bashy verbs do the work; host-side MCP stays loopback. Two auth modes on one identity (the Cloudbox account): OAuth 2.1 for interactive clients, scoped Cloudbox bearer tokens for headless clients. Agent-mediated tool set; MCP Apps where rendered, text elsewhere; Claude skill package; shared with Sprint 642.
@@ -59,7 +64,11 @@ Verified matrix with sources; cost, plan gate and exposure per option; shaping l
 - https://support.claude.com/en/articles/17631495-get-started-with-claude-duet
 - https://claude.com/resources/articles/claude-duet-safety-privacy-and-security
 - https://claude.com/docs/connectors/custom/remote-mcp
-- https://claude.com/blog/interactive-tools-in-claude
+- https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp
+- https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude
+- https://claude.com/resources/articles/interactive-tools-in-claude
+- https://claude.com/docs/connectors/building/mcp-apps/design-guidelines
+- https://code.claude.com/docs/en/channels-reference
 - https://code.claude.com/docs/en/routines
 - https://code.claude.com/docs/en/self-hosted-environments
 - https://code.claude.com/docs/en/remote-control
