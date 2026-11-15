@@ -24,3 +24,11 @@ Write one guide each for:
 Each guide covers the redirect allowlist entries, scopes and revocation. Also write the Muse submission pack: tools classed Read/Write/Sensitive-write from bashy effects, a test account plan and data terms.
 
 The research is in the superseded stories 50291ed35646, f0cabeb9c6e3, 7eb38edf97a8 and 58d2c602a03e (plus f9298cd7f42b and ed8f91939741). The live checks listed in the spec move here and run only with operator authorization.
+
+## Worker rules (Sprint 646 manager, 2026-11-15)
+- Read docs/vendor-chat-gateway-mvp.md in the umbrella repository, including the Task wire contract section, before writing code.
+- Work only in your weave workspace.
+- Run unit tests on touched packages only (GOWORK=off go test ./<pkg>/...); the full suites are deferred to QA.
+- Commit trailers: Sprint: #646, Story/Story-ID for this story, Agent: <your agent name>.
+- Never read, print or commit a credential value. Never fall back to an API key for a subscription worker.
+- Submit with `bashy sprint submit 646 <story> -m "<evidence: commits, tests run>"`.

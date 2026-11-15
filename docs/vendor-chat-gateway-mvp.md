@@ -76,6 +76,38 @@ The research in the stories of those four sprints stays as reference. The disput
 6. **No push.** The model is poll plus task id. MCP Apps cards (approval, diff) are a follow-up, and the text
    fallback carries the same facts.
 
+## Task wire contract (the pull route, and the record kept on both routes)
+
+G2 writes this contract and O1 reads it. Both build against it independently.
+
+**Directive.** Written as a task event of kind `directive` on `/api/v1/tasks/:id/events`, with this payload:
+```json
+{"verb":"run|delegate|approve|cancel|say","task_id":"…","idempotency_key":"…",
+ "host":"<host name>","caller":"<opaque profile id>",
+ "args":{"argv":["sprint","show","646"]}}
+```
+
+| Verb | `args` |
+|---|---|
+| `run` | `{argv}` |
+| `delegate` | `{worker, prompt}`, where worker is `claude`, `codex`, `agy`, `muse` or empty for the host default |
+| `approve` | `{approval_id, digest, decision: "approve"\|"deny"}` |
+| `cancel` | `{reason}` |
+| `say` | `{text}` |
+
+**Outpost replies.** The outpost answers with events of these kinds:
+
+| Kind | Payload |
+|---|---|
+| `ack` | `{directive_seq}` |
+| `state` | `{state: queued\|running\|needs-approval\|done\|failed\|cancelled, reason}`. When a worker cannot run, `reason` is `missing`, `expired`, `plan-limit` or `offline`. |
+| `approval` | `{approval_id, digest, summary, effects}` |
+| `result` | `{text, exit, verified: bool}`. Asserted success is kept distinct from verified success. |
+
+**Idempotency.**
+- A second directive with the same `idempotency_key` returns the existing `task_id`. It never starts new work.
+- A sync call records the same task with `route: sync`, so a fallback to pull can find it and skip it.
+
 ## Clients in the MVP
 
 | Vendor | A: UI | B: outpost worker |

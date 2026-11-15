@@ -25,3 +25,11 @@ Scope:
 - Install bashy weave conduct as a host service unit, matching on Windows, macOS and Linux.
 
 Done when: unit tests cover duplicate directives, cancel races and result events.
+
+## Worker rules (Sprint 646 manager, 2026-11-15)
+- Read docs/vendor-chat-gateway-mvp.md in the umbrella repository, including the Task wire contract section, before writing code.
+- Work only in your weave workspace.
+- Run unit tests on touched packages only (GOWORK=off go test ./<pkg>/...); the full suites are deferred to QA.
+- Commit trailers: Sprint: #646, Story/Story-ID for this story, Agent: <your agent name>.
+- Never read, print or commit a credential value. Never fall back to an API key for a subscription worker.
+- Submit with `bashy sprint submit 646 <story> -m "<evidence: commits, tests run>"`.
