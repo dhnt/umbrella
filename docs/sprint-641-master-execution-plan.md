@@ -194,3 +194,38 @@ Bashy's Outpost tool pin also advances to `be5ed146` so its tool build includes
 the new admin UI. This does not link Outpost into the Bashy binary.
 No new refactoring binaries were installed. Other UI surfaces remain on hold
 for the operator's next instruction. Historical sprint scope remains open.
+
+### Dropoff — 2026-11-15
+
+Operator requested all changes committed, cleanup and clean exit. The selected
+Outpost/Bashy refactoring is delivered and published; do not resume the hosted
+or satellite UI work until the operator instructs it.
+
+- Delivered source: yoke `47f221c3`, Outpost `be5ed146`, Bashy `1ae6834e`.
+  Umbrella publication and acceptance: `665c3635`, `33181191`. Later work by
+  other sessions is preserved; these are delivery references, not reset targets.
+- Verification: focused Go/race, CLI, authentication/WebSocket, Node and Chrome
+  gates passed. Consumer gates were rerun with published module pins and
+  `GOWORK=off`; no temporary local replacements are needed.
+- Installation: the earlier approved icon-only development build was installed.
+  The new page-action refactoring binaries have not been installed. No production
+  deployment or official release was performed.
+- Known limitation: the pre-existing `TestDOMGenieReviewBar` missing-link failure
+  remains separately tracked. Outpost supports Host-preserving proxy prefixes;
+  its Shape dialog has a dictation hint, not a new speech-recognition service.
+- Remaining original MVP stories: T0 operator authorization, M4 feature boundary,
+  M6 allowance, J0 badge, J1 voice, J2 schema/settings, J3 wish-to-patch, J4 desktop
+  CLI parity, J5 journey state, J6 end-to-end recording, and hosted implementation
+  `fada4758`. Some implementation exists: reconcile acceptance evidence before
+  treating those open cards as wholly unimplemented. The full sprint is not done.
+- Cleanup: closed both session test browsers, stopped the session Vite preview,
+  and removed temporary integration module files and the baseline overlay.
+  Normal application services, installed binaries and backup artifacts remain.
+- The only pre-existing dirty file was Sprint 630 story `eea4f787fdba` completion
+  metadata. Under the operator's explicit commit-all instruction, preserve and
+  commit that metadata unchanged, including its original assignee and closer.
+  Its owner was notified via the collaboration protocol; receipt was unverified.
+
+Resume from the published sources and this plan, read the live sprint card, and
+obtain the next scope instruction. Do not reinstall, deploy, or begin another UI
+refactor merely because this session has exited.
