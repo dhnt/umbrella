@@ -3,12 +3,13 @@ id: badd3f9c73de
 kind: feature
 title: 'J1 Voice in the desktop''s own wish box: vendor the one voice module into the hosted SPA'
 seq: 318
-status: todo
+status: assigned
 priority: p1
 labels:
     - software-shaping
     - voice
 created: 2026-11-15T03:01:52.018985Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the dhnt journey — iteration 1, dhnt.io is the free desktop you shape by asking'
