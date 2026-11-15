@@ -114,3 +114,78 @@ rung-2 invitation appearing only after the first shape and undo. Plus the
 3. **How much of the desktop's chrome is in the schema** — only the tile field,
    or the header and navigation too. More is a better demonstration and a
    larger invariant surface to defend.
+
+## Active delivery override — operator instruction 2026-11-15
+
+The operator explicitly directed this session to take Sprint 641 and deliver
+Outpost and Bashy app UI refactoring first. Cloudbox and satellite UI work is
+on hold until the operator gives the next instruction. The earlier hosted
+journey scope above is preserved as deferred context, not acceptance for this
+bounded delivery. No hosted deployment or public release is authorized.
+
+Deliver a private page/server action contract for the two local surfaces:
+- Reusable framework-independent browser registration and websocket action
+  transport, with explicit handler input validation and asynchronous outcomes.
+- Authenticated, principal-isolated live page discovery and commands; bounded
+  queues, expiry, disconnect failure, no automatic replay or arbitrary script.
+- Bashy integration using existing console principal authorization and existing
+  Shape workflow, plus CLI parity for added live-page operations.
+- Outpost integration reusing admincore, existing session/bearer authentication,
+  and existing CLI/API mutations. Presentation actions must not turn an admin
+  browser into a privilege escalation path for a narrower credential.
+- Shape-only toggle and named form/field handlers for representative settings
+  flows; UI and agents invoke the same functions. Keep Shape reachable and
+  protected sign-in/pairing/approval behavior intact.
+
+Acceptance: focused unit/HTTP/browser tests prove action validation, shared
+handler use, CLI parity, principal isolation, reconnect/unmount behavior and
+proxied mount paths on both surfaces. Inventory existing CLI equivalents rather
+than recreating business logic. Preserve unrelated edits. Verify integrated
+producer/consumer sources with temporary local module wiring if publication is
+not authorized. Report exact delivered scope and residual limits; do not label
+all historical Sprint 641 stories done.
+
+### Local source delivery — 2026-11-15
+
+The three refactoring stories are accepted for the bounded source delivery:
+
+| Story | Source commit | Delivered behavior |
+| --- | --- | --- |
+| R1 `46d76276772e` | yoke `2b74a473` | Named-action registry, authenticated page transport, isolated discovery/results, bounded expiry and no replay |
+| R2 `0b1b0346e78e` | yoke `47f221c3`, bashy `15fa90c0` | Shared Shape handlers, reversible Shape-only, operator/session gates, page CLI |
+| R3 `96be6ef5a8a5` | outpost `bdd2faa9` | Networking draft/get/submit, five-tab navigation, Shape-only and page CLI |
+
+The approved Flow master is bashy `c6d6db1b`; its embedded copy is included in
+the R2 yoke commit. Assessment and icon stories were also accepted. Internal
+collaboration workers implemented the three slices; the interactive manager
+reviewed changes and independently ran each acceptance gate.
+
+Independent `bashy gate` results all passed:
+
+- yoke: `GOWORK=off go test -race ./pkg/pagecontrol` and
+  `node --test pkg/pagecontrol/page_test.cjs`.
+- yoke: `GOWORK=off go test -tags verifydom ./pkg/webconsole -run
+  'Test(DOMPageActions|DOMGenieButton|DOMGenieEditSession|PageControl)' -count=1`.
+- bashy: `go test ./internal/agentos -run TestShapePage -count=1`, with temporary
+  module wiring to the delivered yoke source and `GOWORK=off`.
+- outpost: `go test -tags fb_archives ./internal/agent/adminui ./cmd/outpost
+  -run 'Test(Page|IndexCarries|NoRootRelative)' -count=1`, using the same local
+  producer wiring; Node handler fixture and actual Chrome DOM fixture also pass.
+
+Review corrected inert handling for custom controls, prompt cookie revocation,
+and CLI redirect replay. An interim Bashy Pick regression was traced to an
+extra form row; preserving the original row layout restored the existing test.
+The separately reproduced baseline `TestDOMGenieReviewBar` missing-link failure
+remains open; it is not counted as passing. No broad full-suite claim is made.
+
+Usage and exact parity inventories live in yoke `docs/page-actions.md` and
+outpost `docs/page-shaping.md`. Outpost supports Host-preserving proxy prefixes;
+rewritten-Host proxies need an authenticated proxy contract. Outpost has a
+dictation hint, not newly implemented speech recognition; Bashy retains its
+existing capability-detected voice input. Legacy forms are not all migrated.
+
+Publication, consumer dependency pins and umbrella gitlinks remain unchanged.
+These are local source commits, validated together with temporary module files;
+standalone consumer builds still need the new yoke version published and pinned.
+No new refactoring binaries were installed. Other UI surfaces remain on hold
+for the operator's next instruction. Historical sprint scope remains open.
