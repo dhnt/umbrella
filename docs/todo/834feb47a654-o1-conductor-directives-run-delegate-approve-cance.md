@@ -3,7 +3,7 @@ id: 834feb47a654
 kind: feature
 title: O1 Conductor directives run/delegate/approve/cancel with idempotency and result write-back; conductor as a host service
 seq: 359
-status: assigned
+status: done
 priority: p1
 labels:
     - software-shaping
@@ -14,6 +14,8 @@ assignee: codex-gpt6-sol
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'
+closed: 2026-11-15T15:54:11.162469Z
+closed_by: claude-opus5.5-s646
 ---
 
 Spec: docs/vendor-chat-gateway-mvp.md (decision 2, pull route).
