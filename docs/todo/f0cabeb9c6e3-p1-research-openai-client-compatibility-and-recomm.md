@@ -54,3 +54,35 @@ A source-backed compatibility matrix and pilot recommendation; known limitations
 - https://openai.github.io/openai-agents-python/mcp/
 - Local sources: yoke/mcp/transport.go; yoke/mcp/direct.go; yoke/docs/cloudbox-members-attach-wire.md; yoke/pkg/fleet/satellite_read.go; outpost/docs/mcp.md; outpost/internal/agent/mcpapi/tools_satellite.go; bashy/internal/agentos/installagent_mcp_test.go.
 Revalidate changing product claims during design. Keep private service internals, credentials and raw restricted evidence outside this public repository.
+
+## Review update: online web UI/chatbox and mobile (2026-11-15)
+Interpret the requested "oneline" as online/web access. Use official product names and separate presentation surface, execution location and gateway connection origin. Documentation below is source evidence only; no account or device was tested.
+
+### Focused compatibility matrix
+| Surface | Documented experience and execution | Gateway conclusion / remaining evidence |
+| --- | --- | --- |
+| ChatGPT web chatbox | Chat and Work are separate choices; Work supports projects, files and plugins [W]. | Prioritize Work for the full-stack pilot; do not infer identical tools in regular Chat. |
+| Codex Cloud on web | Start a chat, choose Work in > Cloud; tasks have independent cloud workspaces and can continue while the user's computer sleeps [C]. | Candidate for workstation-independent coding. Verify the chosen environment's gateway connectivity/auth and plugin support separately. |
+| iOS ChatGPT app | Codex mobile can start, steer and review Cloud tasks or tasks on a connected computer [M]. | Record Cloud and host-connected modes separately; the phone is not the Bashy executor. |
+| Android ChatGPT app | Remote connections explicitly supports Android controlling a Mac/Windows host [R]; Codex Cloud is documented for mobile generally [H]. | Remote mode is documented. Exact Android Cloud UI, release and account availability remain unverified; do not infer iOS parity. |
+| Mobile browser | The cited web/mobile guides do not establish feature parity for mobile browsers. | Separate row, unverified for this pilot; preserve the existing dots-specific mobile-web exclusion without generalizing it to every OpenAI surface. |
+| Desktop host reached from mobile | Host provides tools, permissions and credentials; pairing requires matching account/workspace, an awake online host and potentially admin enablement [R]. | Optional host-backed pilot, not proof of independence from that host. Remote MCP configured there originates there. |
+| CLI / IDE | Local host MCP supports stdio and Streamable HTTP; configuration is shared on that host [T]. | Retain as reference clients; their support does not prove hosted web/mobile support. |
+
+### Evidence and implications
+- [W] https://learn.chatgpt.com/docs/web — web entry uses Chat versus Work and supports follow-up prompts, projects, files and plugins.
+- [C] https://learn.chatgpt.com/docs/cloud — cloud coding entry point and environment-based execution across web, mobile and desktop.
+- [M] https://learn.chatgpt.com/docs/mobile — mobile task list, composer, progress, approvals, changed files/diffs and environment/host selection; rollout/workspace gates apply.
+- [R] https://learn.chatgpt.com/docs/remote-connections — current supported mobile setup begins in the desktop app, not CLI/IDE. Each device pairs with each host. Phone-to-SSH workflows still connect through the desktop host.
+- [H] https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex — Work Cloud, Codex Local and Codex Cloud have separate access controls. Published cloud environments are prepared on desktop/web before mobile selection. Desktop Codex remote chats are not automatically added to ordinary web/mobile history. Plan sign-in and API-key billing differ.
+- [T] https://learn.chatgpt.com/docs/extend/mcp — web MCP is packaged through plugins; a remote endpoint alone does not make a plugin web-compatible. Local configuration is not automatically a cloud connection.
+- [L] https://learn.chatgpt.com/docs/changelog — 2026-05-14 remote mobile launch, 2026-05-29 Windows support, 2026-06-25 Remote GA 26.623 with authenticated per-device QR pairing. These are historical milestones, not current minimum-version guarantees. Current docs use ChatGPT desktop and Codex/Remote labels; capture actual app build and visible labels in future acceptance.
+
+### Revised pilot recommendation (design judgment)
+First design a web Work plugin against the shared S643 gateway, with permission-filtered discovery and bounded operations across all four stack components. Then qualify Codex Cloud and iOS/Android Cloud independently, retrieving the same gateway task by stable ID with the originating workstation offline. Keep a headless API caller as a separate interoperability leg.
+Offer mobile-to-desktop remote control as a clearly host-dependent alternative; an always-on host improves availability but is not the cloud route. Do not build a second mobile gateway or treat OpenAI's device relay as a general Cloudbox MCP endpoint.
+Use text results first; rich widgets, notifications and MCP Events each need their own surface-specific evidence.
+
+### Review gaps and required completion evidence
+The previous broad client list hid Cloud versus remote-control mobile behavior. Expand the final matrix into iOS/Android x Cloud/host-connected plus mobile browser, regular Chat, Work web, Codex Cloud and legacy Cloud where applicable. Record OS/app/browser build, plan/seat, workspace controls, setup location, execution host, auth principal, tools/UI/events, limits/billing basis and dated source. Use documented / unsupported / unverified / live-proven verdicts explicitly.
+Remaining work: exact per-plan/per-build availability, hosted gateway packaging/auth feasibility, Android Cloud details, mobile browser behavior, legacy/new Cloud differences and actual account qualification. No integration is live-proven and no story is closed by this review.
