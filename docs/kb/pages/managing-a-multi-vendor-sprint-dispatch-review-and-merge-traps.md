@@ -42,7 +42,7 @@ created: "2026-11-15T18:05:43Z"
 
 - **Cherry-picking changes the SHA.** A consumer `go.mod` that pins the workspace commit's pseudo-version points at a commit that only exists in the workspace.
   - Push the producer first, then repin the consumer to the pushed SHA.
-  - Bumping yoke in bashy also regenerates `internal/agentos/testdata/skillhelp/*.classic` (`BASHY_UPDATE_SKILL_GOLDEN=1`). The `src_mount.go` pins move only in release dependency commits.
+  - Bumping yoke in bashy must ALSO move `internal/agentos/src_mount.go` srcModulePins to the same SHA (`TestSrcPinsMatchLinkedModules` enforces the pairing; Sprint 646 broke it by skipping this, fixed in bashy 192778bd) and regenerate `internal/agentos/testdata/skillhelp/*.classic` (`BASHY_UPDATE_SKILL_GOLDEN=1`). Include `-run SrcPins` in the targeted tests.
 - **Gate the push on the test result, not on the chain.** In `go test ... | tail && git push`, the push runs even when the tests fail. Use `go test ... | tail -1 | grep -q '^ok' && git push`.
 - **Shared test host.** Several workers that each need the same Linux unit venue will deadlock on each other's claims. The manager schedules the venue, or lets workers use a local Linux container instead.
 - **Cross-repo stories.** Give the parallel halves an explicit interface in both story notes before dispatch (for example a `GatewayRoute` interface). Expect one integration round that removes the duplicate declarations.
