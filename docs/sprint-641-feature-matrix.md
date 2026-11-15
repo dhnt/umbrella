@@ -15,6 +15,47 @@ question per cell: **what may this audience change here, and what is the
 app's contract.** The matrix is the content of story M4 (`928fb2c3584e`),
 expressed in `shaped.json` `features`, and of the invitation's wording in M5.
 
+## Refusals demote; they never dead-end (operator, 2026-11-14)
+
+When a wish needs more privilege than the person has, the answer is **not a
+bare refusal**. The wish is **demoted** into something that can still travel:
+a request to whoever may act on it, or feedback to the people who make the
+product. The person's words are never thrown away, and nothing pretends to
+have succeeded.
+
+This is already the house rule elsewhere: the message bus states it as
+**DEMOTE, NEVER DROP** — an unauthorized, rate-limited or undeliverable
+interrupt becomes a queued notification with a recorded reason, because a
+dropped message leaves an agent acting on stale assumptions. The same reasoning
+applies to a person: a dead-ended wish leaves them believing the system cannot
+do something, when the truth is only that *they* cannot do it here.
+
+| What was asked | What it demotes to | Who receives it |
+|---|---|---|
+| beyond this person's level on this app | a **request** carrying their words, the page and element, and who asked | the owner, or a named maintainer |
+| configuration-only surface asked for a code change | a **request** | the owner |
+| beyond the **owner's** reach — the invariant floor, the chrome laws, the wire | **product feedback** | staff, and only with the person's explicit consent, because it leaves their plane |
+| allowance exhausted | a queued request, or a stated wait with the time | themselves |
+
+Five guardrails, because a demotion is a privilege boundary and not a courtesy:
+
+1. **A demotion performs no part of the privileged action.** It records words,
+   never effects. This is what keeps it from becoming a bypass.
+2. **The request carries its requester**, and when an owner or an agent later
+   acts on it, the text is **untrusted data** — the prompt-injection discipline
+   from the voice research applies unchanged.
+3. **Requests have a ceiling too.** Asking for the impossible must not be a
+   free spam channel; the same per-person allowance applies, even when no model
+   was called.
+4. **Identical wishes aggregate** rather than arriving fifty times — the queue
+   with upvotes that Sprint 640 designs, not fifty rows.
+5. **Nothing leaves the person's plane without consent.** A request to their own
+   owner stays inside it; product feedback to staff is an explicit act with a
+   visible destination.
+
+The person always learns three things: what happened, where it went, and how to
+see what became of it.
+
 ## Roles are the CMS roles (operator, 2026-11-14)
 
 Nothing here invents a role model. A content management system solved this
