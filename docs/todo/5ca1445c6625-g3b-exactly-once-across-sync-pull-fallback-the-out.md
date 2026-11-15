@@ -3,12 +3,14 @@ id: 5ca1445c6625
 kind: bug
 title: 'G3b Exactly-once across sync->pull fallback: the outpost claims the gateway key on the sync route and the pull conductor surfaces the stored result'
 seq: 368
-status: todo
+status: assigned
 priority: p0
 labels:
     - software-shaping
     - vendor-gateway
 created: 2026-11-15T17:46:44.637163Z
+weave: 80
+assignee: claude-opus5.5
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'
