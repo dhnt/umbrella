@@ -184,8 +184,13 @@ rewritten-Host proxies need an authenticated proxy contract. Outpost has a
 dictation hint, not newly implemented speech recognition; Bashy retains its
 existing capability-detected voice input. Legacy forms are not all migrated.
 
-Publication, consumer dependency pins and umbrella gitlinks remain unchanged.
-These are local source commits, validated together with temporary module files;
-standalone consumer builds still need the new yoke version published and pinned.
+The operator subsequently approved publication and required pin updates.
+Yoke `47f221c3` is published; both consumers now require
+`v0.0.0-20261115081128-47f221c3b21b`. Fresh focused consumer gates pass with
+`GOWORK=off`, using the published module and committed checksums, without local
+replacement files. Outpost's Node and Chrome checks also pass. Publication and
+the matching forward-only umbrella gitlinks are tracked by story `2bdea548ec75`.
+Bashy's Outpost tool pin also advances to `be5ed146` so its tool build includes
+the new admin UI. This does not link Outpost into the Bashy binary.
 No new refactoring binaries were installed. Other UI surfaces remain on hold
 for the operator's next instruction. Historical sprint scope remains open.
