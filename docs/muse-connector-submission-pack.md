@@ -8,7 +8,7 @@ Status: Reference Specification & Submission Pack (C1 delivery)
 
 ## 1. Executive Summary & Review Scope
 
-This submission pack documents the integration of the Cloudbox Remote MCP Gateway into the **Muse Connector Platform** (`platform.muse.ai`, `dev.meta.ai/products/connectors`) for public directory listing.
+This submission pack documents the integration of the Cloudbox Remote MCP Gateway into the **Muse Connector Platform** (`platform.muse.ai`, `dev.meta.ai/products/connectors`) for public directory listing, submitted per the vendor's current connector settings.
 
 ### Target Surfaces
 1. **`muse.ai` Web Chatbox**: Operates inside each user's dedicated, sandboxed **Muse Secure VM** (isolated Linux environment + browser).
@@ -52,14 +52,14 @@ The Cloudbox gateway maps its seven text-first tools to these tiers using the un
 Meta QA engineers require a dedicated, reproducible test environment to validate the connector without impacting production infrastructure.
 
 ### Review Environment Infrastructure
-- **Venue**: Cloudbox Staging Venue backed by `yoke/pkg/fleet/cloudboxfake` (`https://staging.ai.dhnt.io/mcp`).
+- **Venue**: Cloudbox Staging Venue backed by `yoke/pkg/fleet/cloudboxfake` (`https://<cloudbox-host>/mcp`).
 - **Reviewer Profile**:
   - **Account Name**: `meta-reviewer-qa`
   - **Opaque Profile ID**: `usr-meta-qa-88301`
   - **Role**: Operator with access to staging outposts.
 - **Seeded Staging Outposts**:
-  - `mock-outpost-alpha`: Linux x86_64 host with simulated `claude`, `codex`, `agy`, and `muse` workers in healthy state (`ok`).
-  - `mock-outpost-beta`: Darwin arm64 host with workers in varied states (`missing`, `expired`, `plan-limit`, `offline`) to verify honest state reporting.
+  - `<host-1>`: Linux x86_64 host with simulated `claude`, `codex`, `agy`, and `muse` workers in healthy state (`ok`).
+  - `<host-2>`: Darwin arm64 host with workers in varied states (`missing`, `expired`, `plan-limit`, `offline`) to verify honest state reporting.
 
 ### Step-by-Step QA Verification Script
 
@@ -69,11 +69,11 @@ sequenceDiagram
     actor Reviewer as Meta Reviewer (Muse Chat)
     participant Muse as Muse Platform (Secure VM)
     participant GW as Cloudbox Gateway (/mcp)
-    participant Outpost as Outpost (mock-outpost-alpha)
+    participant Outpost as Outpost (<host>)
 
     Reviewer->>Muse: "List reachable hosts on Cloudbox"
     Muse->>GW: call hosts()
-    GW-->>Muse: Return mock-outpost-alpha, mock-outpost-beta
+    GW-->>Muse: Return <host-1>, <host-2>
     Muse-->>Reviewer: Render host list and worker status
 
     Reviewer->>Muse: "Show sprint 646 card"
@@ -81,7 +81,7 @@ sequenceDiagram
     GW-->>Muse: Return sprint card text (Read effect: PASS)
     Muse-->>Reviewer: Render sprint status
 
-    Reviewer->>Muse: "Delegate code analysis to muse on mock-outpost-alpha"
+    Reviewer->>Muse: "Delegate code analysis to muse on <host-1>"
     Muse->>GW: call delegate(worker="muse", prompt="...", idempotency_key="qa-01")
     GW->>Outpost: Dispatch task directive
     GW-->>Muse: Return task_id="task-qa-101", state="queued"
@@ -106,11 +106,11 @@ sequenceDiagram
 #### Test Execution Steps:
 1. **Discovery & Read-Only Checks**:
    - Prompt: `"List my hosts on Cloudbox Gateway."`
-   - Expectation: `hosts` returns `mock-outpost-alpha` and `mock-outpost-beta`. No permission dialog prompted.
+   - Expectation: `hosts` returns `<host-1>` and `<host-2>`. No permission dialog prompted.
    - Prompt: `"Run sprint show 646."`
    - Expectation: `run` executes immediately with exit 0 and verified content.
 2. **Idempotent Delegation**:
-   - Prompt: `"Delegate a test task to muse on mock-outpost-alpha."`
+   - Prompt: `"Delegate a test task to muse on <host-1>."`
    - Expectation: `delegate` returns `task_id`. Re-sending the identical prompt returns the existing `task_id` without creating duplicate tasks.
 3. **Sensitive-Write Approval Enforcement**:
    - Prompt task to trigger an action with `destroy` or `spend` effect.
@@ -180,3 +180,4 @@ The following live checks moved from the MVP spec require explicit operator auth
 | `META-LC-01` | **Token Lifetimes & Callback URLs** | Muse Connector Platform | Confirm exact access/refresh token expiration limits and callback URI validation patterns in the live platform.muse.ai portal. | Pending Operator Authorization |
 | `META-LC-02` | **Connector Review Turnaround SLA** | Meta Review Pipeline | Benchmark turnaround duration across Stages 1, 2, and 3 during staging submission. | Pending Operator Authorization |
 | `META-LC-03` | **Contributor Mode Headless Persistence** | Outpost Muse Code Worker | Verify that `--contributor-mode off` persists across headless worker process restarts and CLI auto-updates. | Pending Operator Authorization |
+| `META-LC-04` | **Muse Portal Connector Submission Flow** | `platform.muse.ai` Portal | Verify current submission UI flow and form fields per the vendor's current connector settings. | Pending Operator Authorization |

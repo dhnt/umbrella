@@ -27,7 +27,7 @@ This guide specifies how to configure Google's **Gemini** as the user interface 
                            ▼
 ┌────────────────────────────────────────────────────────┐
 │           Cloudbox Master Remote MCP Gateway           │
-│                    (https://ai.dhnt.io/mcp)            │
+│               (https://<cloudbox-host>/mcp)            │
 │                                                        │
 │  - RFC 7591 Dynamic Client - RFC 8414 AS Metadata      │
 │    Registration (DCR)      - RFC 9728 Protected Res    │
@@ -51,10 +51,10 @@ This guide specifies how to configure Google's **Gemini** as the user interface 
 ```
 
 ### Key Characteristics
-- **Client Surface**: Added as a **Custom Connected App** in `gemini.google.com` (Consumer Web).
+- **Client Surface**: Added as a **Custom Connected App** in `gemini.google.com` (Consumer Web) per the vendor's current connector settings.
 - **Mobile Auto-Sync**: Custom Connected Apps cannot be added directly from within the Gemini mobile app. However, once connected in `gemini.google.com`, the app **automatically syncs** to both Android and iOS Gemini apps under the same Google account.
 - **Invocation Ergonomics**: In chat, tools can be invoked contextually or explicitly targeted using the `@<CustomAppName>` mention syntax.
-- **Transport**: Strict Streamable HTTP over public HTTPS (`https://ai.dhnt.io/mcp`). Legacy Server-Sent Events (SSE) is deprecated and causes handshake failure in multi-turn sessions.
+- **Transport**: Strict Streamable HTTP over public HTTPS (`https://<cloudbox-host>/mcp`). Legacy Server-Sent Events (SSE) is deprecated and causes handshake failure in multi-turn sessions.
 
 ---
 
@@ -77,28 +77,31 @@ Google enforces four strict prerequisites on consumer accounts before Custom Con
 Gemini connects to the Cloudbox master using OAuth 2.1 with PKCE S256 and Dynamic Client Registration (RFC 7591).
 
 ### Metadata Endpoints
-- **Authorization Server Discovery**: `https://ai.dhnt.io/.well-known/oauth-authorization-server`
-- **Protected Resource Metadata**: `https://ai.dhnt.io/.well-known/oauth-protected-resource`
+The spec fixes only the `/mcp` endpoint and the two `/.well-known` documents:
+- **Authorization Server Discovery**: `https://<cloudbox-host>/.well-known/oauth-authorization-server`
+- **Protected Resource Metadata**: `https://<cloudbox-host>/.well-known/oauth-protected-resource`
+- **Gateway MCP Endpoint**: `https://<cloudbox-host>/mcp`
+
+All OAuth interaction endpoints are advertised in the AS metadata (`registration_endpoint`, `authorization_endpoint`, `token_endpoint`, `revocation_endpoint` if offered).
 
 ### DCR & GAL Sandbox Handshake
-- Gemini initiates Dynamic Client Registration via `POST https://ai.dhnt.io/api/v1/oauth/register`.
+- Gemini initiates Dynamic Client Registration via the `registration_endpoint` advertised in AS metadata.
 - The Google Authorization Layer (GAL) completes authentication in a sandboxed iframe. The Cloudbox master returns a clean `auth_complete` response to avoid circular sandbox redirect loops.
-- PKCE S256 code challenge is verified on token exchange.
+- PKCE S256 code challenge is verified on token exchange at the `token_endpoint` advertised in AS metadata.
+- Resource parameter: `resource=https://<cloudbox-host>/mcp` (RFC 8707).
 - Tokens carry rotating refresh credentials.
 
 ---
 
 ## 4. Redirect Allowlist Entries
 
-The Cloudbox master authorization server enforces the following redirect allowlist for Google clients:
+The master authorization server enforces a strict redirect allowlist, keeping only callbacks documented by the vendors and cited in the spec, plus loopback for CLIs:
 
 | Client Surface | Allowed Redirect URI | Description |
 |---|---|---|
-| Gemini Web & Mobile | `https://vertexaisearch.cloud.google.com/oauth-redirect` | Primary OAuth redirect URI for Gemini Custom Connected Apps |
-| Gemini Fallback | `https://vertexaisearch.cloud.google.com/` | Alternate Google redirect target |
-| Antigravity CLI (`agy`) | `https://antigravity.google/oauth-callback` | Callback for interactive Antigravity CLI onboarding |
-| Gemini CLI Local | `http://localhost:8085/oauth/callback` | Local loopback callback for developer CLI sessions |
-| Gemini CLI Loopback IPv4 | `http://127.0.0.1:8085/oauth/callback` | Alternate local loopback callback |
+| Gemini Custom Connected App | `https://vertexaisearch.cloud.google.com/oauth-redirect` | Documented OAuth redirect URI for Gemini Custom Connected Apps (cited in spec) |
+| Antigravity CLI (`agy`) | `https://antigravity.google/oauth-callback` | Documented callback for interactive Antigravity CLI onboarding (cited in spec) |
+| CLI Tools (RFC 8252) | Loopback (any port) | Loopback redirect (e.g. `http://127.0.0.1:<port>/...` or `http://localhost:<port>/...`) for local CLI sessions per RFC 8252 |
 
 Registrations requesting any redirect URI outside this list are rejected with `invalid_request`.
 
@@ -111,9 +114,11 @@ Scopes map directly to Cloudbox principal authorizations and gate the seven MVP 
 | Scope | Category | Granted Tools & Capabilities |
 |---|---|---|
 | `mcp:read` | Read | `hosts` (discover reachable outposts and workers)<br>`task` (check task status, logs, verified outcomes)<br>`run` with read-only commands (e.g. `sprint show`, `todo list`) |
-| `mcp:write` | Write (Audited) | `delegate` (dispatch agent tasks to outposts)<br>`reply` (send steering inputs)<br>`cancel` (abort active tasks)<br>`run` with standard writes |
-| `mcp:approve` | Sensitive-write | `approve` (settle digest-bound approvals for gated actions: destroy, spend, credentials, privilege elevation, software shaping activation) |
+| `mcp:write` | Write (Audited) | `delegate` (dispatch agent tasks to outposts)<br>`reply` (send steering inputs)<br>`cancel` (abort active tasks)<br>`approve` (settle digest-bound approvals for gated actions)<br>`run` with standard writes |
 | `mcp:host` | Internal Routing | Short-lived token minted by master for satellite forwarding |
+
+> [!NOTE]
+> Proposed, not decided: A dedicated `mcp:approve` scope for digest-bound approvals is proposed for future hardening, but is not decided for the MVP.
 
 Tokens are strictly bound to the authenticated Cloudbox identity and enforce tenant isolation across all outposts.
 
@@ -121,23 +126,19 @@ Tokens are strictly bound to the authenticated Cloudbox identity and enforce ten
 
 ## 6. Revocation & Session Lifecycle
 
-Revocation can be initiated from the Gemini interface, Google Account settings, or the Cloudbox gateway:
+Revocation is handled exclusively via the vendor's disconnect mechanism plus the existing token revocation path:
 
 ### Client-Side Disconnection (gemini.google.com)
-1. In `gemini.google.com`, click **Menu** > **Settings** > **Connected Apps**.
+1. In `gemini.google.com`, navigate to connector settings per the vendor's current connector settings.
 2. Locate the Cloudbox Gateway app.
-3. Toggle the connection **OFF** or click **Disconnect**.
-4. Gemini clears stored access tokens immediately.
-
-### Google Account Third-Party Revocation
-1. Visit `https://myaccount.google.com/connections`.
-2. Locate `Cloudbox Gateway` under third-party apps with account access.
-3. Click **Delete all connections that you have with Cloudbox Gateway**.
+3. Toggle the connection OFF or click disconnect.
+4. Alternatively, remove access in Google Account third-party connections (`https://myaccount.google.com/connections`).
+5. Stored access tokens are cleared immediately.
 
 ### Gateway-Side Revocation (Cloudbox Master)
-- **Revocation Endpoint**: `POST https://ai.dhnt.io/api/v1/oauth/revoke` (RFC 7009).
+- Revocation uses the existing token revocation path via the `revocation_endpoint` advertised in AS metadata (if offered per RFC 7009).
 - Revoking the refresh token invalidates the entire token chain and terminates the session.
-- Subsequent tool invocations from Gemini fail with HTTP `401 Unauthorized`.
+- Subsequent tool invocations from Gemini fail with HTTP `401 Unauthorized` (`WWW-Authenticate: Bearer error="invalid_token"`).
 
 ---
 
@@ -150,17 +151,17 @@ Revocation can be initiated from the Gemini interface, Google Account settings, 
 
 ### Step 2: Add Custom Connected App in Web Chat
 1. Open a browser and navigate to `https://gemini.google.com`.
-2. Click the gear icon (**Settings**) in the left sidebar and select **Connected Apps**.
-3. Click **Add Custom App** (or **Connect an App**).
+2. Navigate to connected app settings per the vendor's current connector settings.
+3. Select add custom connected app.
 4. Enter the connection parameters:
    - **App Name**: `CloudboxGateway`
-   - **Server URL**: `https://ai.dhnt.io/mcp`
-5. Click **Connect**.
+   - **Server URL**: `https://<cloudbox-host>/mcp`
+5. Proceed to connect.
 
 ### Step 3: Complete OAuth 2.1 Consent
-1. A consent window opens to `https://ai.dhnt.io/oauth/authorize`.
-2. Log in with your Cloudbox account.
-3. Review and approve the requested scopes (`mcp:read`, `mcp:write`, `mcp:approve`).
+1. A consent window opens to the `authorization_endpoint` advertised in the AS metadata.
+2. Log in with your Cloudbox account credentials.
+3. Review and approve the requested scopes (`mcp:read`, `mcp:write`).
 4. Click **Authorize**. The window completes the GAL handshake and closes.
 5. In Gemini, `CloudboxGateway` appears in the list of active connected apps.
 
@@ -189,7 +190,7 @@ Revocation can be initiated from the Gemini interface, Google Account settings, 
 Gemini supports **Scheduled Actions** (daily, weekly, or recurring triggers). This allows automated background health monitoring:
 - A user can configure a recurring prompt:
   ```text
-  Every weekday at 9:00 AM, ask @CloudboxGateway to run bashy status and report any degraded workers.
+  Every weekday at 9:00 AM, ask @CloudboxGateway to check hosts and report any degraded workers.
   ```
 - Gemini executes the schedule in the cloud, calling `hosts` and `task` over the gateway without requiring an active browser tab.
 
@@ -215,3 +216,4 @@ The following live checks moved from the MVP spec require explicit operator auth
 | `GOOG-LC-01` | **Gemini DCR & GAL Sandbox Loop** | `gemini.google.com` | Verify whether Gemini dynamically accepts the DCR redirect and confirm avoidance of the `auth_complete` sandbox loop. | Pending Operator Authorization |
 | `GOOG-LC-02` | **Keep Activity & Workspace Gates** | Gemini Web / iOS App | Reproduce error behavior when a Google Workspace account attempts connection, and verify the iOS disconnect bug when Keep Activity is disabled. | Pending Operator Authorization |
 | `GOOG-LC-03` | **Headless `agy` Token Refresh** | Antigravity CLI on Outposts | Validate unattended token refresh mechanics of persisted subscription logins when running headless in CI/daemon mode. | Pending Operator Authorization |
+| `GOOG-LC-04` | **Gemini Web UI Connected App Click Path** | `gemini.google.com` | Verify exact current click path in gemini.google.com settings for adding a Custom Connected App. | Pending Operator Authorization |
