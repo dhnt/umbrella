@@ -53,7 +53,9 @@ example directory `bashy/examples/trove/`.
 | Google | `google.bsh` over gws (bring-your-own-project): drive, gmail, calendar, tasks; credentials per account under the bashy config dir; rods `email.read`, `drive.read`, `email.send` (needs `--yes`) | `bashy/examples/google` |
 | Other reach | `bashy gh`, pure-Go git, `bashy rclone` (pinned, MIT), `bashy fetch URL --md`, `lens` html/pdf/docx/xlsx → md | `yoke/external/*`, `yoke/pkg/lens` |
 | Generation | service roles `text`, `translate`, `narrate`, `transcribe`, `image.generate\|edit`, `animate`, `song`, `pdf.read`, `video.understand`, `search`; routes oss / browser / api / vendor; `spend` and `send` need `--yes`; OSS rods; `media.bsh`; film's draft → lock → final | `bashy/docs/service-rod-contract.md`, `examples/service-door`, `examples/oss-rods`, `examples/media`, `examples/film` |
-| Grants | outpost `GrantCopy{Owner, Members[{Email, Circle}], Apps[app][]GrantRule}` per **app**; `outpost apps share APP --email\|--circle`; shape boundary `@reads/@writes` for shaped apps; agent-permission policy not built; no per-resource grant anywhere | `outpost/internal/agent/grants.go`, `yoke/pkg/shape/boundary`, `docs/bashy-agent-permissions.md` |
+| Grants | outpost pulls a grant copy `{host, owner, revision, members[{email, circle}], groups{}, apps{app: [rule]}}` every 30 s and admits per **app**; rule `{circles[], groups[], emails[]}` = circles AND (group OR email); shape boundary `@reads/@writes` for shaped apps; agent-permission policy not built; no per-resource grant anywhere | `outpost/internal/agent/grants.go`, `yoke/docs/cloudbox-members-attach-wire.md`, `yoke/pkg/shape/boundary` |
+| Circles | a member has exactly one owner-chosen circle per owner (slug `[a-z0-9-]`, 1–32, `public` and `owner` reserved; defaults family, friend, team, guest; `guest` when unset); groups are owner-defined many-to-many; membership is mutual; the label is private to the owner (never shown to the member); `bashy member … --circle`, `bashy suite share --circle\|--group\|--email` | `yoke/pkg/fleet/member_cmd.go`, `suite_cmd.go`, `grant_rule.go`, `yoke/pkg/fleet/cloudboxfake` |
+| Identity reaching an app | `Remote-User`/`Remote-Email` (the email, signed) and `Remote-Groups` = `admin\|user` (the role), stamped only through the tunnel for trust-identity apps. **No header carries the caller's circle or groups**; outpost holds them but uses them only for its own admit decision. `outpost apps share` still posts the pre-S619 `{app, circle}` body (the wire is now the rule form) | `outpost/internal/agent/apps.go`, `outpost/docs/cooperative-web-apps.md`, `outpost/internal/agent/portal/shares.go` |
 | App item refs | `app:<command>/<id>` | `yoke/pkg/ref/app.go` |
 | Probe | `bashy fetch --md` on the AP CSP redesign page returns the full article as markdown | run on the dev box |
 
@@ -68,12 +70,12 @@ A **trove** is the owner's named set of **mounts**, recorded in `trove.json`
 ```json
 {"schema_version": "bashy-trove-v1",
  "mounts": [
-   {"name": "club",   "locator": "dir:/srv/club/submissions@studio-host",
-    "grants": [{"who": "circle:staff", "mode": "read"},
-               {"who": "circle:students", "mode": "read", "only": "self"}]},
-   {"name": "drive",  "locator": "drive:", "account": "owner@example.com",
-    "grants": [{"who": "owner", "mode": "write"}]},
-   {"name": "artifacts", "locator": "app:", "grants": [{"who": "owner", "mode": "read"}]}
+   {"name": "projects", "locator": "dir:/srv/projects@studio-host",
+    "rules": [{"mode": "read",  "circles": ["family", "team"]},
+              {"mode": "write", "circles": ["team"], "groups": ["editors"]}]},
+   {"name": "drive",  "locator": "drive:", "account": "owner@example.com"},
+   {"name": "showcase", "locator": "dir:/srv/showcase", "anonymous": true},
+   {"name": "artifacts", "locator": "app:"}
  ]}
 ```
 
@@ -82,7 +84,7 @@ An **entry** is a `bashy-node-v1` node plus trove attributes:
 | attr | meaning |
 |---|---|
 | `mount`, `owner` | which mount, whose trove |
-| `grant` | the caller's resolved mode (`read`, `write`, or absent) |
+| `grant` | the caller's resolved mode (`read`, `write`, or absent), from the mount's rules and the caller's relationship |
 | `provenance` | `producer: human\|agent`, the `app:<command>/<id>` ref, the run or story that made it |
 | `renders[]` | presentations already available (canned by the producer or cached) |
 
@@ -119,29 +121,79 @@ refuses without a write grant, with the same result on the CLI and over HTTP.
 `bashy lens -t listing trove:…` and `bashy tree` work for trove and for every
 later example. Small, separately committed, and the conductor may defer it.
 
-## Grants
+## Circles: how content is protected
 
-The smallest model consistent with cloudbox membership:
+Circles are cloudbox's relationship labels, and they are the unit the trove
+protects content with. The public wire facts the design rests on (nothing
+below quotes the hosted plane's internals):
 
-- `who` is `owner`, `member:<email>` or `circle:<name>`; `mode` is `read`
-  (see and present) or `write` (contribute). Membership and circles come from
-  the cloudbox grant copy outpost already holds; the trove never redefines
-  them. Per-entry visibility rules are not part of the product model: when a
-  trove needs one, its owner adds it as a shaped grant rule for that trove,
-  and it is generalized only when a second case appears.
-- The caller is `Remote-User` / `Remote-Groups` on the web (stamped only
-  through the tunnel) and `--principal` / `BASHY_PRINCIPAL` on the CLI, as
-  `bashy shape` does. The owner is always admitted. A denied entry is the same
-  not-found or no-access result on the CLI and over HTTP.
-- `trove share MOUNT --member|--circle --mode` shells to
-  `outpost apps share trove …`, so app admission and mount grants never
-  diverge.
-- **No agent principal.** Agents act as the owner's principal and are capped
-  by effects and by `--yes` for `send` and `spend`, which is how every other
-  bashy verb treats them.
+- A member has exactly **one circle per owner**, an owner-chosen slug
+  (`[a-z0-9-]`, 1–32 characters; `public` and `owner` reserved; defaults
+  `family`, `friend`, `team`, `guest`, with `guest` when none is named).
+  Groups are owner-defined, many-to-many. Membership is mutual. A member
+  never sees the label an owner gave them.
+- A **grant rule** is `{circles[], groups[], emails[]}` and admits when the
+  caller's circle is listed (or `circles` is empty) **and** they are in a
+  listed group **or** their email is listed (or both lists are empty). Any
+  rule in a list admits; an empty list, or no rule at all, means owner only;
+  the owner always passes; only active mutual members can match. The same
+  rule shares an app (`bashy share add HOST/APP`) or a suite
+  (`bashy suite share`), and the console's share dialog uses the same three
+  fields.
+- Rules are enforced at the cloudbox edge and again by outpost from the
+  grant copy it pulls about every 30 s. Apps do not re-evaluate app
+  admission.
+- What reaches an app today is the caller's email and the role
+  `admin|user`. The circle and groups stop at outpost.
 
-The vocabulary matches the shaping levels (owner, member, public) so the two
-converge when the levels land.
+**Decision: one rule grammar, two enforcement points, the relationship
+stamped by outpost.**
+
+1. **App level stays where it is.** The trove app is shared like any app;
+   the edge and outpost admit or refuse the caller. Nobody who is not
+   admitted reaches the explorer or the HTTP API.
+2. **Mount level is the trove's job.** Each mount carries rules in the
+   **same grammar**, plus a `mode` (`read` sees and presents, `write`
+   contributes): `{"mode": "read", "circles": ["family"], "groups": [],
+   "emails": []}`. The trove evaluates them with cloudbox's semantics against
+   the caller's relationship, which follows the operator's rule that cloudbox
+   holds relationship data and apps interpret it. `trove share MOUNT --mode
+   read --circle family` and `trove who MOUNT` mirror the console dialog and
+   the `who` listing, one rule per call. An anonymous audience is an explicit
+   per-mount `anonymous: true` flag, never a circle (`public` is reserved).
+3. **The caller's relationship travels with the request.** Outpost already
+   knows it from the grant copy; it stamps `X-Outpost-Circle`,
+   `X-Outpost-Groups` and `X-Outpost-Owner` for trust-identity apps on tunnel
+   requests, signed with the existing per-app secret (versioned payload),
+   stripping any inbound copies; `coopauth.Identity` carries the three
+   fields to every yoke-hosted app. `Remote-Groups` keeps meaning
+   `admin|user` for off-the-shelf SSO apps. On the host, `outpost grants
+   lookup EMAIL --json` answers the same question for the CLI, so
+   `trove ls --principal member@example.com` and the page agree.
+4. **Live, private, never frozen.** The relationship is resolved at read
+   time from the current member list; a circle rename changes access on the
+   next request. Entries record the contributor's email in provenance, never
+   a circle. The owner's app may use the label; it never shows a member the
+   label they were given.
+5. **No agent principal and no per-entry rules.** Agents act as the owner's
+   or a member's principal, capped by effects and `--yes`. Per-entry
+   visibility stays out of the product model; a trove owner shapes such a
+   rule when a test case needs it, and it is generalized only on a second
+   case.
+
+**Alternatives considered.**
+
+| option | what it would mean | why not |
+|---|---|---|
+| One outpost app per mount, so the edge and outpost admit each mount with no new code in the trove | `trove/<mount>` registered as separate apps, shared through the existing dialog | an app per mount; no single tree or explorer; the CLI and on-host paths still need a check; share dialogs multiply |
+| Per-resource grants inside cloudbox | the hosted plane learns about mounts and entries | cloudbox is relationship data only, by operator rule; the hosted plane is private; every app would need its own resource model there |
+| The trove reads `GET /api/v1/members` itself | an owner credential inside the app; the owner's paired host token may read the list | a second source of truth beside outpost's copy for web requests, and a credential in an app that should hold none; acceptable only as the on-host fallback behind `outpost grants lookup` |
+| Reuse `Remote-Groups` for circle and groups | no new header | breaks every off-the-shelf SSO app that reads it as admin or user |
+
+Two outpost stories carry the prerequisites (S13 stamp and lookup, S14 the
+`apps share` body on the post-S619 rule form). Both are small, public,
+separately committed, and useful to every app behind outpost; Sprint 638's
+member shaping level has the same dependency.
 
 ## Presentation on the fly
 
@@ -245,6 +297,11 @@ path on the dev box. First instance: a film-making club.
   hermetic fakes and the operator records one live smoke.
 - A per-trove visibility rule (T2) must stay a shaped rule, not a product
   feature, until a second case appears.
+- The relationship headers (S13) are a public outpost change with a
+  versioned signature; until they land, S6 can only distinguish owner from
+  member by email and must not claim circle protection.
+- Outpost's `apps share` body is behind the S619 wire (S14); `trove share`
+  must not ship on top of it unfixed.
 - The kit server must build inside the verifier's scrubbed environment; the
   contract follows `desk/viewer` (`read,write,exec,net`).
 - The S10 seam touches the locator scheme set; it is optional and separate.
@@ -257,6 +314,6 @@ path on the dev box. First instance: a film-making club.
 Per-path access lists; writes to mail, calendar or GitHub; a FUSE mount; a
 second text editor; replacing the `files` app; a core permission policy
 (`docs/bashy-agent-permissions.md`); per-entry visibility rules in the
-product model; wish-log replay; index or embedding search over the trove;
+product model; per-resource grants in the hosted plane; wish-log replay; index or embedding search over the trove;
 real personal data in fixtures; paid finals without `--yes`; agent
 principals.
