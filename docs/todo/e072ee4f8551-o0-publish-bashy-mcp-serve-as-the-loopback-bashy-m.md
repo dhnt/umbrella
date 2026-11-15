@@ -3,15 +3,19 @@ id: e072ee4f8551
 kind: feature
 title: O0 Publish bashy mcp serve as the loopback bashy-mcp outpost app for the gateway sync route
 seq: 358
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
     - vendor-gateway
 created: 2026-11-15T15:07:42.894484Z
+weave: 76
+assignee: codex-gpt6-astra
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'
+closed: 2026-11-15T15:29:16.803283Z
+closed_by: claude-opus5.5-s646
 ---
 
 Spec: docs/vendor-chat-gateway-mvp.md (Sprint 646, decision 2).
