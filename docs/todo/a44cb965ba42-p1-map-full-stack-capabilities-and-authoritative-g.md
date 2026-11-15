@@ -19,3 +19,6 @@ Inventory Cloudbox, Satellite, Outpost and Bashy operations, map each to establi
 
 ## Web/mobile review requirements (2026-11-15)
 Add route diagrams for web Work -> remote plugin gateway -> authorized stack target; Codex Cloud -> qualified gateway connection -> target; and mobile Remote -> paired desktop execution host -> gateway -> target. Label connection origin and credential holder at each boundary. The OpenAI remote-control relay is not an assumed public gateway API. Include originating-workstation offline versus actual target offline as separate cases. See f0cabeb9c6e3 for sources and unverified capabilities.
+
+## Operator clarification: UI plus Outpost agent (2026-11-15)
+Make the primary agentic route OpenAI web/mobile -> shared gateway -> durable dispatch -> selected Outpost -> subscription-backed Codex -> Bashy/local tools -> evidence/results. Inventory existing Bashy fleet/Codex launch, JSON event decoding, MCP installation and Outpost transport before proposing adapters. Distinguish the UI orchestrator from the Outpost execution worker; no recursive redispatch. Codex Cloud is an optional executor comparison, not completion of the Outpost requirement.

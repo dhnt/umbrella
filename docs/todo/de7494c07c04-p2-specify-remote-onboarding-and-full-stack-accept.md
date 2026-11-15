@@ -27,3 +27,6 @@ Design only; future live qualification must record exact OS/browser/app build, p
 6. Mobile browser and regular Chat: qualify independently, including text-only recovery and explicit unsupported verdicts where established. No parity assumption.
 7. Disable notifications/events: retrieve status and results manually. Distinguish native mobile notifications from gateway event support.
 Use the focused source matrix and open questions in f0cabeb9c6e3. None of these scenarios has been executed by this review.
+
+## Operator clarification: UI plus Outpost agent (2026-11-15)
+Required end-to-end scenario: from OpenAI web UI, authorize the shared gateway, discover stack targets, choose an Outpost, dispatch agentic work to subscription-authenticated Codex on that Outpost, execute Bashy tools, verify the result, and retrieve/approve it from iOS or Android with the originating workstation offline. Record worker/session and execution-target evidence; merely running in Codex Cloud does not pass. Cover both direct deterministic full-stack operations and this agentic path. Specify Outpost restart/offline, expired subscription login, quota limits, cancellation and denied cross-principal access; no automatic API-billed fallback. Earlier Cloud/headless scenarios are optional comparisons; the two operator outcomes govern acceptance.

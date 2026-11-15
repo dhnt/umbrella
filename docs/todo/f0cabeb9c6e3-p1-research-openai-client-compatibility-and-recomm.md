@@ -16,7 +16,13 @@ sprint_title: 'OpenAI clients to the full Cloudbox stack: access from any suppor
 ---
 
 ## Request and boundary
-Operator-approved rescope following research on 2026-11-15: any supported OpenAI client or Codex, from any supported machine, should reach the full Cloudbox / Satellite / Outpost / Bashy stack through one shared remote gateway. "Any machine" means no dependency on the originating workstation, subject to client availability, authorization and network reachability. It does not promise support for an arbitrary OpenAI-compatible client without a tool transport.
+Operator clarification (2026-11-15): two required outcomes:
+A. Use OpenAI online web UI/chatbox and mobile clients as the user interface for the full Cloudbox / Satellite / Outpost / Bashy stack.
+B. Use Codex with the subscription service as the agentic tools running on Outposts.
+
+The intended route is OpenAI web/mobile UI -> shared S643 gateway -> authorized stack operation or durable task -> selected Outpost -> subscription-authenticated Codex -> Bashy/local tools -> results and approvals returned to the UI. Deterministic operations can execute directly; agentic work runs on the selected Outpost. The UI and execution agent are distinct roles even when both use OpenAI products.
+
+Independence means the user's originating workstation need not stay online. The selected Outpost is an intentional execution dependency. Codex Cloud execution and an API-key worker are optional comparisons, not substitutes for outcome B. API/headless interoperability is secondary and must not become a prerequisite for the subscription-backed pilot. Do not promise arbitrary OpenAI-compatible clients without a supported tool transport.
 
 Planning only: no coding, deployment, provisioning, live account checks or agent launches. Keep in backlog without appointing a manager. This update records research and remaining design work; it does not establish working integration or close the story.
 
@@ -38,7 +44,7 @@ Retain direct, steward-mediated and hybrid comparison. Prefer direct bounded det
 
 ## This story: compatibility and pilot synthesis
 Produce a sourced matrix covering ChatGPT web/desktop/mobile, dots, Codex CLI/IDE/app/cloud, Responses API, Agents API and Agents SDK. For each: client/version, plan/workspace restrictions, connection origin, remote transport, auth, tool/UI/events support, setup, cost implications, evidence level and unsupported/unverified cases. Do not extrapolate local CLI support to hosted Codex.
-Compare direct/delegated/hybrid UX, reliability and operational cost. Recommend a pilot spanning an interactive client, remote Codex and a headless API caller, with dependencies and unresolved decisions.
+Compare direct/delegated/hybrid UX, reliability and operational cost. Recommend a pilot joining OpenAI web/mobile UI to subscription-backed Codex on an Outpost, with dependencies and unresolved decisions. Keep API/headless and Codex Cloud execution as optional comparisons.
 Other S642 stories cover auth, capability routing, task semantics, presentation/events and acceptance/onboarding.
 
 ## Acceptance
@@ -78,9 +84,10 @@ Interpret the requested "oneline" as online/web access. Use official product nam
 - [T] https://learn.chatgpt.com/docs/extend/mcp — web MCP is packaged through plugins; a remote endpoint alone does not make a plugin web-compatible. Local configuration is not automatically a cloud connection.
 - [L] https://learn.chatgpt.com/docs/changelog — 2026-05-14 remote mobile launch, 2026-05-29 Windows support, 2026-06-25 Remote GA 26.623 with authenticated per-device QR pairing. These are historical milestones, not current minimum-version guarantees. Current docs use ChatGPT desktop and Codex/Remote labels; capture actual app build and visible labels in future acceptance.
 
-### Revised pilot recommendation (design judgment)
-First design a web Work plugin against the shared S643 gateway, with permission-filtered discovery and bounded operations across all four stack components. Then qualify Codex Cloud and iOS/Android Cloud independently, retrieving the same gateway task by stable ID with the originating workstation offline. Keep a headless API caller as a separate interoperability leg.
-Offer mobile-to-desktop remote control as a clearly host-dependent alternative; an always-on host improves availability but is not the cloud route. Do not build a second mobile gateway or treat OpenAI's device relay as a general Cloudbox MCP endpoint.
+### Revised pilot recommendation (operator clarification takes precedence)
+Design a web Work plugin against the shared S643 gateway, then qualify iOS and Android as user interfaces to that same stack. Include permission-filtered discovery and deterministic operations across all four components. For an agentic request, dispatch a durable task to a selected Outpost running Codex authenticated through the intended subscription; use Bashy tools there and return progress, approvals, artifacts and verification evidence through the gateway.
+Qualify the UI's cloud-hosted conversation separately from where the requested stack work executes: an OpenAI cloud conversation may orchestrate an Outpost task without moving that task into Codex Cloud. A headless API caller or OpenAI-hosted executor is optional comparative coverage.
+Mobile-to-desktop Remote remains an alternative UI path with its own host dependency, not the required gateway architecture. Do not build a second mobile gateway or treat OpenAI's device relay as a general Cloudbox MCP endpoint.
 Use text results first; rich widgets, notifications and MCP Events each need their own surface-specific evidence.
 
 ### Review gaps and required completion evidence

@@ -19,3 +19,6 @@ Reconcile OpenAI requirements with S643 auth story 31424ce68e52; reuse one gatew
 
 ## Web/mobile review requirements (2026-11-15)
 Separate three authorizations: OpenAI account/workspace access, device pairing for host-backed Remote, and the Cloudbox gateway principal/grants. Pairing is not gateway OAuth consent. Specify web/plugin redirect and mobile sign-in/return flows, wrong-workspace denial, expired credentials, reconnect and revocation. For host-backed calls record which host holds the gateway credentials; for Cloud require independent credentials/connectivity. No token copying through prompts. Source-backed surface distinctions and references: f0cabeb9c6e3, review update.
+
+## Operator clarification: UI plus Outpost agent (2026-11-15)
+Treat subscription sign-in for the Codex worker on each Outpost as a fourth identity boundary, separate from the UI account, gateway principal and any optional device pairing. Specify account/seat ownership, supported noninteractive provisioning after authorized login, credential storage/isolation, refresh/revocation and attribution. The UI caller's gateway grant must not implicitly grant another subscription identity. Qualify plan and workspace eligibility; do not assume unlimited usage or silently fall back to API billing.

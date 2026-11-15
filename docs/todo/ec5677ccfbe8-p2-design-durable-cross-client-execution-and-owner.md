@@ -19,3 +19,6 @@ Compare direct bounded calls, steward delegation and hybrid handoff; retain one 
 
 ## Web/mobile review requirements (2026-11-15)
 Specify web-to-iOS-to-Android continuation by gateway task ID independently of product chat-history sync. Cover backgrounding, app termination, reconnect, stale approval cards, duplicate taps, host switching and approvals arriving after cancellation or candidate changes. Bind each approval to principal, task, target, action and candidate; reject stale/replayed approval. Distinguish Cloud continuation from loss of a required desktop host. Work Cloud fallback must never silently replace the intended target or treat missing local tools as successful execution. See f0cabeb9c6e3 for sources.
+
+## Operator clarification: UI plus Outpost agent (2026-11-15)
+Specify the gateway task -> Outpost job -> Codex session mapping and one accountable execution owner. Handle worker crash, Outpost restart, subscription expiry/quota exhaustion, cancellation and reconnect without double execution or silent paid-provider fallback. UI-side orchestration and Outpost-side agentic execution are distinct roles; handoff must preserve target, authorization and evidence. Work may survive loss of the UI/originating workstation, but selected-Outpost offline is an explicit blocked/recovery state.

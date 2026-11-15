@@ -19,3 +19,6 @@ Reuse the shared gateway and S643 UI/text story db637f3c8ca5. Design plugin meta
 
 ## Web chatbox and mobile presentation requirements (2026-11-15)
 Design the prompt -> discover -> select target -> execute -> inspect evidence -> approve -> retrieve result journey for web Work, Codex Cloud, iOS and Android separately. Keep execution location and selected target visible. On phones, specify readable tool results, full action details before approval, diff/artifact review and text fallback when widgets are unavailable. Do not assume regular Chat, mobile browsers or host-connected Remote share plugin UI or event support. Document rollout-dependent Codex/Remote labels and distinguish native completion notifications from third-party MCP Events. Source matrix: f0cabeb9c6e3.
+
+## Operator clarification: UI plus Outpost agent (2026-11-15)
+OpenAI web/mobile is the product UI for all stack capabilities, including invoking and observing the Outpost Codex worker. Show selected Outpost, worker/session status, approval details, quota/auth blockers and verifiable results. Avoid requiring the user to open a terminal on the Outpost for routine tasks after onboarding.
