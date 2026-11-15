@@ -75,7 +75,7 @@ writes, exit 0/3/1; every flow a Bash# skill-script.
 | S3 `0123321b5e80` | contribute: `trove add SRC --to MOUNT` (URL, file, stdin, `app:` artifact) and `trove put` by the owner, a member or an agent with a write grant; provenance on every contribution | example | claude | a member's contribution shows the member's provenance; an agent's carries `producer: agent`; a URL ingests as markdown; no write without a grant; `--dry-run` writes nothing |
 | S4 `8b68afbe2486` | `drive:` and `gh:` mounts (read-only) over `google.bsh` and `bashy gh` or pure-Go git; account bound per mount; hermetic fakes | example | glm | `trove ls trove:drive/` and `trove:repo/` list and `cat`; tests need no live account; one live smoke recorded by the operator |
 | S5 `a5386752ad57` | `app:` artifacts mount: viewer books, notepad items, kb pages, film drafts, run evidence with `producer: agent` provenance and `app:<command>/<id>` refs | example | claude | each kind lists; every ref resolves through `bashy <cmd> show`; read-only |
-| S6 `c68cc7fee4df` | circle-protected mounts: per-mount rules in cloudbox's grammar `{mode, circles[], groups[], emails[]}` evaluated by trove from the caller's stamped relationship (web) or `outpost grants lookup` (CLI); `trove share\|who`; `anonymous: true` flag; owner-defined circle picker; label never shown to members | example | codex | matrix owner, member in circle, in group, by email, not matching, anonymous × read, write identical on CLI and HTTP; a circle rename changes access on the next request; refusals name mount and rule |
+| S6 `c68cc7fee4df` | circle-protected mounts: per-mount rules in cloudbox's grammar `{mode, circles[], groups[], emails[]}` evaluated by trove from the caller's stamped relationship (web) or `outpost grants lookup` (CLI); `trove share\|who`; `anonymous: true` flag; owner-defined circle picker; label never shown to members | example | codex | matrix owner, member in circle, in group, by email, not matching, anonymous × read, write identical on CLI and HTTP; a member in a listed group but outside every listed circle is refused; a rule with no circle is refused at share and at load; a circle rename changes access on the next request; refusals name mount and rule |
 | S7 `a8114a7882e8` | explorer page: kit-based Go server registered `--type shaped`, rendered from `views.json`; mounts tree, entries, preview, **Present as…**, **Contribute**, provenance strip; parity rows; `publish-outpost` | example | glm | kit contract test and browser test pass; every page action has a parity row; `bashy shape verify trove` green; a member sees only granted mounts |
 | S8 `c0753c515485` | shapeable in all forms: `views.json` (list, gallery, cards, timeline), presenters and source adapters as shaping hooks exposed in `shaped.json` with Genie examples; wish, verify, preview, approve, undo walkthrough as a member | example | claude + glm | the Shapeable-with-Bashy checklist holds; three shaped variants (view, presenter, adapter) verified and undone with evidence; every hook is a file or verb, never Go |
 | S9 `4e7c4e50d3f4` | media presenters `--as audio\|poster\|video` via narrate, image and media rods; gate-host-only, the dev box prints the plan and exits 3 | example | glm | the gate host produces artifacts with provenance; the dev box refuses by name |
@@ -146,6 +146,14 @@ confirm: content is protected by circle with **one rule grammar** (cloudbox's
 CLI. Alternatives weighed in the design of record: one outpost app per
 mount, per-resource grants in cloudbox, the trove reading the member list
 itself, reusing `Remote-Groups`.
+
+Operator note 2026-11-14, recorded as an invariant: **the circle is the
+hard boundary**. Groups and emails narrow access within a circle and never
+widen it across one; a member in a listed group but outside every listed
+circle is refused; `family` content is never reachable from `company` and the
+reverse. Every mount rule names at least one circle; an empty `circles` list
+is refused (cloudbox reads it as "any circle"; the trove does not inherit
+that case). `anonymous: true` is the only way past every circle.
 
 ## Not doing
 

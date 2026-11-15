@@ -181,6 +181,20 @@ stamped by outpost.**
    rule when a test case needs it, and it is generalized only on a second
    case.
 
+**Invariant: the circle is the hard boundary** (operator, 2026-11-14). A
+member reaches a mount only if their circle is one the mount's rules name.
+Groups and emails narrow access *within* a circle; they never widen it across
+one. A member of the `family` circle who also sits in an `editors` group
+listed on a `company` mount is still refused, because the circle gate comes
+first and is absolute; content shared with `family` is never reachable from
+`company`, and the reverse. Consequences for the trove: every mount rule must
+name at least one circle, and a rule with an empty `circles` list is refused
+at `trove share` and at load (cloudbox's grammar reads an empty list as "any
+circle", which would breach the boundary; the trove does not inherit that
+case, and the difference is recorded as a note for the hosted plane's wire
+doc, outside this repository). The `anonymous: true` flag is the only way to
+publish past every circle, and it is a separate, explicit act by the owner.
+
 **Alternatives considered.**
 
 | option | what it would mean | why not |
