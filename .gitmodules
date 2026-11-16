@@ -19,9 +19,6 @@
 [submodule "coreutils"]
 	path = coreutils
 	url = https://github.com/qiangli/coreutils.git
-[submodule "filebrowser"]
-	path = filebrowser
-	url = https://github.com/qiangli/filebrowser.git
 [submodule "gfy"]
 	path = gfy
 	url = https://github.com/qiangli/gfy.git

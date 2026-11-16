@@ -1,6 +1,6 @@
 # Building the public umbrella
 
-The umbrella pins eighteen public repositories as Git submodules. The root
+The umbrella pins seventeen public repositories as Git submodules. The root
 `go.work` selects live sibling modules for development. Each project's `go.mod`
 retains versioned dependencies for standalone builds and CI with `GOWORK=off`.
 Private services, credentials and licensed test fixtures are not prerequisites
@@ -28,8 +28,9 @@ script/sync.sh
 ```
 
 Sync retains the original public behavior. Stage B adds agent-bench,
-gotreesitter and yamux to its executable module list, matching the eighteen
-public manifest paths. It follows each remote default branch,
+gotreesitter and yamux to its executable module list, matching the public
+manifest paths (seventeen since the old File Browser fork was removed on
+2026-11-16). It follows each remote default branch,
 fast-forwards it, and hydrates nested pins. Existing `.sibling-pins` files are
 updated to the checked-out sibling SHAs; those consumer changes are committed
 and pushed. The umbrella gitlinks are then staged without committing the

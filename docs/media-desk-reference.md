@@ -8,10 +8,10 @@ Reference inventory and verification guide for `bashy`'s **PDF**, **drawing/whit
 
 Media and document tooling in the umbrella is organized across three layers:
 
-1. **Layer 1 — In-Process Pure-Go Userland (`yoke/pkg/lens`, `filebrowser/img`)**
+1. **Layer 1 — In-Process Pure-Go Userland (`yoke/pkg/lens`, `filebrowser-quantum` `backend/internal/preview`)**
    - Zero external binary dependencies.
    - `yoke/pkg/lens` extracts Markdown and plain text from `.pdf`, `.docx`, `.xlsx`, `.html`, `.csv`/`.tsv`, `.sqlite`, and renders `bashy-graph-v1` streams to Graphviz `dot` and `mermaid`.
-   - `filebrowser/img` (`fbembed` in `yoke/pkg/webconsole/panel_files.go`) resizes, fits, and fills raster images (`jpeg`, `png`, `gif`, `tiff`, `bmp`) and parses EXIF orientation and thumbnails in pure Go.
+   - `filebrowser-quantum` `backend/internal/preview` (`fbembed` in `yoke/pkg/webconsole/panel_files.go`) resizes, fits, and fills raster images (`jpeg`, `png`, `gif`, `tiff`, `bmp`) and parses EXIF orientation and thumbnails in pure Go.
 
 2. **Layer 2 — Desk Collaboration Suite & Skill-Tier Pipelines (`bashy/examples/*`, `bashy transcribe`)**
    - Loopback/LAN web apps and CLI pipelines sharing one Desk kit (`bashy/examples/desk/kit`) and one CLI/HTTP action contract (`add | open | show | set | list | share | close | export`; see `bashy/docs/plan-desk-cli-api-conformance.md` and `bashy/docs/plan-desk-family-look.md`).
@@ -50,7 +50,7 @@ Media and document tooling in the umbrella is organized across three layers:
 | :--- | :--- | :--- |
 | **Headless Batch Image Editing (GIMP 3.2.6)** | `yoke/external/gimp/gimp.go` (`EVIDENCE.md`) | One-shot headless batch wrapper (`--no-interface --batch-interpreter python-fu-eval`) over `.xcf/.png/.jpg/.jpeg/.tif/.tiff/.bmp/.gif/.webp`:<br>1. `export --input I --output O` (format conversion / XCF flatten)<br>2. `convert --input I --output O --mode rgb\|gray`<br>3. `edit --input I --output O [--scale WxH] [--rotate 90\|180\|270]` (1..16384 px).<br>Pinned in `yoke/pkg/binmgr/pins.go` (`linux/amd64`). |
 | **Headless 3D & Image Rendering (Blender 4.2.3)** | `yoke/external/blender/blender.go` (`EVIDENCE.md`) | Headless batch wrapper (`-b --factory-startup -noaudio`):<br>1. `scene-inspect --scene S.blend`<br>2. `asset-import --input A --output O.blend` (`.obj/.fbx/.gltf/.glb/.stl/.ply/.usd*`)<br>3. `render --scene S.blend --output O.png [--frame N]`<br>4. `output-inspect --image I` (dimensions, channels, depth, colorspace, alpha for `.png/.jpg/.exr/.tif/.bmp/.hdr/.tga`). |
-| **Pure-Go Image Resizing & Thumbnails** | `filebrowser/img/service.go`, `yoke/pkg/webconsole/panel_files.go` | `Service.Resize` supports `resize`, `fit`, and `fill` modes across JPEG/PNG/GIF/TIFF/BMP (`github.com/disintegration/imaging`) with EXIF orientation and thumbnail support. |
+| **Pure-Go Image Resizing & Thumbnails** | `filebrowser-quantum` `backend/internal/preview`, `yoke/pkg/webconsole/panel_files.go` | `Service.Resize` supports `resize`, `fit`, and `fill` modes across JPEG/PNG/GIF/TIFF/BMP (`github.com/disintegration/imaging`) with EXIF orientation and thumbnail support. |
 | **Text / Canvas to PNG Export** | `bashy/examples/desk/notepad/export.go`, `bashy/examples/whiteboard/server/main.go` | Pure-Go `image/draw` + `golang.org/x/image/font/basicfont` PNG exporters. |
 | **Webcam Photo Capture** | `bashy/examples/record/record.bsh` | `record photo --prompt "..." --out photo.png` via loopback browser page. |
 

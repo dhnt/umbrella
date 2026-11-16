@@ -34,7 +34,7 @@ The theme across all of it is software shaping:
 | `yoke/` | agentic userland and the software shaping engine — everything non-POSIX; imports `coreutils`, never the reverse |
 | `outpost/` | home-host agent (bridge); the peer side of the mesh |
 | `ycode/` | local agentic dev tool |
-| `readline/` `filebrowser/` `nadir/` `bonsai/` `gfy/` | forks and deps pinned as siblings |
+| `readline/` `nadir/` `bonsai/` `gfy/` | forks and deps pinned as siblings |
 | `appstore/` | DKS app catalog — Helm chart pointers |
 
 The hosted control plane (`cloudbox`, the portal at `ai.dhnt.io`) and two

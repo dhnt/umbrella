@@ -266,3 +266,15 @@ same tests pass against the live sibling.
   consumer flips here are on the branch, not released.
 - The engine's home-directory index on first open (CPU and disk under the
   state dir) is the remaining cost of open decision 3.
+
+### Old fork removed (2026-11-16)
+
+The `filebrowser/` submodule (`qiangli/filebrowser`, module
+`github.com/filebrowser/filebrowser/v2`) is gone from the umbrella, `go.work`
+and `script/sync.sh`. Nothing linked it except ycode, through a stale bashy
+pin; ycode now pins current bashy. Every consumer (yoke, bashy, outpost,
+ycode) uses fork commit `40f3c84d`. `bashy src` / `self build --local --repo
+filebrowser` now fetch `qiangli/filebrowser-quantum` and replace
+`github.com/gtsteffaniak/filebrowser/backend` with its `backend/` directory.
+The `qiangli/filebrowser` GitHub repo stays readable for history and old
+standalone pins. Umbrella todo `453d6c7a`.

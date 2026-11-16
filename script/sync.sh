@@ -23,7 +23,7 @@ cd "$(dirname "$0")/.."
 # changes silently vanish from `sync: bump submodule pins`. coreutils is
 # the most-changed of these; leaving it off (as an earlier revision did)
 # is the exact footgun the umbrella CLAUDE.md warns about.
-SUBMODULES="agent-bench appstore bashsharp bashsharp-tests bashsharp-tour bashy bonsai coreutils filebrowser gfy gotreesitter nadir outpost readline sh yamux ycode yoke"
+SUBMODULES="agent-bench appstore bashsharp bashsharp-tests bashsharp-tour bashy bonsai coreutils gfy gotreesitter nadir outpost readline sh yamux ycode yoke"
 
 usage() {
   cat <<'USAGE'
