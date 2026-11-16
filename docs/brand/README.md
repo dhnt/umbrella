@@ -10,6 +10,7 @@ The **Shape** action keeps its own Flow mark ([design archive](https://github.co
 | ![satellite](satellite/satellite-48.png) | **satellite** | The cloudbox square on a 45° orbit, with a violet body at the orbit's upper end |
 | ![outpost](outpost/outpost-48.png) | **outpost** | A small outlined square and a larger violet tile stacked up the 45° diagonal |
 | ![bashy](bashy/bashy-48.png) | **bashy** | Four squares in a circle like an app grid; the top-right one, turned and violet, is the app you shaped |
+| ![bashy live](bashy-live/bashy-live-48.png) | **bashy live**, the browser companion | The main square held in the circle, turned 45° and violet: bashy at work on a web page (Sprint 529, from concepts `live-*`) |
 
 ## Rules
 
