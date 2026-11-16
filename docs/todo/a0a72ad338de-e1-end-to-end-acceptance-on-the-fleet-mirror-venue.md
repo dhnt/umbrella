@@ -3,15 +3,18 @@ id: a0a72ad338de
 kind: test
 title: 'E1 End-to-end acceptance on the fleet-mirror venue: three chat UIs x four outpost workers, sync and pull routes'
 seq: 363
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
     - vendor-gateway
 created: 2026-11-15T15:07:43.636756Z
+assignee: claude-opus5.5-s646
 sprint: 646
 sprint_id: 2167db86-22b7-5429-9bfe-b96a8d93a353
 sprint_title: 'Vendor chat UIs + subscription agents on the full stack: one Cloudbox MCP gateway with dynamic sync/pull routing (MVP)'
+closed: 2026-11-16T04:31:58.691139Z
+closed_by: claude-opus5.5-s646
 ---
 
 Spec: docs/vendor-chat-gateway-mvp.md. Venue: the fleet-mirror e2e venue (bashy e2e-fleet), never the dev box. Live vendor sign-ins need operator authorization.
