@@ -11,11 +11,12 @@ tags:
     - fleet
     - merge
     - review
-status: candidate
-evidence: 'Sprint 646 (2026-11-15): G1b/O1/O2/O3/C1/G3 review rounds; outpost 959847e pushed on a failing test then fixed in d9daa01; O1xO2 build clash fixed in yoke b6aec81b; G1bxG2 /mcp 401 caught in cloudbox 694266a; unverified muse/agy env names marked in yoke b6aec81b.'
+status: validated
+evidence: 'Sprint 646 ran to release with these practices: 12 stories + 2 fix stories, 5 vendors, cloudbox v0.18.74 and bashy rc.36-dev; the integration-tip rule caught O1xO2 (yoke b6aec81b) and G1bxG2 (cloudbox 694266a).'
 source:
     tool: claude-opus5.5-s646
 created: "2026-11-15T18:05:43Z"
+updated: "2026-11-16T04:34:39Z"
 ---
 
 ## Dispatch and resume
