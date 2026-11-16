@@ -95,6 +95,11 @@ Registrations requesting redirect URIs outside the verified allowlist are refuse
 
 ## 4. Scopes & Permissions
 
+The same `mcp:read` / `mcp:write` grant also covers the desktop tools
+(`desktop_*`, `page_*`): a connector granted read can inspect the person's
+desktop but not change it. See "Desktop tools" in
+`docs/vendor-chat-gateway-mvp.md`.
+
 Scopes correspond to Cloudbox tenant authorizations and map directly to tool permissions:
 
 | Scope | Type | Granted Tools |

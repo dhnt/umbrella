@@ -58,6 +58,25 @@ The research in the stories of those four sprints stays as reference. The disput
 
    - Shaping is `run shape wish …` → candidate → `approve` → activate/undo.
    - A new bashy verb becomes reachable from chat with no change to the gateway.
+
+   **Desktop tools (Sprint 641 J7).** A person with no machine has no host for
+   `run`, so the master also serves eleven desktop tools directly, with no
+   route. They act on the caller's own desktop only, use the same rules and
+   refusal texts as the Shape button, the settings panel and `bashy desktop`,
+   and are audited as `mcp-<tool>`, without patches, wishes or page input.
+
+   | Tool | Scope | What it does |
+   |---|---|---|
+   | `desktop_schema`, `desktop_get`, `desktop_catalog`, `desktop_history`, `desktop_allowance` | `mcp:read` | What can change, the current look and where each value came from, the tiles, the numbered revisions, today's wish allowance or why wishes are unavailable |
+   | `desktop_set` | `mcp:write` | `{patch, dry_run?, expected_revision?}`. The patch is validated against the schema and applies whole or not at all. |
+   | `desktop_undo` | `mcp:write` | Steps back one change; repeat to keep stepping back. |
+   | `desktop_wish` | `mcp:write` | `{wish}`. Words become a validated patch; a refusal says why and whether it counted against the allowance. |
+   | `page_list`, `page_result` | `mcp:read` | Open pages and their named actions; a command's outcome, never replayed. |
+   | `page_invoke` | `mcp:write` | `{page_id, action, input}` on one of your own pages; returns a command id. |
+
+   Refusals carry a `code`: `invalid_change`, `revision_conflict`,
+   `allowance_exhausted`, `not_configured`, `allowance_off`,
+   `pool_unreachable` or `pool_error`.
 4. **Direct verbs first; agents only when asked.**
    - A deterministic operation never needs a reasoning agent.
    - `delegate` picks a worker through a vendor-neutral adapter: the Sprint 584 tool YAML plus `auth.check_exec`
