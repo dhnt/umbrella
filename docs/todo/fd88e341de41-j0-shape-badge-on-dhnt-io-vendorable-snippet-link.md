@@ -3,12 +3,13 @@ id: fd88e341de41
 kind: feature
 title: 'J0 Shape badge on dhnt.io: vendorable snippet, link contract, check (638 S2 design)'
 seq: 282
-status: todo
+status: assigned
 priority: p1
 labels:
     - shaping
     - examples
 created: 2026-11-14T22:42:22.172785Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: dogfood dhnt.io — a member shapes the company site in their own GitHub-backed space, proven Red-Green-Refactor'

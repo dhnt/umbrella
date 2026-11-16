@@ -157,11 +157,31 @@ schema's terms, the allowance visible and decremented, the change surviving a
 reload, a second account unaffected, the pool-down path showing settings still
 work, and the rung-2 invitation appearing only after a first shape and undo.
 
+## J0 and M4, rescoped to the desktop (operator 2026-11-16)
+
+Both were first written against Sprint 638's website and app designs. For
+the hosted desktop they are the same ideas with a different mechanism,
+because the desktop is shaped by settings, not by code:
+
+- **J0, the badge**, is a plain `Shape this page` link on the public dhnt.io
+  page, present without JavaScript and needing no CSP change. Its contract
+  is `/?shape=open`, which opens the Shape panel. The taste that is not kept
+  already exists: a signed-out visitor's changes live only in the page.
+  The vendorable badge snippet for other people's sites stays on Sprint 638.
+- **M4, the boundary**, is a `sections` list in the desktop schema (version
+  2): Look, Tiles, Launcher sections, Recent activity, Shape-only mode. Each
+  section names the audiences that may change it. Phase A writes only the
+  person's own layer; `owner` (a satellite's default layer) and `superadmin`
+  (the master default) are reserved for later phases. A refused change names
+  the section, and the Shape panel discloses what the person may change. The
+  feature list for code-shaped apps (`shaped.json` features) stays on Sprint
+  638 for phase C, using the same vocabulary.
+
 ## Decisions reserved for the operator
 
 1. ~~The allowance's number~~ — deferred; who sets it is decided (M6 above).
 2. Which rung-2 gain leads the invitation (recommended: your own files in reach).
-3. How much of the desktop's chrome is in the schema.
+3. ~~How much of the desktop's chrome is in the schema~~ — the five sections above (M4).
 4. The V2 mic badge (taste).
 5. Tagging the cloudbox release that carries J7 and Sprint 646 G1/G2.
 

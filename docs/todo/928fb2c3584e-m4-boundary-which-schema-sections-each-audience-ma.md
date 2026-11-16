@@ -3,12 +3,13 @@ id: 928fb2c3584e
 kind: feature
 title: 'M4 Boundary: which schema sections each audience may change (the badge''s disclosure)'
 seq: 310
-status: todo
+status: assigned
 priority: p1
 labels:
     - software-shaping
     - boundary
 created: 2026-11-15T02:12:49.557229Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: dogfood dhnt.io — a member shapes the company site in their own GitHub-backed space, proven Red-Green-Refactor'
