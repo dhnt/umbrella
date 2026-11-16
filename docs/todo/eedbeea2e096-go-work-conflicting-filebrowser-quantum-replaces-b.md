@@ -3,11 +3,12 @@ id: eedbeea2e096
 kind: bug
 title: 'go.work: conflicting filebrowser-quantum replaces break the umbrella workspace build'
 seq: 381
-status: todo
+status: done
 priority: p2
 labels:
     - build
 created: 2026-11-16T11:25:15.6096Z
+closed: 2026-11-16T11:30:27.034665Z
 ---
 
 Symptom (2026-11-16): any workspace-mode build at the umbrella root, e.g. 'go build ./cmd/bashy' in bashy/, fails with: conflicting replacements for github.com/gtsteffaniak/filebrowser/backend: qiangli/filebrowser-quantum/backend@...-40f3c84d55a9 vs @...-88b90a50350d. GOWORK=off builds are unaffected.
