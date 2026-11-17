@@ -1,4 +1,83 @@
-# Sprint 575 master execution plan: layer separation (Classic ← Bash# ← Yoke)
+# Sprint 575: independently buildable Classic, Bash#, and Yoke
+
+## Current execution contract — operator approved 2026-11-17
+
+Physically separate Classic Bash, Bash#, and Yoke so each builds and passes
+its gates against fixed lower-layer dependencies, using relocation and
+package-reference changes only.
+
+The operator appointed `s575-codex-manager` to deliver this sprint. This
+contract supersedes the historical plan below. Implementation authority is
+limited to moving source/tests, package/import references and dependency
+wiring. No behavior fixes, changed assertions, skips, engine/API redesign,
+duplicated runtime, or widened allowlists. A demonstrated need for anything
+beyond that limit returns to the operator before implementation.
+
+Clean start verified after fresh fetches: umbrella `f45a5ecc`, bashy
+`d783c833`, sh `a4141771`, coreutils `6dd7a3ee`, bashsharp `386a868`,
+bashsharp-tests `a18f4026`, yoke `c9057f1e`. Every affected checkout was on
+its canonical main/master, clean and exactly synchronized with origin.
+The published release `v1.0.0-rc.37` is the green preservation baseline;
+the release freeze is cleared. Reproduce exact inputs and venue before
+attributing a failure. New candidate failures block integration.
+
+### Outcomes and sequence
+
+1. S0: reuse completed ratchets `72c55602dd2e` from 580. Establish named
+   baseline and acceptance DAG targets in the digest-locked official image
+   on the gate host. No make, native dev-box suites, or guessed gate parity.
+2. Read-only feasibility wave: independently audit the engine extraction,
+   catalog/coreutils ownership, and complete release gate/dependency map.
+   No product edits until the mechanical split is shown feasible.
+3. S1-S4: remove Yoke/Bash# reverse dependencies from cert base and Classic
+   entry points; relocate agentic ownership while preserving existing
+   utility/provider behavior. Serialize changes sharing implementations.
+4. S5: include the relevant evaluator/parser extraction from 581 in 575;
+   the full split is required here. The existing private-state coupling is
+   a design question, not permission to redesign. An API/logic change is
+   blocked pending the operator's review of a concrete finding.
+5. S6: Yoke consumes the language boundary; bashy remains the composition
+   root. Preserve every supported DAG language tag and execution contract.
+6. S7: record the accepted foundation and language versions. Bash# must
+   build/test without changing the accepted Bash pin; Yoke/bashy must
+   build/test without changing either lower pin. Update ownership guidance.
+
+All acceptance runs use `GOWORK=off`, versioned dependencies and recorded
+resolved versions; no sibling checkout overlays. The initial coordinated
+split can establish new accepted pins; upper-layer work cannot move them
+to get around failures. Commit/push producers before consumers and root pins.
+
+### Gate contract
+
+Named `bashy dag` targets: `baseline`, `layer-gate`, `bash-test`,
+`bash-posix`, `bashsharp-test`, `yoke-test`, `bashy-test`, `independence`,
+and aggregate `accept`. Reuse existing runners. Required former test-script
+checks must be present; port make-backed calls before depending on them.
+Coordinate that limited work with the Makefile-removal story rather than
+absorbing its repository-wide cleanup.
+
+Classic: foundation suites, complete Bash 5.3 fixture names in both existing
+modes, and certification preparation/public regression gates. Bash#: its
+complete supported corpus against the accepted Bash version. Yoke/bashy:
+standalone suites and composition regressions. Independence: clean standalone
+rebuilds, unchanged lower source and unchanged resolved lower versions.
+Certification readiness is not an official award or release authorization.
+
+Prior structural measurements found 23 cert-base Yoke dependencies, Classic
+linkage to bashsharp/front and sh/polyglot, and 12 interpreter polyglot
+importers. A targeted boundary test reported boundary/outpostagent violations.
+These do not replace the released artifact's green suite evidence; classify
+and compare them with exact release coverage before changing anything.
+
+### Staffing and coordination
+
+Use Codex, Muse and AGY for the first independent read-only tasks. Exclude
+OpenCode; the GLM/zcode migration is deferred until after this refactor.
+Claude is permitted only for an essential blocker/review because its quota
+is low. Never launch a worker onto blocked or overlapping implementation.
+Run authoritative gates as manager, not from worker success claims.
+
+## Historical plan — superseded by the current contract above
 
 Sprint `65ce85f5-87c0-5863-bf55-62de86f5df36`. State: planned backlog; manager
 unassigned. Planning only: this plan authorizes no implementation, worker launch,
