@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- `plan-self-contained-offline-bashy.md` — Sprint 654 master execution plan for protected offline bootstrap, reused artifact services and platform acceptance
+
 - `plan-s568-master-execution.md` — Sprint 568 design plan for shared human/agent membership and bidirectional service communication
 
 - `build.md` — hydrate once, build each subproject from its root; sibling-replace convention; gotchas
