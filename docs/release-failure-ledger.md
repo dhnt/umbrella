@@ -47,5 +47,6 @@ If a `./cmds/db` failure recurs, capture `go test -v` output first.
 | Failure | Where | Cause | Remedy |
 |---|---|---|---|
 | `TestFeed{ComposeSignJS,GroupCrypt,ViewerJS}_CrossCheck` (cloudbox handlers) | first Windows test host, WSL | node v18 has no global `crypto` | use a venue with a newer node, or one where node is absent so the tests skip |
+| process-group kill tests: yoke `agentpty` TestParentExitKillsPTYTree, `chat` TestCancelKillsDescendants (+2), `cligw` TestWorkerCancelKillsProcessGroup, `dag` TestDagSignalCancelsFenceProcessGroup | official build image without an init | PID 1 was bashy, which does not reap orphans; killed descendants stayed as zombies and looked alive. Same tests pass with `--init` (PID 1 = podman-init) | `tools/bashy-build/run.sh` passes `--init` (bashy `d0216c56`) |
 | every cloudbox package `[build failed]` with `no space left on device` | second Windows test host, podman machine | `/tmp` is a 3.9 GB tmpfs; the k3s dependency build fills it | set `GOTMPDIR` to a disk directory |
 | `internal/api`, `internal/handlers` and `internal/server` do not build | macOS dev box | they import k3s, which builds only on Linux | run them on a Linux venue |
