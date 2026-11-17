@@ -87,11 +87,30 @@ it is not exercised by the normal untagged Go suite. Its boundary/outpostagent
 violations were already recorded in bashy's story `32566c96a2b2`. The split
 must eliminate the offending ownership edges, without widening exceptions.
 
-The former Makefile `test` has nine prerequisites. Current DAG `test` runs
+The former Makefile `test` has nine prerequisites. At the audit baseline, DAG `test` ran
 the freshness regression and freshness check, but lacks seven prerequisites
 and the freshness target's fresh-binary build step. S0G `4b22a277ee4e` is a
 tooling-only port of that exact coverage and the make-backed fixture/mode
 paths. Existing assertions and failure-injection expectations must stay intact.
+
+The tooling slice is now accepted: bashy `27255b0d` includes the managed merge
+of candidate `8b06fc2a`. Runtime evidence at `09105dcd` covers all nine
+prerequisites, the default Go suite and both sealed 86-fixture modes, with
+zero fixture skips or timeouts. The final candidate changes only the gate
+entry point after that runtime measurement; an exact diff proves unchanged
+runtime inputs, and static checks passed on the final and merged trees.
+The default Go suite used the conventional nested checkout layout after the
+untouched release reproduced the same roster-test failure at the mount root.
+The scratch verifier retains its existing no-container-runtime branch inside
+the build image; no new skip or weaker assertion was introduced.
+
+Foundation source candidate `99501d39` remains unmerged. All 3,269 frozen
+source files are preserved; Go and golden files match after the declared
+reference transforms, with module metadata differences recorded separately.
+Its functional suites and corrected nested module pass. A final combined
+run failed `TestSpellingShadowParseScaling`, while the untouched full suite
+passed the same lane. The timing difference remains under investigation;
+it is not classified as a pre-existing failure or accepted as passing.
 
 Standalone Bash# and coreutils currently pin an older interpreter than the
 release composition. Record each resolved version when establishing the new
