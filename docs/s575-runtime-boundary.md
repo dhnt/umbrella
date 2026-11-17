@@ -141,6 +141,17 @@ Classic language-code removal -> accepted/published pins -> independent gates.
 Coreutils changes only its foundation imports/pin unless a demonstrated
 boundary requirement demands more. Preserve all utility/provider behavior.
 
+The source review of Classic removal also covers shared-file branches:
+parser transactions, AST fields and printer/walker cases; Runner allocation,
+reset and dispatch; ordinary variable/builtin/signal hooks; and CLI selection.
+Remove each B branch while preserving its existing Classic path. Move mixed
+language tests by individual case, retaining their Classic assertions in A.
+Do not leave B-named false-return stubs as a substitute for removing the
+implementation. Preserve the shared neutral data contract above, including
+Object/Variable identity and generic serialization helpers needed by B;
+remove A's B-dialect activation logic, not those shared data types. The later
+removal review's suggestion to delete the Object contract is not adopted.
+
 Classic fixtures run against the Bash artifact; language-mode compatibility
 and the supported language corpus run against the Bash# artifact. The
 aggregate requires both. Each independent checkout runs its own DAG targets
