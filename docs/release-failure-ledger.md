@@ -37,6 +37,13 @@ the same revision every time because of that.
 | `TestStartupImportPublishesOnlyAfterVerification` (cloudbox `internal/server`, `-tags cloudbox_satellite`) | `unknown table "desktop_…"` | red since `243b8a0` (desktop tables added) | The desktop tables were missing from `export.KnownTables`, so satellite import and restore refused desktop rows (live in v0.18.73) | product defect | cloudbox `52d4d20`, then `9e54738` for the policy table |
 | `TestSchemaFingerprintGolden` (cloudbox `internal/db`, `-tags cloudbox_satellite`) | golden `26 …`, binary `27 …` | `670c64b` (G1b raised SchemaRevision, primary golden only) | The satellite golden was not regenerated with the revision bump | test defect | cloudbox `3bf20d3` |
 | `TestUndoStepsBackRepeatedly` (cloudbox `internal/desktop`, new) | a second undo re-applied the change the first removed | defect present since the desktop store landed in `243b8a0` | Undo restored `expected-1`, not the revision before the restored one | product defect | cloudbox `b56ad83` (test fails on the old code, passes on the new) |
+| `TestServerRoutesBandByHeadroomAndStampsRoutedHeader` (yoke `pkg/cligw`) | `usage.jsonl decisions=2 usage=1`, 1 of 4 in-image runs | load-dependent; first seen in the official image | The usage line is written by the audit tail's `onClose`, which runs in its own goroutine after the body closes; closing the test server does not wait for it, and the test read the log once. | test race | yoke `d4cd37be` |
+| `TestTheGuardIsRealWithoutReadOnly` (yoke `pkg/meet`) | `an uncontained host must refuse to strip claude's approval gate`, every in-image run | passes on hosts; fails in any container | The test is about an uncontained host but used the real containment probe; inside a container the host is contained and may strip the gate. | test defect | yoke `d4cd37be` (both guard tests set `agentlaunch.Containerized`) |
+| `TestRolesForBoard_HolderUUIDAndLegacyName` (yoke `pkg/steward`) | `cannot establish a stable machine identity`, every in-image run | passes on hosts; fails with no `/etc/machine-id` | Open rightly refuses to guess a machine identity; the CLI tests set `BASHY_HOST_ID`, this one did not. | test defect | yoke `d4cd37be` |
+
+The dag capacity fixture (`e0e226eb`) and the quotaobs success path
+(`9da4fa3c`) add test seams only: production keeps its 3-5 s exchange
+deadlines and its 25 ms journal budget, and only the tests raise them.
 
 Possibly the same as `TestSQLVerbsBothModes` above: one earlier run of yoke
 `./cmds/db` failed with the test name not captured (3 later reruns passed).
@@ -48,5 +55,6 @@ If a `./cmds/db` failure recurs, capture `go test -v` output first.
 |---|---|---|---|
 | `TestFeed{ComposeSignJS,GroupCrypt,ViewerJS}_CrossCheck` (cloudbox handlers) | first Windows test host, WSL | node v18 has no global `crypto` | use a venue with a newer node, or one where node is absent so the tests skip |
 | process-group kill tests: yoke `agentpty` TestParentExitKillsPTYTree, `chat` TestCancelKillsDescendants (+2), `cligw` TestWorkerCancelKillsProcessGroup, `dag` TestDagSignalCancelsFenceProcessGroup | official build image without an init | PID 1 was bashy, which does not reap orphans; killed descendants stayed as zombies and looked alive. Same tests pass with `--init` (PID 1 = podman-init) | `tools/bashy-build/run.sh` passes `--init` (bashy `d0216c56`) |
+| yoke `dag` TestCommandFleetRunsCommittedChunks: `--json envelope leaked username "bashy"` | official build image | the image account was named `bashy`, the product's own name, which appears in every envelope; the host-fact probe flagged it | the account is `builder` (bashy `17e5be3d`) |
 | every cloudbox package `[build failed]` with `no space left on device` | second Windows test host, podman machine | `/tmp` is a 3.9 GB tmpfs; the k3s dependency build fills it | set `GOTMPDIR` to a disk directory |
 | `internal/api`, `internal/handlers` and `internal/server` do not build | macOS dev box | they import k3s, which builds only on Linux | run them on a Linux venue |
