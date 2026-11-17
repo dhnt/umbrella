@@ -13,6 +13,7 @@
 - `plan-s571-posix-certification-readiness.md` — Sprint 571 resolution of 67 residual test purposes and POSIX certification dossier readiness
 - `plan-s575-master-execution.md` — Sprint 575 complete Bash ← Bash# ← bashy split, minimum changes, standalone fixed-dependency gates and owned-fork option
 - `s575-separation-review.md` — Source-checked parser/runtime and catalog coupling findings before minimum-change separation
+- `s575-runtime-boundary.md` — Independently reviewed owned-language-engine design with a narrow shared handler boundary
 
 - `plan-windows-csharp-powershell-followup.md` — Sprint 573 continuation of Windows, C# and PowerShell coverage deferred explicitly from Sprint 562
 - `media-desk-reference.md` — Reference for PDF, drawing, image, audio, video, and Desk team-collaboration tools, plus verification and competition workflows
