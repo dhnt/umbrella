@@ -3,15 +3,19 @@
 ## Current execution contract — operator approved 2026-11-17
 
 Physically separate Classic Bash, Bash#, and Yoke so each builds and passes
-its gates against fixed lower-layer dependencies, using relocation and
-package-reference changes only.
+its gates against fixed lower-layer dependencies, making only the minimum
+necessary changes and preserving released behavior.
 
 The operator appointed `s575-codex-manager` to deliver this sprint. This
-contract supersedes the historical plan below. Implementation authority is
-limited to moving source/tests, package/import references and dependency
-wiring. No behavior fixes, changed assertions, skips, engine/API redesign,
-duplicated runtime, or widened allowlists. A demonstrated need for anything
-beyond that limit returns to the operator before implementation.
+contract supersedes the historical plan below. The operator changed the initial
+reference-only limit to minimum necessary changes after the coupling review.
+Prefer moving source/tests, package/import references and dependency wiring;
+narrowly necessary structural seams are in scope, with the exact design
+independently reviewed before coding. No behavior fixes, changed assertions,
+skips, gratuitous redesign or widened allowlists. The operator subsequently
+permitted an owned fork if that minimizes the split; external upstream tracking
+is no longer required. Any deliberately forked runtime must have explicit
+ownership, pinned lower dependencies and unchanged-suite evidence.
 
 Clean start verified after fresh fetches: umbrella `f45a5ecc`, bashy
 `d783c833`, sh `a4141771`, coreutils `6dd7a3ee`, bashsharp `386a868`,
@@ -34,8 +38,8 @@ attributing a failure. New candidate failures block integration.
    utility/provider behavior. Serialize changes sharing implementations.
 4. S5: include the relevant evaluator/parser extraction from 581 in 575;
    the full split is required here. The existing private-state coupling is
-   a design question, not permission to redesign. An API/logic change is
-   blocked pending the operator's review of a concrete finding.
+   a design question: specify and independently review the smallest necessary
+   parser/runtime boundary, preserving all behavior and test expectations.
 5. S6: Yoke consumes the language boundary; bashy remains the composition
    root. Preserve every supported DAG language tag and execution contract.
 6. S7: record the accepted foundation and language versions. Bash# must
@@ -46,6 +50,18 @@ All acceptance runs use `GOWORK=off`, versioned dependencies and recorded
 resolved versions; no sibling checkout overlays. The initial coordinated
 split can establish new accepted pins; upper-layer work cannot move them
 to get around failures. Commit/push producers before consumers and root pins.
+
+Each of Bash, Bash#, and bashy must build from its own fresh checkout without
+the umbrella, sibling source directories, or go.work. Published pinned Go
+dependencies are allowed. Each checkout has its own test entry point; the
+independence gate must actually exercise those three checkout shapes.
+The agreed existing product homes are `qiangli/bash`,
+`bashsharp/bashsharp`, and `qiangli/bashy`; keep their existing identities.
+The Classic home will own foundation source and its build front door, rather
+than remain a wrapper referencing qiangli/sh. The operator permits copying
+the whole current sh tree into this home. Migrate consumers to Bash packages;
+archive qiangli/sh only after published replacement pins and independent gates
+pass. Preserve the old repository/history; do not rewrite or delete it.
 
 ### Gate contract
 
