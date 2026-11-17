@@ -112,6 +112,11 @@ single-runtime product does. Mechanically migrate their full concrete type
 boundary together, including middleware, harnesses and front/transpile hooks.
 This avoids adding dual concrete Runner/AST branches to the product.
 
+Move the existing shared CLI surface to Bash#'s public `cli` package and
+rewire full bashy's imports and injected hooks to it. Keep the independent
+Classic CLI in Bash. Codex independently reviewed this composition against
+the existing CLI source; the owned engine and CLI gates still have to prove it.
+
 Cover cold invocation, warm serve/session, MCP session, interactive startup
 and direct embedding paths. Setting a language selector on a Classic Runner
 is not a substitute for constructing the language-owned parser and Runner.
