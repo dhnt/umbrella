@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- `bashy-bashsharp-yoke-position.md` — Architectural opinion: portable shell environments, language composition, and coherent verified workflows across tools, agents, and machines
+
 - `plan-self-contained-offline-bashy.md` — Sprint 654 master execution plan for protected offline bootstrap, reused artifact services and platform acceptance
 
 - `plan-s568-master-execution.md` — Sprint 568 design plan for shared human/agent membership and bidirectional service communication

@@ -1,5 +1,7 @@
 # Umbrella docs — catalog
 
+- **`bashy-bashsharp-yoke-position.md`** — Codex's architectural position on bashy, Bash#, and yoke: three complementary unification promises, explicit portability and language boundaries, and integration priorities for capability contracts, execution lifecycles, verified improvement loops, and complete workflow evidence. Distinguishes existing foundations from recommendations and Sprint 653's planned runner work.
+
 - **`plan-self-contained-offline-bashy.md`** — Sprint 654 master execution plan: ORAS/bbolt/goproxy/Athens reuse, protected rebuild inputs, internal module publication and regeneration, sealed bootstrap and recovery, OCI/model retention, tier policy, resource automation, dependency-ordered stories and platform acceptance.
 
 One entry per doc with its abstract. `INDEX.md` is the one-line index.
