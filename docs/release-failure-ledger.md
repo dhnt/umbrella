@@ -64,3 +64,17 @@ If a `./cmds/db` failure recurs, capture `go test -v` output first.
 | Bash 5.3 gate: `symlink external/bash-5.3 … permission denied` | gate with `GO=tools/bashy-build/go.sh` | the fixture fetch ran inside the container with the host checkout path | the gate host fetches the SHA-verified corpus with `FIXTURES_GO="bashy go"` (bashy `09632b4b`) |
 | every cloudbox package `[build failed]` with `no space left on device` | second Windows test host, podman machine | `/tmp` is a 3.9 GB tmpfs; the k3s dependency build fills it | set `GOTMPDIR` to a disk directory |
 | `internal/api`, `internal/handlers` and `internal/server` do not build | macOS dev box | they import k3s, which builds only on Linux | run them on a Linux venue |
+
+## rc.37 candidate verdict (bashy `7d906572`, tag `v1.0.0-rc.37-dev`)
+
+All runs in the official build image on the gate host
+(`bashy-build:v1.0.0-rc.37-go1.27.2-c99fcb7318b2`, fresh runs, 2026-11-17):
+
+| Check | Result |
+|---|---|
+| Self-hosting roll (R1 by previous lock, R2 by R1) | fixed point, bashy sha256 `3452109f…0d0f` |
+| yoke short suite (`c9057f1e`) | 189/189 packages |
+| bashy Go tests (`bashy dag test`) | pass (results from `611bedc9`; Go sources unchanged to `7d906572`) |
+| Bash 5.3 gate, `BASH53_BASHPP=0` and `=1` | 86/86 each, per-fixture evidence written |
+| make test script checks: meet-spa-fresh, isolated-lanes, release-qa-lane, build-tag-matrix, startup-linux | pass |
+| make test checks that call make: build-fail-closed, bash-container-mode, verify-bashy-scratch | not run in this venue, by operator decision; Makefile removal todo `42d05687` |
