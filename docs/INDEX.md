@@ -69,3 +69,4 @@
 - `docs/client-setup-gemini.md` — Sprint 646 client setup guide: Gemini web Custom Connected App & mobile auto-sync (personal account, US, English, Keep Activity gates, OAuth 2.1, redirect allowlist, scopes, revocation)
 - `docs/muse-connector-submission-pack.md` — Sprint 646 Muse Connector Platform submission pack: tools classed Read/Write/Sensitive-write from bashy effects, reviewer test account plan, and data terms
 - `docs/software-shaping-paradigm-comparison.md` — Software shaping compared with CI/CD, vibe coding, spec-driven development, malleable software and other paradigms; 2025–2026 evidence, risks, levers, and the N:N and decide-after-seeing principles
+- `docs/release-failure-ledger.md` — Release failure ledger: every test failure met while releasing, with last-green/first-red commits for bisecting, cause, class (product, test, metadata, venue) and fix commit
