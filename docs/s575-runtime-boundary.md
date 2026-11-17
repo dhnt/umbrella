@@ -21,8 +21,9 @@ public parser/Runner state API. External upstream tracking is not required.
 
 The strict dependency direction is Bash <- Bash# <- bashy. Bash# uses pinned
 Bash neutral environment/handler contracts and utilities; Bash never imports
-Bash#. Bashy composes the two runtimes with Yoke. No qiangli/sh replacement
-remains after cutover. Archive that repository last, preserving its history.
+Bash#. Full bashy composes the B superset runtime with Yoke; the independent
+Bash executable uses A. No qiangli/sh replacement remains after cutover.
+Archive that repository last, preserving its history.
 
 ## Minimum shared handler boundary
 
@@ -105,14 +106,29 @@ as sufficient for compilation.
 
 Relocate the Classic CLI path from bashy into the Bash home, preserving
 Classic invocation/startup behavior. The existing Bash# command front door
-switches to its owned engine. Bashy selects a Classic CLI/session or the
-Bash# runner adapter, injecting the existing execution middleware.
+switches to its owned engine. Full bashy and Yoke retain one owned B superset
+runtime for both Classic-compatible and opt-in Bash# modes, as the existing
+single-runtime product does. Mechanically migrate their full concrete type
+boundary together, including middleware, harnesses and front/transpile hooks.
+This avoids adding dual concrete Runner/AST branches to the product.
 
 Cover cold invocation, warm serve/session, MCP session, interactive startup
 and direct embedding paths. Setting a language selector on a Classic Runner
 is not a substitute for constructing the language-owned parser and Runner.
 Rewire yoke/pkg/dag/interp_bashpp.go through the owned Bash# engine or its
-injected runner, preserving every supported tag; Classic bodies use Bash.
+injected runner, preserving every supported tag. Its Classic-compatible
+interpreter, contracts and skills use the same B runtime in Classic mode;
+the independent pure Classic artifact uses A. Preserve effect-cap ordering,
+per-task isolation and status mapping.
+
+Move/provide B's interactive package for the product. Keep ownedexec's frame,
+marker and adoption protocol shared with the foundation/coreutils and preserve
+signal-launcher environment restoration. Ycode's Bash# AST inspection needs
+B types; its independent Classic TUI fallback may retain A. Outpost's transitive
+pins must close as well. The certified/base wrapper may delegate to a separate
+A Classic app only if applets, startup and flags are preserved; the full product's
+command registry must remain intact. Do not silently replace its applet route
+with the lean shell-only executable.
 
 Dependency order: foundation source relocation -> shared handler boundary ->
 owned language engine/aliases -> language front door -> product composition ->
