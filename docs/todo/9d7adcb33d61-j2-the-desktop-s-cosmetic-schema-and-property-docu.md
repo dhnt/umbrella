@@ -3,15 +3,18 @@ id: 9d7adcb33d61
 kind: feature
 title: J2 The desktop's cosmetic schema and property document, with plain settings and no model
 seq: 313
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
     - desktop
 created: 2026-11-15T02:57:50.362491Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the try-now showcase — a visitor shapes ai.dhnt.io inside the owner''s declared boundary, proven Red-Green-Refactor'
+closed: 2026-11-18T20:13:22.91848Z
+closed_by: claude-opus5.5-s641
 ---
 
 Rung 1 of docs/dhnt-journey-design.md, the half that needs no AI at all — and therefore the half that must work first.

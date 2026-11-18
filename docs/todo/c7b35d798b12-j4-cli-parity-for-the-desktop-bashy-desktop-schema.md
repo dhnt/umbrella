@@ -3,7 +3,7 @@ id: c7b35d798b12
 kind: feature
 title: 'J4 CLI parity for the desktop: bashy desktop schema|get|set|wish|undo|history --json'
 seq: 315
-status: assigned
+status: done
 priority: p1
 labels:
     - software-shaping
@@ -13,6 +13,8 @@ assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the try-now showcase — a visitor shapes ai.dhnt.io inside the owner''s declared boundary, proven Red-Green-Refactor'
+closed: 2026-11-18T20:13:12.672006Z
+closed_by: claude-opus5.5-s641
 ---
 
 UI-to-CLI parity is one way: every action the desktop offers needs a CLI path, so an agent can do what a person can and the guide can always answer 'and this is the command'.

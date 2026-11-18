@@ -3,7 +3,7 @@ id: 928fb2c3584e
 kind: feature
 title: 'M4 Boundary: which schema sections each audience may change (the badge''s disclosure)'
 seq: 310
-status: assigned
+status: done
 priority: p1
 labels:
     - software-shaping
@@ -13,6 +13,8 @@ assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: dogfood dhnt.io — a member shapes the company site in their own GitHub-backed space, proven Red-Green-Refactor'
+closed: 2026-11-18T20:13:12.354274Z
+closed_by: claude-opus5.5-s641
 ---
 
 Operator 2026-11-14: an app needs an owner-defined FEATURE LIST, controlled by feature flags, that bounds what a member, a guest or the public may shape — the contract and invariant component of any app. The website is just the first app.
