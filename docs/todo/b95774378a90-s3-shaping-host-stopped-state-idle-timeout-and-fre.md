@@ -1,7 +1,7 @@
 ---
 id: b95774378a90
 kind: enhancement
-title: 'S3 shaping host stopped-state: idle timeout and free-quota visibility'
+title: 'S3 shaping-host stopped state: idle timeout and free quota in status (offline page is S11)'
 seq: 112
 status: todo
 priority: p2
@@ -13,4 +13,4 @@ sprint_id: 899fe465-c505-558d-a1f3-44a74a977e92
 sprint_title: Shaping host on free cloud workspaces
 ---
 
-Planned vendor: claude. shaping-host status (and launcher) shows platform idle timeout and remaining free quota where a read-only platform API allows it (Codespaces via gh api). Visitor-facing offline page is out of scope: file a hosted-control-plane ticket against the public wire contract only. Depends on S1. Verify: plan step 3.
+Planned vendor: claude. Client side only: shaping-host status reports idle timeout and remaining free quota where the platform API allows. The visitor-facing offline page for a stopped host is in the S11 hosted ticket. Spec: docs/sprint-615-master-execution-plan.md

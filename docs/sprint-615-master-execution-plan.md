@@ -1,84 +1,176 @@
-# Sprint 615 — Shaping host on free cloud workspaces
+# Sprint 615: shaping-enable an existing website (free host or owner outpost)
 
-Sprint UUID: `899fe465-c505-558d-a1f3-44a74a977e92`. Status: **planning only** — filed 2026-11-10; no implementation started.
+Sprint UUID: `899fe465-c505-558d-a1f3-44a74a977e92`. Epic: software-shaping.
+Status: **planning only**. Filed 2026-11-10; rescoped 2026-11-18 (operator).
+The sprint card and its stories are authoritative.
 
-## Context
+## Primary goal
 
-Casual bashy users often have no always-on machine and no satellite or VM
-budget. Free third-party cloud dev workspaces combine compute, a browser IDE
-and git in one place. Examples are GitHub Codespaces (a monthly free quota on
-personal accounts, private repos included), Gitpod/Ona, Firebase Studio and
-Google Cloud Shell. This sprint makes such a workspace the **default shaping
-host**. The user opens a workspace and bashy and outpost come up. Their shaped
-apps (`bashy app serve` + `bashy shape`) are then live through the existing
-outpost tunnel at `/h/<host>/app/<name>/`.
+Produce **the standard steps to shaping-enable an existing website**: a kb
+runbook plus an agent-directed Bash# skill-script (`website.bsh`). Anyone with a
+casual personal site or vlog can follow them at $0, using:
 
-**Framing.** Software shaping means an app that always runs in dev mode, for
-everyone. Wish, preview, approve and the next wish are development, which is
-what these platforms are for.
+- free static hosting;
+- a free AI tier;
+- the free cloudbox sign-in;
+- a free cloud workspace or their own outpost as the shaping host.
 
-- Each person shapes in their own free workspace. Approved versions are
-  already per-principal.
-- Members preview or use a shaped app while its shaping host is running.
-- An app that needs to be always on **graduates** to a satellite.
-- A workspace is never a satellite or relay, and gets no keep-alive tricks.
+The steps include refactoring the site where it must change to work with
+bashy and cloudbox.
 
-## Requirements (operator-confirmed)
+Visitors fall into three tiers:
 
-| | Requirement | How |
+| Tier | Who | Gets |
 |---|---|---|
-| a | **Must:** private GitHub repo as backstore | The workspace is created from the user's own private repo, so the platform token is scoped to it. Shaping state persists via `bashy shape submit/push`. Secrets are never committed. |
-| b | **Preferred:** Google identity + Gmail/Drive data access | Reuse `bashy/examples/google` with BYOP onboarding. Each user's own $0 GCP project avoids restricted-scope verification. GitHub stays the backstore. |
-| c | **Nice to have:** attach to a shared satellite | `outpost satellite attach` dials out only. Wrap the onboard `accept` + `attach` steps. |
+| anonymous | not signed in | the site exactly as today, plus a plain "Shape / sign in for more" link |
+| guest | signed in to cloudbox, not a member of the owner | shaped presentation (generated views, declared preferences) over the public data |
+| circle member | in one of the owner's circles (for example `recruiter`) | additionally, the private data the site's permission config grants that circle (for example contact details and certificates) |
 
-Platform order: **Codespaces first** (a is native), Gitpod second. Firebase
-Studio and Cloud Shell are deferred until the first two hold up.
+First run (dogfood): the operator's own public résumé site, a Next.js static
+export on GitHub Pages. It runs on a **free host only**, to prove the point.
+The owner-outpost path is documented and unit-tested, but not dogfooded here.
 
-## Current state (surveyed)
+## Why the rescope
 
-- There is no devcontainer, Codespaces or Gitpod support today.
-- Outpost dials out and binds loopback only, so it needs no inbound ports.
-- `install.sh --no-service` works without sudo or systemd.
-- What's missing:
-  - a start path without systemd. `outpost service install` errors and tells
-    you to run `outpost supervisord`.
-  - pairing that survives a workspace rebuild.
-  - an explicit stopped-host state.
+The first plan (2026-11-10) made a free workspace a generic shaping host. A
+concrete site gives that host a reason to exist and adds the missing half: who
+the visitor is and what they may see. Google on the host (old S4) and
+satellite attach (old S5) are not needed for this use case and are deferred.
 
-## Stories (examples first, then optional, then core only if a gap is proven)
+## What the code showed (2026-11-18)
 
-| # | Story | Planned vendor |
+- **Circles** are owner-defined slugs in cloudbox, so `recruiter` is valid.
+- **Share rules** are `{circles, groups, emails}`, with `owner` and `public`
+  reserved. No rung admits "any signed-in account", and the guest tier needs
+  one. That is a hosted change through the public wire contract.
+- **What an app behind outpost receives:** only email, name and an
+  `admin|user` role, signed by outpost. Outpost stamps no circle, groups or
+  owner (Sprint 639 S13, not started). `yoke/pkg/coopauth.Identity` has no
+  circle.
+- **Shaping agent:** `bashy shape wish` delegates to an agent CLI
+  (`--agent tool:model`). No free-provider route exists for shaping or for
+  generated views. `yoke/pkg/llmgw/openai` is a reusable OpenAI-compatible
+  client.
+- **Sprint 638 overlap:** `website.bsh` (S3) and the shaping levels (S6) are not
+  built. The Shape-page prefill is partial. The link-door decision (638
+  decision 2) is open.
+- **The test site:**
+  - It already has a private-field content type its PDF route reads, and
+    none of those files are committed.
+  - It ships a small Go static server for local preview.
+  - Its content is markdown.
+
+## Design (smallest slice that delivers all three tiers)
+
+1. **Two faces, one build.**
+   - **Static face:** the site stays on its free static host. It is always on
+     and serves anonymous visitors. It adds only a tier-0 link (a plain
+     anchor: no script, no CSP change).
+   - **Engine face:** the same source registered as a shaped app on the
+     owner's shaping host, reached through outpost behind the cloudbox
+     sign-in. Signing in there is what identifies the visitor.
+2. **Engine mode by progressive enhancement** (the site refactor).
+   - The built site calls `GET api/me`. On the static host that is a 404, and
+     the site stays public-only.
+   - On the engine it returns the caller's tier, and the site renders extra
+     sections from `api/fields` and a views panel from `api/view`.
+   - One build serves both faces.
+3. **Site server.** A Go `shaped.json` server, scaffolded by `website.bsh
+   enable`:
+   - it serves the static build plus `api/me`, `api/fields` and `api/view`;
+   - it reads the signed outpost identity and relationship stamp through
+     `coopauth`;
+   - a request without a valid signature is anonymous.
+4. **Permission config = a per-field `audience`.**
+   - Private fields live in a **private companion repo**, never in the site
+     repo or the static build.
+   - Each field's frontmatter carries `audience:` in the cloudbox rule grammar
+     (`circles`, `groups`, `emails`, plus `signed_in: true` for guests),
+     evaluated with yoke's boundary matcher.
+   - **Fail closed:** a field without an audience is visible to the owner only.
+5. **Visitors never code-shape a public site** (638·S10).
+   - Guests and members get declared-property personalization and generated
+     **views**, such as a recruiter summary or a skills timeline. Views are
+     rendered per request from only the data their tier may see.
+   - Only the owner code-shapes, with `bashy shape` on the host.
+   - Engine levels (638·S6) are therefore not a prerequisite.
+6. **Free AI, provider-agnostic.**
+   - `api/view` takes any OpenAI-compatible route: base URL, model and the key's
+     secret name in `site.json`; the key itself in a host secret.
+   - It enforces a per-visitor daily allowance plus an owner cap. The prompt
+     carries allowed data only.
+   - The docs list GitHub Models, Gemini free, Groq and OpenRouter free models.
+   - Owner code-shaping uses an `--agent` CLI that can target a free route
+     (spike).
+7. **Hosts and graduation.**
+   - **Free host** (a Codespace first, Gitpod second): the engine face is live
+     while the workspace runs. When it is stopped, the engine face shows an
+     offline page and the static face is unaffected.
+   - **Owner outpost:** the same registration on a machine the owner keeps on.
+     Moving between the two is `shaping-host graduate`.
+
+## Stories
+
+Vendor is the planned assignment by strength; the conductor may reassign.
+
+| # | Story | Vendor |
 |---|---|---|
-| S1 `bddd4f6e0183` | `examples/shaping-host/shaping-host.bsh` with verbs check / up / status / down / graduate. It detects the platform, installs with `--no-service`, pairs idempotently under a stable host name, starts `outpost supervisord` and serves apps on loopback. Credentials come from platform secrets only. | codex |
-| S2 `72f0077803c0` | Shaping starter template: `.devcontainer/devcontainer.json` + `.gitpod.yml`. It opens straight into a shaping session with `examples/shaping/hello-world` live. README with an "Open in" button and the one secret to set. | glm |
-| S3 `b95774378a90` | Stopped-host state on the client side: idle timeout and remaining free quota where a platform API allows it. A friendlier offline page for visitors is a hosted-control-plane ticket via the public wire contract only. | claude |
-| S4 `e9bffaa179d1` | Google on the shaping host (b). Check first whether the loopback OAuth redirect completes inside a cloud workspace; fall back to `auth-import`. Credentials restored from a platform user secret on `up`. | claude |
-| S5 `4e4452889dd8` | Attach to a shared satellite (c). `shaping-host attach INVITE`; `up` re-attaches memberships after a restart. | codex |
-| S6 `20ce3526b52a` | Conditional core fix: an outpost start path without systemd. Only if S1 proves the skill-script workaround is not enough. Separate commit. | codex |
-| S7 `65f9a8471919` | kb runbook "Shape your apps on a free cloud workspace" (owner role, generic names), linked from the README casual-user and shaping path. | muse |
+| S1 `bddd4f6e0183` | `shaping-host.bsh` check / up / status / down / graduate. It detects the free platform, or an owner outpost where `up` is idempotent. Credentials come from platform or host secrets only. | codex |
+| S2 `72f0077803c0` | Starter template = the private companion repo:<br>• devcontainer and `.gitpod.yml`;<br>• `private-fields/` with `audience:` examples;<br>• a `site.json` template.<br>It opens into a session with the public site imported as a shaped app. | glm |
+| S3 `b95774378a90` | Stopped state on the client: `status` reports idle timeout and remaining free quota. The visitor-facing offline page is part of S11. | claude |
+| S6 `20ce3526b52a` | Outpost start path without systemd. Only if S1 proves the gap; separate commit. | codex |
+| S7 `65f9a8471919` | **The standard steps:** kb runbook "Shaping-enable an existing website" (owner role, generic names). It covers assess, refactor for engine mode, private data and audience, register, free host or owner outpost, free AI route, verify, graduate. Linked from the README shaping path. Written from what S13 and S14 actually ran. | muse |
+| S8 `8ce4637753f4` (from 638) | `bashy/examples/shaping/website/website.bsh`:<br>• `assess DIR`: generator, export mode, content dirs, CSP, private-data candidates;<br>• `enable DIR`: `shaped.json`, `contract.bsh`, `checks/build.bsh`, the site-server scaffold, the `site.json` template, the tier-0 link;<br>• `register NAME --git URL`;<br>• `status`.<br>Next.js static export first, Vite second. | codex |
+| S9 new | Site-server scaffold (Go, shipped by `enable`):<br>• static plus `api/me`, `api/fields`, `api/view`;<br>• audience evaluation with the yoke boundary matcher, fail closed;<br>• the matrix owner / circle / other circle / guest / anonymous / forged headers, on the CLI and over HTTP. | claude |
+| S10 `0eaeb7a534e6` (from 639) | Outpost stamps the caller's circle, groups and owner for trust-identity apps; `coopauth.Identity` carries them. Signed and versioned, with the existing identity signature. | codex |
+| S11 new | Hosted ticket, public wire contract only:<br>• the grant-rule rung `signed_in` ("any signed-in account", the guest tier);<br>• the link door (638 decision 2, path form);<br>• the offline page for a stopped host.<br>It ships with the held cloudbox release. | claude |
+| S12 new | Free-AI view route in the scaffold:<br>• OpenAI-compatible through `yoke/pkg/llmgw/openai`;<br>• key from a host secret;<br>• per-visitor allowance plus owner cap;<br>• a data-minimization test (the prompt holds only the tier's data).<br>Spike: owner code-shaping with an agent CLI on a free model. | codex |
+| S13 new | Refactor the operator's résumé site by running `website.bsh assess` and `enable`:<br>• engine-mode client;<br>• the private-field type moved to the companion repo with `audience:`;<br>• `recruiter` fields (contact, certificates);<br>• views panel (recruiter summary, skills timeline);<br>• tier-0 link in the header and the no-script fallback.<br>Every manual step the scaffold missed is fixed in S8, not by hand. | claude |
+| S14 new | Dogfood verification on the free host only. Evidence goes on the story. | claude |
 
-Not doing: a provider/v1 "workspace provider" (users click "Open in…"
-themselves), a satellite or relay role on workspaces, or always-on keep-alive.
+Deferred to follow-ups: old S4 `e9bffaa179d1` (Google on the host) and old S5
+`4e4452889dd8` (satellite attach), unlinked from this card. The owner-outpost
+dogfood run is also deferred.
 
-## Verification
+Order:
+1. S10 and S11 (prerequisites, in parallel).
+2. S8, then S9, then S12.
+3. S2, S1 and S6.
+4. S13, then S14, then S7.
 
-Done by hand on real free personal accounts. Not on fleet test hosts or the
-dev box, and not in hosted CI.
+S8 and S7 are the deliverable; S13 and S14 prove them.
 
-1. "Open in Codespaces" on the template, set the single secret, and the
-   workspace comes up. `shaping-host check` reports `platform=codespaces`,
-   paired, outpost up.
-2. `/h/<host>/app/hello-world/` loads from another device. A wish → preview →
-   approve cycle shows the change live, and a member can use the app while the
-   session runs.
-3. Stop the workspace: the host shows offline. Restart it: the same host name
-   comes back without pairing again.
-4. (a) Shaping changes are pushed to the private repo. Recreating the
-   workspace from that repo restores them.
-5. (b) `bashy google auth-status` is green on the host, and a shaped app lists
-   Drive files. Credentials survive a rebuild via the user secret.
-6. (c) `shaping-host attach` joins a test satellite, and a member opens the
-   shared app through it.
-7. Repeat steps 1–4 on Gitpod.
-8. Run only targeted unit tests for an S6 change. Full gates are deferred to
-   QA.
+## Gates
+
+Each story passes its own acceptance plus the relevant targeted unit tests:
+yoke and outpost `go test` for the touched packages; `GOWORK=off go build
+./...` and the example's checks in bashy. Full gates stay in QA. No hosted CI
+beyond the site's own static-host deploy. No containers or VMs on the dev box.
+
+## Verification (recorded on S14)
+
+1. **Anonymous.** The static site is unchanged apart from the tier-0 link.
+   `api/me` is absent there. No private field appears anywhere in the built
+   static artifact (grep it).
+2. **Tiers.** The link leads to the cloudbox sign-in, then the engine face:
+   - a signed-in non-member gets `tier: guest` (public data plus views);
+   - a `recruiter` member also gets contact details and certificates;
+   - a member of another circle gets neither;
+   - the owner sees everything.
+3. **Fail closed.** A field without an audience is owner-only. Identity headers
+   without a valid signature are treated as anonymous.
+4. **Free AI.** A view request is answered through the free route. The
+   allowance is enforced. The recorded prompt holds only the tier's data.
+5. **Owner shaping.** One `bashy shape` wish, verify and approve on the host.
+   The change is pushed to the site repo and the static host redeploys.
+6. **Session-scoped.** Stopping the workspace shows the offline page on the
+   engine face while the static face is fine. Restarting keeps the host name,
+   with no re-pairing.
+7. **Owner outpost.** `shaping-host up` is idempotent on a home host (targeted
+   test). The runbook covers the path.
+
+## Not doing
+
+A runtime overlay script on the public site, anonymous model calls, code
+shaping by non-owners, keep-alive tricks on free workspaces, a workspace acting
+as satellite or relay, and engine shaping levels (they stay in Sprint 638).
