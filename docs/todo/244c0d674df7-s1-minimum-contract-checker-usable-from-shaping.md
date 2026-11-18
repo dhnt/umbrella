@@ -3,14 +3,17 @@ id: 244c0d674df7
 kind: feature
 title: S1 Minimum contract checker, usable from shaping
 seq: 414
-status: todo
+status: done
 priority: p1
 labels:
     - yoke
 created: 2026-11-17T18:49:46.15739Z
+assignee: claude-opus5.5-s655
 sprint: 655
 sprint_id: 31ee6639-a559-5fea-9e71-a7ca52cdea91
 sprint_title: 'One app: unified command contract (yoke)'
+closed: 2026-11-18T17:30:13.120947Z
+closed_by: claude-opus5.5-s655
 ---
 
 Problem: there is no way to check a command or app against the contract.

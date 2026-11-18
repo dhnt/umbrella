@@ -3,14 +3,17 @@ id: 4b633be22c28
 kind: doc
 title: S0 Write the normative one-app command contract
 seq: 413
-status: todo
+status: done
 priority: p1
 labels:
     - yoke
 created: 2026-11-17T18:49:46.007633Z
+assignee: claude-opus5.5-s655
 sprint: 655
 sprint_id: 31ee6639-a559-5fea-9e71-a7ca52cdea91
 sprint_title: 'One app: unified command contract (yoke)'
+closed: 2026-11-18T17:17:22.208996Z
+closed_by: claude-opus5.5-s655
 ---
 
 Problem: yoke has the engine (pkg/atlas, registry) and common options (pkg/adapt) but no written contract, so each command's agent-facing behavior is ad hoc. "One app" means bashy behaves as one coherent app for users and agents: a contract on observable behavior, never on implementation. Plan: docs/plan-sprint-655-one-app.md.
