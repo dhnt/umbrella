@@ -1,7 +1,8 @@
 # Sprint 575: owned language engine and shared execution boundary
 
-Status: Codex round-2 design, independently reviewed by Muse; bounded
-corrections incorporated below. Implementation and preservation gates pending.
+Status: Codex round-2 design, independently reviewed by Muse. Foundation
+handler and error contracts accepted; owned-engine adoption and final isolation
+gates remain in progress.
 Date: 2026-11-17. Story: `a4b8f1a7ee1a`.
 
 ## Ownership
@@ -27,18 +28,18 @@ Archive that repository last, preserving its history.
 
 ## Minimum shared handler boundary
 
-In Bash's `interp` package, add the following proposed execution-only API:
+Bash's accepted `interp` adapter exposes the following execution-only API:
 
 ```go
 func WithHandlerContext(ctx context.Context, hc HandlerContext) context.Context
 func AdaptHandlerContext(hc HandlerContext, kind HandlerKind, hooks HandlerHooks) HandlerContext
 
-type HandlerKind uint8
+type HandlerKind int
 const (
-    HandlerExec HandlerKind = iota
-    HandlerCall
-    HandlerOpen
-    HandlerReadDir
+    HandlerKindExec HandlerKind = iota + 1
+    HandlerKindCall
+    HandlerKindOpen
+    HandlerKindReadDir
 )
 
 type HandlerHooks struct {
@@ -53,8 +54,10 @@ type HandlerHooks struct {
 
 Keep the existing public HandlerContext fields and methods. An adapted
 context stores hooks and kind privately; its methods consult those hooks.
-Classic contexts retain their original runner-based paths when no hooks are
-present. Preserve the exec-only restriction on Builtin.
+Unadapted Classic contexts retain their original runner-based paths. An
+adapted context with an empty hook set reports neutral results without
+falling back to the Classic Runner. Callback function values are copied;
+the state captured by those callbacks remains live. Preserve the exec-only restriction on Builtin.
 
 Every language-engine handler dispatch publishes both its own private
 context and a compatible foundation context. Cover exec, call, open and

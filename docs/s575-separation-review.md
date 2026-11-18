@@ -117,6 +117,22 @@ CPU, both untouched and relocated source failed eight of ten repeats; at eight
 Go CPUs, both passed all ten. The assertion and implementation remain unchanged.
 Follow-up `4bd2091a0e2b` records that existing timing-guard limitation separately.
 
+Foundation contracts A1 and A2 are accepted and published together at
+`72c4bd210f74` (`v0.0.0-20261118005152-72c4bd210f74`). A1's full root and
+nested-module suite passed at `9ad0c38c`; final `305e4b3d` changed only adapter
+comments, attribution and the new nil-hook test, whose focused suite passed
+fresh in the locked image. The strengthened test uses an observable real
+Classic Runner, proving that adapted nil hooks never fall back to it.
+
+A2's complete root package run at `774d0f9e` failed only its newly introduced
+whitespace test: `encoding/json` rejects whitespace before calling the
+preserved decoder. All existing root packages passed. Final `ab033e74`
+exercises that decoder directly and refuses a nil carrier detail; fresh
+`errdetail` and `polyglot` suites passed. The unchanged nested module reuses
+A1 evidence. Both source reviews and managed grades passed; merges are
+`f2a0228` and `7b442d44`. Existing assertions and decoder logic are preserved.
+This accepts execution contracts, not completed engine isolation.
+
 Standalone Bash# and coreutils currently pin an older interpreter than the
 release composition. Record each resolved version when establishing the new
 accepted foundation; a workspace success is not an independent-build proof.
