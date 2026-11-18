@@ -1,14 +1,14 @@
 # Sprint 575: separation review before product edits
 
 Date: 2026-11-17. Manager: `s575-codex-manager`.
-Status: read-only findings; no build or full-suite preservation claim.
+Status: original source review with subsequent delivery evidence below; full separation remains in progress.
 
 ## Agreed outcome and homes
 
 Each product must build and run its own gates from a fresh independent
 checkout, without the umbrella, sibling source directories, or go.work:
 
-- Classic: `qiangli/bash`, currently a thin sh/coreutils pin repository.
+- Classic: `qiangli/bash`, now carrying the accepted owned source import.
 - Bash#: `bashsharp/bashsharp`, retaining its existing Go module identity.
 - Composed product: `qiangli/bashy`, consuming fixed lower versions and Yoke.
 
@@ -88,7 +88,7 @@ violations were already recorded in bashy's story `32566c96a2b2`. The split
 must eliminate the offending ownership edges, without widening exceptions.
 
 The former Makefile `test` has nine prerequisites. At the audit baseline, DAG `test` ran
-the freshness regression and freshness check, but lacks seven prerequisites
+the freshness regression and freshness check, but lacked seven prerequisites
 and the freshness target's fresh-binary build step. S0G `4b22a277ee4e` is a
 tooling-only port of that exact coverage and the make-backed fixture/mode
 paths. Existing assertions and failure-injection expectations must stay intact.
@@ -104,13 +104,18 @@ untouched release reproduced the same roster-test failure at the mount root.
 The scratch verifier retains its existing no-container-runtime branch inside
 the build image; no new skip or weaker assertion was introduced.
 
-Foundation source candidate `99501d39` remains unmerged. All 3,269 frozen
+Foundation source is accepted and published at `adb3b4e0c28d`, through
+graded candidate `99501d39` and managed merge `64e799a`. All 3,269 frozen
 source files are preserved; Go and golden files match after the declared
 reference transforms, with module metadata differences recorded separately.
-Its functional suites and corrected nested module pass. A final combined
-run failed `TestSpellingShadowParseScaling`, while the untouched full suite
-passed the same lane. The timing difference remains under investigation;
-it is not classified as a pre-existing failure or accepted as passing.
+The final root and nested-module grade passed with eight Go CPUs and serial
+packages; the captured output distinguishes fresh runs from Go cache reuse.
+This accepts source relocation before the engine split and Classic CLI work.
+
+`TestSpellingShadowParseScaling` was sensitive to CPU allocation: at one Go
+CPU, both untouched and relocated source failed eight of ten repeats; at eight
+Go CPUs, both passed all ten. The assertion and implementation remain unchanged.
+Follow-up `4bd2091a0e2b` records that existing timing-guard limitation separately.
 
 Standalone Bash# and coreutils currently pin an older interpreter than the
 release composition. Record each resolved version when establishing the new

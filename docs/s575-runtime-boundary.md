@@ -102,6 +102,27 @@ at the product boundary; do not alias events that embed incompatible AST
 position types. Review the full source use before treating this alias list
 as sufficient for compilation.
 
+## Neutral error detail boundary
+
+Coreutils' command envelope currently imports `polyglot` for one structured
+error record and its extractor. Keep that data below the language runtime:
+the foundation's `errdetail` leaf owns `ErrorDetail`, its unchanged JSON tags
+and `UnmarshalJSON`, a deep `Clone` helper, and an extractor using `errors.As`
+against `ForeignErrorDetail() *ErrorDetail`. The leaf imports only standard
+library packages. Bash# aliases the DTO and retains its private worker-error
+implementation and constructors; private `clone`/`err` receiver methods become
+package-local helpers rather than methods on a non-local alias.
+
+The private carrier publishes a cloned detail through that small method.
+Keep the existing public language wrapper and its behavior. Preserve ordinary
+and wrapped errors, legacy string frames, empty cause levels, exact message
+rendering, clone isolation and unwrap identity. Coreutils consumes only the
+leaf and retains its existing eight-cause envelope limit. Real worker tests
+belong with the language runtime or an integration package; coreutils' own
+tests use the neutral decoder and carrier without importing upward.
+Muse's initial DTO-only suggestion was insufficient; Codex independently
+reviewed this complete carrier boundary before implementation.
+
 ## Product composition and order
 
 Relocate the Classic CLI path from bashy into the Bash home, preserving
