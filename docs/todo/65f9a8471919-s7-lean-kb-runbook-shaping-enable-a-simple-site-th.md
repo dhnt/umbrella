@@ -3,12 +3,14 @@ id: 65f9a8471919
 kind: doc
 title: 'S7 lean kb runbook: shaping-enable a simple site (the steps that ran)'
 seq: 116
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
     - docs
 created: 2026-11-11T04:32:53.947998Z
+weave: 82
+assignee: muse-conductor
 sprint: 615
 sprint_id: 899fe465-c505-558d-a1f3-44a74a977e92
 sprint_title: Shaping host on free cloud workspaces
