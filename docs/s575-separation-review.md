@@ -150,3 +150,22 @@ read-only authority. The manager checked the cited private AST boundary,
 Classic dispatch, fleet provisioning dependencies and coreutils man/MCP
 relationship directly. Historical seam counts were not remeasured and
 are not presented as current qualification evidence.
+
+
+The real worker-envelope integration assertions are preserved under bashy's
+`integration/weavecli`, accepted at candidate `cf02d8c8`, merge `00063f18`
+and published metadata commit `7d04e7cf`. Exact source comparison permits
+only the public API dot import plus the unchanged JSON helper. The focused
+integration suite passed fresh in the official image. Coreutils' neutral
+contract migration may now remove its old worker-test copy; the final product
+cutover still must rebind this coverage to the owned Bash# runtime.
+
+Owned-engine candidate `49e621ae` passed its standalone build and all root
+packages except `TestGoSourceLibraryEmission` and
+`TestTranspileStandaloneGoBuild`. The first failure was three unmigrated
+`.go.golden` generator headers; `4365081d` corrects only four fixture headers
+and its fresh lower suite passed. The second requested the correct new runtime
+commit before publication. The reviewed candidate branch is now published;
+the public Go proxy/checksum service retained the initial unknown-revision
+response. Keep checksum verification and the frozen runtime pin unchanged;
+that venue propagation delay is not a product repair or accepted passing gate.

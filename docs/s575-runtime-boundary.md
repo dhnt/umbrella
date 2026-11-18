@@ -198,3 +198,31 @@ The review's suggestion to alias the private runner-bound context and mirror
 foundation-private markers was not adopted: the design intentionally retains
 B's context/markers and publishes an additional adapted A view, with B-owned
 defaults. Source use and integration tests must verify that invariant.
+
+## Base catalog and CLI assignment boundaries
+
+The base command catalog is owned product integration under
+`bashy/internal/core`, with its own command-only storage, validation, CLI and
+verified acquisition closure. Full AgentOS continues to use Yoke's existing
+catalog. No catalog or managed-tool policy moves into Bash. Preserve actual
+baseline behavior, including the current command overlay setting and the core
+profile's unwired claim guard; their existing limitations are not fixes for
+this migration. Preserve complete CRUD/lifecycle verbs, ring ordering, cache,
+digest, archive, offline, probe and execution behavior. A base without Bash#
+reports unsupported language for `.bsh` records and Bash# scripts while
+retaining discovery and warnings. YAML records and plain Bash remain supported.
+Story `85d6a32cacbc` carries the bounded implementation plan.
+
+CLI ownership follows the code being exercised. A owns its private Classic
+CLI tests; B owns its private language and superset compatibility tests. C
+owns tests building the product or launching Yoke. Do not copy product or
+utility test dependencies into B. The heredoc diagnostic test may use a local
+`cat` handler with unchanged scripts and assertions; real coreutils umask
+coverage stays at the utility/product boundary. Preserve private helpers
+without exposing a testing API. Pure A ignores inherited B-only activation
+environment; explicit unsupported B invocation options return a usage error
+with the language product pointer. Existing shell `set`/`shopt` unknown-option
+semantics remain unchanged. Preserve the native signal launcher and pinned
+product runtime overlay when moving the standalone Classic build front door.
+Stories `327fba809ee4` and `94d888e23283` carry the CLI and real worker-envelope
+coverage plans. These are staged ownership slices, not final independence.
