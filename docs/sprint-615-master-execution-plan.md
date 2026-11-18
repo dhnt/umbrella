@@ -86,6 +86,17 @@ satellite attach (old S5) are not needed for this use case and are deferred.
        email.
      - A member's email and circle are already known to the owner through the
        mutual membership.
+     - **Requesting privileged access needs the email, by explicit consent.**
+       - A signed-in non-member who wants circle-scoped data (for example the
+         recruiter fields) presses **Request access**. Cloudbox asks them to
+         confirm sharing their email with the site owner.
+       - Only after that confirmation is the email forwarded, for that one
+         request, to the site's `api/request` path.
+       - The site server records the request and notifies the owner. The owner
+         answers with the existing member invite and a circle
+         (`members invite EMAIL --circle recruiter`). The visitor accepts the
+         invite and is then a member with email and circle like any other.
+       - Declining sends nothing.
 2. **Engine mode by progressive enhancement** (the site refactor).
    - The built site calls `GET api/me`. On the static host that is a 404, and
      the site stays public-only.
