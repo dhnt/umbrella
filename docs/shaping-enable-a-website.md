@@ -33,8 +33,9 @@ as a stable per-site pseudonym, unlinkable across sites.
   host, if you use it).
 - A cloudbox account (for the one-time pairing code).
 - A satellite to attach the host to.
-- One OpenAI-compatible route for the generated views: GitHub Models,
-  Gemini free, Groq, OpenRouter free, or `bashy llm` on your own machine.
+- One OpenAI-compatible route for the generated views: a free Gemini API
+  key from Google AI Studio (the default), Groq or OpenRouter free models,
+  or `bashy llm` on your own machine.
   Views call it with only the caller's own data (public page text plus
   admitted fields). No anonymous model calls; a per-caller and a total
   daily cap protect the free quota.
@@ -72,7 +73,11 @@ public and unchanged except for the one link in step 6.
 
 - `site.json`: title, contact, the AI route (`base_url`, `model`,
   `key_env` — `SITE_AI_KEY` by default), daily caps, and views with
-  their prompts and audiences. The default route is GitHub Models.
+  their prompts and audiences. The default route is Gemini's
+  OpenAI-compatible endpoint with `gemini-flash-lite-latest` (free tier;
+  prompts may be used for training, and only the caller's allowed data is
+  sent). GitHub Models was tried first and did not serve completions
+  during the first live run (every path answered a plain "OK").
 - `fields/*.md`: one private fact per file. Audience is the front matter
   — `circles:`, `groups:`, `emails:`, `signed_in:` — using the cloudbox
   rule grammar plus `signed_in` (circles AND (group OR email); a group
