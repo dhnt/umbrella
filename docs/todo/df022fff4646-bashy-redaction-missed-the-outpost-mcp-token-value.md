@@ -3,13 +3,14 @@ id: df022fff4646
 kind: bug
 title: 'bashy redaction missed the outpost MCP token: value-only (vault) redactor, no shape detection, not applied at log sinks'
 seq: 448
-status: todo
+status: assigned
 priority: p1
 labels:
     - bashy
     - outpost
     - security
 created: 2026-11-17T21:30:13.790218Z
+assignee: codex-gpt6-sol
 sprint: 658
 sprint_id: f426cf37-7c11-5d0c-beca-7e405177868d
 sprint_title: outpost MCP admin token leaked to daemon.log (fix with the refactor/rebuild)

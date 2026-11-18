@@ -3,12 +3,13 @@ id: f83b4703cae4
 kind: bug
 title: 'outpost leaks its MCP admin bearer token: printed to daemon.log on every start since 2026-05-25; log world-readable on macOS/Linux (local only)'
 seq: 439
-status: todo
+status: assigned
 priority: p1
 labels:
     - outpost
     - security
 created: 2026-11-17T21:03:06.658435Z
+assignee: s575-codex-manager
 sprint: 658
 sprint_id: f426cf37-7c11-5d0c-beca-7e405177868d
 sprint_title: outpost MCP admin token leaked to daemon.log (fix with the refactor/rebuild)

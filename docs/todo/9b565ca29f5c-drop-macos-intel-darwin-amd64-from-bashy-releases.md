@@ -3,9 +3,10 @@ id: 9b565ca29f5c
 kind: task
 title: drop macOS Intel (darwin/amd64) from bashy releases
 seq: 429
-status: todo
+status: assigned
 priority: p2
 created: 2026-11-17T19:53:58.26338Z
+assignee: s575-codex-manager
 sprint: 656
 sprint_id: b220aade-5c96-5625-9a68-a0b7619c418a
 sprint_title: 'rc.37 QA venue: gate-host OTel env leak + macOS QA host ssh auth'

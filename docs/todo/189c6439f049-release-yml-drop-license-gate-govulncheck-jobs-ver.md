@@ -3,9 +3,10 @@ id: 189c6439f049
 kind: task
 title: 'release.yml: drop license-gate + govulncheck jobs; verify local-gate evidence bound to the tagged commit instead'
 seq: 428
-status: todo
+status: assigned
 priority: p2
 created: 2026-11-17T19:48:41.108992Z
+assignee: s575-codex-manager
 sprint: 656
 sprint_id: b220aade-5c96-5625-9a68-a0b7619c418a
 sprint_title: 'rc.37 QA venue: gate-host OTel env leak + macOS QA host ssh auth'

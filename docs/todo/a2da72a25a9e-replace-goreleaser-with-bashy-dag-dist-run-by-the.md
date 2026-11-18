@@ -3,9 +3,10 @@ id: a2da72a25a9e
 kind: task
 title: replace goreleaser with bashy dag dist run by the previous release (rc.37 builds rc.38); go build budget 5 min
 seq: 431
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-17T20:07:01.948965Z
+assignee: codex-gpt6-sol
 sprint: 656
 sprint_id: b220aade-5c96-5625-9a68-a0b7619c418a
 sprint_title: 'rc.37 QA venue: gate-host OTel env leak + macOS QA host ssh auth'
