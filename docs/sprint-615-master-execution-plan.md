@@ -117,6 +117,17 @@ satellite attach (old S5) are not needed for this use case and are deferred.
        It is reached on the host with the owner token and fits owners with an
        outpost (or a free host where the CLI is installed).
    - The site server never holds an agent CLI itself; it only calls a URL.
+   - **BYOK:**
+     - The owner always brings their own key or route.
+     - A signed-in **visitor with their own outpost** can bring theirs too, so
+       their views run on their capacity and do not count against the owner's
+       allowance or cap. Two ways:
+       - per request, the visitor's own OpenAI-compatible route (their
+         `bashy llm` or a provider key) is used for that one call and never
+         stored or logged;
+       - on the CLI, `website.bsh view URL` fetches the data the visitor's tier
+         may see and renders it with the visitor's own `bashy llm`.
+     - Either way the data sent is only what that visitor may already see.
    - Owner code-shaping uses an `--agent` CLI that can target a free route
      (spike).
 7. **Hosts and graduation.**
