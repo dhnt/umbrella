@@ -60,8 +60,12 @@ bashy desktop policy route unset           # back to the environment fallback
 | DELETE | `/api/v1/desktop-policy/route` | 204; falls back to the environment |
 | POST | `/api/v1/desktop-policy/route/test` | `{wish?}` → `{ok, ms, source, reason?}` against the resolved route |
 
-Errors use the desktop policy envelope (`invalid_change`, `forbidden`,
-`route_probe_failed`). The CLI exit codes are those of `bashy desktop policy`.
+Errors use the desktop policy envelope (`invalid_change` 422,
+`route_probe_failed` 422 with the probe result, `not_configured` 503 when the
+server has no sealing key). A caller who is not the superadmin or the
+satellite's owner, or who uses an API token, gets 404: the route stays hidden,
+as the allowance policy does. The CLI exit codes are those of
+`bashy desktop policy`.
 
 ## Stories
 

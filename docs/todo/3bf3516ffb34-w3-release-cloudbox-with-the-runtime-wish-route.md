@@ -12,3 +12,11 @@ sprint_title: 'Desktop wish route as runtime data: rotate the key or model with 
 ---
 
 Spec: docs/sprint-664-master-execution-plan.md (Stories table, row W3).
+
+## Hold (operator, 2026-11-18)
+
+No release or deploy for this sprint until the operator lifts the hold.
+Another agent is enabling dhnt.io shaping on an external site, and its
+changes may need to ship in the same cloudbox release. W1 stays on its
+own branch (cloudbox `s664-w1-wish-route`, unmerged, unpushed) until the
+release scope is agreed, so the other agent's release is not blocked.
