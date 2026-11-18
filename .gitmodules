@@ -49,3 +49,6 @@
 [submodule "yamux"]
 	path = yamux
 	url = https://github.com/qiangli/yamux.git
+[submodule "bash"]
+	path = bash
+	url = https://github.com/qiangli/bash.git
