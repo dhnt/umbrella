@@ -48,6 +48,7 @@
 - `sprint-635-lipsync-evidence.md` — Sprint 635: first visible lip sync (EchoMimicV3 on one rented GPU, then the full film with six lip-synced close-ups at zero cost on the Windows test host), pinned recipe, the twelve attempts root-caused, spend, what remains
 - `sprint-636-master-execution-plan.md` — Sprint 636 bashy apps UI: Apps under Recent on the landing page, hand-authored Flow mark on the Shape button; filed plan
 - `plan-sprint-655-one-app.md` — Sprint 655 one app MVP: normative command contract plus a minimum shapeable checker; conformance optional, tiers the declarer's choice; S2-S8 deferred
+- `plan-sprint-662-shaping-friction.md` — Sprint 662: four shaping frictions found by Sprint 655 (contained checks, agent identity, git, jq); filed plan
 - `brand/README.md` — product marks for cloudbox, satellite, outpost and bashy: rules (45° mirror axis, one square size, shape before color) and per-mark files
 - `sprint-622-master-execution-plan.md` — Sprint 622 master execution plan: software shaping as the one theme (canonical definition, aligned READMEs, qiangli/bash for sh + coreutils, cloudbox/satellite/outpost/bashy product marks); planning only
 - `sprint-627-m2b-weights-evidence.md` — Windows test host model staging: disk preflight, immutable revisions, sizes, hashes and elapsed time.
