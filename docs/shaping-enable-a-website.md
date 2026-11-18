@@ -43,7 +43,7 @@ as a stable per-site pseudonym, unlinkable across sites.
 
 All commands run with `bashy --bashsharp`. The script orders existing
 verbs (`curl`, `go build`, `outpost apps add/secret`, `bashy app add`);
-every step but `serve` accepts `--dry-run` to print the calls first.
+every step accepts `--dry-run` to print the calls first.
 
 ### 1. Assess your site
 
@@ -124,7 +124,7 @@ the site — only the owner shapes, on the host.
 ### 6. Add the one link to the static site
 
 ```html
-<a href="https://<cloudbox>/matrix/h/<host>/app/<name>/">Shape this page</a>
+<a href="https://<your satellite>/matrix/h/<host>/app/<name>/">Shape this page</a>
 ```
 
 That engine face is where the panel appears. Visitors reach your site
