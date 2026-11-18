@@ -8,9 +8,6 @@ priority: p3
 labels:
     - yoke
 created: 2026-11-17T18:49:46.747936Z
-sprint: 655
-sprint_id: 31ee6639-a559-5fea-9e71-a7ca52cdea91
-sprint_title: 'One app: unified command contract (yoke)'
 ---
 
 Problem: after forge, the other provider families remain non-uniform.

@@ -8,9 +8,6 @@ priority: p2
 labels:
     - yoke
 created: 2026-11-17T18:49:46.603804Z
-sprint: 655
-sprint_id: 31ee6639-a559-5fea-9e71-a7ca52cdea91
-sprint_title: 'One app: unified command contract (yoke)'
 ---
 
 Problem: equivalent providers expose different CLIs; one app means one way to use them.

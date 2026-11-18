@@ -8,9 +8,6 @@ priority: p3
 labels:
     - yoke
 created: 2026-11-17T18:49:47.18662Z
-sprint: 655
-sprint_id: 31ee6639-a559-5fea-9e71-a7ca52cdea91
-sprint_title: 'One app: unified command contract (yoke)'
 ---
 
 Problem: after one app exists, the same command should run at any execution tier (userland, sandbox, sphere, cluster, cloud) with the same envelope; the envelope is what crosses the wire.
