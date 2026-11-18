@@ -42,11 +42,13 @@ satellite attach (old S5) are not needed for this use case and are deferred.
 - **Circles** are owner-defined slugs in cloudbox, so `recruiter` is valid.
 - **Share rules** are `{circles, groups, emails}` and admit mutual members
   only. A member added without a circle lands in the default circle `guest`.
-- **Cloudbox public already covers the signed-in tier, so no hosted change
-  is needed.**
+- **Cloudbox public covers admission; privacy needs one small hosted change
+  (S11).**
   - An app registered with `require_login: false` admits anonymous visitors.
-  - When the caller is signed in, the edge still forwards their email, with no
-    role (`host_proxy.go`).
+  - When the caller is signed in, the edge forwards their **email** as
+    `X-Periscope-User` and writes an audit row the owner can read, even if
+    the caller is no member of the owner (`host_proxy.go`). That discloses a
+    stranger's address to the site owner and must change.
   - The door is the existing `/matrix/h/<host>/app/<app>/` path.
   - A stopped host gets the existing offline page (`hostOfflineHandler`).
 - **What an app behind outpost receives:** only email, name and an
@@ -75,8 +77,15 @@ satellite attach (old S5) are not needed for this use case and are deferred.
    - **Engine face:** the same source registered as a shaped app on the
      owner's shaping host. It is registered as a **cloudbox public** app
      (`require_login: false`) and reached through outpost at
-     `/matrix/h/<host>/app/<app>/`. Anonymous visitors pass through. A visitor
-     who signs in is identified by the email the edge forwards.
+     `/matrix/h/<host>/app/<app>/`. Anonymous visitors pass through.
+   - **Privacy:** the site learns only what the relationship already
+     discloses.
+     - A non-member who signs in is known only as *authenticated*, plus a
+       per-site pseudonym, so allowances can be counted. The pseudonym is
+       stable for one site and unlinkable across sites. The site gets no
+       email.
+     - A member's email and circle are already known to the owner through the
+       mutual membership.
 2. **Engine mode by progressive enhancement** (the site refactor).
    - The built site calls `GET api/me`. On the static host that is a 404, and
      the site stays public-only.
@@ -117,17 +126,10 @@ satellite attach (old S5) are not needed for this use case and are deferred.
        It is reached on the host with the owner token and fits owners with an
        outpost (or a free host where the CLI is installed).
    - The site server never holds an agent CLI itself; it only calls a URL.
-   - **BYOK:**
-     - The owner always brings their own key or route.
-     - A signed-in **visitor with their own outpost** can bring theirs too, so
-       their views run on their capacity and do not count against the owner's
-       allowance or cap. Two ways:
-       - per request, the visitor's own OpenAI-compatible route (their
-         `bashy llm` or a provider key) is used for that one call and never
-         stored or logged;
-       - on the CLI, `website.bsh view URL` fetches the data the visitor's tier
-         may see and renders it with the visitor's own `bashy llm`.
-     - Either way the data sent is only what that visitor may already see.
+   - **BYOK:** this sprint covers the **site owner** only: the owner's
+     own key, or `bashy llm` on the owner's outpost or satellite. Shaping on a
+     visitor's own outpost (visitor BYOK) is supported by the design and filed
+     as a follow-up.
    - Owner code-shaping uses an `--agent` CLI that can target a free route
      (spike).
 7. **Hosts and graduation.**
@@ -151,6 +153,7 @@ Vendor is the planned assignment by strength; the conductor may reassign.
 | S8 `8ce4637753f4` (from 638) | `bashy/examples/shaping/website/website.bsh`:<br>• `assess DIR`: generator, export mode, content dirs, CSP, private-data candidates;<br>• `enable DIR`: `shaped.json`, `contract.bsh`, `checks/build.bsh`, the site-server scaffold, the `site.json` template, the tier-0 link;<br>• `register NAME --git URL`;<br>• `status`.<br>Next.js static export first, Vite second. | codex |
 | S9 new | Site-server scaffold (Go, shipped by `enable`):<br>• static plus `api/me`, `api/fields`, `api/view`;<br>• audience evaluation with the yoke boundary matcher, fail closed;<br>• the matrix owner / circle / other circle / signed-in / anonymous / forged headers, on the CLI and over HTTP. | claude |
 | S10 `0eaeb7a534e6` (from 639) | Outpost stamps the caller's circle, groups and owner for trust-identity apps; `coopauth.Identity` carries them. Signed and versioned, with the existing identity signature. | codex |
+| S11 new | Hosted (public wire contract only), privacy for cloudbox-public apps:<br>• a signed-in caller who is not a mutual member of the host owner is forwarded as `authenticated` plus a per-(owner, host, app) pseudonym, never the email;<br>• the audit row for that access is pseudonymized as well;<br>• members and the owner are unchanged.<br>Acceptance: unit cases for non-member, member, owner and anonymous; a compatibility check of every existing `require_login: false` app that reads the email. Coordinate the release with the Sprint 664 conductor (todo `3bf3516ffb34`). | claude (cloudbox) |
 | S12 new | Free-AI view route in the scaffold:<br>• OpenAI-compatible through `yoke/pkg/llmgw/openai`;<br>• key from a host secret;<br>• per-visitor allowance plus owner cap;<br>• a data-minimization test (the prompt holds only the tier's data).<br>Spike: owner code-shaping with an agent CLI on a free model. | codex |
 | S13 new | Refactor the operator's résumé site by running `website.bsh assess` and `enable`:<br>• engine-mode client;<br>• the private-field type moved to the companion repo with `audience:`;<br>• `recruiter` fields (contact, certificates);<br>• views panel (recruiter summary, skills timeline);<br>• tier-0 link in the header and the no-script fallback.<br>Every manual step the scaffold missed is fixed in S8, not by hand. | claude |
 | S14 new | Dogfood verification on the free host only. Evidence goes on the story. | claude |
@@ -160,7 +163,7 @@ Deferred to follow-ups: old S4 `e9bffaa179d1` (Google on the host) and old S5
 dogfood run is also deferred.
 
 Order:
-1. S10 (prerequisite).
+1. S10 and S11 (prerequisites, in parallel).
 2. S8, then S9, then S12.
 3. S2, S1 and S6.
 4. S13, then S14, then S7.
@@ -180,7 +183,9 @@ beyond the site's own static-host deploy. No containers or VMs on the dev box.
    `api/me` is absent there. No private field appears anywhere in the built
    static artifact (grep it).
 2. **Tiers.** The link opens the engine face, which offers sign-in:
-   - a signed-in non-member gets `tier: signed-in` (public data plus views);
+   - a signed-in non-member gets `tier: signed-in` (public data plus views).
+     The site server, its logs and the owner's audit view show a pseudonym,
+     never the email;
    - a `recruiter` member also gets contact details and certificates;
    - a member of another circle gets neither;
    - the owner sees everything.
@@ -198,7 +203,7 @@ beyond the site's own static-host deploy. No containers or VMs on the dev box.
 
 ## Not doing
 
-A runtime overlay script on the public site, anonymous model calls, code
+Visitor BYOK and shaping on the visitor's own outpost (follow-up), a runtime overlay script on the public site, anonymous model calls, code
 shaping by non-owners, keep-alive tricks on free workspaces, a workspace acting
 as satellite or relay, and engine shaping levels (they stay in Sprint 638).
 
