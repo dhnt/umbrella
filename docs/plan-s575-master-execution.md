@@ -1,6 +1,47 @@
 # Sprint 575: independently buildable Classic, Bash#, and Yoke
 
-## Current execution contract — operator approved 2026-11-17
+## Delivered reference migration and current hold — 2026-11-18
+
+The operator's latest scope supersedes the broader extraction plan below:
+source moves and import/module/package/build references only. Bash and Bash#
+share the original mixed engine; the internal engine split is held. Earlier
+A1/A2 work was accepted historically and then restored to the frozen baseline
+for this delivery. A4, B1 and S1C implementation work remains held. This delivery
+adds no engine behavior fixes, features, changed assertions or skipped coverage.
+
+Published source tips: Bash `ed6bbe545ac3`, Bash# `4382d7e`, bashy
+`fbb54d3f9dee`, Coreutils `8de3088fd634`, and Yoke `ec36645fbab6`.
+The unchanged Bash command entry point now lives in the Bash repository;
+its nested command module preserves the original CLI dependency profile while
+the root library module preserves its original profile. Product consumers use
+fixed published dependencies and the shared CLI package references.
+
+Fresh independent checkouts, mounted individually without umbrella or sibling
+sources, passed the following checks with `GOWORK=off` in the digest-locked
+official Go 1.27.2 image: Bash root and command Go suites, Bash# Go suites,
+Bash and Bash# artifact builds and smoke checks, both Docker builds and smoke
+checks, and the GNU Bash 5.3 gate's 86 fixtures in each of its two modes for
+both products. Bashy's standalone build and the three previously failing
+import-graph/source-pin tests passed. Coreutils `TestLayerImports` passed.
+Other passing bashy/Coreutils packages reuse the earlier broad-run evidence
+for unchanged implementation and corresponding inputs; this is qualified
+reuse, not a fresh all-package result.
+
+Yoke's `TestIndependentProcess_SkippedInShort` fails with `SQLITE_BUSY` on
+both candidate `ec36645fbab6` and untouched release baseline `c9057f1e2028`
+in the same official-image profile. Its database implementation and tests are
+unchanged. This baseline reproduction does not establish an all-green result;
+no database fix, skip or rebaseline is included. The canonical Yoke test
+selection excludes `external/`; failures from the earlier broader invocation
+are not canonical package-gate results.
+
+Licensed POSIX certification remains blocked: the available approval and
+harness profile name obsolete candidates, and no approval for the current
+candidate/profile was established. GNU86 evidence is separate from the licensed
+493-test certification suite. The sprint remains open, and no release is
+authorized.
+
+## Earlier execution contract — historical, superseded by the current hold
 
 Physically separate Classic Bash, Bash#, and Yoke so each builds and passes
 its gates against fixed lower-layer dependencies, making only the minimum
