@@ -135,6 +135,33 @@ beyond the site's own Pages deploy.
 - **Google on the host** (old S4 `e9bffaa179d1`) and **satellite attach**
   (old S5 `4e4452889dd8`).
 
+## Future design note: identity assurance levels (plan only)
+
+The visitor tiers use one axis, the relationship (anonymous, signed-in,
+member of a circle, owner). A second axis is **how well the visitor is
+identified**, borrowed from marketplaces such as freelancer sites that badge
+their users:
+
+| Level | Meaning |
+|---|---|
+| `anonymous` | no sign-in |
+| `authenticated` | a valid cloudbox login (OAuth), shown to sites as a pseudonym |
+| `email` | the email disclosed by consent, or known through membership |
+| `verified` | identity verified by a third-party verification provider (for example a government ID and photo match) |
+
+Design rules for later:
+- An audience may require a minimum level (for example `level: verified` for
+  certificates).
+- Levels and relationships combine. A circle still bounds what is shown;
+  levels only narrow it.
+- Cloudbox stores only the outcome, as relationship data: level, provider and
+  date. Documents, ID numbers and photos are never stored or forwarded.
+- Sites receive the level, never the evidence.
+- Verification goes through an external provider and is opt-in by the
+  visitor.
+
+No story in Sprint 615 or 665 implements this. It is tracked as a design todo.
+
 ## Not doing
 
 Code shaping by non-owners, anonymous model calls, a runtime overlay script on
