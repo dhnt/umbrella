@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- `plan-posix-certification-after-separation.md` — Sprint 675 follow-up: investigate all 67 S575 residual results and prepare evidence-backed POSIX certification packets using the tagged baseline.
+
 - `sprint-666-evidence.md` — Sprint 666 exact source identities, installed smoke, three workflow traces, honest measurements and remaining native-host gates
 
 - `plan-cooperative-chunk-transfer.md` — Planning-only MVP for desync-based file transfer, owner/mutual-member download groups, cooperative chunk scheduling, and signed GitHub bashy distribution
@@ -12,7 +14,7 @@
 
 - `build.md` — hydrate once, build each subproject from its root; sibling-replace convention; gotchas
 
-- `plan-s571-posix-certification-readiness.md` — Sprint 571 resolution of 67 residual test purposes and POSIX certification dossier readiness
+- `plan-s571-posix-certification-readiness.md` — Historical S561 readiness plan; outstanding R1-R7 investigations continue in Sprint 675 against the S575 evidence
 - `plan-s575-master-execution.md` — Sprint 575 complete Bash ← Bash# ← bashy split, minimum changes, standalone fixed-dependency gates and owned-fork option
 - `s575-separation-review.md` — Source-checked parser/runtime and catalog coupling findings before minimum-change separation
 - `s575-runtime-boundary.md` — Independently reviewed owned-language-engine design with a narrow shared handler boundary

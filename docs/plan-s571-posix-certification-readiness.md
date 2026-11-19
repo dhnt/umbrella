@@ -1,5 +1,16 @@
 # Sprint 571: residual resolution and POSIX certification readiness
 
+## Follow-up after the S575 measurement
+
+The operator requested a fresh follow-up using the 2026-11-19 separated-source
+evidence. [Sprint 675](plan-posix-certification-after-separation.md) carries
+forward R1-R7 with their original story IDs and updated investigation/preparation
+scope. The historical R8 documentation delivery remains here. Do not launch
+duplicate residual investigations from this older plan. The S561 candidate and
+requirements below are retained as historical context; the current baseline is
+`posix-baseline/s575-2026-11-19` with the same recorded 4 FAIL, 54 UNRESOLVED
+and 9 INSPECT results.
+
 Sprint UUID: `74f43bab-7fb6-58b1-97e0-94c52ed5986c`.
 State: planned backlog; manager unassigned. Stories and card are authoritative.
 
