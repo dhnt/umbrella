@@ -77,6 +77,28 @@ the existing runners and acceptance commands — no bespoke verifiers that
 establish no new fact; make owner, host (by role), blocker and remaining
 checks explicit; an unresolved failure is never "fixed".
 
+## KISS / MVP and mass-change planning
+
+Deliver the smallest robust change that meets the authorized acceptance criteria.
+Inspect existing code, commands, KB and design records before proposing new
+mechanisms or stories. Reuse existing solutions and identifiers. A complete
+parent/child address can provide uniqueness; a missing per-record UUID is not
+itself a defect. Do not create a large story fan-out when an existing solution
+or a small repair suffices.
+
+Mass changes — including cross-entity rewrites, schema/backfill migrations,
+cross-repository migrations and mechanical renames — require a dedicated sprint
+and a written plan before implementation. The plan must establish the actual
+gap and minimal alternatives, scope and non-goals, affected repositories and
+entities, compatibility and migration needs, bounded stories and owners,
+dependencies, acceptance checks and test hosts, resource budget, risks and
+rollback. Keep implementation within the operator-authorized scope. A design
+discussion or audit finding alone does not authorize a migration or mass change.
+
+Keep the active sprint focused on its MVP. Put unrelated broader work in a
+separate planned sprint, preserving existing work without activating it.
+Do not silently expand scope or weaken verification to finish sooner.
+
 ## Name
 
 **`dhnt`** (spoken *dahenito*) is the canonical name of the whole — system +
