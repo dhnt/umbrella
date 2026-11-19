@@ -3,15 +3,18 @@ id: f89b5f3095bb
 kind: feature
 title: 'J3 Wish to validated patch: ask for a cosmetic change in words, over the pooled route'
 seq: 314
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
     - desktop
 created: 2026-11-15T02:57:50.501846Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the try-now showcase — a visitor shapes ai.dhnt.io inside the owner''s declared boundary, proven Red-Green-Refactor'
+closed: 2026-11-19T15:06:56.314225Z
+closed_by: claude-opus5.5-s641
 ---
 
 The AI layer on top of J2, and deliberately thin: the wish box is a convenience over the deterministic setters, never the only door.

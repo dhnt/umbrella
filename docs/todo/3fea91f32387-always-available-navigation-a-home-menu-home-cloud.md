@@ -10,9 +10,6 @@ labels:
     - ux
 created: 2026-11-19T14:40:39.806498Z
 assignee: claude-sonnet5.5
-sprint: 641
-sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
-sprint_title: 'MVP phase A: voice input + dhnt.io cosmetic — the free desktop you shape by asking'
 ---
 
 Seen live 2026-11-19 on v0.18.77: the operator reported 'cloudbox is broken / always redirects to /periscope/'. Root cause: their desktop had shapeOnly=true (toggled from the Shape panel during the J3 test). Shape-only hides the whole header (logo, Install, history, settings, theme, Cloudbox, account; 8 controls present but hidden), leaving only the round Flow button bottom-right, with nothing saying that controls are hidden or how to restore them. (The / -> /periscope/ redirect for any session cookie is long-standing, routes_spa.go, and was not the fault.) Fix (small, UI): in Shape-only mode show a persistent, unmissable affordance, e.g. a slim top strip 'Shape-only mode: controls hidden' with a 'Show controls' button, plus an Esc or keyboard path; make the toggle's effect explicit when switching it on. Done when: a fresh user who enables Shape-only can see that it's on and restore controls without opening the Shape panel; a vitest or DOM test covers the strip; the J6 record includes this.
@@ -37,3 +34,9 @@ Clear recents, Clear favorites, Undo, History and Refresh are unstyled plain but
 - Clear recents and Clear favorites use a cautionary but visible style. They are undoable, so show "Cleared. Undo" instead of a confirmation dialog.
 - Undo and History are promoted into the Shape panel's main action row next to Apply (signed in). "Undo last change" also appears in the home menu.
 - vitest covers accessible names, Undo disabled at revision 0, and Undo/History in the main row.
+
+## Carry-over (2026-11-19)
+
+Sprint 641 was ended by the operator. This story is unlinked from it and stays open as a follow-up. State at carry-over:
+- Built and on cloudbox dev (05186d3, 27f0af1, 5ef5442, 3ead588 — the last adds the separate "Suggest it to the owner" card). tsc, eslint, vitest 37/37; checked in a stubbed browser preview at phone width.
+- Remaining: ship it in the next cloudbox build (v0.18.78, with operator go-ahead), verify live, then accept. Open question for the operator: keep the home button on full-screen terminal and remote-desktop pages (proposed: keep, semi-transparent).
