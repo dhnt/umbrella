@@ -3,7 +3,7 @@ id: badd3f9c73de
 kind: feature
 title: 'J1 Voice in the desktop''s own wish box: vendor the one voice module into the hosted SPA'
 seq: 318
-status: assigned
+status: done
 priority: p1
 labels:
     - software-shaping
@@ -13,6 +13,8 @@ assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the dhnt journey — iteration 1, dhnt.io is the free desktop you shape by asking'
+closed: 2026-11-19T13:10:51.567493Z
+closed_by: claude-opus5.5-s641
 ---
 
 Phase A is voice input AND cosmetics, so the desktop must be speakable — and the gap is concrete: Sprint 624 V2 put the mic in yoke's INJECTED component (pkg/webconsole/artifact/genie.js), while the desktop's wish box is cloudbox's own bundle. Without this story a person can speak to a shaped app on their own console but not to the free desktop, which is the one surface phase A is about.

@@ -3,14 +3,17 @@ id: ccab603b5e2e
 kind: requirement
 title: 'M6 Free allowance: pooled wishes are bounded, visible, and refuse rather than degrade'
 seq: 312
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
 created: 2026-11-15T02:13:07.182937Z
+assignee: claude-opus5.5-s641
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: dogfood dhnt.io — a member shapes the company site in their own GitHub-backed space, proven Red-Green-Refactor'
+closed: 2026-11-19T13:10:51.930141Z
+closed_by: claude-opus5.5-s641
 ---
 
 A public 'try it now' that calls a model is a cost and abuse surface, so the invitation cannot ship without a ceiling. This story is the ceiling, not a feature.
