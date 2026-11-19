@@ -52,6 +52,7 @@
 - `plan-sprint-655-one-app.md` — Sprint 655 one app MVP: normative command contract plus a minimum shapeable checker; conformance optional, tiers the declarer's choice; S2-S8 deferred
 - `plan-sprint-662-shaping-friction.md` — Sprint 662: four shaping frictions found by Sprint 655 (contained checks, agent identity, git, jq); filed plan
 - `plan-agentic-tool-support.md` — Sprint 671: official agentic tool set (11 built-in seeds), demotions to examples, kimi rename, dsh graduation, latest models; filed plan
+- `plan-sprint-672-token-minting.md` — Sprint 672: owner minter token, bearer token edit, CLI parity for access tokens, rotation; filed plan
 - `brand/README.md` — product marks for cloudbox, satellite, outpost and bashy: rules (45° mirror axis, one square size, shape before color) and per-mark files
 - `sprint-622-master-execution-plan.md` — Sprint 622 master execution plan: software shaping as the one theme (canonical definition, aligned READMEs, qiangli/bash for sh + coreutils, cloudbox/satellite/outpost/bashy product marks); planning only
 - `sprint-627-m2b-weights-evidence.md` — Windows test host model staging: disk preflight, immutable revisions, sizes, hashes and elapsed time.
