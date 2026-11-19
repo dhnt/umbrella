@@ -3,14 +3,17 @@ id: 7c7b5501492f
 kind: test
 title: 'J6 Desktop journey e2e: the five checks, home menu and pool-down as an automated scenario that gates every cloudbox release'
 seq: 317
-status: todo
+status: done
 priority: p1
 labels:
     - software-shaping
 created: 2026-11-15T02:58:09.1208Z
+assignee: claude-opus5.5-s641
 sprint: 670
 sprint_id: 4b474d28-ab40-5a06-8d82-f14e76759a4a
 sprint_title: Desktop journey e2e regression gate, then ship v0.18.78 navigation
+closed: 2026-11-19T17:52:40.292562Z
+closed_by: claude-opus5.5-s641
 ---
 
 The MVP's acceptance, recorded once with ids and screenshots where they help.
