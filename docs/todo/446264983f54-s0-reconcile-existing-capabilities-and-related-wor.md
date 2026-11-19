@@ -3,12 +3,13 @@ id: 446264983f54
 kind: requirement
 title: S0 Reconcile existing capabilities and related work
 seq: 486
-status: todo
+status: assigned
 priority: p0
 labels:
     - group-productivity
     - fleet-autonomy
 created: 2026-11-18T21:27:39.565791Z
+assignee: s666-codex-manager
 sprint: 666
 sprint_id: edd13140-c9a6-59d5-ad89-9cd59626ea58
 sprint_title: Human–agent group productivity and fleet autonomy
