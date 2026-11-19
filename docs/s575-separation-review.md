@@ -1,5 +1,36 @@
 # Sprint 575: separation review before product edits
 
+## Superseded run recovery — 2026-11-19
+
+The operator's reference-only rescope defers the shared-engine, neutral-contract
+and separate CLI redesign. Earlier structural-review entries below are historical,
+not authorization to replay those changes into the current delivery.
+
+All six remaining pre-rescope Weave runs were reviewed. No missing applicable
+reference change remained to integrate:
+
+| Run | Commits | Original tip | Disposition |
+| --- | ---: | --- | --- |
+| bash-home 4 | 3 | d005bf774e35a9ff13679ab5a41b80439043c27a | Superseded CLI fork with new selector refusal behavior |
+| bash-home 5 | 6 | 92b222fa4a2e66d4fcc0daaee390903480602bee | Deferred engine removal and fixture changes |
+| bashsharp 2 | 3 | 3e0abf034e6311c8dff419017ec23c668c8f6ea8 | Deferred value, handler and error contract redesign |
+| bashy 109 | 3 | ec95e808fa1c70dfe1e2a1852f16220c192484e2 | Deferred catalog extraction and new refusal behavior |
+| bashy 111 | 2 | c5314adb47ab6f365918ff8c1891e140545578f7 | Equivalent gate support delivered through published standalone tooling |
+| coreutils 3 | 1 | 00da501c087f7ad7bf0a04298e6410b2c8d7ec3a | Imports already relocated; remainder needs deferred contracts and removes retained tests |
+
+Before retiring any workspace, all 18 commits and their full prerequisite history
+were saved in six checksum-verified Git bundles, with original run evidence.
+The supported superseded disposition also preserved each exact tip as
+`refs/salvage/abandoned-<run>` in its owning repository. Every retained ref and
+bundle was independently checked against the original tip after retirement.
+The six obsolete workspaces are gone; their stories are unassigned and labeled
+`superseded-plan`, without claiming implementation acceptance.
+
+No old implementation was merged, no verification was represented as newly
+passing, and no frozen POSIX source, artifact, licensed test or active run input
+was changed by this recovery.
+
+
 Date: 2026-11-17. Manager: `s575-codex-manager`.
 Status: original source review with subsequent delivery evidence below; full separation remains in progress.
 
