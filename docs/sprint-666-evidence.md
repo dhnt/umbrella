@@ -12,6 +12,8 @@ Status at the 2026-11-19 integration checkpoint: S0–S9 have accepted source an
 
 The source-built Bashy was atomically installed at the canonical user binary path. Build and installed SHA-256 both equal `1df45184f6bbc6ca5b66e904a62b174af5ce7c89d1fbf9cec9a238523084b45d`; build metadata identifies Bashy `e967db44`, Yoke `2a80e935`, and an unmodified source tree. Installed commands passed a Meet brief read of the adopted story using its isolated story store and a read-only KB workflow preview. The brief retained `participant`/`proposed` for the agent-authored action while showing its adopted story and owner. The KB preview reported the exact completed candidate as an existing, unvalidated candidate. A first brief probe without that story store returned the room's actions without adoption links; it was a fixture configuration error, and its output was not counted as a passing smoke. These checks do not replace the shared native host gate.
 
+An independent browser journey on Yoke `2a80e935` built the SPA and Meet server from the pinned source and ran one Playwright test against real API routes. The normal room UI previewed an action, required explicit confirmation, created one linked story, and showed a posted outcome with evidence in the room transcript. Unsigned impersonation and a vouched outsider each received HTTP 403. The raw private log has SHA-256 `2168c306b19a4f0709e7fe89f7ebb12a1e1a2dbd5b250d77455f034db8a1a06a` and reports one pass in 21.7 seconds. Its isolated test helper completed a disposable story, so this proves the UI and outcome path; the authentic managed delivery evidence is workflow 1 below.
+
 ## Workflow evidence
 
 | Workflow | Exact candidate and observed result | Limits still open |
