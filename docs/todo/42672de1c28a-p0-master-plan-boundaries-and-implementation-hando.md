@@ -3,15 +3,17 @@ id: 42672de1c28a
 kind: requirement
 title: P0 Master plan, boundaries and implementation handoff
 seq: 130
-status: todo
+status: wontfix
 priority: p0
 labels:
     - shaping
     - dogfood
+    - shelved
 created: 2026-11-11T20:10:50.123846Z
 sprint: 617
 sprint_id: 08692c1f-daed-5ad4-831e-c24feb4b9ac8
 sprint_title: 'Bashy dogfooding: software shaping from local installations through staging to upstream'
+closed: 2026-11-19T14:21:26.684925Z
 ---
 
 Session scope: write sprint plan/stories only; do not code, migrate repositories, configure remotes, install binaries, start workers, promote or release. Leave this sprint in backlog, unassigned and unstarted for exit.
@@ -43,3 +45,9 @@ P8: todo:6753d01f856b — P8 Move future official release ownership to dhnt
 P9: todo:d37165742155 — P9 Enforce shaping-first delivery and publish final handoff
 
 Exit handoff: planning artifacts saved only. All stories are todo; sprint is backlog with no manager, lease, workers or test-host claims. Next session: select a manager, read P0/P1 and existing linked qualifications, then obtain execution scope before starting. No code/test execution or infrastructure changes occurred in this planning session.
+
+## Review disposition: shelved (2026-11-19)
+
+Operator requested review only and authorized closure or shelving of this roadmap. P0 planning artifact already exists: umbrella commit 5b6f750fadb1a3961fb4ad3c3995fd1caee90b5b committed the reviewed master plan; 478c1dcc split P7-P9 to 618. Retire this old planning/handoff wrapper as redundant rather than start a sprint to accept it. The future-execution baseline and staffing requirements are not asserted complete.
+
+Review source: Bashy e53cc3a395511e1a1e87874ecf74117368976434; Yoke f4a89e592ced1b7e715184f7833eef174e7215de. Inspection and existing committed evidence only; no fresh product tests. Closed as wontfix to shelve the remaining roadmap, not accepted as delivered. Original requirements preserved above. No coding, workers, installation, promotion, migration or release. Sprint 618 and carried qualification stories unchanged; official release/POSIX gates remain binding.
