@@ -11,9 +11,9 @@ labels:
 created: 2026-11-19T11:20:06.798836Z
 weave: 95
 assignee: codex-gpt6-sol
-sprint: 666
-sprint_id: edd13140-c9a6-59d5-ad89-9cd59626ea58
-sprint_title: Human–agent group productivity and fleet autonomy
+sprint: 668
+sprint_id: b09e97b0-b580-5fc1-8a77-8c4377c92883
+sprint_title: Uniform entity references and authorized discovery
 ---
 
 The shipped uniform ref design (dhnt-docs/docs/uniform-ref-addressing.md D10-D14, commit 145e0fab) requires UUID, scoped slug and local seq handles for every addressable entity. Registered resources currently lack those persisted handles and a shared ref resolver; the effective kind/name is only an implementation lookup. Add resource handle persistence and resolve all three through the existing pkg/ref and bashy define/scopeLookup seams. Reuse the shipped resolver, without a parallel identity catalog. Cover cross-stack lookup from UUID and scoped slug, local seq confinement, aliases, and stable identity across rename/host transport. Prior audit/fix examples are closed umbrella stories 53b78fabbe9f and f5bf8d3422e7. Sprint 666 #523 is a separate physical claim-address collision fix and does not close this contract gap.
