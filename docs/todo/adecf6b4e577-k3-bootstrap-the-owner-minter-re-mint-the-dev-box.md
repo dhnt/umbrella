@@ -3,7 +3,7 @@ id: adecf6b4e577
 kind: task
 title: K3 bootstrap the owner minter; re-mint the dev box session token via CLI; revoke the 2036 token
 seq: 545
-status: assigned
+status: todo
 priority: p0
 labels:
     - tokens
