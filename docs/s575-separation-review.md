@@ -1,5 +1,25 @@
 # Sprint 575: separation review before product edits
 
+## Completed POSIX engineering measurement — 2026-11-19
+
+The full unchanged Profile D measurement completed with 117 targets and 9,337
+execution results: 9,270 PASS group, 4 FAIL, 54 UNRESOLVED and 9 INSPECT; no
+UNINITIATED, UNREPORTED or capped targets. Residual counts and observed families
+match the S561 engineering baseline; authority/manual dispositions remain open.
+
+Exact tested-source marker: `posix-baseline/s575-2026-11-19`, published in the
+umbrella at `295cd32d032fb94dda2c032c26109032bd5af4b8`, Bash at
+`7855c2f038f2c8ccba1baf8478b0b8fb3dcd8cd2`, and Coreutils at
+`c656935287fa4bff4920b08e41156d13d7c5702f`. This marker is an engineering
+baseline, separate from any RC38 product release or certification award.
+
+The [public closeout record](../bashy/docs/s575-posix-engineering-baseline.md)
+retains scope, artifact identities, result families and the private evidence
+archive digest. Original retrieval, independent integrity checks and archive
+readback passed. The owned disposable test venue was retired after review,
+with provider API absence verified. The run-and-retention story is accepted;
+official certification is not claimed complete.
+
 ## Superseded run recovery — 2026-11-19
 
 The operator's reference-only rescope defers the shared-engine, neutral-contract
