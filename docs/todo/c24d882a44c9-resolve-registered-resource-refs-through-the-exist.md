@@ -3,7 +3,7 @@ id: c24d882a44c9
 kind: bug
 title: Resolve registered resource refs through the existing uniform ref contract
 seq: 524
-status: assigned
+status: wontfix
 priority: p1
 labels:
     - refs
@@ -14,6 +14,7 @@ assignee: codex-gpt6-sol
 sprint: 668
 sprint_id: b09e97b0-b580-5fc1-8a77-8c4377c92883
 sprint_title: Uniform entity references and authorized discovery
+closed: 2026-11-19T13:04:25.263032Z
 ---
 
 The earlier uniform ref design (dhnt-docs/docs/uniform-ref-addressing.md D10-D14, commit 145e0fab) proposed UUID, scoped slug and local sequence handles for addressable entities. The operator's later design correction accepts an unambiguous full parent path, such as host UUID / sprint sequence / todo sequence; absence of a per-record UUID alone is not a defect. Audit registered Resource identity and its existing parent/sequence semantics before adopting this candidate. Reuse the shipped resolver without a parallel catalog. Add persisted standalone identity only if Resource must remain independently portable across rename/host transport and the current handles cannot meet that need. Preserve aliases, authorization, and ambiguous-input refusal. Prior audit/fix examples are closed umbrella stories 53b78fabbe9f and f5bf8d3422e7. Sprint 666 #523 is the separate physical claim-address collision fix and does not require this migration.
