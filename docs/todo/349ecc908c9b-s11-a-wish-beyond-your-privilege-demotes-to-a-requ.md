@@ -3,15 +3,17 @@ id: 349ecc908c9b
 kind: feature
 title: S11 A wish beyond your privilege demotes to a request, never a bare refusal
 seq: 321
-status: todo
+status: wontfix
 priority: p2
 labels:
     - software-shaping
     - boundary
+    - superseded
 created: 2026-11-15T03:14:43.615282Z
 sprint: 638
 sprint_id: 88e86a75-5c83-5528-8a5c-44cc29c43030
 sprint_title: 'Website shaping: Shape badge, engine-hosted site, shaping levels (dhnt.io dogfood)'
+closed: 2026-11-19T14:02:19.048105Z
 ---
 
 Operator rule 2026-11-14, recorded in umbrella docs/sprint-641-feature-matrix.md ('Refusals demote; they never dead-end'). The same principle the message bus already enforces as DEMOTE, NEVER DROP, applied to privilege instead of delivery.
@@ -23,3 +25,9 @@ Guardrails, each one testable: a demotion performs no part of the privileged act
 Depends on S6 (levels), pairs with Sprint 641 M4 (the feature list) and Sprint 640 (the queue that receives them).
 
 Acceptance: a member wish on a denied path returns a request id and a message naming the feature and the destination, and builds nothing; the same wish twice aggregates; an invariant-floor wish offers consent before anything is sent to staff and sends nothing if declined; the allowance decrements; no demotion path can perform a privileged side effect (asserted by test, not by review).
+
+## Superseded by Sprint 669
+
+Operator-authorized consolidation, 2026-11-19. Replacement sprint UUID: 2f346ac0-20ce-5354-88b9-b74ef3f567a9. Replaced by M6 (`5d23ad18f7a1`), M7 (`3eb5dc1d7110`). Explicit tracked requests replace privilege dead ends; no privileged effect is performed.
+
+This record is retired as wontfix by supersession, not accepted as delivered. Original scope and evidence are preserved above. Existing private disclosure, release and filing restrictions remain in force. The replacement master plan holds the complete triage; no product coding was performed in this planning session.
