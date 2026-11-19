@@ -3,11 +3,13 @@ id: 3db3e946cb84
 kind: feature
 title: 'J5 Journey state: a few competence events and an invitation table, as data'
 seq: 316
-status: todo
+status: assigned
 priority: p2
 labels:
     - software-shaping
 created: 2026-11-15T02:58:08.980397Z
+weave: 103
+assignee: claude-sonnet5.5
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the try-now showcase — a visitor shapes ai.dhnt.io inside the owner''s declared boundary, proven Red-Green-Refactor'
