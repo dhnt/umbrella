@@ -49,23 +49,22 @@ Prefer existing composition, configuration and verified skill mechanisms; add co
 
 ## Gates and evidence
 
-The conductor selects existing package/command gates after S0, runs them independently and records exact source identities and venue roles. Heavy suites run on coordinated, claimed shared test hosts; short targeted checks may run locally. Reproduce and classify a regression before fixing it.
+The conductor selects existing package/command gates after S0, runs them independently and records exact source identities and venue roles. All remaining build, test and vet work runs on a claimed test host; none runs on the development host. Reuse relevant passing evidence tied to unchanged commits. Reproduce and classify a regression before fixing it.
 
 Required workflow evidence: (1) agreed action → explicit adoption → tracked assignment → verified result in originating room; (2) interrupted agent → replacement with candidate/evidence continuity and reconciliation before retry; (3) competing agents → queued test-host access with clear ownership and uncontaminated candidate evidence. Include cancellation, stale ownership, changed decisions, permission isolation and uncertain effects where relevant.
 
 Establish baseline completion time, human interventions, repeated reads, failed launches, recovery time and coordination overhead before claiming improvement. Mark unavailable measurements honestly. Worker prose, a matching count or an exit code alone is not verified delivery. Keep blockers, owners, remaining checks and next actions on the sprint continuity record.
 
-## Operator extension: uniform entity references
+## MVP closure and separate reference work
 
-On 2026-11-19 the operator made the existing D14 uniform reference contract an in-sprint delivery requirement. Sprint 666 cannot close with an audit or deferred follow-up. The design of record is `dhnt-docs/docs/uniform-ref-addressing.md` D14 at `145e0fab`: persisted UUID, scoped slug and parent-local sequence, with the existing shared resolver and no parallel catalog. Discovery of an authorized entity is separate from resolution of a known handle. Preserve legacy aliases and authorization, and do not treat a conversation instance, reusable room pointer or content digest as a different entity's UUID.
+The operator's final scope decision limits Sprint 666 to the group productivity MVP. The required end-to-end outcomes are:
 
-| Story | Owner and isolated source | Dependency and acceptance |
-| --- | --- | --- |
-| #524 | Codex Sol: Yoke fleet Resource and shared `resource` ref vocabulary | Persist all three handles; resource names/aliases converge before claim acquisition. |
-| #529 | Manager to staff after #524: Yoke agent/tool/model/host/skill fleet definitions | Persist D14 handles in owning records; agent Instance stays separate; provide stable authorized transport accessor to #527. |
-| #525 | Claude Sonnet: Yoke todo, sprint and Weave run stores/resolvers | Preserve Story-ID, existing sprint UUIDs and run versus conversation identity; portable scoped/legacy lookup. |
-| #526 | Claude Opus: Yoke MB, bus, Meet and chat stores/resolvers | Existing MB UUIDs including archive, private visibility, and durable identities distinct from reusable pointers. |
-| #527 | Codex Astra: isolated Cloudbox/Satellite entity schema and API projections/discovery, Outpost inventory transport | Preserve existing private UUIDs, persist scoped slug/seq compatibly, and test member/outsider plus transport round trips; coordinate schema/export owner; no deploy. |
-| #528 | Manager to staff after #524 vocabulary: remaining person/role/episode/out/app plus Bashy `internal/agentos/refs.go` and CLI discovery | Search returns an authorized UUID or scoped handle that resolves to the same entity across stacks; duplicate local slug/seq on different hosts, ambiguity, offline/archive and outsider cases are explicit. |
+1. A room action is explicitly adopted, becomes an assigned story, and returns a verified result to that same room.
+2. A failed worker is replaced with its candidate and evidence preserved, with uncertain external effects reconciled before retry.
+3. Competing agents use one test host through one visible owner and FIFO queue, without overlapping claims or mixed candidate evidence.
 
-Source gates are focused package tests, three shipping OS vets, independent authority/privacy review, and combined public/private contract tests on exact committed producers. Integration then publishes producer commits, repairs Bashy standalone `GOWORK=off` module pins, updates umbrella gitlinks, and verifies the installed canonical binary. Heavy native/shared-host work uses the registered resource queue. A red baseline remains red in evidence; no test exclusion is counted as a pass. The next checkpoint is 13:00 UTC, with a conditional delivery estimate of 16:00–18:00 UTC. Sprint #523 physical claim-address repair and S10 live workflow evidence remain open until their exact integrated gates pass.
+Existing permission, privacy, cancellation, stale-owner and recovery safeguards remain required. A failure in one of these workflows blocks closure. S0–S9 retain their accepted status and their unchanged broad suites need not run again. S10 records exact candidate identities, raw workflow evidence and honest baseline limits.
+
+The only additional code fix required here is #523: the registered resource and equal-named host alias must mutually exclude lease and attached claims using their physical ledger addresses. The reviewed Yoke producer commit `914168c9` changes seven production lines and carries focused regressions; portable test-fixture commit `07ff1477` is test-only. Verify the exact integrated candidate on a claimed test host, publish the producer only after a passing relevant gate, repin and independently validate the standalone Bashy consumer, then move the umbrella gitlinks forward and verify the installed consumer. Do not claim an interrupted or baseline-red broad run as passing.
+
+Existing identifiers, aliases, resolver behavior and authorization stay in place for this MVP. No UUID schema, backfill or data migration has been shown necessary for #523 or the three workflows. Uniform entity reference and discovery work in existing stories #524–#530, with its preserved source, review findings and run links, belongs to planned inactive Sprint 668. No migration branch is integrated or published as part of Sprint 666.
