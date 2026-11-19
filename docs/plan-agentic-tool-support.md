@@ -20,23 +20,25 @@ Officially supported agentic tools, all built-in fleet seeds
 | zcode | built-in | latest models |
 | kimi | built-in as `kimi-cli` | rename to `kimi` (its command name); aliases `kimi-code`, `kimi-cli` |
 | dsh | `bashy/examples/fleet/tools/dsh.yaml` | graduate to built-in |
-| hermes | built-in | latest models |
-| openclaw | built-in | latest models |
 
 Dropped: Cursor (closed source; agent-adoption doc references only — database
 and UI "cursor" stays).
 
-Demoted to custom examples (`bashy/examples/fleet/tools/`): aider, gemini-cli,
-copilot, cline, goose (all permissive). The gemini *models* stay because agy
+Custom examples only (`bashy/examples/fleet/tools/`): aider, gemini-cli,
+copilot, cline, goose (all permissive), plus hermes and openclaw (operator
+decision 2026-11-19: stay examples). The gemini *models* stay because agy
 routes them. Example tools get no model refresh.
 
 ## Gap
 
-- `yoke/pkg/fleet/baseline/tools/` seeds aider, gemini, cline, goose beside
-  the official set; `bashy/examples/fleet/README.md` already marks them for
-  retirement.
+- aider, gemini, cline, goose, hermes and openclaw were already retired in
+  `yoke/pkg/fleet/baseline/tools/` on 2026-10-09 and have example files. The
+  retired stubs stay: retirement deliberately preserves a definition so
+  history resolves. What remains is live code and docs that still treat the
+  demoted tools as first-class, and a stale README `--force` note.
 - `yoke/pkg/agentlaunch/launch.go` seeds an aider launch profile and unsafe
-  flag mapping.
+  flag mapping; `yoke/pkg/weave/weave_cooldown.go` lists aider and gemini as
+  known fallbacks.
 - `bashy/internal/agentos/installagent.go` wires aider, gemini, copilot.
 - `bashy/docs/agent-adoption/{matrix,recipes}.md` carry Cline/Cursor rows and
   the demoted agents as first-class.
@@ -47,7 +49,8 @@ routes them. Example tools get no model refresh.
 ## Stories
 
 1. Drop Cursor (bashy adoption docs).
-2. Demote aider, gemini-cli, copilot, cline, goose to examples (yoke, bashy).
+2. Finish demoting aider, gemini-cli, copilot, cline, goose: remove live
+   first-class references; keep the retired stubs (yoke, bashy).
 3. Rename `kimi-cli` → `kimi` with aliases (yoke, bashy).
 4. Graduate dsh to built-in (yoke, bashy).
 5. Research latest models per official vendor family — sourced table, no
