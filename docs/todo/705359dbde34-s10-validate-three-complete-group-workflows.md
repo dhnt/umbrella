@@ -3,12 +3,13 @@ id: 705359dbde34
 kind: test
 title: S10 Validate three complete group workflows
 seq: 496
-status: todo
+status: assigned
 priority: p1
 labels:
     - group-productivity
     - fleet-autonomy
 created: 2026-11-18T21:27:43.939438Z
+assignee: s666-codex-manager
 sprint: 666
 sprint_id: edd13140-c9a6-59d5-ad89-9cd59626ea58
 sprint_title: Human–agent group productivity and fleet autonomy

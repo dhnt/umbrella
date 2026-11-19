@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- `sprint-666-evidence.md` — Sprint 666 exact source identities, installed smoke, three workflow traces, honest measurements and remaining native-host gates
+
 - `plan-cooperative-chunk-transfer.md` — Planning-only MVP for desync-based file transfer, owner/mutual-member download groups, cooperative chunk scheduling, and signed GitHub bashy distribution
 
 - `bashy-bashsharp-yoke-position.md` — Architectural opinion: portable shell environments, language composition, and coherent verified workflows across tools, agents, and machines

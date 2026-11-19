@@ -1,5 +1,7 @@
 # Umbrella docs — catalog
 
+- **`sprint-666-evidence.md`** — Sprint 666 delivery evidence with pushed producer/consumer identities, standalone and installed-binary checks, completed managed group-work trace, managed same-host recovery and queued-worker traces, raw manifest checksums, honest baseline limits, and the still-open native shared-host gates. It records accepted stories separately from S10 closure.
+
 - **`plan-cooperative-chunk-transfer.md`** — Planning-only handoff for a shared pure-Go desync transfer engine, file/directory commands, and explicit bashy upgrades. Defines initiating-owner plus active-mutual-member admission for classroom and organization cooperation without pairwise participant membership, separates locality from authorization, records the missing public transfer-authorization contract, and lays out seven dependency-ordered stories, defaults, failure behavior, signing/publication gates, and acceptance evidence. Implementation and sprint execution remain unstarted.
 
 - **`bashy-bashsharp-yoke-position.md`** — Codex's architectural position on bashy, Bash#, and yoke: three complementary unification promises, explicit portability and language boundaries, and integration priorities for capability contracts, execution lifecycles, verified improvement loops, and complete workflow evidence. Distinguishes existing foundations from recommendations and Sprint 653's planned runner work.
