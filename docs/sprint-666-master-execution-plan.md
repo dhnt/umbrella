@@ -54,3 +54,17 @@ The conductor selects existing package/command gates after S0, runs them indepen
 Required workflow evidence: (1) agreed action → explicit adoption → tracked assignment → verified result in originating room; (2) interrupted agent → replacement with candidate/evidence continuity and reconciliation before retry; (3) competing agents → queued test-host access with clear ownership and uncontaminated candidate evidence. Include cancellation, stale ownership, changed decisions, permission isolation and uncertain effects where relevant.
 
 Establish baseline completion time, human interventions, repeated reads, failed launches, recovery time and coordination overhead before claiming improvement. Mark unavailable measurements honestly. Worker prose, a matching count or an exit code alone is not verified delivery. Keep blockers, owners, remaining checks and next actions on the sprint continuity record.
+
+## Operator extension: uniform entity references
+
+On 2026-11-19 the operator made the existing D14 uniform reference contract an in-sprint delivery requirement. Sprint 666 cannot close with an audit or deferred follow-up. The design of record is `dhnt-docs/docs/uniform-ref-addressing.md` D14 at `145e0fab`: persisted UUID, scoped slug and parent-local sequence, with the existing shared resolver and no parallel catalog. Discovery of an authorized entity is separate from resolution of a known handle. Preserve legacy aliases and authorization, and do not treat a conversation instance, reusable room pointer or content digest as a different entity's UUID.
+
+| Story | Owner and isolated source | Dependency and acceptance |
+| --- | --- | --- |
+| #524 | Codex Sol: Yoke fleet Resource and agent/tool/model/host/skill definitions, shared ref vocabulary | Persist all three handles; resource names/aliases converge before claim acquisition; instance identity stays separate. |
+| #525 | Claude Sonnet: Yoke todo, sprint and Weave run stores/resolvers | Preserve Story-ID, existing sprint UUIDs and run versus conversation identity; portable scoped/legacy lookup. |
+| #526 | Claude Opus: Yoke MB, bus, Meet and chat stores/resolvers | Existing MB UUIDs including archive, private visibility, and durable identities distinct from reusable pointers. |
+| #527 | Codex Astra: isolated Cloudbox/Satellite API projections and authorized discovery, Outpost inventory transport | Preserve existing private UUIDs; member/outsider and transport round trips; no deploy. |
+| #528 | Manager to staff after #524 vocabulary: remaining person/role/episode/out/app plus Bashy `internal/agentos/refs.go` and CLI discovery | Search returns an authorized UUID or scoped handle that resolves to the same entity across stacks; duplicate local slug/seq on different hosts, ambiguity, offline/archive and outsider cases are explicit. |
+
+Source gates are focused package tests, three shipping OS vets, independent authority/privacy review, and combined public/private contract tests on exact committed producers. Integration then publishes producer commits, repairs Bashy standalone `GOWORK=off` module pins, updates umbrella gitlinks, and verifies the installed canonical binary. Heavy native/shared-host work uses the registered resource queue. A red baseline remains red in evidence; no test exclusion is counted as a pass. The next checkpoint is 13:00 UTC, with a conditional delivery estimate of 16:00–18:00 UTC. Sprint #523 physical claim-address repair and S10 live workflow evidence remain open until their exact integrated gates pass.
