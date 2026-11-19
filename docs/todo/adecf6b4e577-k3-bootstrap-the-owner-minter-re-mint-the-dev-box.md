@@ -9,6 +9,9 @@ labels:
     - tokens
 created: 2026-11-19T19:55:21.414278Z
 assignee: claude-opus5.5-s672
+sprint: 673
+sprint_id: 805fd7b6-ff67-5e09-a28c-f28ee49c74d3
+sprint_title: Owner minter bootstrap and session token re-mint
 ---
 
 Create the owner minter once in the console (bashy browser; a cookie session is the only parent that can grant the first all-scope token), value straight to the vault. Then from the CLI: mint the dev box session token with tasks/sprints scopes and a <=365d TTL into the vault, keep the secrets.map binding, verify session sync, revoke the console-made 2036 session token.
