@@ -146,5 +146,31 @@ two ways: the static host, unchanged, and the engine face with the panel.
   session-scoped Codespace to your own outpost or satellite and serve it
   there. Nothing else changes — same repo, same link shape.
 
-After the live run, the conductor amends this guide with what actually
-happened.
+## What the first live run taught (2026-11-18)
+
+The steps above ran end to end on a Next.js static export hosted on a free
+static host, first on a free cloud workspace and then on the owner's
+always-on Windows outpost behind their satellite. Details and fixes are in
+the bashy kb (`bashy kb search shaping`):
+
+- **Sign-in.** Visitors sign in on the satellite. Use
+  `/cloud/signin?next=<page>` so they land back on the page; the panel
+  does this. A satellite admits only active members, so an invitee must
+  accept once. Master sessions do not yet carry to satellites, and master
+  sign-out does not end satellite sessions (follow-ups filed).
+- **Assets.** Assets must come from the static host, never through the
+  engine (the edge rate-limits anonymous requests). App-router sites need
+  `"static_only": true`; the panel fills the page's
+  `data-shaping-contact` / `data-shaping-signin` hooks.
+- **Owner shaping** needs the console started with a shaping agent
+  (`--shape-agent`); without one, wishes are refused. Choose a route you
+  own (your key, your subscription, or a local model). Free tiers may
+  hang under an agent's load. The console finds Go through `bashy go`, so
+  a host with only bashy installed can build shaped servers.
+- **Private values** such as a phone number go in through a copysheet:
+  the human types them once, and the agent writes them into the private
+  fields without ever seeing them.
+- **Tutorials** can be published to the owner's YouTube channel by an
+  agent (`bashy google youtube-upload`, in a separate permission slot) and
+  linked from a practice app.
+
