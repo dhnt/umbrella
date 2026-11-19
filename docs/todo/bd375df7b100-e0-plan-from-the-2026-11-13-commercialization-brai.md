@@ -3,15 +3,17 @@ id: bd375df7b100
 kind: task
 title: 'E0 plan from the 2026-11-13 commercialization brainstorm: E1 as wish-log replay, E3 regenerate arm, DIY-starter catalog, first-bet sequence'
 seq: 235
-status: todo
+status: wontfix
 priority: p3
 labels:
     - shaping-eval
     - planning
+    - shelved
 created: 2026-11-13T17:03:55.142508Z
 sprint: 632
 sprint_id: f9e12c4a-7e87-566d-9d68-faafaff27757
 sprint_title: 'Shaping evaluation: upgrade survival, data safety, beachhead vs baseline, scorecard'
+closed: 2026-11-19T14:31:19.883078Z
 ---
 
 PLANNING STORY. Adjust the Sprint 632 plan before E1-E4 run. The requirements are the OPERATOR POSITIONS below. The 2026-11-13 brainstorm (meet room 46) is background information only: its polls, cards and reviewer books carry no decisions and set no requirements. For information: dhnt-docs docs/meetings/meeting-note-2026-11-13T07-09-commercializing-bashy-software-shaping-product-a.md (private) (minutes, polls, 25-card board) and dhnt-docs docs/shaping-commercialization-analysis.md (private) (compiled analysis of the minutes, the board and the four reviewer books).
@@ -30,3 +32,9 @@ e. A first-bet sequence PROPOSED to the operator for confirmation (the analysis 
 f. Open questions answered with the operator and recorded on the card: pricing unit to test first (per business vs per governed app line); starter count; whether classroom revenue is reported separately from shaping.
 
 ACCEPTANCE: E1 and E3 story texts updated and linked from this story; (c) decided and filed; catalog rule and sequence committed to the sprint plan doc; open questions (f) answered or explicitly deferred with a reason. No runtime proofs in this story; measurements belong to E1-E4 on the claimed gate venue.
+
+## Review disposition against Sprint 669 (2026-11-19)
+
+Operator confirmed replacement reference is Sprint 669 (2f346ac0-20ce-5354-88b9-b74ef3f567a9) and authorized closing or shelving irrelevant remaining Sprint 632 work. E0 commercialization/replay/catalog/first-bet planning is outside Sprint 669's bounded product MVP. Its receiver-free/enabler positioning is already reflected in the 669 master plan, but pricing decisions, universal wish-log replay, starter-count commitments and commercial experiments are not accepted or added as dependencies. Shelve this old planning bundle.
+
+Closed wontfix to shelve remaining scope, not accepted as delivered. Original requirements and prior evidence/failures preserved above. Accepted phase-one stories remain unchanged. No coding, workers, fresh tests, installation, deployment or publication. Existing security and release gates remain binding.
