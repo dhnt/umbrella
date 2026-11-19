@@ -61,7 +61,8 @@ On 2026-11-19 the operator made the existing D14 uniform reference contract an i
 
 | Story | Owner and isolated source | Dependency and acceptance |
 | --- | --- | --- |
-| #524 | Codex Sol: Yoke fleet Resource and agent/tool/model/host/skill definitions, shared ref vocabulary | Persist all three handles; resource names/aliases converge before claim acquisition; instance identity stays separate. |
+| #524 | Codex Sol: Yoke fleet Resource and shared `resource` ref vocabulary | Persist all three handles; resource names/aliases converge before claim acquisition. |
+| #529 | Manager to staff after #524: Yoke agent/tool/model/host/skill fleet definitions | Persist D14 handles in owning records; agent Instance stays separate; provide stable authorized transport accessor to #527. |
 | #525 | Claude Sonnet: Yoke todo, sprint and Weave run stores/resolvers | Preserve Story-ID, existing sprint UUIDs and run versus conversation identity; portable scoped/legacy lookup. |
 | #526 | Claude Opus: Yoke MB, bus, Meet and chat stores/resolvers | Existing MB UUIDs including archive, private visibility, and durable identities distinct from reusable pointers. |
 | #527 | Codex Astra: isolated Cloudbox/Satellite entity schema and API projections/discovery, Outpost inventory transport | Preserve existing private UUIDs, persist scoped slug/seq compatibly, and test member/outsider plus transport round trips; coordinate schema/export owner; no deploy. |
