@@ -134,3 +134,7 @@ Sprint 639, planning only: every bashy user owns an agent-friendly trove, member
 ## shaping-enable-a-website.md
 
 Owner guide for shaping-enabling a static site: the four visitor tiers and what the site learns from each, what the owner needs (a static site, a GitHub account, a cloudbox account, a satellite, one OpenAI-compatible route), and the standard steps — `website.bsh assess`, `enable` into a private companion repo, editing `site.json` and `fields/*.md` with fail-closed audience front matter, hosting on a Codespace with three secrets or on the owner's own machine with `shaping-host up` plus `website serve`, registering for owner shaping with `bashy shape`, and adding the one engine-face link to the static site — then verify and graduate to an always-on host. To be amended with what actually happened after the live run.
+
+### sprint-667-master-execution-plan.md
+
+Plan for provable relays: every relayed message between humans and agents on any outpost or satellite carries the original signed statement by reference, so a recipient can verify who said it, who relayed it, what it authorizes and until when. Planning only.

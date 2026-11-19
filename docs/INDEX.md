@@ -81,3 +81,4 @@
 - `docs/software-shaping-paradigm-comparison.md` — Software shaping compared with CI/CD, vibe coding, spec-driven development, malleable software and other paradigms; 2025–2026 evidence, risks, levers, and the N:N and decide-after-seeing principles
 - `docs/release-failure-ledger.md` — Release failure ledger: every test failure met while releasing, with last-green/first-red commits for bisecting, cause, class (product, test, metadata, venue) and fix commit
 - `shaping-enable-a-website.md` — Owner guide: shaping-enable a static site through a private companion repo (assess, enable, edit, host, register, link), four visitor tiers, verify and graduate
+- `sprint-667-master-execution-plan.md` — Sprint 667 provable relays: signed statements and relay-by-reference across outposts and satellites; planning only
