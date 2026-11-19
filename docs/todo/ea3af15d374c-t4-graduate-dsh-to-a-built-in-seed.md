@@ -3,7 +3,7 @@ id: ea3af15d374c
 kind: feature
 title: T4 Graduate dsh to a built-in seed
 seq: 538
-status: assigned
+status: done
 priority: p1
 labels:
     - agents
@@ -12,6 +12,8 @@ assignee: claude-opus5.5-s671
 sprint: 671
 sprint_id: 4e6b5dcd-e6c8-5949-864a-799d4e9a9b5e
 sprint_title: 'Agentic tool support: official set + latest models'
+closed: 2026-11-19T18:31:07.750221Z
+closed_by: claude-opus5.5-s671
 ---
 
 Move bashy/examples/fleet/tools/dsh.yaml into yoke/pkg/fleet/baseline/tools/dsh.yaml (keep the Node >= 24.9 requirement declared); drop it from the examples README and examples test; add an offline seed test like zcode_setup_test.go. Accept: tool show dsh from a fresh store; targeted unit tests green.

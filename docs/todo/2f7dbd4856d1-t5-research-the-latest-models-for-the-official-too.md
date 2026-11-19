@@ -3,7 +3,7 @@ id: 2f7dbd4856d1
 kind: spike
 title: T5 Research the latest models for the official tool families
 seq: 539
-status: assigned
+status: done
 priority: p1
 labels:
     - agents
@@ -12,6 +12,8 @@ assignee: claude-opus5.5-s671
 sprint: 671
 sprint_id: 4e6b5dcd-e6c8-5949-864a-799d4e9a9b5e
 sprint_title: 'Agentic tool support: official set + latest models'
+closed: 2026-11-19T18:31:08.118909Z
+closed_by: claude-opus5.5-s671
 ---
 
 Official set: ycode/genie, claude, codex, opencode, agy, muse, zcode, kimi, dsh. Verify at vendor sources the current model ids, context windows and prices. Record a sourced table on this story. No seed edits. Web search authorized by the operator 2026-11-19.
