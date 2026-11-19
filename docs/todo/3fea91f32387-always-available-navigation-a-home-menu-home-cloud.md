@@ -3,7 +3,7 @@ id: 3fea91f32387
 kind: bug
 title: 'Always-available navigation: a home menu (Home, Cloudbox, satellites, hosts, sign in/out) in every mode, plus a Shape-only strip'
 seq: 532
-status: todo
+status: done
 priority: p1
 labels:
     - desktop
@@ -13,6 +13,8 @@ assignee: claude-sonnet5.5
 sprint: 670
 sprint_id: 4b474d28-ab40-5a06-8d82-f14e76759a4a
 sprint_title: Desktop journey e2e regression gate, then ship v0.18.78 navigation
+closed: 2026-11-19T18:52:59.637413Z
+closed_by: claude-opus5.5-s641
 ---
 
 Seen live 2026-11-19 on v0.18.77: the operator reported 'cloudbox is broken / always redirects to /periscope/'. Root cause: their desktop had shapeOnly=true (toggled from the Shape panel during the J3 test). Shape-only hides the whole header (logo, Install, history, settings, theme, Cloudbox, account; 8 controls present but hidden), leaving only the round Flow button bottom-right, with nothing saying that controls are hidden or how to restore them. (The / -> /periscope/ redirect for any session cookie is long-standing, routes_spa.go, and was not the fault.) Fix (small, UI): in Shape-only mode show a persistent, unmissable affordance, e.g. a slim top strip 'Shape-only mode: controls hidden' with a 'Show controls' button, plus an Esc or keyboard path; make the toggle's effect explicit when switching it on. Done when: a fresh user who enables Shape-only can see that it's on and restore controls without opening the Shape panel; a vitest or DOM test covers the strip; the J6 record includes this.
