@@ -3,10 +3,9 @@ id: ca76921cf9e5
 kind: test
 title: Run unchanged full POSIX base scenario using copied standalone Bash and Coreutils setup
 seq: 457
-status: assigned
+status: todo
 priority: p0
 created: 2026-11-18T15:40:07.514384Z
-assignee: s575-codex-manager
 sprint: 575
 sprint_id: 65ce85f5-87c0-5863-bf55-62de86f5df36
 sprint_title: 'Layer separation: Classic <- Bash# <- Yoke import-graph delineation'
