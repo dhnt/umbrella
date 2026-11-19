@@ -3,7 +3,7 @@ id: 3db3e946cb84
 kind: feature
 title: 'J5 Journey state: a few competence events and an invitation table, as data'
 seq: 316
-status: assigned
+status: done
 priority: p2
 labels:
     - software-shaping
@@ -13,6 +13,8 @@ assignee: claude-sonnet5.5
 sprint: 641
 sprint_id: d8aa925c-ba20-5705-ba28-33bc35700909
 sprint_title: 'MVP: the try-now showcase — a visitor shapes ai.dhnt.io inside the owner''s declared boundary, proven Red-Green-Refactor'
+closed: 2026-11-19T13:54:04.769008Z
+closed_by: claude-opus5.5-s641
 ---
 
 Law 2 of docs/dhnt-journey-design.md: the next rung is offered only after the current one has been USED. That needs state, and KISS says it is a handful of events, not a subsystem.
