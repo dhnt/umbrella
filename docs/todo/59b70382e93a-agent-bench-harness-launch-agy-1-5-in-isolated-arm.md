@@ -3,14 +3,17 @@ id: 59b70382e93a
 kind: bug
 title: 'agent-bench harness: launch agy 1.5 in isolated arms (keychain auth, first-run onboarding, folder trust)'
 seq: 549
-status: todo
+status: done
 priority: p1
 labels:
     - agents
 created: 2026-11-19T21:22:57.458516Z
+assignee: claude-opus5.5-s674
 sprint: 674
 sprint_id: e07a7b3a-e0a8-51df-b09e-53a5adb7fe3e
 sprint_title: 'agent-bench: port the agy harness to agy 1.5 (Gemini 4 Carbon steer eval)'
+closed: 2026-11-20T11:26:13.726519Z
+closed_by: claude-opus5.5-s674
 ---
 
 Goal: a quick steer eval of Gemini 4 Carbon (agy-gemini4-carbon) before entrusting agy with sprint management. Today every agy run in agent-bench fails at launch ('chat: agy-gemini4-carbon exited before its instruction was delivered', LAUNCH FAILED, not scored, no quota spent). The harness (agent-bench DAG.md 'run' + scripts/arm_home.py) was built for agy 1.3; the dev host has agy 1.5.12.
