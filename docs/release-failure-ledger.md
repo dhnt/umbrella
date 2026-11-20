@@ -78,3 +78,42 @@ All runs in the official build image on the gate host
 | Bash 5.3 gate, `BASH53_BASHPP=0` and `=1` | 86/86 each, per-fixture evidence written |
 | make test script checks: meet-spa-fresh, isolated-lanes, release-qa-lane, build-tag-matrix, startup-linux | pass |
 | make test checks that call make: build-fail-closed, bash-container-mode, verify-bashy-scratch | not run in this venue, by operator decision; Makefile removal todo `42d05687` |
+
+## rc.38 candidate verdict (bashy `944f5931`, tag `v1.0.0-rc.38-dev`)
+
+All runs in the official build image on the gate host, fresh, 2026-11-20.
+Candidate pins: yoke `0fd24d08`, coreutils `c6569352`, bash `7855c2f0`,
+readline `df59d4e2`, outpost `931c696` (tool directive, not linked).
+Umbrella candidate commit `e09df316`.
+
+| Check | Result |
+|---|---|
+| Self-hosting roll (R1 by the rc.37 lock, R2 by R1) | fixed point, bashy sha256 `a452834a…69f0`; R2 image `bashy-build:v1.0.0-rc.38-go1.27.2-367e08b44898` (`sha256:367e08b4…9804`) |
+| yoke short suite (`0fd24d08`, submodules hydrated) | 188/189; `pkg/acp TestAskRoundTripsThroughQueue` failed under load only (below) |
+| bashy Go tests (`bashy dag test`) | pass |
+| Bash 5.3 gate, `BASH53_BASHPP=0` and `=1` | 86/86 each; no NEW, RECOVERED or changed fixture by name against rc.37's evidence. Evidence sha256: mode 0 `edbc60b6…f904`, mode 1 `431bfdaa…48a9` |
+| make test script checks: meet-spa-fresh, isolated-lanes, release-qa-lane, build-tag-matrix, startup-linux | pass |
+
+### Defects found while gating rc.38
+
+| Test (repo) | Symptom | Cause | Class | Fix |
+|---|---|---|---|---|
+| yoke `cmds/all`, `pkg/ollm` (setup failed), `pkg/mplfree TestLinuxEngineSecureJoinIsPermissive` | `missing go.sum entry` for `github.com/bashsharp/bashsharp v0.0.0-20261118040926-59ce327a5e01` | `79fe8f90` (Sprint 575) added the require without its go.sum lines | build metadata defect | yoke `b7167ebe` |
+| bashy `TestToolShortcutE2E`: `chat steer agy PING` | `mb: a post needs a sender` | `pkg/chat principalName` read only `BASHY_PRINCIPAL`, `USER` and `LOGNAME`; the build image sets none, and queued steers need a board sender | product gap, exposed by the venue | yoke `4719335d` (falls back to `USERNAME`, the OS user, then `uid-<n>`) |
+| bashy `TestToolShortcutE2E`: `agy --no-yolo argv still carries the yolo flag` | `--no-yolo` ignored in a container | containment counted as explicit unsafe acceptance and outranked the flag; operator decision: an explicit `--no-yolo` always wins | product defect | yoke `0fd24d08`, bashy `944f5931` |
+| yoke `pkg/broker TestPeerPrincipalEvictsOwnerResidentModels` | `peer turn audited as "owner"`, 1 of 5 runs in isolation | the test read the audit before `finish()` appended the record | test race | yoke `5d888598` |
+| yoke `pkg/acp TestAskRoundTripsThroughQueue` | `TempDir RemoveAll cleanup: … directory not empty`, full suite only; 5/5 in isolation | `decideSoon`'s `ask.Decide` goroutine was never joined and could still write into the queue TempDir at cleanup | test race (same family as rc.37's `pkg/meet`) | yoke `3d634294` (test only; after the pinned `0fd24d08`, no shipped code affected) |
+
+### Venue failures (fixed in the venue, never in code)
+
+| Failure | Cause | Remedy |
+|---|---|---|
+| bashy tests `._*.yaml` subtests and a different rolled binary | the source tarball was made with macOS `tar`, which adds AppleDouble `._*` files; `//go:embed all:` embeds them | `COPYFILE_DISABLE=1`, `--no-xattrs --no-mac-metadata`; the driver asserts zero `._*` files before rolling |
+| yoke `cmds/all`, `pkg/ollm`, `pkg/mplfree` (setup failed) after the go.sum fix | the fresh yoke clone had no hydrated submodules (`external/ollama/src`, `external/podman/src`) | the driver hydrates them from the rc.37 tree after checking the submodule commits match |
+| Bash gate mode 1 never started: `failed to chown recursively … bashy-build-cache/_data/tmp/…` | podman re-owned the cache volume all parallel runs share while the concurrent bashy test run deleted its temp dirs | mode 1 rerun alone: 86/86, NEW none; gate runs should not share the cache volume with the test runs |
+| yoke `cmds/db TestIndependentDocClientsBothModes/persistent` (`hold did not become active`) | known load-only race, seen once on `cac9297e`; 3/3 in isolation; did not recur on `944f5931` | none needed for this candidate |
+
+Build evidence for rc.38 is this local gate (operator decision: the GitHub
+release build is triggered but not watched; the build pipeline will be
+refactored). Promotion, tier smoke and QA refs wait until after the agy
+sprints.
