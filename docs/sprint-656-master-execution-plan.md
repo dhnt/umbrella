@@ -1,5 +1,7 @@
 # Sprint 656 — RC38 release pipeline and QA follow-ups
 
+Next-session release continuity: [RC38 handoff](sprint-656-release-handoff.md).
+
 ## Reconciliation — 2026-11-20
 
 RC38 tagging and publication are **on operator hold**. This latest instruction

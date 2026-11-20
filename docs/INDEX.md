@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- `sprint-656-release-handoff.md` — Next-TUI RC38 handoff: operator hold, accepted infrastructure, remaining security/candidate qualification, release route and preserved POSIX evidence.
+
 - `sprint-656-master-execution-plan.md` — RC38 release-pipeline reconciliation: delivered infrastructure, exact benchmark limits, remaining QA work and current operator release hold.
 
 - `plan-posix-certification-after-separation.md` — Sprint 675 follow-up: investigate all 67 S575 residual results and prepare evidence-backed POSIX certification packets using the tagged baseline.
