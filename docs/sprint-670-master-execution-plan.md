@@ -29,3 +29,39 @@ J6 and S1 pass on the test host with evidence and a recorded deliberate-break fa
 ## Risks and rollback
 
 A gate that is flaky or slow blocks releases. Keep scenarios deterministic (a canned model by default) and bounded (desktop-journey takes about 6 minutes). Rollback: a gate can be skipped only by an operator-recorded override with a reason in the release packet.
+
+## Delivery continuation (2026-11-20)
+
+Operator appointed the Codex manager to finish the remaining S1 and H7a stories. J6/navigation remain accepted; the existing S1 model-free result is retained. Internal workers prepare isolated implementation candidates; the manager reviews and runs the acceptance gates independently.
+
+1. Complete S1 using two disposable Linux containers and real Git transport over a private network. Reuse the existing cached image and candidate for reproduction. The first product failure is the registered `hello-world` app being rejected by the source-repository allowlist during `shape remote set`. Repair only explicit app-promotion configuration, retaining the source-download allowlist, with regression coverage for both boundaries.
+2. Run focused source/promotion/CLI tests and build the candidate on the existing official-image test venue. Qualify the two-host gate and its deliberate broken-ref control; retain exact source, image, binary and evidence identities.
+3. Complete H7a with one bounded real-agent generation through the production delegate, then actual verifier, browser preview/approval, second-principal isolation and undo. Use the existing authenticated low-cost agent on the macOS test host with private run state and credential references. No prepared-edit substitute, automatic model retry or browser skip.
+4. Integrate only passing reviewed changes, publish producer commits before consumer pins, update release procedures and acceptance records, and close the sprint after its end checks pass. No release or deployment is part of this continuation.
+
+Resource budget: cached images/modules, focused tests only, two 2-CPU/2-GiB promotion containers, one model generation capped at 600 seconds. Missing prerequisites and product failures remain explicit until resolved; historical failures are retained separately from passing reruns.
+
+S1 is accepted and published (Yoke `79e1473d`, Bashy `5a0a79be`, `58dd639c`, acceptance `b5477087`). H7a first provider invocation stopped at a denied read-only Git command under accept-edits mode; no edit occurred. Following documented provider semantics, the manager extends the estimate to one additional capped invocation using sandboxed Auto mode, retaining the failed transcript and all assertions. This is an explicit corrective attempt after diagnosis, not an automatic retry.
+
+The corrective H7a invocation made the requested edit; a fixture assertion then compared source and imported commit IDs despite identical trees. After confirming the unchanged source reflog/worktree, snapshot the correct pre-wish source HEAD and allow one final 600-second-capped full qualification. Retain both provider-attempt records; do not count their failed gates as passing.
+
+
+## Delivery result
+
+All four stories are accepted. J6 and navigation retain their previous accepted
+release evidence. S1 promotion passes 23 checks plus targeted broken-ref failure;
+model-free lifecycle passes 27 checks plus the broken-verifier control. H7a now
+passes 38 checks with one real production delegate invocation and six browser
+observations. Earlier failed attempts remain recorded on the stories.
+
+Yoke `79e1473d` and Bashy `5a0a79be`, `58dd639c`, `c76d09f1` are published.
+Six CLI tests and 180 source/shape tests pass; three existing Windows-only cases
+are skipped on Linux. Standalone published-pin Linux, macOS and Windows builds
+pass. Production-input hashes match the tested binaries. Functional promotion
+fixtures and runner are unchanged by the later real-agent fixture/documentation
+repairs. The final closure check reruns the model-free lifecycle on the exact
+native candidate and committed driver; it reuses the separately retained real-agent
+and promotion evidence rather than spending another model invocation.
+
+The continuation delivered no release or deployment. Test claims are released
+after the closure gate, and private evidence is retained outside the public repo.
