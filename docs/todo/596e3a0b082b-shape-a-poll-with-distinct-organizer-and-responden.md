@@ -8,9 +8,9 @@ priority: p1
 labels:
     - group-shaping
 created: 2026-11-20T21:08:47.637347Z
-sprint: 687
-sprint_id: e9d8f011-0057-522d-862b-5ed93e51dba5
-sprint_title: Extend group shaping across remaining productivity tools
+sprint: 685
+sprint_id: f684d38b-201d-5579-bd47-c70e26524188
+sprint_title: 'Group shaping coverage: every bashy app as a test case, plus cross-outpost agent steering in one circle'
 ---
 
-Reuse Form multi-respondent mode. Organizer sets options and invites circle members. Verify separate responses, submission rules and live results according to visibility. Use the epic contract in docs/plan-group-participation.md. Identify the consumer/producer shaping hook on the app or artifact. Demonstrate role-scoped invite/join, an allowed change, its visibility and a denied action. Every UI action must have an equivalent Bash CLI action under the same identity and permissions.
+Coverage row (Sprint 685): run the Sprint 684 group-shape skill-script against Form in multi-respondent mode and bashy meet poll (open bug ed305169 on --choice ballots). Organizer sets options and invites circle members; respondents submit once each; live results according to the organizer's visibility setting; a respondent cannot change the question or phase. Record works / small fix / follow-up / n-a with evidence. Contract: docs/plan-group-participation.md.

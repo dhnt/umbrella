@@ -8,9 +8,9 @@ priority: p2
 labels:
     - group-shaping
 created: 2026-11-20T21:08:47.362603Z
-sprint: 686
-sprint_id: 0ae28b7c-8d38-59a5-a4f0-efe0ab427909
-sprint_title: Shape documents, PDFs and Video/Film projects
+sprint: 685
+sprint_id: f684d38b-201d-5579-bd47-c70e26524188
+sprint_title: 'Group shaping coverage: every bashy app as a test case, plus cross-outpost agent steering in one circle'
 ---
 
-After document acceptance, two editors shape one shared video or film storyboard while a viewer follows live. Verify reconnect and persistence. Render a fixed revision while edits continue and identify it in the result. Cover both Video and Film entry points. Use the epic contract in docs/plan-group-participation.md. Identify the consumer/producer shaping hook on the app or artifact. Demonstrate role-scoped invite/join, an allowed change, its visibility and a denied action. Every UI action must have an equivalent Bash CLI action under the same identity and permissions.
+Coverage row (Sprint 685): run the Sprint 684 group-shape skill-script against the film and video storyboard. The storyboard is a file in the project; co-editing is wiki-style revisions (G1), not live merge. Two editors edit, a viewer follows, render a named revision while edits continue and show that revision id in the result. Cover both the video and film entry points. Record works / small fix / follow-up / n-a with evidence. Contract: docs/plan-group-participation.md.

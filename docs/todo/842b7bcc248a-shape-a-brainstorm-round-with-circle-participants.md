@@ -10,7 +10,7 @@ labels:
 created: 2026-11-20T21:08:46.739804Z
 sprint: 685
 sprint_id: f684d38b-201d-5579-bd47-c70e26524188
-sprint_title: Shape Brainstorm rounds and shared Whiteboards
+sprint_title: 'Group shaping coverage: every bashy app as a test case, plus cross-outpost agent steering in one circle'
 ---
 
-Reuse facilitator controls and invite-only sessions. Invite two teammates, write privately, reveal, open voting and verify individual votes and result visibility. Use the epic contract in docs/plan-group-participation.md. Identify the consumer/producer shaping hook on the app or artifact. Demonstrate role-scoped invite/join, an allowed change, its visibility and a denied action. Every UI action must have an equivalent Bash CLI action under the same identity and permissions.
+Coverage row (Sprint 685): run the Sprint 684 group-shape skill-script against brainstorm. Brainstorm runs today with no accounts and no principal; roles (facilitator, participant) need it registered as a shaped app behind the console first (Sprint 682 pattern). Expected app-specific steps: invite two members, write privately, reveal, open voting, individual votes and result visibility per role. Record works / small fix / follow-up / n-a with evidence. Contract: docs/plan-group-participation.md.
