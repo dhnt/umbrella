@@ -209,3 +209,8 @@ their identities and moved.
 
 Live CRDT or OT co-editing. New collaboration apps. An agent principal.
 Promotion of items to upstream. Any release.
+
+Future note: should agents one day be recognized as individuals in their own
+right, the only change is at the binding, an agent becomes its own principal in
+the roster instead of riding a person's; apps, share rules, `@NAME` and the
+skill-script are untouched.
