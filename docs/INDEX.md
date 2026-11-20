@@ -97,3 +97,4 @@
 - `plan-s660-generated-makefiles.md` — Sprint 660: replace hand-written Makefiles with generated dag forwarders (R1 bash/outpost, R2 bonsai/gfy/nadir/readline, R3-R4 bashy with release-gate equivalence)
 - `plan-s681-live-session-commands.md` — Sprint 681: run a controlled agent's declared vendor session commands (clear/exit/resume/rename/compact/status) on its live session
 - `plan-s682-consumer-shaping-example-apps.md` — Sprint 682: make every bashy example app consumer-shapeable (viewer/chart/session to --type shaped, genie.examples, member wish e2e, general runbook)
+- `plan-group-participation.md` — Group shaping epic (Sprints 684 rod, 685 coverage + cross-outpost steering): the one-world pitch, shaping degrading to wiki-style revisions on artifacts, the shared-item contract (APP/ITEM, circle rule grammar, roles, agent members owned by a human, open invites inside a circle), delivery rules, dependencies, risks

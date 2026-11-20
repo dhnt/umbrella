@@ -8,9 +8,9 @@ priority: p1
 labels:
     - group-shaping
 created: 2026-11-20T21:08:47.186002Z
-sprint: 686
-sprint_id: 0ae28b7c-8d38-59a5-a4f0-efe0ab427909
-sprint_title: Shape documents, PDFs and Video/Film projects
+sprint: 684
+sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
+sprint_title: 'Group shaping rod: one shared-item contract for every bashy app, proven on Klatch and Notepad'
 ---
 
-Two producers edit one Notepad document live, including overlapping changes without silent loss. A viewer sees the agreed revision. Export it through the existing PDF conversion and verify text from both authors. Use the epic contract in docs/plan-group-participation.md. Identify the consumer/producer shaping hook on the app or artifact. Demonstrate role-scoped invite/join, an allowed change, its visibility and a denied action. Every UI action must have an equivalent Bash CLI action under the same identity and permissions.
+Proof two of the Sprint 684 rod: a shared artifact. Two editors edit one Notepad document under the shared-item contract (G1): every save is a revision with author; a save against a stale base is refused with both revisions, never merged silently; reopen shows the latest revision; history and revert via bashy and the page with the same JSON. A viewer sees the saved revision and cannot save. Export a named revision through the existing notepad export --to pdf and verify text from both authors. No live merge. Run the G4 skill-script against Notepad; one editor acts through its member's agent. Contract: docs/plan-group-participation.md.

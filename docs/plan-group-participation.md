@@ -1,18 +1,180 @@
 # Software shaping for group participation
 
-The sprint cards and their stories carry the delivery order and app-specific acceptance. This epic extends [Sprint 682 consumer shaping](plan-s682-consumer-shaping-example-apps.md) and the owner/producer work in Sprint 683 to shared work in one circle or team.
+Planning record for the epic, revised 2026-11-20 after the operator's review.
+The sprint cards and their stories in `docs/todo/` are authoritative for
+delivery order and acceptance. No code is authorized by this page alone.
+
+## The pitch: one world for humans and agents
+
+bashy is all you need. Five unifications, each a rung of the same ladder:
+
+| | Unifies | Carrier |
+|---|---|---|
+| a | every platform and OS | bash: pure-Go Bash 5.3 plus the POSIX userland |
+| b | every language | Bash# |
+| c | every app | yoke and software shaping |
+| d | every agent and agentic tool | `bashy genie` (Sprint 679) |
+| e | everything under one roof | this epic: group shaping |
+
+Group shaping is the groupware layer of every bashy tool and app: the people
+and the agents of one circle or team work on the same items, under the same
+roles, with the same verbs, on whichever hosts they own. Humans work with
+agents, and agents work with agents, as one group. The epic extends
+[Sprint 682 consumer shaping](plan-s682-consumer-shaping-example-apps.md)
+(per-member versions of a tool) and the owner/producer work planned in Sprint
+683 (promoting a version) to a shared item.
+
+## The model: shaping degrades to wiki-style editing on an artifact
+
+For a **tool**, the shaping loop is wish, candidate, verify, preview, approve
+for me, undo. For an **artifact** (a document, a board, a storyboard, a poll, a
+message thread) the same loop degenerates to wiki semantics:
+
+| Loop step | On a tool (unchanged) | On a shared artifact |
+|---|---|---|
+| wish | plain-words request | an edit |
+| candidate | isolated workspace | a draft |
+| verify | declared checks decide | the app's own checks, or none |
+| preview | isolated URL, argv or health | the view |
+| approve | active for me | a saved revision, visible to the audience |
+| undo / restore | previous or any revision | revert to any revision |
+| promote | local, team, upstream | not needed: the audience already sees it |
+
+Personal shaping of the tool stays per principal and is untouched. A member
+may shape their own Notepad and still edit the team's document in it.
+
+### The shared-item contract (Sprint 684, story G1)
+
+- **An item is an app artifact addressed as `APP/ITEM`** (with the host where a
+  host is needed, as the share verbs already address `HOST/APP`). No new noun.
+- **Audience uses the existing rule grammar** from Sprint 619: a list of
+  `{circles[], groups[], emails[]}` rules, any match admits, empty means owner
+  only. The circle is the hard boundary. The share verbs (`share add|ls|rm|who`)
+  gain the item path; they do not get a sibling command family.
+- **Roles are owner, editor, viewer,** plus whatever the app already names
+  (facilitator and participant, organizer and respondent, member and channel
+  owner). Role names are the app's; the contract only requires that reads,
+  writes and live subscriptions are each checked against one.
+- **The console admits, the app enforces role.** Admission on read is the
+  console's job, as for shared apps today. Role on write and on live
+  subscriptions is checked at the app boundary from the principal the console
+  already stamps. An outsider with a forwarded link is refused; a removed
+  member's open session loses write, then read.
+- **Revisions, not merges.** Every save is a revision with author and time.
+  History lists revisions; revert restores one. A save against a stale base is
+  refused with both revisions returned, never merged silently. Reopen and
+  reconnect show the latest revision. A live merge engine is out of scope; an
+  app that already brings one (whiteboard's collab service) keeps it as its
+  own concern.
+- **Two ways an agent participates (operator, 2026-11-20).**
+  - **(a) A human with an agent.** The member drives `bashy <cmd>`, genie or
+    delegate; the agent is the member's hands and acts under the member's own
+    identity. Not new. It works today and the epic only exercises it (one
+    participant in every run acts this way).
+  - **(b) A named agent as a member.** An agent is registered on the roster
+    like a human member, with a name, and is invited to rooms, items and
+    groups the same way. This supersedes the "no agent principal" rule from
+    Trove (Sprint 639) for group rosters. Today agents can be invited to a
+    meeting only locally (`bashy meet`), the seat is not tied to circle or team
+    admission, cannot act on apps or documents, and does not cross outposts.
+    That integration is the new work: Sprint 684 story G5 on one host, Sprint
+    685 stories X1 and X2 across outposts.
+- **Every agent member has a human owner (proposed, awaiting confirmation).**
+  Registration binds the agent to the member who registers it, the way an
+  outpost pairs once with its owner. The agent's identity is the owner's
+  identity plus the agent name; it appears on rosters as that owner's agent;
+  share rules can name it; its role on any item is capped by its owner's role;
+  removing or demoting the owner cascades to the owner's agents. Accountability
+  therefore always lands on a person, while apps, admission and provenance
+  treat the agent as an ordinary principal.
+- **Who may invite (operator, 2026-11-20, chosen to simplify the design).**
+  The circle is the only hard boundary, and the circle owner alone decides who
+  is in it. **Inside a circle, invitation is open by default: any member of a
+  team or item may invite any other circle member, human or agent, into that
+  team or item,** with a role no higher than their own. No per-role invite
+  capability is introduced. The one escape hatch is a per-team or per-item
+  setting the owner can flip to owner-only invites; it is explicit and logged,
+  as every guard must be. Agents registered by a circle member are circle
+  members through their owner and can be invited the same way.
+- **UI to CLI parity holds for items** as it does for apps: every web action on
+  an item has a bashy verb on the same entities with the same JSON and the same
+  permissions. A CLI verb needs no page.
+- **Rod, not fish.** Each step is a small `--json` verb. The acceptance is one
+  Bash# skill-script that composes them and runs against any app.
+
+### Cross-outpost steering inside one circle (Sprint 685, stories X1 and X2)
+
+The group is not one host. A member's agent runs on that member's outpost; the
+circle spans the satellite, several outposts and the sphere. The steering
+surfaces already exist and are host-scoped or point to point today:
+
+| Surface | Scope today | Fits |
+|---|---|---|
+| `chat steer | attach | grant | interrupt` | the host room on one machine | a human steering an agent beside them |
+| `sprint session steer | approve | share` | cloudbox shared session, multi-host | a teammate steering or approving a run on another host |
+| `herald` (A2A), `herald add` as a fleet binding | peer on someone else's infrastructure | agent to agent across hosts, with `--gate` for a verdict |
+| `herald acp` | this machine as an ACP agent over stdio | an editor or a bot driving a remote agent, including over `outpost ssh` |
+| `bashy mcp serve` | typed tools and shell sessions | tools and context, not steering |
+| `outpost ssh exec | connect | tunnel` | paired hosts through the tunnel or mesh-direct | carrying any of the above to a paired host |
+
+X1 inventories these against one scenario, records which path is integrated
+end to end and which is not, chooses the protocol per case by the table above
+(ACP for a client driving one agent, A2A for agent to agent, MCP for tools,
+the shared session for human approvals), and integrates the smallest missing
+link so a circle member on one outpost can steer a teammate's agent on another
+under circle admission. X2 is the group e2e: two humans and their agents on two
+outposts shape one item and steer each other's agents.
+
+## Sprints
 
 | Order | Sprint | Outcome |
-| --- | --- | --- |
-| 1 | 684 | Verify Klatch on a running instance. Fix a confirmed blocker before moving on. |
-| 2 | 685 | Shape a Brainstorm round, then co-edit a Whiteboard. |
-| 3 | 686 | Co-edit a document and convert it to PDF, then co-edit a Video/Film project. |
-| 4 | 687 | Deliver Form/Poll, then cover the remaining productivity suite. |
+|---|---|---|
+| 1 | 684 | The rod: contract, item path on the share verbs, artifact revisions in the desk kit, the group-shape skill-script. Proven on Klatch (messaging, the admission baseline) and Notepad (a document with PDF export of a named revision). |
+| 2 | 685 | Coverage as test cases: the Sprint 684 skill-script runs against brainstorm, whiteboard, the film storyboard, form/poll, session, board, table, chart, viewer and the CLI-only tools, one matrix row each. Plus cross-outpost agent steering (X1, X2). |
 
-## Design and acceptance across stories
+Sprints 686 and 687 were folded into 685 on 2026-11-20; their stories kept
+their identities and moved.
 
-- Treat a tool, app, binary, document or project as a possible subject of shaping. Identify the consumer, producer, shaping hook and audience of each change. A member may consume the tool and produce its artifact. Preserve personal shaping while collaborators work on a single shared item.
-- Start with the owner's existing shaping configuration, circle grants and app-native roles. The organizer invites a teammate to a specific item with a supported role. Enforce membership and role at the app boundary for reads, updates and live subscriptions. A poll participant can submit a response while the organizer controls the question and voting phase.
-- Cover command-only tools. Every web UI action must be possible via a discoverable Bashy CLI command with equivalent identity, permissions and approvals. CLI-only operations are valid. Reuse the smallest existing command, template, room or export path that meets the story.
-- Demonstrate each role with distinct identities. Check that an outsider cannot use a forwarded invitation and that an active session respects role changes or removal. For shared editing, two editors change the same item live, a viewer observes the permitted result, and concurrent work survives reconnect and reopen without silent loss.
-- Record per-app evidence against the candidate using the existing browser and CLI workflows. Close independently when each story passes. Broader abstractions can wait for a demonstrated shared need.
+### Delivery rules
+
+- Distinct fake identities for owner, editor, viewer and outsider; several
+  accounts, including a satellite owner who is not the host owner. The venue is
+  the fleet-mirror on a throwaway instance or the gate host, never the dev box.
+- One participant in every run acts through its member's agent, so the
+  "agents are hands" rule is exercised, not asserted.
+- Each app in Sprint 685 gets one row: works, small fix landed, follow-up filed
+  with evidence, or read-only not applicable. Only small baseline-proven fixes
+  land in the sprint. Nothing is pre-authorized across all apps.
+- Reuse first: the share rule grammar, `app pair --principal`, the desk kit,
+  `notepad export --to pdf`, Form's multi-respondent mode, `meet poll`,
+  brainstorm's facilitator controls, whiteboard's collab service, Klatch roster
+  sync, cloudbox shared sessions, herald.
+- Root cause before any fix. A venue failure is fixed in the venue.
+
+### Dependencies and prerequisites
+
+- Sprint 682 (in flight) gives the shaped-app registration pattern. Brainstorm
+  runs today with no accounts and no principal, so its roles need that step.
+- Sprint 683 (owner promotion) is not needed for group items.
+- Sprint 679 (genie) is needed only for the unified agent front door. The
+  agent-participant leg runs on the existing delegate and chat paths meanwhile.
+- The Klatch instance lives in the gate host's container machine, which does not
+  restart after that host's resets (todo ab6b9b87); the operator owns it and
+  confirms before it is started.
+
+### Risks
+
+- Scope creep back into live merging. The contract says revisions and refused
+  stale saves; whiteboard's own collab is the only exception, and it is not ours.
+- Identity on LAN-only apps (brainstorm, session display) until they are shaped
+  apps behind the console.
+- Table is Linux only, against the cross-OS parity rule; it is a recorded
+  exception row, not a blocker.
+- Cross-host steering touches cloudbox, outpost and yoke. Public builds must not
+  need private source; the shared session is used only through its public wire
+  contract.
+
+### Non-goals
+
+Live CRDT or OT co-editing. New collaboration apps. An agent principal.
+Promotion of items to upstream. Any release.

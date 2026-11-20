@@ -166,3 +166,7 @@ Sprint 681 plan: extend the existing tool-command declarations (`commands:` in t
 ### plan-s682-consumer-shaping-example-apps.md
 
 Sprint 682 plan: surveys the shaping state of each bashy example app (viewer, chart and session are plain proxies, so the console injects no Genie button), and brings all of them to consumer shaping (per-member wish, verify, preview, approve, undo) using the existing shaped-app registration and manifest, ending with a member-principal e2e and a general "enable an app for consumer shaping" runbook. Owner/producer shaping is Sprint 683.
+
+### plan-group-participation.md
+
+Planning record for the group shaping epic, revised 2026-11-20. States the pitch (bash unifies platforms, Bash# languages, yoke and shaping apps, genie agents, group shaping everything under one roof: one world for humans and agents), the model (shaping on an artifact degrades to wiki-style viewing and editing with revisions, never a live merge), the shared-item contract (an item is `APP/ITEM`, the Sprint 619 rule grammar for audience, roles, console admits and app enforces, named agents registered as members owned by a human, open invites inside a circle with an owner-only escape hatch), the cross-outpost steering inventory (chat, shared session, herald/A2A, ACP, MCP, outpost ssh), and the two sprints: 684 the rod proven on Klatch and Notepad, 685 coverage of every app as a test case plus cross-outpost steering. Sprints 686 and 687 were folded into 685.
