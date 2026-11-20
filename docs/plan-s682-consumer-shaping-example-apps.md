@@ -69,6 +69,34 @@ Accept when:
   shaped instance;
 - the desk tests pass.
 
+### C1b — local discovery so agent CLIs keep working (added 2026-11-20 after C1 review)
+
+C1 makes viewer and chart shaped. Their server now runs at a console-chosen
+address with a per-principal data folder. A plain `bashy viewer add` with no
+handoff variables would then post to the old fixed port, where nothing
+listens. That is a regression for agents, who use viewer for reports. Merge
+C1 only together with C1b.
+
+- **Platform (yoke webconsole/fleet).** Add `bashy app show NAME --runtime`
+  (with `--json`). For the LOCAL operator principal (the same OS user as the
+  console, no remote authentication) it returns:
+  - the live listener address;
+  - the data folder;
+  - the browser-facing console app URL.
+
+  It starts the instance if it is idle-stopped (bounded wait). It exits
+  non-zero, with the reason, when no console is running.
+- **Viewer and chart CLIs.** When neither the `*_ADDR` nor the `*_DATA`
+  handoff variable is set, they resolve the address through `--runtime`. An
+  explicit handoff still wins. If discovery fails, they print one actionable
+  error naming the handoff variables. They never fall back silently to the old
+  fixed port.
+- **Tests:**
+  - `--runtime` unit tests: running, idle-start, no console;
+  - CLI tests: discovery used when no environment variables are set, and an
+    explicit handoff overrides it.
+- Remote and other-principal discovery stays in Sprint 683.
+
 ### C2 — session becomes a shaped app
 
 - Add `shaped.json`: `server.main "server"`, args with `$ADDR` and `$DATA`.
