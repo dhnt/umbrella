@@ -162,3 +162,7 @@ Sprint 660 plan, written by the conductor: inventory of every bashy-family Makef
 ### plan-s681-live-session-commands.md
 
 Sprint 681 plan: extend the existing tool-command declarations (`commands:` in tool YAML, the canonical vocabulary) to session-control commands, measured per vendor, and add `bashy chat command <session> <name>` so a manager can clear, rename, resume or exit a live controlled session without restarting it, with the declared commands discoverable in `bashy chat sessions --json`.
+
+### plan-s682-consumer-shaping-example-apps.md
+
+Sprint 682 plan: surveys the shaping state of each bashy example app (viewer, chart and session are plain proxies, so the console injects no Genie button), and brings all of them to consumer shaping (per-member wish, verify, preview, approve, undo) using the existing shaped-app registration and manifest, ending with a member-principal e2e and a general "enable an app for consumer shaping" runbook. Owner/producer shaping is Sprint 683.
