@@ -154,3 +154,7 @@ Sprint 679 design and execution plan positioning `bashy genie` as the "One Agent
 ### plan-s678-make-dag-bridge.md
 
 Sprint 678 plan for agents that reach for make: `bashy dag --makefile` generates a POSIX, forward-only Makefile from dag.md whose comments teach the native `bashy dag` usage (with a `--check` staleness mode), piloted in yoke; and `bashy make` falls through to `bashy dag` where no makefile exists but a dag.md does, with a truthful `type make`. Amends the Makefile-removal plan: hand-written Makefiles are replaced by the generated forwarder.
+
+### plan-s660-generated-makefiles.md
+
+Sprint 660 plan, written by the conductor: inventory of every bashy-family Makefile, its dag.md coverage and the scripts/CI still calling make; four bounded stories replace each hand-written Makefile with the generated, teaching forwarder from `bashy dag --makefile`, ending with bashy behind the release-gate equivalence check. The sh repo is skipped as legacy.

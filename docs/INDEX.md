@@ -94,3 +94,4 @@
 - `sprint-667-master-execution-plan.md` — Sprint 667 provable relays: signed statements and relay-by-reference across outposts and satellites; planning only
 - `docs/plan-one-agent-genie-hub.md` — Sprint 679 `bashy genie` ("One Agent"): unified agentic TUI and co-served HTTP/REST/A2A/MCP/ACP hub with direct `--agent` delegation and ephemeral `--cligw` LLM proxy; planning only
 - `plan-s678-make-dag-bridge.md` — Sprint 678 make → dag bridge: generated teaching Makefile forwarder (`bashy dag --makefile`) + no-makefile fallthrough; pilot in yoke
+- `plan-s660-generated-makefiles.md` — Sprint 660: replace hand-written Makefiles with generated dag forwarders (R1 bash/outpost, R2 bonsai/gfy/nadir/readline, R3-R4 bashy with release-gate equivalence)

@@ -23,3 +23,7 @@ S655 correction: the tooling freeze must not be interpreted as a new approval re
 ## Amendment (2026-11-20, Sprint 678)
 
 Operator decision: remove hand-written Makefiles by REPLACING each with the generated forwarder from `bashy dag --makefile` (Sprint 678, fa9fcc8d), not by deleting them, so agents that look for a Makefile are taught to use `bashy dag`.
+
+## Plan (2026-11-20)
+
+Split into R1 f0e5c330f202, R2 4fc314bff7b9, R3 a97acb748321, R4 bbd047d08c53 per docs/plan-s660-generated-makefiles.md; this story is the parent and closes when all four close (sh skipped as legacy).
