@@ -3,7 +3,7 @@ id: f83b4703cae4
 kind: bug
 title: 'outpost leaks its MCP admin bearer token: printed to daemon.log on every start since 2026-05-25; log world-readable on macOS/Linux (local only)'
 seq: 439
-status: assigned
+status: done
 priority: p1
 labels:
     - outpost
@@ -13,6 +13,8 @@ assignee: s575-codex-manager
 sprint: 658
 sprint_id: f426cf37-7c11-5d0c-beca-7e405177868d
 sprint_title: outpost MCP admin token leaked to daemon.log (fix with the refactor/rebuild)
+closed: 2026-11-20T03:46:37.577441Z
+closed_by: s575-codex-manager
 ---
 
 2026-11-17 gate host: the first lines of ~/.cache/outpost/daemon.log (4.4 GB, never rotated) contain the MCP bearer token in clear. Fix: never log secrets (redact or log a fingerprint); rotate the exposed token on affected hosts after the fix; consider log rotation for daemon.log. Unit test asserting no token in startup log output; build.
