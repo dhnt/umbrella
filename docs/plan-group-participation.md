@@ -99,6 +99,16 @@ may shape their own Notepad and still edit the team's document in it.
 - **UI to CLI parity holds for items** as it does for apps: every web action on
   an item has a bashy verb on the same entities with the same JSON and the same
   permissions. A CLI verb needs no page.
+- **`@NAME` is the one addressing form (operator, 2026-11-20).** Three layers,
+  kept separate: the address (`@NAME`, as `bashy meet` already accepts), the
+  resolver (one roster of human members, registered agent members and local
+  bindings), and the carrier chosen by locality: the local room or chat session
+  when the recipient is on this host, the cloudbox shared session or herald
+  when it is on another outpost. A mention is addressing; it becomes steering
+  when a live agent's harness consumes it, and remote steering when the carrier
+  crosses hosts. The sender never picks the carrier. Sprint 684 story G6 brings
+  mb send, chat steer and item comments to the form; Sprint 685 X1 owns the
+  remote carriers.
 - **Rod, not fish.** Each step is a small `--json` verb. The acceptance is one
   Bash# skill-script that composes them and runs against any app.
 
@@ -129,7 +139,7 @@ outposts shape one item and steer each other's agents.
 
 | Order | Sprint | Outcome |
 |---|---|---|
-| 1 | 684 | The rod: contract, item path on the share verbs, artifact revisions in the desk kit, the group-shape skill-script. Proven on Klatch (messaging, the admission baseline) and Notepad (a document with PDF export of a named revision). |
+| 1 | 684 | The rod: contract, item path on the share verbs, artifact revisions in the desk kit, named agent members, `@NAME` addressing, the group-shape skill-script. Proven on Klatch (messaging, the admission baseline) and Notepad (a document with PDF export of a named revision). |
 | 2 | 685 | Coverage as test cases: the Sprint 684 skill-script runs against brainstorm, whiteboard, the film storyboard, form/poll, session, board, table, chart, viewer and the CLI-only tools, one matrix row each. Plus cross-outpost agent steering (X1, X2). |
 
 Sprints 686 and 687 were folded into 685 on 2026-11-20; their stories kept
@@ -156,8 +166,13 @@ their identities and moved.
 - Sprint 682 (in flight) gives the shaped-app registration pattern. Brainstorm
   runs today with no accounts and no principal, so its roles need that step.
 - Sprint 683 (owner promotion) is not needed for group items.
-- Sprint 679 (genie) is needed only for the unified agent front door. The
-  agent-participant leg runs on the existing delegate and chat paths meanwhile.
+- Sprint 679 (genie, One Agent) is a **precondition of Sprint 685**, not of
+  684: X1's agent-to-agent path across outposts and the remote carrier for
+  `@NAME` mentions need the inbound A2A v1.0 server over the shared SessionHub
+  that 679's coserve-protocols goal delivers (herald is outbound only today).
+  X1 may start its inventory before it lands; X2 may not. 684 and 679 run in
+  parallel, 685 after both. The 679 card stays in the agentic-harness epic;
+  recorded on both cards 2026-11-20.
 - The Klatch instance lives in the gate host's container machine, which does not
   restart after that host's resets (todo ab6b9b87); the operator owns it and
   confirms before it is started.
