@@ -71,22 +71,30 @@ may shape their own Notepad and still edit the team's document in it.
     delegate; the agent is the member's hands and acts under the member's own
     identity. Not new. It works today and the epic only exercises it (one
     participant in every run acts this way).
-  - **(b) A named agent as a member.** An agent is registered on the roster
-    like a human member, with a name, and is invited to rooms, items and
-    groups the same way. This supersedes the "no agent principal" rule from
-    Trove (Sprint 639) for group rosters. Today agents can be invited to a
+  - **(b) A named agent as a participant.** An agent is addressed by name and
+    invited to rooms, items and groups like a member. In the MVP it is an
+    assigned agent carrying its member's identity (below); a registered
+    roster-row agent is a follow-up. Today agents can be invited to a
     meeting only locally (`bashy meet`), the seat is not tied to circle or team
     admission, cannot act on apps or documents, and does not cross outposts.
     That integration is the new work: Sprint 684 story G5 on one host, Sprint
     685 stories X1 and X2 across outposts.
-- **Every agent member has a human owner (operator, confirmed 2026-11-20).**
-  Registration binds the agent to the member who registers it, the way an
-  outpost pairs once with its owner. The agent's identity is the owner's
-  identity plus the agent name; it appears on rosters as that owner's agent;
-  share rules can name it; its role on any item is capped by its owner's role;
-  removing or demoting the owner cascades to the owner's agents. Accountability
-  therefore always lands on a person, while apps, admission and provenance
-  treat the agent as an ordinary principal.
+- **Two kinds of agents, separated to keep the MVP local (operator,
+  2026-11-20).**
+  - **Assigned agents** are the MVP. A member assigns an agent to represent
+    them and work on their behalf. It stays local on the member's outpost, is
+    never a roster row, and carries exactly the member's identity, admission
+    and permissions, with the agent name recorded beside the member in
+    provenance. Other participants see it through room or shared-session
+    presence as "that member's agent", and `@NAME` resolves to it the same way.
+    When the member is removed or demoted, the agent is, by construction. No
+    cloudbox schema or release is needed, so X2 can run on assigned agents.
+  - **Registered agents** are roster rows the owner creates for the team as a
+    whole (a shared secretary, a reviewer). They need the relationship store
+    and a cloudbox release, so they are a follow-up filed when a shared need is
+    demonstrated, not part of Sprints 684 or 685.
+  - In both kinds every agent has a human owner: the assigning member, or the
+    owner who registered it. Budget follows that person, never the team.
 - **Who may invite (operator, 2026-11-20, chosen to simplify the design).**
   The circle is the only hard boundary, and the circle owner alone decides who
   is in it. **Inside a circle, invitation is open by default: any member of a
@@ -139,7 +147,7 @@ outposts shape one item and steer each other's agents.
 
 | Order | Sprint | Outcome |
 |---|---|---|
-| 1 | 684 | The rod: contract, item path on the share verbs, artifact revisions in the desk kit, named agent members, `@NAME` addressing, the group-shape skill-script. Proven on Klatch (messaging, the admission baseline) and Notepad (a document with PDF export of a named revision). |
+| 1 | 684 | The rod: contract, item path on the share verbs, artifact revisions in the desk kit, assigned agents, `@NAME` addressing, the group-shape skill-script. Proven on Klatch (messaging, the admission baseline) and Notepad (a document with PDF export of a named revision). |
 | 2 | 685 | Coverage as test cases: the Sprint 684 skill-script runs against brainstorm, whiteboard, the film storyboard, form/poll, session, board, table, chart, viewer and the CLI-only tools, one matrix row each. Plus cross-outpost agent steering (X1, X2). |
 
 Sprints 686 and 687 were folded into 685 on 2026-11-20; their stories kept
