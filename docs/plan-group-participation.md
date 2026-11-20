@@ -79,7 +79,7 @@ may shape their own Notepad and still edit the team's document in it.
     admission, cannot act on apps or documents, and does not cross outposts.
     That integration is the new work: Sprint 684 story G5 on one host, Sprint
     685 stories X1 and X2 across outposts.
-- **Every agent member has a human owner (proposed, awaiting confirmation).**
+- **Every agent member has a human owner (operator, confirmed 2026-11-20).**
   Registration binds the agent to the member who registers it, the way an
   outpost pairs once with its owner. The agent's identity is the owner's
   identity plus the agent name; it appears on rosters as that owner's agent;
