@@ -120,6 +120,18 @@ may shape their own Notepad and still edit the team's document in it.
 - **Rod, not fish.** Each step is a small `--json` verb. The acceptance is one
   Bash# skill-script that composes them and runs against any app.
 
+### No cloudbox change (operator, 2026-11-20)
+
+Sprints 684 and 685 change nothing in cloudbox. The constraint that makes this
+hold: **item audiences live on the outpost that hosts the app,** as host app
+audience rules do today, and are evaluated against circle and team membership
+the outpost already learns from the satellite. A member inviting another
+circle member to an item writes a rule on that host, not in the relationship
+store. Assigned agents are presence, not roster rows. Cross-outpost steering
+uses the shared session and herald as they ship. If X1's inventory finds a gap
+that only a cloudbox change can close, it is filed as a follow-up with
+evidence, not pulled into these sprints.
+
 ### Cross-outpost steering inside one circle (Sprint 685, stories X1 and X2)
 
 The group is not one host. A member's agent runs on that member's outpost; the
