@@ -146,3 +146,7 @@ Owner guide for shaping-enabling a static site: the four visitor tiers and what 
 ### sprint-667-master-execution-plan.md
 
 Plan for provable relays: every relayed message between humans and agents on any outpost or satellite carries the original signed statement by reference, so a recipient can verify who said it, who relayed it, what it authorizes and until when. Planning only.
+
+### plan-one-agent-genie-hub.md
+
+Sprint 679 design and execution plan positioning `bashy genie` as the "One Agent" front door alongside `bashy` (One System), `Bash#` (One Language), and `yoke` (One App). Summarizes the baseline audit of MCP, ACP, A2A, `cligw`, `chat`, `meet`, and `ycode` web/TUI surfaces, then defines a single-process `yoke/pkg/agenthub` + `bashy genie` architecture that runs as a unified BubbleTea TUI app while co-serving selectable `http` (Web UI), `rest`, `a2a` (v1.0), `mcp`, and headless `acp` (v1 `stdio`) protocols over one shared `SessionHub`, supporting both Mode (a) direct `--agent` delegation across official fleet tools and Mode (b) isolated ephemeral `--cligw` LLM proxy + `genie` harness execution in six bounded stories. Planning only.

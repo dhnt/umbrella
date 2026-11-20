@@ -90,3 +90,4 @@
 - `docs/release-failure-ledger.md` — Release failure ledger: every test failure met while releasing, with last-green/first-red commits for bisecting, cause, class (product, test, metadata, venue) and fix commit
 - `shaping-enable-a-website.md` — Owner guide: shaping-enable a static site through a private companion repo (assess, enable, edit, host, register, link), four visitor tiers, verify and graduate
 - `sprint-667-master-execution-plan.md` — Sprint 667 provable relays: signed statements and relay-by-reference across outposts and satellites; planning only
+- `docs/plan-one-agent-genie-hub.md` — Sprint 679 `bashy genie` ("One Agent"): unified agentic TUI and co-served HTTP/REST/A2A/MCP/ACP hub with direct `--agent` delegation and ephemeral `--cligw` LLM proxy; planning only
