@@ -77,22 +77,25 @@ handoff variables would then post to the old fixed port, where nothing
 listens. That is a regression for agents, who use viewer for reports. Merge
 C1 only together with C1b.
 
-- **Platform (yoke webconsole/fleet).** Add `bashy app show NAME --runtime`
-  (with `--json`). For the LOCAL operator principal (the same OS user as the
-  console, no remote authentication) it returns:
-  - the live listener address;
-  - the data folder;
-  - the browser-facing console app URL.
-
-  It starts the instance if it is idle-stopped (bounded wait). It exits
-  non-zero, with the reason, when no console is running.
+- **Platform (yoke webconsole/fleet). Revised at design review: no new IPC
+  transport.**
+  - When the console starts a shaped instance, it writes
+    `<console-home>/shape/<app>/<encoded-principal>/runtime.json` with an
+    atomic write. The file is 0600 in the owner-only tree and holds the
+    address, data folder, console app URL, pid and revision. The console
+    removes it on stop.
+  - `bashy app show NAME --runtime [--json]` reads it for the local OS-user
+    principal and verifies the pid and health. If the file is stale or absent,
+    the command exits non-zero with an actionable message: open the app once,
+    or pass the handoff variables.
+  - Idle-start is a Sprint 683 follow-up.
 - **Viewer and chart CLIs.** When neither the `*_ADDR` nor the `*_DATA`
   handoff variable is set, they resolve the address through `--runtime`. An
   explicit handoff still wins. If discovery fails, they print one actionable
   error naming the handoff variables. They never fall back silently to the old
   fixed port.
 - **Tests:**
-  - `--runtime` unit tests: running, idle-start, no console;
+  - `--runtime` unit tests: write/remove lifecycle, stale pid, absent file;
   - CLI tests: discovery used when no environment variables are set, and an
     explicit handoff overrides it.
 - Remote and other-principal discovery stays in Sprint 683.
