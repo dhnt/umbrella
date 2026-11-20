@@ -19,3 +19,7 @@ Operator 2026-11-17: Makefiles constantly cause pain; remove them from every bas
 Per operator instruction, moved from Sprint655 into follow-up Sprint660 after rc38. Current certification sources and release timing candidate remain frozen. The actual Makefile inventory includes Bash, Bashy, Bonsai, Gfy, Nadir, Outpost, Readline and legacy sh; Yoke and Coreutils currently have no Makefile. Remove only existing files after their used targets have equivalent DAG gates. Preserve pure Go POSIX make; place fallback in Bashy dispatch. Build-tooling changes are already operator-authorized and need no new approval. Keep interpreter/runtime implementation frozen and require named fixture equivalence, including both86-fixture modes. No implementation has started.
 
 S655 correction: the tooling freeze must not be interpreted as a new approval requirement. Legacy sh targets to port include test-full, bashpp-race-gate, fmtcheck, hooks and tidy plus test.yml/full-tests.yml. Readline currently lacks dag.md; record its upstream-maintenance trade-off. Bashy DAG currently lists the eight checks; verify current behavior and remaining script-level make calls instead of assuming the historical dependency gap persists.
+
+## Amendment (2026-11-20, Sprint 678)
+
+Operator decision: remove hand-written Makefiles by REPLACING each with the generated forwarder from `bashy dag --makefile` (Sprint 678, fa9fcc8d), not by deleting them, so agents that look for a Makefile are taught to use `bashy dag`.

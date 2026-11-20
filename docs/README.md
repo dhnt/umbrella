@@ -150,3 +150,7 @@ Plan for provable relays: every relayed message between humans and agents on any
 ### plan-one-agent-genie-hub.md
 
 Sprint 679 design and execution plan positioning `bashy genie` as the "One Agent" front door alongside `bashy` (One System), `Bash#` (One Language), and `yoke` (One App). Summarizes the baseline audit of MCP, ACP, A2A, `cligw`, `chat`, `meet`, and `ycode` web/TUI surfaces, then defines a single-process `yoke/pkg/agenthub` + `bashy genie` architecture that runs as a unified BubbleTea TUI app while co-serving selectable `http` (Web UI), `rest`, `a2a` (v1.0), `mcp`, and headless `acp` (v1 `stdio`) protocols over one shared `SessionHub`, supporting both Mode (a) direct `--agent` delegation across official fleet tools and Mode (b) isolated ephemeral `--cligw` LLM proxy + `genie` harness execution in six bounded stories. Planning only.
+
+### plan-s678-make-dag-bridge.md
+
+Sprint 678 plan for agents that reach for make: `bashy dag --makefile` generates a POSIX, forward-only Makefile from dag.md whose comments teach the native `bashy dag` usage (with a `--check` staleness mode), piloted in yoke; and `bashy make` falls through to `bashy dag` where no makefile exists but a dag.md does, with a truthful `type make`. Amends the Makefile-removal plan: hand-written Makefiles are replaced by the generated forwarder.
