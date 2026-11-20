@@ -9,9 +9,6 @@ labels:
     - tokens
 created: 2026-11-19T19:55:21.414278Z
 assignee: claude-opus5.5-s672
-sprint: 673
-sprint_id: 805fd7b6-ff67-5e09-a28c-f28ee49c74d3
-sprint_title: Owner minter bootstrap and session token re-mint
 ---
 
 Create the owner minter once in the console (bashy browser; a cookie session is the only parent that can grant the first all-scope token), value straight to the vault. Then from the CLI: mint the dev box session token with tasks/sprints scopes and a <=365d TTL into the vault, keep the secrets.map binding, verify session sync, revoke the console-made 2036 session token.
@@ -25,3 +22,5 @@ After release:
 2. Bind it: add `CLOUDBOX_MINTER_TOKEN=@cloudbox-owner-minter` to ~/.config/bashy/secrets.map.
 3. CLI: `bashy token create --name session-<host> --scope tasks:read,tasks:write,sprints:read,sprints:write --ttl 365d --to-secret cloudbox-session-<host>` (overwrites the vault value the binding CLOUDBOX_TOKEN already points at); verify `bashy sprint session status`; then `bashy token revoke <id of the console-made 2036 session token>`.
 4. Exercise `bashy token edit` once against production.
+
+Carried over (2026-11-20): Sprint 673 closed with M1 (cloudbox v0.18.79) and the header change (v0.18.80) delivered; K3 needs the operator at the browser (owner minter bootstrap via the console session + vault). Unlinked to the backlog; pick it up in a later operator-attended sprint. Prerequisites live: bearer PUT /api/v1/tokens/:id and tokens.scopes varchar(2000) since v0.18.79.
