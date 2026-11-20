@@ -72,29 +72,25 @@ may shape their own Notepad and still edit the team's document in it.
     identity. Not new. It works today and the epic only exercises it (one
     participant in every run acts this way).
   - **(b) A named agent as a participant.** An agent is addressed by name and
-    invited to rooms, items and groups like a member. In the MVP it is an
-    assigned agent carrying its member's identity (below); a registered
-    roster-row agent is a follow-up. Today agents can be invited to a
+    invited to rooms, items and groups like a member. It is an assigned
+    agent carrying its member's identity (below). Today agents can be invited to a
     meeting only locally (`bashy meet`), the seat is not tied to circle or team
     admission, cannot act on apps or documents, and does not cross outposts.
     That integration is the new work: Sprint 684 story G5 on one host, Sprint
     685 stories X1 and X2 across outposts.
-- **Two kinds of agents, separated to keep the MVP local (operator,
-  2026-11-20).**
-  - **Assigned agents** are the MVP. A member assigns an agent to represent
-    them and work on their behalf. It stays local on the member's outpost, is
-    never a roster row, and carries exactly the member's identity, admission
-    and permissions, with the agent name recorded beside the member in
-    provenance. Other participants see it through room or shared-session
-    presence as "that member's agent", and `@NAME` resolves to it the same way.
-    When the member is removed or demoted, the agent is, by construction. No
-    cloudbox schema or release is needed, so X2 can run on assigned agents.
-  - **Registered agents** are roster rows the owner creates for the team as a
-    whole (a shared secretary, a reviewer). They need the relationship store
-    and a cloudbox release, so they are a follow-up filed when a shared need is
-    demonstrated, not part of Sprints 684 or 685.
-  - In both kinds every agent has a human owner: the assigning member, or the
-    owner who registered it. Budget follows that person, never the team.
+- **One kind of agent: assigned, always bound to one cloudbox account
+  (operator, 2026-11-20).** A member assigns an agent to represent them and
+  work on their behalf. It stays local on the member's outpost, is never a
+  roster row, and carries exactly the member's identity, admission and
+  permissions, with the agent name recorded beside the member in provenance.
+  Other participants see it through room or shared-session presence as "that
+  member's agent", and `@NAME` resolves to it the same way. When the member is
+  removed or demoted, the agent is, by construction. A team-wide agent (a
+  secretary, a reviewer) is simply the owner's assigned agent, admitted and
+  capped as the owner is. There are no owner-registered roster agents and no
+  agent without a person: every agent is associated with one cloudbox owner or
+  member email, and its budget follows that person, never the team. No cloudbox
+  schema or release is needed.
 - **Who may invite (operator, 2026-11-20, chosen to simplify the design).**
   The circle is the only hard boundary, and the circle owner alone decides who
   is in it. **Inside a circle, invitation is open by default: any member of a
@@ -127,7 +123,7 @@ hold: **item audiences live on the outpost that hosts the app,** as host app
 audience rules do today, and are evaluated against circle and team membership
 the outpost already learns from the satellite. A member inviting another
 circle member to an item writes a rule on that host, not in the relationship
-store. Assigned agents are presence, not roster rows. Cross-outpost steering
+store. Agents are presence, not roster rows; each is bound to one cloudbox account. Cross-outpost steering
 uses the shared session and herald as they ship. If X1's inventory finds a gap
 that only a cloudbox change can close, it is filed as a follow-up with
 evidence, not pulled into these sprints.
