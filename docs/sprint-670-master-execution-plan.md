@@ -65,3 +65,11 @@ and promotion evidence rather than spending another model invocation.
 
 The continuation delivered no release or deployment. Test claims are released
 after the closure gate, and private evidence is retained outside the public repo.
+
+
+Closure passed in the same `GOWORK=off` configuration used by the standalone
+candidate builds, with a fresh 27-check native lifecycle pass. Other sprints
+advanced the shared producer checkout concurrently; those later commits were
+not part of this candidate. The umbrella pins the tested, published Yoke
+`79e1473d` explicitly, while the shared checkout and other agents' work remain
+untouched. Both remaining stories and the sprint are closed.
