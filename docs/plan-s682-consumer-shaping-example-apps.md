@@ -179,3 +179,16 @@ and private fields; publishing an approved version to other members.
 - **Conductor:** reviews, re-runs the tests, merges, and runs the live member
   e2e.
 - **Release:** none authorized.
+
+## Appendix: Install-wrapped example apps
+
+Three shaped example apps wrap pinned third-party web applications whose
+frontend bundles are fetched and built by `<app> install` over the network into
+a managed checkout (`$BASHY_HOME/<app>/source`), rather than checked directly
+into `bashy/examples/`:
+
+| App | App root in `bashy/examples/` | `shapedTools` (`TestDeskToolsShipShapedServer`) | `TestDeskToolsForkAndRollback` | Why |
+|---|---|---|---|---|
+| `whiteboard` | `examples/whiteboard` (`shaped.json` + root `go.mod`, `./server`) | Included — `./server` compiles with `GOWORK=off CGO_ENABLED=0` and answers `/healthz` with fallback HTML before install | Explicit `t.Skip` naming network install | `checks/whiteboard.bsh` verifies `.whiteboard-source-pin`, `LICENSE`, and `excalidraw-app/build/index.html` produced by `whiteboard install` |
+| `board` | `examples/board` (`shaped.json` + root `go.mod`, `./board-console`) | Omitted — `board-console` embeds `board-console/dist` via `go:embed`, which only exists after `board install` | Explicit `t.Skip` naming network install | `board install` clones and builds the pinned Focalboard bundle over the network |
+| `table` | `examples/table` (`shaped.json` + root `go.mod`, `./shape-adapter`) | Omitted — Linux-only runtime and `table install` required | Explicit `t.Skip` naming network install + Linux-only | `table install` clones and builds the pinned Mathesar bundle on Linux |
