@@ -98,14 +98,14 @@ may shape their own Notepad and still edit the team's document in it.
   team or item,** with a role no higher than their own. No per-role invite
   capability is introduced. The one escape hatch is a per-team or per-item
   setting the owner can flip to owner-only invites; it is explicit and logged,
-  as every guard must be. Agents registered by a circle member are circle
+  as every guard must be. Agents assigned by a circle member are circle
   members through their owner and can be invited the same way.
 - **UI to CLI parity holds for items** as it does for apps: every web action on
   an item has a bashy verb on the same entities with the same JSON and the same
   permissions. A CLI verb needs no page.
 - **`@NAME` is the one addressing form (operator, 2026-11-20).** Three layers,
   kept separate: the address (`@NAME`, as `bashy meet` already accepts), the
-  resolver (one roster of human members, registered agent members and local
+  resolver (one roster of human members, their assigned agents and local
   bindings), and the carrier chosen by locality: the local room or chat session
   when the recipient is on this host, the cloudbox shared session or herald
   when it is on another outpost. A mention is addressing; it becomes steering
