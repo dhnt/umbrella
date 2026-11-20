@@ -158,3 +158,7 @@ Sprint 678 plan for agents that reach for make: `bashy dag --makefile` generates
 ### plan-s660-generated-makefiles.md
 
 Sprint 660 plan, written by the conductor: inventory of every bashy-family Makefile, its dag.md coverage and the scripts/CI still calling make; four bounded stories replace each hand-written Makefile with the generated, teaching forwarder from `bashy dag --makefile`, ending with bashy behind the release-gate equivalence check. The sh repo is skipped as legacy.
+
+### plan-s681-live-session-commands.md
+
+Sprint 681 plan: extend the existing tool-command declarations (`commands:` in tool YAML, the canonical vocabulary) to session-control commands, measured per vendor, and add `bashy chat command <session> <name>` so a manager can clear, rename, resume or exit a live controlled session without restarting it, with the declared commands discoverable in `bashy chat sessions --json`.
