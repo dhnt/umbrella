@@ -25,7 +25,16 @@ Code: yoke `pkg/dag`, beside `skill.go`.
 
 1. **Output.** `bashy dag --makefile [-o FILE]` writes a POSIX Makefile generated
    from the dag.md in the cwd (or from `-f FILE`). It runs no target body.
-2. **Header.** The file opens with a comment that teaches the agent:
+2. **Banner (operator, 2026-11-20).** The first lines of the file are a
+   framed, all-caps banner. A Makefile has no bold, so the frame does that job:
+   ```
+   ###########################################################################
+   ##  GENERATED FILE — DO NOT EDIT.                                        ##
+   ##  Produced from dag.md by `bashy dag --makefile`. Edit dag.md instead, ##
+   ##  then regenerate; manual changes are overwritten and fail --check.     ##
+   ###########################################################################
+   ```
+   Then the header. The file then continues with a comment that teaches the agent:
    - it is GENERATED from dag.md: do not edit it; edit dag.md and regenerate;
    - tasks live in dag.md, and the native way to run them is
      `bashy dag <target>`, `bashy dag --list`, `bashy dag --dry-run <target>`;
