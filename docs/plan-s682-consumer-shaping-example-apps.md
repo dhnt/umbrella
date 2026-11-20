@@ -112,6 +112,28 @@ Accept as for C1, plus session's existing Python tests stay green.
   member-wish e2e. Applies to any app, including a website layer. Register it
   through the kb, with generic names only.
 
+### Closure: KB for general bashy users (operator, 2026-11-20)
+
+The sprint closes only when the bashy KB teaches ANY bashy user, not just these
+examples, how to shaping-enable their own app for consumers.
+
+- **One kb page** (`bashy kb`), written for the general owner of any app. It
+  covers:
+  - when an app qualifies (static `public/` or its own server);
+  - the `shaped.json` manifest (`server`, `genie` placement and examples);
+  - `bashy app add --type shaped`;
+  - making an agent CLI follow the console address;
+  - checking that the Genie button is injected;
+  - a member's wish → verify → preview → approve → undo;
+  - common failures and their root causes, as found in C1–C3.
+- **Grounded.** Every command in it is one that actually ran in this sprint,
+  with generic names and no host or user details.
+- **Discoverable.** Link it from `bashy shape --help`'s companion doc and from
+  `docs/shaping-enable-a-website.md` (a website is an app with sub-apps). The
+  owner-side steps stay in Sprint 683.
+- **Verified.** `bashy kb search "enable an app for shaping"` finds it, and the
+  conductor walks through it on one app.
+
 ## Non-goals (Sprint 683)
 
 Owner/producer shaping: offer, adopt, release and submit; the website tiers
