@@ -3,15 +3,21 @@ id: 8b7e558fdedf
 kind: spike
 title: S0A Prove reference-only Bash and Bash# extraction feasibility
 seq: 450
-status: assigned
+status: done
 priority: p0
 labels:
     - layer-separation
 created: 2026-11-17T21:49:52.627031Z
-assignee: s575-engine-review
+assignee: s575-codex-manager
 sprint: 575
 sprint_id: 65ce85f5-87c0-5863-bf55-62de86f5df36
 sprint_title: 'Layer separation: Classic <- Bash# <- Yoke import-graph delineation'
+closed: 2026-11-20T12:26:29.582799Z
+closed_by: s575-codex-manager
 ---
 
 Read-only design review. Inspect sh/interp and sh/syntax Bash# evaluator/parser coupling, bashsharp front/transpile and docs/seam.md. Determine whether full physical separation can preserve rc.37 behavior using ONLY moves, package/import references and dependency wiring, without changing logic, APIs, tests or duplicating runtime. Cite exact files/symbols and private-state edges that prevent or permit this. Propose the smallest concrete move map; distinguish any required API/logic edits explicitly. No edits, commits, builds, native suites, remote host use or fixes. Return findings, not a success claim.
+
+## Manager closeout — 2026-11-20
+Read-only feasibility findings are committed in docs/s575-separation-review.md: private parser/runtime/AST state prevents a naive independent engine move without additional changes. The spike delivered its findings; accepting it does not accept the deferred engine implementation.
+Existing receipts and source ancestry were reviewed; no new test/build ran during reconciliation. Evidence belongs to its exact historical source/artifact identities, not arbitrary later heads. S575 full-run evidence remains under posix-baseline/s575-2026-11-19 with its raw 4 FAIL, 54 UNRESOLVED and 9 INSPECT unchanged. RC38 is on operator hold.

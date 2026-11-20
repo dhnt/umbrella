@@ -1,5 +1,39 @@
 # Sprint 575: separation review before product edits
 
+## Completed-story reconciliation — 2026-11-20
+
+The manager reviewed the published delivery commits and original qualification
+receipts, then accepted 16 previously assigned stories through the normal
+submit/accept lifecycle. No new code, build or test execution was performed.
+
+| Repository | Accepted stories | Delivered scope |
+| --- | --- | --- |
+| Bash | 179, 180, 181, 182, 183 | Remove obsolete gosh; move command entrypoints; standalone DAG/container; restore the frozen engine; preserve separate library/command dependency profiles |
+| Bashsharp | 5, 6 | Relocate the existing shared CLI; standalone DAG/container and existing conformance tooling |
+| Bashy | 3244, 3245 | Product import ownership and relocated build/link/source-pin references |
+| Coreutils | 191 | Namespace references and corresponding unchanged layer assertions |
+| Yoke | 3127, 3128 | Engine imports/module references and canonical source-registry metadata |
+| Outpost | 2781 | Published lower-layer package/module references |
+| Umbrella | 450, 451, 452 | Completed read-only feasibility, ownership and gate/dependency findings |
+
+Each story retains its delivery commit and evidence limitations. These are
+reference/infrastructure or investigation completions, not a blanket current-head
+test pass. Existing unrelated test failures remain recorded; historical evidence
+reuse is tied to unchanged inputs. Source ancestry was checked against published
+main branches before acceptance.
+
+The shared-engine/neutral-contract extraction remains deferred. The old design
+and superseded implementation attempts are not accepted as the current source
+separation. Ycode story 62 and Bashsharp-tests story 116 remain open pending
+confirmation of their existing qualification receipts. The completed full POSIX
+measurement and its outstanding dispositions retain their separate status below.
+
+Disk cleanup retained the measured baseline artifacts, licensed evidence and
+all 18 preserved superseded-run commits. Only unused installer downloads,
+already-merged inactive duplicate workspaces and reproducible Weave cache
+entries were reclaimed. Other agents' source, unmerged work and active build
+cache were left intact.
+
 ## Completed POSIX engineering measurement — 2026-11-19
 
 The full unchanged Profile D measurement completed with 117 targets and 9,337
