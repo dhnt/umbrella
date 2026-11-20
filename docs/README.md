@@ -1,5 +1,7 @@
 # Umbrella docs — catalog
 
+- **`sprint-656-master-execution-plan.md`** — Current RC38 pipeline and QA-follow-up status, preserving the original rc.37 venue plan. Separates accepted infrastructure from frozen-candidate security/build/upload qualification, records the warm-cache benchmark limits, and leaves unresolved defects, design work and operator-held publication explicit.
+
 - **`plan-posix-certification-after-separation.md`** — Sprint 675 reuses seven unfinished S571 story identities against the completed S575 baseline: four `more` failures, 54 unresolved results and nine manual inspections. Defines the exact retained evidence, cause-first investigation, existing authority/manual packet reuse, conditional repair proposals and honest readiness handoff. Planning only; no implementation, test expansion, submission or RC38 release.
 
 - **`sprint-666-evidence.md`** — Sprint 666 delivery evidence with pushed producer/consumer identities, standalone, installed-binary and real-backend browser checks, completed managed group-work trace, managed same-host recovery and queued-worker traces, raw manifest checksums, honest baseline limits, and the still-open native shared-host gates. It records accepted stories separately from S10 closure.
