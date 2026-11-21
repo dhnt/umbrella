@@ -35,12 +35,15 @@ DELETE IS THE DEFAULT; retention is explicit.
   before removal, push the run branch or confirm its commits are reachable
   from it (`git cherry`). A workspace with uncommitted changes or unpushed
   unique commits is kept, and reported as retained-for-safety with the reason.
-- Retained items carry an owner and reason; the reclaim verb lists them and
-  ages them out.
+- Retained items carry an owner and reason. Closing ends retention: when its
+  story is closed (accepted, wontfix) or its sprint ends, a retained grade
+  checkout is deleted, and so is a retained weave workspace (after the same
+  never-lose-work check). The reclaim verb lists anything still retained and
+  ages out what remains.
 Tests: a grade leaves no checkout by default; `--retain` keeps it and
 records the path; a merged/abandoned weave run's workspace is removed by
 default; a dirty workspace or one with unique unpushed commits is kept and
-reported; a run marked retain is kept.
+reported; a run marked retain is kept until its story or sprint closes, then deleted.
 
 Also seen on the same day: an untracked default podman machine (8 GB of
 memory, 16 GB disk) had run on the dev host for 10 days and filled swap.
