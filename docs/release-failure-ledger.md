@@ -150,3 +150,20 @@ suite and Bash 5.3 gate results are reused as unchanged-input evidence;
 Build evidence for rc.39 is this local gate. The tag push starts the
 tag-triggered `airgap-image` and `conformance` workflows; `release.yml` is
 dispatch-only, so nothing is published. rc.38 stays unpromoted.
+
+### rc.39 publication attempt (2026-11-21): automated e2e green, security gate blocks
+
+First run of the publish-only path (local dist → local security receipt →
+draft → `release.yml` dispatch).
+
+| Check | Result |
+|---|---|
+| `bashy dag dist` in the locked rc.37 image | 34 assets, 5th run. Runs 1–4 exceeded the 300-second budget on cold per-target build caches (51 → 67 → 82 stages → packaging); run 1 of the driver also lost its container to SIGHUP when the launching ssh session closed (venue: launch detached with `setsid`) |
+| Hello World shaping smoke on the dist `linux/amd64` bashy (`134f1a63…`) | 27/27 including both browser checkpoints; regression (`SHAPING_SMOKE_BREAK=greeting`) fails as required. First try failed at verify because the harness named the candidate `bashy-bin` while the verifier execs `bashy` from PATH (venue) |
+| cloudbox desktop-journey (`E2E_LOCAL=1`, bashy `4f0ce3d3` = tag + one docs commit) | PASS. Venue note: run the script under a host bash; bashy's built-in pure-Go `git` cannot serve its pathspec `git status` |
+| local release gate: license | pass, 388 modules |
+| local release gate: govulncheck (bashy, outpost, yoke; yoke needs its ollama/podman submodule sources hydrated) | **FAIL**: reachable advisories. stdlib GO-2026-6809 (x509, fixed go1.27.3) and GO-2026-6859 (net/http, fixed go1.27.4) on the go1.27.2 toolchain; module advisories in golang.org/x/net, x/crypto, grpc, excelize, klauspost/compress, otel exporters, quic-go, pion, moby/buildkit, runc, fulcio, frp |
+
+Class: new advisories against the pinned toolchain and dependencies (not an
+rc.39 code regression). The gate has no exception path; publication waits
+for an operator decision.
