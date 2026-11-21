@@ -24,12 +24,23 @@ across 12 sprints (Sprint 557 alone: 2.2 GB, because an umbrella checkout
 includes its submodules). The ended sprints' checkouts were removed by hand on
 2026-11-21 (6 GB).
 
-Fix at the source, ahead of the reclaim verb: after the grade event is
-recorded, remove the checkout when the gate passed. Keep it when the gate
-failed or errored, for inspection; the reclaim verb then ages it out, and it
-is removed when the sprint ends.
-Tests: a passing grade leaves no checkout; a failing grade keeps it and names
-its path in the event.
+Fix at the source, ahead of the reclaim verb (operator rule 2026-11-21):
+DELETE IS THE DEFAULT; retention is explicit.
+- Grade: remove the checkout as soon as the grade event is recorded,
+  whether the gate passed, failed or errored. `--retain` (recorded in the
+  event, with its path) keeps it for inspection.
+- Weave workspaces, same rule: when a run reaches a terminal state (merged,
+  pulled, abandoned, stopped), remove its workspace unless the run was started
+  or marked with an explicit retain flag. Unmerged commits are never lost:
+  before removal, push the run branch or confirm its commits are reachable
+  from it (`git cherry`). A workspace with uncommitted changes or unpushed
+  unique commits is kept, and reported as retained-for-safety with the reason.
+- Retained items carry an owner and reason; the reclaim verb lists them and
+  ages them out.
+Tests: a grade leaves no checkout by default; `--retain` keeps it and
+records the path; a merged/abandoned weave run's workspace is removed by
+default; a dirty workspace or one with unique unpushed commits is kept and
+reported; a run marked retain is kept.
 
 Also seen on the same day: an untracked default podman machine (8 GB of
 memory, 16 GB disk) had run on the dev host for 10 days and filled swap.
