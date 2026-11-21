@@ -10,6 +10,11 @@ Sources of truth: `bashy/examples/shaping/website/` (`README.md`,
 (its skill face) for the host, and `outpost/docs/cooperative-web-apps.md`
 (the relationship section) for how the site knows who a visitor is.
 
+A website is an app with sub-apps: for shaping-enabling any single app for
+its consumers (the `shaped.json` manifest, `bashy app add --type shaped`,
+CLI address handoff, member wish → undo), follow the bashy KB runbook
+`enable-an-app-for-consumer-shaping` (`bashy kb search "enable an app for shaping"`).
+
 ## What you get: four visitor tiers
 
 | Visitor | Gets | Your site learns |
