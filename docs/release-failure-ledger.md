@@ -117,3 +117,36 @@ Build evidence for rc.38 is this local gate (operator decision: the GitHub
 release build is triggered but not watched; the build pipeline will be
 refactored). Promotion, tier smoke and QA refs wait until after the agy
 sprints.
+
+## rc.39 candidate verdict (bashy `732eb770`, tag `v1.0.0-rc.39-dev`)
+
+All runs in the official build image on the gate host, 2026-11-20 .. 2026-11-21.
+Candidate pins: yoke `299a502d` (nested modules aligned), coreutils `c6569352`,
+bash `7855c2f0`, readline `df59d4e2`, outpost `f066eaf` (tool directive).
+The first candidate `33c90247` was gated fresh. `732eb770` adds only the four
+test-side fixes below (`_test.go` and `testdata` only; the driver refuses any
+other change), so its product inputs are those of `33c90247`. The roll, yoke
+suite and Bash 5.3 gate results are reused as unchanged-input evidence;
+`bashy dag test` and the leaking pair ran fresh on `732eb770`.
+
+| Check | Result |
+|---|---|
+| Self-hosting roll (R1 by the rc.38 lock, R2 by R1), `33c90247` | fixed point, bashy sha256 `9e366cfd…971a`; R2 image `bashy-build:v1.0.0-rc.39-go1.27.2-c7e19f271086` (`sha256:c7e19f27…e3a2`) |
+| yoke short suite (`299a502d`, submodules hydrated) | 189/189 |
+| Bash 5.3 gate, `BASH53_BASHPP=0` and `=1`, `33c90247` | 86/86 each; no NEW, RECOVERED or changed fixture by name against rc.38's evidence. Evidence sha256: mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5` |
+| make-free script checks (extra-in) | pass |
+| bashy Go tests (`bashy dag test`), `33c90247` | 4 failures (below) |
+| bashy Go tests (`bashy dag test`), `732eb770`, fresh | pass |
+| subreaper + tool-shortcut pair, `-count=3`, `732eb770`, fresh | 3/3 pass (failed every time as a pair on `33c90247`) |
+
+### Defects found while gating rc.39
+
+| Test (repo) | Symptom | Cause | Class | Fix |
+|---|---|---|---|---|
+| bashy `TestCommonOptionsVocabularyReport` | unreviewed short option `dag -o --output` | the generated-Makefile work added `dag -o` without adding it to the reviewed baseline | test baseline not updated | bashy `3776c50b` |
+| bashy `TestSkillHelpGoldens/sprint`, `TestSkillHelpClassicSnapshots/sprint` | golden mismatch | the 2026-11-20 sprint help changes did not regenerate the goldens | test goldens not updated | bashy `3776c50b` (sprint subtests only, diff reviewed line by line) |
+| bashy `TestToolShortcutCleanupKillsProcessGroup` | `still alive: grandchild` when run after `TestServiceMonitorReapsOrphansAsSubreaper`; passes alone | the subreaper test sets `PR_SET_CHILD_SUBREAPER` on the test binary and never clears it; later orphans reparent to the test process and stay as unreaped zombies, which `ps -p` reports as alive | test isolation defect | bashy `732eb770` (clears the flag in `t.Cleanup`) |
+
+Build evidence for rc.39 is this local gate. The tag push starts the
+tag-triggered `airgap-image` and `conformance` workflows; `release.yml` is
+dispatch-only, so nothing is published. rc.38 stays unpromoted.
