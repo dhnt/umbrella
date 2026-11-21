@@ -56,3 +56,50 @@ Produced inside the locked official build image (`go1.27.2`, `-trimpath`, `bash`
 | `darwin/arm64` | `bin/darwin-arm64/bashy` | `222,082,754` | `222.08 MB` / `211.80 MiB` | `60262cb61aded0cc7f90d99499db2c839164cf42b440c915a64adacc6fddc7ba` | Cross-built (`CGO_ENABLED=0`, `-w`, unstripped Mach-O; cold cross-compile `92.816s`) |
 | `windows/amd64` | `bin/windows-amd64/bash.exe` | `19,064,832` | `19.06 MB` / `18.18 MiB` | `fbce314b9e38d06609832529d4a5aab74c0b0bcf422f97b3fea0872b7fa3846c` | Cross-built (`CGO_ENABLED=0`, `-s -w`) |
 | `windows/amd64` | `bin/windows-amd64/bashy.exe` | `232,139,264` | `232.14 MB` / `221.39 MiB` | `ef46fb8e7e2961a09b7a7dddcf597e52a2b89b6aeefbd15ac020a3307b066748` | Cross-built (`CGO_ENABLED=0`, `-w`, unstripped PE; cold cross-compile `87.136s`) |
+
+### (4) Package Counts (`go list -deps`)
+
+Measured in the locked official build image (`go1.27.2`, wall `7.971s`):
+
+| Target / Build Tags | `GOOS/GOARCH` | Transitive Packages (`go list -deps`) | Notes |
+|---|---|---:|---|
+| `./cmd/bashy` | `linux/amd64` | **`2,283`** | Default lean worker build |
+| `./cmd/bashy` | `darwin/arm64` (`CGO_ENABLED=0`) | **`2,283`** | Cross-build graph (`2,284` on native Darwin with CGo/`go.work`) |
+| `./cmd/bashy` | `windows/amd64` (`CGO_ENABLED=0`) | **`2,275`** | Windows cross-build graph |
+| `./cmd/bashy -tags bashy_scratch` | `linux/amd64` (`CGO_ENABLED=0`) | **`2,277`** | Static scratch container profile |
+| `./cmd/bashy -tags bashy_core` | `linux/amd64` | **`917`** | Pre-P2 core tag (includes **`23`** leaked `github.com/qiangli/yoke*` packages) |
+| `github.com/qiangli/bash/cmd/bash` | `linux/amd64` | **`207`** | Pure Bash 5.3 + Bash# drop-in (`build-bash` target; `0` `yoke`, `0` `coreutils`) |
+| `./cmd/sh` | `linux/amd64` | **`207`** | Pure strict POSIX `sh` (`build-sh` target) |
+
+Module-family breakdown inside `GOOS=linux GOARCH=amd64 go list -deps ./cmd/bashy` (`2,283` total):
+- `github.com/qiangli/yoke*`: **`245`** packages (`23` of which currently leak into `-tags bashy_core`)
+- `github.com/qiangli/coreutils*`: **`177`** packages
+- `github.com/qiangli/bash*`: **`30`** packages
+- `github.com/bashsharp/bashsharp*`: **`4`** packages
+- `k8s.io/*` + `sigs.k8s.io/*` + `github.com/google/gnostic*`: **`283`** packages (`268` `k8s.io/*`, `10` `sigs.k8s.io/*`, `5` `gnostic*`)
+- `github.com/gtsteffaniak/filebrowser*` + `github.com/swaggo/*`: **`37`** packages
+- `github.com/odvcencio/gotreesitter*`: **`2`** packages
+- `github.com/tiktoken-go/*`: **`2`** packages
+
+Harness execution notes (fixing only what blocked execution in `measure.sh` without rewriting the harness):
+1. Stage 3 in `measure.sh` wrote all cross-builds to default `bin/bashy`, which overwrites `linux/amd64` with `darwin/arm64`; passing `BIN_DIR=bin/<os>-<arch>` preserved all three OS pairs independently.
+2. Stage 4 in `measure.sh` invoked `go list -deps ./cmd/bash`, which does not exist as a local directory under `bashy/cmd/` (`cmd/` contains `bashy` and `sh`, while `dag.md`'s `build-bash` compiles `github.com/qiangli/bash/cmd/bash`); queried `github.com/qiangli/bash/cmd/bash` and `./cmd/sh`.
+
+### Deferred Items (Blocked on Gate-Host Keep-Alive `K1` `73dbfa3a` / `K1b` `ffd48cc9`)
+
+- Whole-`bashy` edit -> rebuild -> full-gate-verify cycle time (including full `bashy dag test` + sealed Bash 5.3 conformance gate in both modes) and any other long-running gate-host measurements remain **deferred** until supervised WSL keep-alive (`K1` `73dbfa3a`) is active on the gate host.
+
+### Proposed P3 & P4 Thresholds (Derived Strictly from Recorded Baseline Numbers)
+
+1. **P3 (`d3989b11` + `S1` `d49c099b` — catalog-driven dispatch, generated mains, on-demand slot builds, build caches)**:
+   - **Warm `bashy dag build` time (8-CPU gate-host official image)**: **`<= 12s`** (>2x reduction vs recorded **`26.011s`** warm `dag build -B`, and within the Sprint 677 `< 15s` target once `tools/productgo` overlay temp-dir busting and `scripts/go-tool.sh` disposable `releaseeligibility` recompilation are cached).
+   - **Single-command pilot warm slot build (`go build` of generated `main` into `yoke/pkg/shape/slot`)**: **`<= 10s` warm** on an 8-CPU gate-host lane (>2.5x faster than recorded **`26.011s`** warm monolith `dag build -B`), and **`< 0.1s` (zero compile)** on a tree-hash cache hit.
+   - **Single-command pilot cold-`GOCACHE` build (`GOMODCACHE` warm, `GOCACHE` empty)**: **`<= 45s`** (<50% of recorded **`87.136s`–`92.816s`** cold-`GOCACHE` monolith compilation).
+   - *Whole-`bashy` edit -> full-gate-verify cycle threshold (minutes)*: **deferred** until the whole-`bashy` rebuild-verify baseline is recorded after `K1` (`73dbfa3a`) lands.
+
+2. **P4 (`P4a` `ee056056` -> `P4b` `52a3c08d` -> `P4c` `5b9440a0` — full command externalization to generated-main slot binaries)**:
+   - **Entry `./cmd/bashy` transitive package count (`GOOS=linux GOARCH=amd64 go list -deps ./cmd/bashy`)**:
+     - From recorded **`2,283` packages** -> **`<= 2,150`** after `P4a` (`yoke/cmds/*` applets + GNU-only `coreutils`) -> **`<= 1,800`** after `P4b` (standalone verbs; specifically **`0` `k8s.io/*`** vs recorded **`268`**, **`0` `filebrowser`/`swaggo`** vs recorded **`37`**, **`0` `gotreesitter`** vs recorded **`2`**, **`0` `tiktoken`** vs recorded **`2`**) -> **`<= 950` packages** after `P4c` (all switch verbs externalized; >58% reduction from **`2,283`**, converging to the recorded **`917`** `-tags bashy_core` neighborhood minus the **`23`** `yoke` leak packages).
+   - **Entry `bin/bashy` per-OS binary sizes (default lean worker profile, combined with `S2` `-s -w` off Linux)**:
+     - After `P4b`: drop by **`>= 55 MB`** across targets relative to recorded baselines (`linux/amd64` **`<= 235 MB`** vs **`291.44 MB`**; `darwin/arm64` **`<= 165 MB`** vs **`222.08 MB`**; `windows/amd64` **`<= 175 MB`** vs **`232.14 MB`**).
+     - After `P4c` (thin `bashy` entry complete): `darwin/arm64` **`<= 45 MB`** (vs recorded **`222.08 MB`**, >=80% reduction), `windows/amd64` **`<= 45 MB`** (vs recorded **`232.14 MB`**, >=80% reduction), and `linux/amd64` **`<= 60 MB`** retaining ELF `SHT_SYMTAB` + `runtime.fwdSig` (vs recorded **`291.44 MB`**, ~80% reduction; bounded below by recorded **`18.60 MB`** `bash.real` + POSIX `coreutils` + thin dispatcher), with warm `cmd/bashy` entry rebuild **`<= 5s`** on the 8-CPU gate-host lane (vs recorded **`26.011s`**).
