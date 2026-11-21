@@ -3,7 +3,7 @@ id: befc2403023f
 kind: chore
 title: 'P1: Step 0 baseline on gate host - cold+warm build, per-OS sizes, package counts, whole-bashy rebuild-verify time'
 seq: 587
-status: assigned
+status: done
 priority: p0
 created: 2026-11-21T09:22:07.427138Z
 weave: 113
@@ -11,6 +11,8 @@ assignee: agy-gemini4-carbon
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+closed: 2026-11-21T12:01:21.319607Z
+closed_by: muse-wonder-full
 ---
 
 P1 baseline, SMALLEST SET FIRST (relaunch spec 2026-11-21, run 3: agy-gemini4-carbon). START FROM the existing gate-host lane1 scripts /root/lanes/lane1/s677-p1/measure.sh + lane.sh (already written by prior runs) - do not rewrite the harness; run it, fix only what blocks execution. Frozen start commit: bashy 5c8be965 - WAIT: origin bashy main has since advanced with S8/S8b script-only changes (ecdab0cd, 1bd504d6) which do not affect build measurements; measure at umbrella HEAD and RECORD the exact bashy sha measured (must be pre-A toolchain go1.27.2). Venue: claim ONE shared gate lane, official image ONLY via bashy oci, LAUNCHING SESSION ATTACHED (foreground, never detached - WSL idle-reboots kill detached containers, see root cause below). MEASURE IN THIS ORDER, committing results to this story file in your workspace AFTER EACH item so a kill loses nothing: (1) clean cold bashy dag build time, (2) warm dag build time, (3) per-OS binary sizes from the builds you already produced, (4) package counts (go list -deps). Record image id with the first commit. FIRST COMMIT WITHIN 15 MINUTES (image id + first number or a blocker note) - two prior runs died with zero commits. DEFERRED until gate-host keep-alive (K1 73dbfa3a): whole-bashy rebuild-verify cycle and any long measurement. Propose P3/P4 thresholds only from recorded numbers.
