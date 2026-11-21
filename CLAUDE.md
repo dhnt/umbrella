@@ -12,6 +12,23 @@ No official v1.0.0 release before official POSIX certification and explicit oper
 
 Prefer the established self-hosted machine fleet for validation. Hosted CI billing must not be a default dependency. Use existing working execution routes while the self-hosted scheduler is being completed; preserve source identities, isolation and raw test evidence.
 
+## Start every story on current heads
+
+Never code a feature or fix on outdated code; drift turns every red test into
+a moving target. Whoever starts a story, before writing any code:
+
+1. **Fetch** every module the story touches and its siblings.
+2. **Check drift**: `bashy mod drift` (each consumer's `go.mod` pins) and the
+   umbrella gitlinks against each submodule's origin default branch.
+3. **Bump to heads**: move the touched modules' sibling pins and the umbrella
+   pins to the current origin heads (`bashy mod sync`, producer pushed first;
+   the bashy↔ycode cycle by hand), then build and run the unit tests.
+4. **Resolve first**: if the bump breaks the build or tests, fix that (root
+   cause first, its own commit) before starting the story's own change.
+
+Rebase onto current origin again before submitting. A story is not accepted
+while `bashy mod drift` reports stale or cyclic pins for what it touched.
+
 ## Root cause before any fix
 
 When a test that was green fails, investigate before changing anything —

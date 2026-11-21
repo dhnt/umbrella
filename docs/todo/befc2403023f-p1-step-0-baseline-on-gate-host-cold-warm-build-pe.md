@@ -6,16 +6,20 @@ seq: 587
 status: assigned
 priority: p0
 created: 2026-11-21T09:22:07.427138Z
-weave: 109
-assignee: ycode-cascade-x3
+weave: 113
+assignee: agy-gemini4-carbon
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
 ---
 
-P1 baseline, SMALLEST SET FIRST (relaunch spec 2026-11-21). Frozen start commit: bashy 5c8be965 - WAIT: origin bashy main has since advanced with S8/S8b script-only changes (ecdab0cd, 1bd504d6) which do not affect build measurements; measure at umbrella HEAD and RECORD the exact bashy sha measured (must be pre-A toolchain go1.27.2). Venue: claim ONE shared gate lane, official image ONLY via bashy oci, LAUNCHING SESSION ATTACHED (foreground, never detached - WSL idle-reboots kill detached containers, see root cause below). MEASURE IN THIS ORDER, committing results to this story file in your workspace AFTER EACH item so a kill loses nothing: (1) clean cold bashy dag build time, (2) warm dag build time, (3) per-OS binary sizes from the builds you already produced, (4) package counts (go list -deps). Record image id with the first commit. DEFERRED until gate-host keep-alive: whole-bashy rebuild-verify cycle and any long measurement. Propose P3/P4 thresholds only from recorded numbers.
+P1 baseline, SMALLEST SET FIRST (relaunch spec 2026-11-21, run 3: agy-gemini4-carbon). START FROM the existing gate-host lane1 scripts /root/lanes/lane1/s677-p1/measure.sh + lane.sh (already written by prior runs) - do not rewrite the harness; run it, fix only what blocks execution. Frozen start commit: bashy 5c8be965 - WAIT: origin bashy main has since advanced with S8/S8b script-only changes (ecdab0cd, 1bd504d6) which do not affect build measurements; measure at umbrella HEAD and RECORD the exact bashy sha measured (must be pre-A toolchain go1.27.2). Venue: claim ONE shared gate lane, official image ONLY via bashy oci, LAUNCHING SESSION ATTACHED (foreground, never detached - WSL idle-reboots kill detached containers, see root cause below). MEASURE IN THIS ORDER, committing results to this story file in your workspace AFTER EACH item so a kill loses nothing: (1) clean cold bashy dag build time, (2) warm dag build time, (3) per-OS binary sizes from the builds you already produced, (4) package counts (go list -deps). Record image id with the first commit. FIRST COMMIT WITHIN 15 MINUTES (image id + first number or a blocker note) - two prior runs died with zero commits. DEFERRED until gate-host keep-alive (K1 73dbfa3a): whole-bashy rebuild-verify cycle and any long measurement. Propose P3/P4 thresholds only from recorded numbers.
 
 HISTORY: run #105 (ycode-cascade-x4) KILLED by wrapper max-runtime 48m0s (killed_by field, exit -1), 0 commits, clean tree - watchdog, not manual kill, not resume collision. Its silence root cause was ENVIRONMENT: gate-host WSL idles/reboots (6 boots 01:35-02:01 PST, 20s-6min), killing detached lane containers. Worker exonerated. Manager interim deadline dropped as invalid.
+
+RUN #109 FAILURE RECORD (2026-11-21, conductor claude+2 + manager verification): WORKER-CAPABILITY failure, NOT environment this time. Conductor gate-host evidence: NO container running (podman ps empty), /root/lanes/lane1/s677-p1/measure.sh last written 02:19 PST, WSL continuously up 44m (idle-shutdown cause excluded). Manager evidence: 44m elapsed, ZERO commits against the commit-after-each-item spec, workspace clean at base 4139ac45, no PTY/steer channel, lane lease lapsed; run stopped by manager (weave kill) / terminal state failed, head 4139ac45, 0 commits salvaged (nothing to salvage). ycode-cascade-x3-e produced gate-host scripts in an earlier attempt but never executed a measurement in run #109. P1 reassigned to agy-gemini4-carbon per conductor + operator agy preference.
+
+OPERATOR RULE 2026-11-21: no long-running tests during implementation. Already consistent here: whole-bashy rebuild-verify cycle stays DEFERRED (now: deferred to the milestone integration gate .bashy/gate.final, conductor-called, per operator rule 2026-11-21; integration runs at epic/milestone completion only). This run measures builds/sizes/counts only.
 
 ## Measured Baseline (2026-11-21, weave #113, `agy-gemini4-carbon`)
 
