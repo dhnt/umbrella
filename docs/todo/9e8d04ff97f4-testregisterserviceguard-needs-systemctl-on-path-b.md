@@ -3,13 +3,15 @@ id: 9e8d04ff97f4
 kind: test
 title: TestRegisterServiceGuard needs systemctl on PATH before the guard (venue-dependent)
 seq: 593
-status: assigned
+status: done
 priority: p1
 created: 2026-11-21T10:15:24.425142Z
 assignee: codex-gpt6.2-sol
 sprint: 652
 sprint_id: 48a699fb-076f-5442-995a-b12987a45bea
 sprint_title: Outpost reliability and host-offline alerting on cloudbox
+closed: 2026-11-21T10:17:10.473116Z
+closed_by: codex-gpt6.2-sol
 ---
 
 The Linux registration guard test must exercise the fail-closed service runner in official images without a systemd executable. Provide a test-local sentinel and assert that it is never executed.
