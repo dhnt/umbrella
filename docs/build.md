@@ -6,7 +6,7 @@ retains versioned dependencies for standalone builds and CI with `GOWORK=off`.
 Private services, credentials and licensed test fixtures are not prerequisites
 for public builds.
 
-The Go baseline is **Go 1.27 with toolchain go1.27.2**. Run commands from the
+The Go baseline is **Go 1.27 with toolchain go1.27.4**. Run commands from the
 subproject that owns the code. There is no root Makefile or single package tree
 covered by a root `go test ./...`.
 

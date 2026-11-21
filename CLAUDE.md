@@ -203,7 +203,7 @@ branches with unique commits alone and report them.
 `script/bootstrap.sh` hydrates public submodule pins and their nested source
 dependencies and installs the git hooks. The root `go.work` builds the coupled
 modules against live sibling trees; `GOWORK=off` verifies standalone published
-dependency pins. Go baseline: Go 1.27 with toolchain go1.27.2. Nested examples
+dependency pins. Go baseline: Go 1.27 with toolchain go1.27.4. Nested examples
 outside the workspace also use `GOWORK=off`. Full reference: `docs/build.md`.
 
 ```bash
