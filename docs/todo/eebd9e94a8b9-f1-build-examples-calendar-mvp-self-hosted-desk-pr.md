@@ -73,15 +73,15 @@ Build `examples/calendar` (Desk tool) MVP in `bashy` (`examples/calendar/`), fol
 - **2026-11-21 (`browser-test.mjs` run #1 in gate-host lane 3):**
   - **Symptom:** `page.waitForURL(/\?id=/, {timeout: 5000})` timed out at `examples/calendar/browser-test.mjs:89` after `#saveBtn` succeeded (`Saved event` alert visible).
   - **Root cause & classification:** **New-test bug** in `examples/calendar/browser-test.mjs` (zero product defect). Line 70 navigates to `srv.participant + '?tz=America/New_York'`, so when `templates/agenda.html` `syncURL()` updates the URL via `u.searchParams.set('id', id)` and `history.replaceState()`, `id` is appended as `&id=<evID>` (`/?tz=America%2FNew_York&id=...`), which never matches `/\?id=/` (and `history.replaceState` does not fire a `"load"` event when already settled). Secondary race at lines 123–126: revoking multiple members in a loop waited on static `'Revoked member'` alert text, which already matched after the first click.
-  - **Fix:** Poll `new URL(window.location.href).searchParams.get('id')` via `page.waitForFunction`, and wait for `.cal-revoke-btn` count to decrement on each revoke click.
+  - **Fix (`bashy` `081de64af8bf`):** Poll `new URL(window.location.href).searchParams.get('id')` via `page.waitForFunction`, and wait for `.cal-revoke-btn` count to decrement on each revoke click.
 - **2026-11-21 (`browser-test.mjs` WSL2 `requestAnimationFrame` root cause in gate-host lane 3):**
   - **Symptom:** `locator('#saveBtn').click()` timed out (`waiting for element to be visible, enabled and stable`) in WSL2 headless Chromium.
   - **Root cause & classification:** **WSLg `DISPLAY` / `WAYLAND_DISPLAY` vblank stall on headless Windows gate host** (zero product defect). WSL2 automatically exports `DISPLAY=:0` and `WAYLAND_DISPLAY=wayland-0` into `wsl.exe` sessions; on a headless/locked Windows host, WSLg's Wayland/X11 surface never delivers frame callbacks, stalling `requestAnimationFrame` (`envClean=false -> RAF_TIMEOUT` across every step). Deleting `DISPLAY` and `WAYLAND_DISPLAY` from the browser child environment restores pure headless frame scheduling (`envClean=true -> RAF_OK` across every step).
-  - **Fix:** Strip `DISPLAY` and `WAYLAND_DISPLAY` in `chromium.launch({ env })` (`examples/calendar/browser-test.mjs`).
+  - **Fix (`bashy` `8276b5d9f4da`, host KB `wslg-display-and-wayland-display-stall-playwright-requestanimati`):** Strip `DISPLAY` and `WAYLAND_DISPLAY` in `chromium.launch({ env })` (`examples/calendar/browser-test.mjs`).
 - **2026-11-21 (`browser-test.mjs` catching stale DOM node in `templates/agenda.html`):**
   - **Symptom:** `page.waitForFunction` timed out at `browser-test.mjs:130` waiting for `document.querySelectorAll('.cal-revoke-btn').length === 0` after revoking the last member.
   - **Root cause & classification:** **Product UI bug** in `examples/calendar/templates/agenda.html:585-607`. When `data.members` transitioned from length 1 to length 0, the `else` branch set `membersBox.hidden = true` without clearing `membersList.textContent = ''`, leaving the last `.cal-revoke-btn` node attached inside the hidden container.
-  - **Fix:** Clear `membersList.textContent = ''` unconditionally before rendering `data.members` in `templates/agenda.html`.
+  - **Fix (`bashy` `a2b81fe447881eabd7bbe7f51337a426327e1680`, merged to `main` in `401de2e106f3`):** Clear `membersList.textContent = ''` unconditionally before rendering `data.members` in `templates/agenda.html`.
 
 ## Verification & Delivery Evidence (2026-11-21)
 - **Delivered `bashy` submodule SHA:** `401de2e106f3d2e72d6b60a27c031e31a1efbf2c` (merging `agent/weave-issue-126` tip `13e25b1a9cc7`, worker `agy-gemini4-carbon` on `bashy#126`).
