@@ -61,14 +61,42 @@ in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004
 
 | Target | Exit Code | Wall Time | Pass Count | Fail Count | Status |
 |---|---|---|---|---|---|
-| `bashy dag build` | - | - | - | - | Pending |
+| `bashy dag build` | 1 | 12.739s | 0 | 1 | FAILED |
 | `bashy dag test` | - | - | - | - | Pending |
 | `bashy dag test-bash-gate` | - | - | - | - | Pending |
 
 ## 4. Execution Details & Failure Analysis
 
-*(To be populated as each DAG line completes)*
+### 4.1 Target 1: `bashy dag build`
+- **Exit Code**: `1`
+- **Wall Time**: `12.739s`
+- **Output Verdict**: FAILED (`dag: 1/1 targets failed`)
+- **Failing Target**: `build-bash` (prerequisite for `build`)
+- **Error Summary**:
+  ```
+  ==> build-bash
+  dag: effect cap: target "build-bash": "go-product.sh" needs unknown not in Effects: cred,exec,net,read,write
+  productgo: requires go1.27.4, found go1.27.2
+  exit status 1
+  Error: exit status 1
+  ==> build-bash FAILED (exit 1)
+  dag: 1/1 targets failed
+  ```
+- **Root Cause Hypothesis**:
+  - In Sprint 677 Phase 0A (commit `fbeccbea`), `bashy/tools/productgo` and `bashy/go.mod` were bumped to require Go toolchain `go1.27.4` (`const toolchainVersion = "go1.27.4"` in `tools/productgo/main.go:23`).
+  - However, the locked official build image specified in `tools/bashy-build/image.lock` remains `localhost/bashy-build:v1.0.0-rc.37-go1.27.2-c99fcb7318b2`, which ships Go toolchain `go1.27.2`.
+  - When `scripts/go-product.sh` runs `go run ./tools/productgo linux amd64 1 build -o bin/bash.real ...`, `productgo` probes `go env -json GOVERSION` and verifies `cfg.GOVERSION == toolchainVersion`. It detects `go1.27.2` instead of expected `go1.27.4`, failing closed with `productgo: requires go1.27.4, found go1.27.2`.
+  - Per sprint standing directives and user instructions, no code changes or skips are made in this integration story; proceeding to remaining pipeline lines.
 
 ## Appendix: Verbatim Failure Output
 
-*(To be populated as each DAG line completes)*
+### `bashy dag build` Log
+```
+==> build-bash
+dag: effect cap: target "build-bash": "go-product.sh" needs unknown not in Effects: cred,exec,net,read,write
+productgo: requires go1.27.4, found go1.27.2
+exit status 1
+Error: exit status 1
+==> build-bash FAILED (exit 1)
+dag: 1/1 targets failed
+```
