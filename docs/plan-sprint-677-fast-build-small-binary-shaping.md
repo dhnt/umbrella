@@ -2,6 +2,95 @@
 
 Sprint 677 (`334e4662-d75c-5c5f-8671-7b62ea882de1`). Planning-only record established 2026-11-20. The sprint card and its stories in `docs/todo/` are authoritative.
 
+## Plan v3 2026-11-21 (operator forms form-f1bc68d375d5 + form-00159a6e1f7e; supersedes the 2026-11-20 plan below)
+
+Decided architecture:
+
+- **`bsh`** — the certified binary: Bash 5.3 + Bash# (kept together) + the
+  POSIX-required coreutils. Frozen; changes only with re-certification.
+- **`bashy`** — thin, non-certified entry binary: the `bsh` engine + agentic
+  shell hooks (ExecHandler ring, hints/advisor, learn middleware, contract
+  natives, OTel) + a generic, catalog-driven dispatcher.
+- **Every other command** (all yoke front-door verbs, yoke `cmds/*` applets,
+  GNU-only coreutils, examples, optional commands) is its own binary, built
+  from source on demand, cached by content, individually shapeable. UX
+  unchanged: still `bashy <verb>`.
+
+No new `optional/` folder: command sources stay in their packages
+(`coreutils/cmds/<name>`, `yoke/cmds/<name>`, `yoke/pkg/<verb>`
+constructors) and the builder generates a tiny `main` per catalog entry
+(package + module version), reusing the shape-slot store
+(`yoke/pkg/shape/slot`) and the tree-hash build cache. Each `case` in the
+hand-written switch (`bashy/internal/agentos/agentos.go`, ~168 names)
+becomes a catalog entry plus a generated `main` with the same wiring;
+duplicated wiring is accepted first and removed gradually. Libraries stay
+shared; no command binary imports another command's binary; runtime state
+stays in the existing on-disk stores.
+
+Phases (story ids in `docs/todo/`):
+
+- **Phase 0 (release unblock)** — **A** (`195027c9`): go1.27.4 in every
+  module that compiles into a shipped binary or is scanned by the release
+  vuln gate (bashy, outpost, yoke, coreutils, bashsharp, bash, the sh fork,
+  plus `tools/` and `examples/` modules; any module left behind is recorded
+  with a reason), `tools/productgo` re-pin (`main.go:102` rejects anything
+  but go1.27.2; re-verify the `signal_unix.go` hash), gate-image rebuild
+  under the `image.lock` rolling rule with the exclusive gate-host claim,
+  fresh 86/86 baseline in both modes by fixture name
+  (vs rc.39 evidence mode 0 `365ab01e…` / mode 1 `2f059ded…`).
+  A runs **after** the P1 baseline, which must measure today's state first.
+  **B** = S8 (`e7bf0fd7`): `local-release-evidence.py collect` no longer
+  crashes with `KeyError: 'GoMod'`. **C** (`3f6a38f3`, after A): dependency
+  bumps for the reachable module advisories, fresh govulncheck with yoke's
+  ollama/podman sources fetched, retiring or shrinking the `d91599c2`
+  override (bashy `7ddc31c9`).
+- **P1** (`befc2403`) — Step 0 baseline on the gate host in the official
+  image: clean cold + warm build, per-OS sizes, package counts, and the
+  whole-bashy rebuild-and-verify cycle time the new design must beat.
+- **P2** (`46743cdd`, ex-S6; supersedes Sprint 575 S1/S1C) — `bsh`: cut the
+  `yoke/pkg/fleet` leak, own the core catalog, zero yoke packages, 86/86
+  both modes by fixture name, frozen digest recorded.
+- **P3** (`d3989b11`, ex-S7, plus S1 `d49c099b`) — mechanism: catalog-driven
+  dispatch, generated mains, on-demand slot builds, build caches; one
+  command piloted end to end.
+- **P4** — convert ALL commands in coupling batches, each with its own
+  commits and gated by `TestE2EAllListedCommandsDispatch` on
+  Linux/macOS/Windows plus per-command `--help`/`--json`/exit-code parity:
+  (a) `ee056056` yoke `cmds/*` + GNU-only coreutils;
+  (b) `52a3c08d` standalone verbs; (c) `5b9440a0` the coupled cluster last.
+- **P5** (`aa693f4a`) — retire the monolith switch; keep a monolith build
+  tag for `FROM scratch`/air-gapped images until verified; decision record
+  on prebuilt vs build-on-demand from measured numbers.
+- **Kept:** S2 (`ec0a696b`, `-s -w` off Linux for every binary); Sprint 660
+  R4 (`bbd047d0`, generated Makefile forwarder, stays a 660 story with 660
+  trailers; R3 acceptance is the 660 conductor's). R4 is sequenced **after
+  P5**: the build path changes in P3–P5, so the generated forwarder should
+  wrap the final post-switch build path once, not be regenerated twice.
+  P4/P5 are in scope for 677 (convert all); their lower priority is
+  dependency order only. Per-batch 3-OS gate venues: Linux in the official
+  image on a claimed gate-host lane, Windows native on the gate host,
+  macOS native on the macOS QA host (claimed first, fresh per-run work
+  dir, dispatch gate and parity only; never heavy runs on the dev box).
+- **Dropped as library rewrites** (closed superseded/wontfix): S3, S4, S5 —
+  the weight moves out of the core with its command in P4.
+
+Primary metric: one command's edit → verified-active-slot cycle in
+**minutes**, against the P1 whole-bashy number; the full gate runs only
+when `bsh` changes. Gates run only in the official image on the gate
+host (via `bashy oci` in the official image) after claiming it; dev box targeted
+tests only; `bashy dag` only (every `make <target>` below reads as the
+same-named dag target); root cause recorded before any red-test fix; no
+release/tag/publish without the operator. Risks: first-use build
+latency/network on a bare host (measure; prebuilt per release as
+fallback), dispatch parity regressions (3-OS e2e per batch), `bsh`
+identity drift (frozen digest). Rollback: per-batch commits, monolith
+tag retained until P5.
+
+Baseline re-measured 2026-11-21 on the dev box (bashy `5c8be965`):
+`bin/bashy` 241,294,226 bytes; `go list -deps ./cmd/bashy` 2,284 packages,
+268 of them `k8s.io`-prefixed. Heavy suites and gates run only on the gate
+host after claiming it; the dev box gets targeted package tests.
+
 ## Gap & Measured Baseline
 
 Profiling `make build` / `make install` and `bin/bashy` on the dev host (`darwin/arm64`) established two coupled bottlenecks:

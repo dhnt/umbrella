@@ -4,7 +4,7 @@ kind: enhancement
 title: 'S2: Strip symbol table (-s -w) on non-Linux cmd/bashy builds (-20.4 MB on Darwin)'
 seq: 552
 status: todo
-priority: p0
+priority: p1
 labels:
     - build
     - bashy
@@ -14,4 +14,4 @@ sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
 ---
 
-Repo: bashy. Linux ELF cmd/bashy requires SHT_SYMTAB (runtime.fwdSig), so BASHY_LDFLAGS currently omits -s everywhere. Darwin and Windows use bashy_runtime_snapshot / debug/buildinfo and do not use ELF SHT_SYMTAB. Pass -s -w on GOOS != linux in Makefile, scripts/build-bashy-artifact.sh, and Darwin/Windows release scripts while keeping -w on GOOS == linux. Acceptance: Darwin bin/bashy shrinks by ~20.4 MB (241.7 MB -> 221.3 MB); tools/elfaudit --bashy-signal, releaseeligibility, and bashysignalprobe pass on Darwin and Linux ELF artifacts. Spec: docs/plan-sprint-677-fast-build-small-binary-shaping.md
+Repo: bashy. Kept under v3, applies to EVERY binary (bsh, bashy, per-command slot builds). Pass -s -w when GOOS != linux (dag build path + scripts/build-bashy-artifact.sh + slot builder), keep -w only on linux (SHT_SYMTAB/runtime.fwdSig). Acceptance: Darwin size drop ~20.4 MB on monolith-era binary (re-measure per binary class after P2); elfaudit --bashy-signal, releaseeligibility, bashysignalprobe pass on Darwin + Linux ELF artifacts.
