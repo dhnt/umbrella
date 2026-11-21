@@ -35,3 +35,10 @@ HISTORY: run #105 (ycode-cascade-x4) KILLED by wrapper max-runtime 48m0s (killed
 - **Cache state**: Fresh empty OCI volume (`GOMODCACHE`, `GOCACHE`, and `GOTMPDIR` empty; `305` `go: downloading` module lines; `bin/` absent).
 - **Command**: `rm -rf bin && /bashy dag build && ls -l bin` (executes `build-bash` + `build-bashy` including `elfaudit --bashy-signal` and `releaseeligibility` + `build`).
 - **Result**: **`136.468s`** (`137s` integer wall seconds, `2m 16.5s`), exit `0` (`dag: 3 target(s) ok`).
+
+### (2) Warm `bashy dag build` Time
+
+- **Cache state**: Same OCI volume (`lane1-s677p1-cold`) immediately after Stage 1 (`GOMODCACHE` and `GOCACHE` warm; zero source edits).
+- **Command**: `rm -rf bin && /bashy dag build -B && ls -l bin` (matches `measure.sh` Stage 2).
+- **Result**: **`26.011s`** (`26s` integer wall seconds), exit `0` (`dag: 3 target(s) ok`).
+  - Bottleneck observation in container (`GOROOT=/usr/local/go` outside `GOMODCACHE`): even without copying the SDK tree, `tools/productgo` writes `signal_unix.go` + `overlay.json` into a fresh `os.MkdirTemp` directory per invocation (`build-bash` + `build-bashy`), invalidating the `runtime` overlay path and relinking `bin/bash.real` + `bin/bashy`, followed by `go run ./tools/elfaudit` and `scripts/go-tool.sh releaseeligibility` recompiling in a fresh `mktemp -d` (`GOWORK=off`).
