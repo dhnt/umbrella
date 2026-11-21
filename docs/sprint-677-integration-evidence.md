@@ -62,7 +62,7 @@ in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004
 | Target | Exit Code | Wall Time | Pass Count | Fail Count | Status |
 |---|---|---|---|---|---|
 | `bashy dag build` | 1 | 12.739s | 0 | 1 | FAILED |
-| `bashy dag test` | - | - | - | - | Pending |
+| `bashy dag test` | 1 | 169.577s | 7 | 1 | FAILED |
 | `bashy dag test-bash-gate` | - | - | - | - | Pending |
 
 ## 4. Execution Details & Failure Analysis
@@ -88,6 +88,42 @@ in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004
   - When `scripts/go-product.sh` runs `go run ./tools/productgo linux amd64 1 build -o bin/bash.real ...`, `productgo` probes `go env -json GOVERSION` and verifies `cfg.GOVERSION == toolchainVersion`. It detects `go1.27.2` instead of expected `go1.27.4`, failing closed with `productgo: requires go1.27.4, found go1.27.2`.
   - Per sprint standing directives and user instructions, no code changes or skips are made in this integration story; proceeding to remaining pipeline lines.
 
+### 4.2 Target 2: `bashy dag test`
+- **Exit Code**: `1`
+- **Wall Time**: `169.577s` (`2m 49.6s`)
+- **Output Verdict**: FAILED (`dag: 1/8 targets failed`)
+- **Targets Executed**: 8 targets
+  - **Passed (7)**:
+    1. `test-meet-spa-fresh-regression` (7/7 checks verified)
+    2. `test-meet-spa-fresh` (fresh build matched tracked artifact using bashy-provisioned pnpm)
+    3. `test-build-fail-closed`
+    4. `test-isolated-lanes`
+    5. `test-release-qa-lane`
+    6. `test-build-tag-matrix`
+    7. `test-bash-container-mode`
+  - **Failed (1)**:
+    1. `verify-bashy-scratch` (via failed sub-target `build-bashy-scratch`)
+- **Error Summary**:
+  ```
+  ==> verify-bashy-scratch
+  dag: effect cap: target "verify-bashy-scratch": "verify-bashy-scratch.sh" needs unknown not in Effects: cred,exec,net,read,write
+  ==> build-bashy-scratch
+  building static linux/amd64 Bashy at /proc/self/fd/3/bin/scratch/bashy-linux-amd64 ...
+  productgo: requires go1.27.4, found go1.27.2
+  exit status 1
+  Error: exit status 1
+  ==> build-bashy-scratch FAILED (exit 1)
+  dag: 1/1 targets failed
+  ==> verify-bashy-scratch FAILED (exit 1)
+  dag: 1/8 targets failed
+  ```
+- **Root Cause Hypothesis**:
+  - Exactly identical to `Target 1 (bashy dag build)`. Target `verify-bashy-scratch` invokes `build-bashy-scratch` to compile a static `linux/amd64` binary using `tools/productgo` (`./tools/productgo linux amd64 0 build -tags bashy_scratch ...`).
+  - `tools/productgo/main.go` enforces `toolchainVersion = "go1.27.4"`.
+  - The locked official build image provides `go1.27.2`.
+  - `productgo` fails closed with `productgo: requires go1.27.4, found go1.27.2`, causing `build-bashy-scratch` and `verify-bashy-scratch` to exit 1.
+  - All preceding prerequisite test suites (including meet SPA regression/freshness, build failure isolation, release QA, build tags matrix, and container modes) succeeded.
+
 ## Appendix: Verbatim Failure Output
 
 ### `bashy dag build` Log
@@ -99,4 +135,19 @@ exit status 1
 Error: exit status 1
 ==> build-bash FAILED (exit 1)
 dag: 1/1 targets failed
+```
+
+### `bashy dag test` Log (Failure Excerpt)
+```
+==> verify-bashy-scratch
+dag: effect cap: target "verify-bashy-scratch": "verify-bashy-scratch.sh" needs unknown not in Effects: cred,exec,net,read,write
+==> build-bashy-scratch
+building static linux/amd64 Bashy at /proc/self/fd/3/bin/scratch/bashy-linux-amd64 ...
+productgo: requires go1.27.4, found go1.27.2
+exit status 1
+Error: exit status 1
+==> build-bashy-scratch FAILED (exit 1)
+dag: 1/1 targets failed
+==> verify-bashy-scratch FAILED (exit 1)
+dag: 1/8 targets failed
 ```
