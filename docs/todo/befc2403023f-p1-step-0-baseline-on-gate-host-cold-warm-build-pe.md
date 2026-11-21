@@ -42,3 +42,17 @@ HISTORY: run #105 (ycode-cascade-x4) KILLED by wrapper max-runtime 48m0s (killed
 - **Command**: `rm -rf bin && /bashy dag build -B && ls -l bin` (matches `measure.sh` Stage 2).
 - **Result**: **`26.011s`** (`26s` integer wall seconds), exit `0` (`dag: 3 target(s) ok`).
   - Bottleneck observation in container (`GOROOT=/usr/local/go` outside `GOMODCACHE`): even without copying the SDK tree, `tools/productgo` writes `signal_unix.go` + `overlay.json` into a fresh `os.MkdirTemp` directory per invocation (`build-bash` + `build-bashy`), invalidating the `runtime` overlay path and relinking `bin/bash.real` + `bin/bashy`, followed by `go run ./tools/elfaudit` and `scripts/go-tool.sh releaseeligibility` recompiling in a fresh `mktemp -d` (`GOWORK=off`).
+
+### (3) Per-OS Binary Sizes (Default Lean Worker `dag build` Profile)
+
+Produced inside the locked official build image (`go1.27.2`, `-trimpath`, `bash` linked with `-s -w`, `bashy` linked with `-w` without `-s`):
+
+| Target (`GOOS/GOARCH`) | Artifact | Exact Size (bytes) | Size (MB / MiB) | SHA-256 | Notes |
+|---|---|---:|---:|---|---|
+| `linux/amd64` | `bin/bash` | `16,896` | `0.02 MB` / `0.02 MiB` | `28d1e291a72c7ef90c2a9d32558845a72c5eccbc5212e839e24821540eadeffb` | Native C signal-forwarding launcher (`native/siglaunch.c.in`) |
+| `linux/amd64` | `bin/bash.real` | `18,604,295` | `18.60 MB` / `17.74 MiB` | `6690a448d4a2a9387e95378ededd6ad0e2f0cfa502f9b3f24bc78729a3a84286` | Pure drop-in shell (`github.com/qiangli/bash/cmd/bash`, `-s -w`) |
+| `linux/amd64` | `bin/bashy` | `291,439,456` | `291.44 MB` / `277.94 MiB` | `08bac3e516bdbe16e326ff22b37fc0f7270b927872b4d0112a82be2f97387e0b` | AgentOS shell (`./cmd/bashy`, `-w`, retains ELF `SHT_SYMTAB` + `runtime.fwdSig`) |
+| `darwin/arm64` | `bin/darwin-arm64/bash` | `17,362,098` | `17.36 MB` / `16.56 MiB` | `9b81bbc9eaea78efba62b0b730e0018c1b125f638c95fa9e0913c7798e5827ac` | Cross-built (`CGO_ENABLED=0`, `-s -w`) |
+| `darwin/arm64` | `bin/darwin-arm64/bashy` | `222,082,754` | `222.08 MB` / `211.80 MiB` | `60262cb61aded0cc7f90d99499db2c839164cf42b440c915a64adacc6fddc7ba` | Cross-built (`CGO_ENABLED=0`, `-w`, unstripped Mach-O; cold cross-compile `92.816s`) |
+| `windows/amd64` | `bin/windows-amd64/bash.exe` | `19,064,832` | `19.06 MB` / `18.18 MiB` | `fbce314b9e38d06609832529d4a5aab74c0b0bcf422f97b3fea0872b7fa3846c` | Cross-built (`CGO_ENABLED=0`, `-s -w`) |
+| `windows/amd64` | `bin/windows-amd64/bashy.exe` | `232,139,264` | `232.14 MB` / `221.39 MiB` | `ef46fb8e7e2961a09b7a7dddcf597e52a2b89b6aeefbd15ac020a3307b066748` | Cross-built (`CGO_ENABLED=0`, `-w`, unstripped PE; cold cross-compile `87.136s`) |
