@@ -29,6 +29,21 @@ a moving target. Whoever starts a story, before writing any code:
 Rebase onto current origin again before submitting. A story is not accepted
 while `bashy mod drift` reports stale or cyclic pins for what it touched.
 
+**A stale workspace: redo beats repair.** If the base moved while you worked,
+rebase only when it is trivial (clean or a few obvious conflicts). Otherwise
+abandon the workspace and redo the story from fresh heads, using the old diff
+as a reference, not a base: agent rework is cheap, chasing conflicts against a
+moving target is not. Push the old branch or save its patch first, so no work
+that exists nowhere else is lost. Keep stories small so this stays rare.
+
+**Coordinate, don't collide.** Other agents work the same modules at the same
+time. Before step 3, check who else is active there (`bashy weave list`,
+`bashy claim list`, `bashy inbox`); take a claim on the pin bump you are about
+to push so two agents do not bump the same consumer at once; and say what you
+are changing (`bashy mb`). After you merge, announce it so others rebase onto
+it, and when your change breaks someone else's in-flight work, tell them
+rather than leaving them to discover it.
+
 ## Root cause before any fix
 
 When a test that was green fails, investigate before changing anything —
