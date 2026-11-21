@@ -10,6 +10,13 @@ The Go baseline is **Go 1.27 with toolchain go1.27.4**. Run commands from the
 subproject that owns the code. There is no root Makefile or single package tree
 covered by a root `go test ./...`.
 
+**No subproject has a hand-written Makefile** (Sprint 660). Each one's `dag.md`
+is the only build and test source, run with `bashy dag <target>`; where a
+`Makefile` is still committed it is a GENERATED, forward-only projection of
+those targets (`bashy dag --makefile`, drift-checked by the repo's `fmtcheck`
+target) kept so that reaching for `make` still works and teaches the native
+form. Never edit a committed Makefile — regenerate it.
+
 ## Hydrate or synchronize
 
 ```bash
@@ -49,7 +56,7 @@ For development across sibling projects, normal Go commands discover the root
 ```bash
 cd bashy
 GOWORK=off go build ./...
-GOWORK=off make test
+GOWORK=off bashy dag test
 ```
 
 A standalone clone resolves public dependencies at the versions in its own
@@ -72,8 +79,8 @@ system and artifact identifiers before running the relevant gates.
 
 | Project | Command from its root | Notes |
 |---|---|---|
-| Bashy | `make build` | Builds the product and shell binaries through the supported build path. |
-| Bashy | `make test && make test-bash` | Unit/build-isolation gates and the serial Bash compatibility gate are both required. |
+| Bashy | `bashy dag build` | Builds the product and shell binaries through the supported build path. |
+| Bashy | `bashy dag test && bashy dag test-bash` | Unit/build-isolation gates and the serial Bash compatibility gate are both required. |
 | Bashsharp | `go test ./...` | Language front end and command tests. |
 | Outpost | `go test -short ./...` | Shell/readline tests need a controlling TTY. |
 | Ycode, Bonsai, Sh, Nadir, Gfy | `go test -short ./...` | Run in each project's root. |
@@ -81,7 +88,7 @@ system and artifact identifiers before running the relevant gates.
 | Yoke | `go test $(go list ./... \| grep -v /external/)` | Match its documented project gate; nested modules have their own checks. |
 | Layer ratchets | `script/layer-gate.sh` from the umbrella root | shrink-only import allowlists (Sprint 575 S0) |
 
-Read each subproject's `CLAUDE.md`, Makefile and suite definitions for the full
+Read each subproject's `CLAUDE.md`, `dag.md` and suite definitions for the full
 candidate-specific matrix. Short unit tests are not substitutes for full
 integration or conformance gates. Do not silently omit TTY-dependent tests to
 make a headless run green; schedule them with a PTY and report lane coverage.
@@ -93,8 +100,8 @@ a baseline failure is still a failure, not a pass.
 
 ## Bash compatibility and POSIX conformance
 
-Bashy's Go tests do not measure Bash compatibility. `make test` includes build
-isolation and supply-chain checks beyond `go test ./...`; `make test-bash` runs
+Bashy's Go tests do not measure Bash compatibility. `bashy dag test` includes build
+isolation and supply-chain checks beyond `go test ./...`; `bashy dag test-bash` runs
 the Bash 5.3 compatibility suite through the existing runner. The serial release
 gate expects all 86 measured fixtures. Use the existing suite definitions for
 additional shell, utility and platform coverage.
