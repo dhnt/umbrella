@@ -3,14 +3,13 @@ id: daa99f1f5a8e
 kind: feature
 title: Cloudbox alerts the owner when a paired host goes offline or unreachable
 seq: 388
-status: done
+status: assigned
 priority: p0
 created: 2026-11-17T11:51:11.253915Z
 assignee: codex-gpt6.2-sol
 sprint: 652
 sprint_id: 48a699fb-076f-5442-995a-b12987a45bea
 sprint_title: Outpost reliability and host-offline alerting on cloudbox
-closed: 2026-11-21T11:02:04.984253Z
 closed_by: codex-gpt6.2-sol
 ---
 
@@ -126,6 +125,9 @@ fixtures passed on the exact merge commit in the official Linux image with
 The gate lane was released.
 
 The approved Cloudbox candidate passed the standalone and satellite tests and
-was integrated into its private integration branch. Deployment awaits the
-operator. The Yoke CLI implementation and Bashy tracking note are still on
-their review branches.
+was integrated into its private integration branch. The operator approved deployment separately. Yoke CLI commit `615fb3c8`
+merged on Yoke main as `da4b02a4`. Bashy retained the reviewed watermark
+pointer and pinned the Yoke module and source mount in `00b9edcc`. The
+official Linux image passed Yoke's fleet short suite, both Bashy help
+snapshots, source-pin checks, and authenticated Bashy binary fixtures for
+status, acknowledgement, mute and threshold. The help goldens matched.
