@@ -167,3 +167,16 @@ draft → `release.yml` dispatch).
 Class: new advisories against the pinned toolchain and dependencies (not an
 rc.39 code regression). The gate has no exception path; publication waits
 for an operator decision.
+
+### rc.39 publication stopped (2026-11-21, operator decision)
+
+`v1.0.0-rc.39-dev` was moved (operator: rc.39 is not a formal release) to
+bashy `7ddc31c9`, which adds the logged vulnerability override (Sprint 656
+story d91599c2). On `7ddc31c9`: dist 34 assets; shaping smoke 27/27 on the dist
+`linux/amd64` bytes with the regression failing as required; the override
+recorded the reachable ids. The receipt step then failed with `KeyError:
+'GoMod'`: `local-release-evidence.py collect` requires a `go.mod` digest for
+every module in `go list -m all`, and about 380 modules per scope are never
+downloaded by a build (bashy 383/1068, outpost 276/786, yoke 369/895). First
+time this step ran. Class: release tooling defect. Publication is deferred
+to the release-pipeline work in Sprint 677; no tooling fix in this attempt.
