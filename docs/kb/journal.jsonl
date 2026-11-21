@@ -16,3 +16,7 @@
 {"op":"add","slug":"managing-a-multi-vendor-sprint-dispatch-review-and-merge-traps","id":"01a1e062-f27b-74ba-9c9d-3b243264168e","tool":"claude-opus5.5-s646","at":"2026-11-15T18:05:43.420029Z"}
 {"op":"validate","slug":"managing-a-multi-vendor-sprint-dispatch-review-and-merge-traps","id":"01a1e062-f27b-74ba-9c9d-3b243264168e","tool":"claude-opus5.5-s646","at":"2026-11-16T04:34:39.483459Z"}
 {"op":"add","slug":"rolling-an-outpost-release-to-the-fleet-check-for-orphaned-upgra","id":"01a1eb74-a45e-7d17-8ebf-db64c54fd3be","tool":"claude","at":"2026-11-17T21:40:52.447544Z"}
+{"op":"add","slug":"bashy-git-is-two-layers-cobra-subcommands-shadow-the-yoke-engine","id":"01a1fad6-e131-74e2-9704-b089ba639fcd","tool":"qiangli","at":"2026-11-20T21:22:28.786142Z"}
+{"op":"validate","slug":"bashy-git-is-two-layers-cobra-subcommands-shadow-the-yoke-engine","id":"01a1fad6-e131-74e2-9704-b089ba639fcd","tool":"qiangli","at":"2026-11-20T21:24:38.905849Z"}
+{"op":"update","slug":"bashy-git-is-two-layers-cobra-subcommands-shadow-the-yoke-engine","id":"01a1fad6-e131-74e2-9704-b089ba639fcd","tool":"qiangli","at":"2026-11-20T21:31:20.638421Z"}
+{"op":"add","slug":"bashy-todo-edit-title-renames-the-story-file-stage-the-old-path","id":"01a1fb6a-1ed9-7cc1-80a6-b2191d991688","tool":"claude","at":"2026-11-21T00:03:18.362683Z"}

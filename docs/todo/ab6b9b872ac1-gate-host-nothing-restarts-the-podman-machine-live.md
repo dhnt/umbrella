@@ -3,11 +3,12 @@ id: ab6b9b872ac1
 kind: task
 title: 'gate host: nothing restarts the podman machine (live Klatch) after a reboot — add an autostart'
 seq: 437
-status: todo
+status: assigned
 priority: p1
 labels:
     - venue
 created: 2026-11-17T21:03:06.369091Z
+assignee: agy-gemini4-carbon
 sprint: 656
 sprint_id: b220aade-5c96-5625-9a68-a0b7619c418a
 sprint_title: 'rc.37 QA venue: gate-host OTel env leak + macOS QA host ssh auth'

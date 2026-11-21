@@ -3,11 +3,12 @@ id: 9deb591a820c
 kind: bug
 title: outpost podman capability reports active/health ok when no podman socket is detected
 seq: 438
-status: todo
+status: assigned
 priority: p2
 labels:
     - outpost
 created: 2026-11-17T21:03:06.511598Z
+assignee: muse-wonder-full
 sprint: 656
 sprint_id: b220aade-5c96-5625-9a68-a0b7619c418a
 sprint_title: 'rc.37 QA venue: gate-host OTel env leak + macOS QA host ssh auth'
