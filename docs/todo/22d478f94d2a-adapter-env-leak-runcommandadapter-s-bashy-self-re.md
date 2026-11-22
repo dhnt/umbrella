@@ -3,10 +3,9 @@ id: 22d478f94d2a
 kind: bug
 title: 'Adapter env leak: runCommandAdapter''s BASHY_SELF reaches go test child binaries; plus jq missing from standalone yoke/dag'
 seq: 623
-status: assigned
+status: todo
 priority: p0
 created: 2026-11-22T11:36:46.62794Z
-weave: 143
 assignee: agy-gemini4-carbon
 sprint: 692
 ---
