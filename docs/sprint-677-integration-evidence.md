@@ -248,3 +248,34 @@ measure exactly that tree. Legs follow.
 - **Mode 1** (`BASH53_BASHPP=1`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-1.json`, sha256 `d41fbec376529a9250e98bb8435d958b33bcaea40cacd30b809d1b0fa35fd9f9`
 - **Fixture-name comparison vs rc.39**: rc.39 evidence (mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`) sealed the same 86-fixture set. Both modes here pass all 86 with no failures, skips, or timeouts, so by fixture name there are no NEW, RECOVERED, or changed fixtures: 86/86 both modes, matching rc.39.
 
+## Leg 4: 3-OS dispatch e2e (`TestE2EAllListedCommandsDispatch`, fresh install, empty adapter cache)
+
+Each OS ran the candidate from a fresh install with `BASHY_ADAPTER_CACHE` pointing at an empty directory, so every adapter cold-built on first use.
+
+### 4a Linux (gate-host lane-2, official image) — PASS
+
+- **Exit code**: `0`; **wall time**: `73.138s` (test itself `ok ... 50.261s`)
+- Fresh `bin/bashy` + `bin/bash` copied to a fresh directory, fresh `HOME`, empty adapter cache. Full listed-command dispatch passed, including the cold adapter builds (the first-use defects `42f79daa`/`3dd8b4ec` do not reproduce here).
+
+### 4b Windows native (gate host, Windows-native resource) — RED, one assertion
+
+- **Exit code**: `1`; **wall time**: `43s` (test `41.46s`)
+- **Failing name, verbatim**: `TestE2EAllListedCommandsDispatch` — `commands_e2e_test.go:274: sprint help does not carry the owner-accountability contract`, with `got: "go: go.mod file not found in current directory or any parent directory; see 'go help modules' Error: exit status 1"`. Every other listed verb passed; this is the only failure in the log.
+- **First-pass classification**: product-leaning. On a cold adapter cache, `sprint --help` on native Windows reaches a `go` invocation outside any module instead of serving the adapter's help, so the accountability text never appears. The Windows host carries no Go toolchain or source tree by design (the test's `BASHY_E2E_BIN` escape hatch exists for exactly that host shape), so a dispatch path that needs `go` there is a product gap, not a venue gap. No fix in this story; handed to root-cause.
+
+### 4c macOS (QA host claimed; substitute venue) — PASS with a venue note
+
+- **Venue note**: the macOS QA host was claimed (lease epoch 165), but it is disk-full (`460Gi` volume, `110Mi` available), so the 600 MB test payload could not be staged there and nothing on that host was deleted to make room. The macOS leg therefore ran on the dev box (also macOS arm64) with the same fresh-install, empty-cache setup, and is labeled a substitute venue, not QA-host evidence.
+- **Exit code**: `0`; **wall time**: `74s`; verdict `PASS`
+
+## Per-leg summary
+
+| Leg | Command | Exit | Wall | Result |
+|---|---|---|---|---|
+| 1 | `bashy dag build` | 0 | 169.351s | PASS (3 targets ok) |
+| 2 | `bashy dag test` (`BASHY=./bin/bashy`) | 1 | 307.173s | RED: `test-startup-linux` only (8/9 pass); diagnostic `go test ./...` exit 1, 650.271s (venue-leaning names above) |
+| 3 | `bashy dag test-bash-gate` (`BASH53_OCI=podman`) | 0 | not captured (see leg) | PASS 86/86 both modes, matching rc.39 by fixture name |
+| 4a | dispatch e2e, Linux lane, fresh install, cold cache | 0 | 73.138s | PASS |
+| 4b | dispatch e2e, Windows native, fresh install, cold cache | 1 | 43s | RED: `sprint --help` cold-cache `go` failure (product-leaning) |
+| 4c | dispatch e2e, macOS, fresh install, cold cache | 0 | 74s | PASS on substitute venue (QA host disk-full) |
+
