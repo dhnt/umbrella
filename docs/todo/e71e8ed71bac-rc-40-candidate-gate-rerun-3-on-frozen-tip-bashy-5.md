@@ -9,6 +9,7 @@ labels:
     - release
     - gate
 created: 2026-11-22T18:31:00.001338Z
+weave: 156
 assignee: claude-opus5.5
 sprint: 692
 ---
