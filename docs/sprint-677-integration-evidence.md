@@ -545,3 +545,10 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
   - Against run 1 (172/172 PASS, which matched rc.39 by name; rc.39 mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`): **IDENTICAL**, with the same 86 names in each mode.
   - Against run #153, the only difference is `mode 1 histexpand FAIL -> PASS`.
 - **histexpand**: `PASS` in both modes. It did not fail again, so the conditional three single-fixture reruns were not needed and did not run. This agrees with story 630's root cause, a venue/scheduling transient (isolated mode-1 fixture PASS x3, identical `cmd/bash` text hashes).
+
+## Leg 4: 3-OS dispatch e2e (`TestE2EAllListedCommandsDispatch`, fresh install, empty adapter cache)
+
+### 4a Linux (gate-host lane 2, official image) — PASS
+
+- **Command** (the same script as runs 1 and 2): copy the fresh `bin/bashy` and `bin/bash` to `/tmp/fresh/bin`, then run `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`. The adapter cache directory is new and empty.
+- **Exit code**: `0`; **wall time**: `89.891s` (test `ok github.com/qiangli/bashy/internal/agentos 60.228s`)
