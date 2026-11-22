@@ -553,6 +553,12 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
 - **Command** (the same script as runs 1 and 2): copy the fresh `bin/bashy` and `bin/bash` to `/tmp/fresh/bin`, then run `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`. The adapter cache directory is new and empty.
 - **Exit code**: `0`; **wall time**: `89.891s` (test `ok github.com/qiangli/bashy/internal/agentos 60.228s`)
 
+### 4b Windows native (gate host, Windows-native resource, no host Go) — PASS
+
+- **Build** (lane 2, official image, candidate as outer runner): `GOOS=windows GOARCH=amd64 BIN_DIR=bin/win ./bin/bashy dag build-bashy` plus `GOOS=windows GOARCH=amd64 ./bin/bashy go test -c -tags e2e -o bin/win/agentos.test.exe ./internal/agentos`. Exit `0`, `165.175s`. `bashy.exe` sha256 `aac6c85d2f0819affed89bad93db8d18331d9ffee301c3bc475fdaff0c0c2786`, `agentos.test.exe` sha256 `0b7191d0a9065be1be65f80f736796dba55d68333b1d39c774295e7715ec4db9`.
+- **Run**: a fresh directory on the Windows side with a fresh `HOME`/`USERPROFILE`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>\bin\bashy.exe`, then `agentos.test.exe -test.run "^TestE2EAllListedCommandsDispatch$" -test.count=1 -test.timeout 20m -test.v`. `where go` on that host prints `INFO: Could not find files for the given pattern(s).`, so there is no host Go. Afterwards the cache holds a managed `toolchain\go.exe` and the cold-built yoke adapters (`ask.exe`, `chat.exe`, `dag.exe`, `mb.exe`, …).
+- **Exit code**: `0` (`EXIT 0`); **wall time**: `324.74s` (11:06:14.11 → 11:11:38.85 host clock; `--- PASS: TestE2EAllListedCommandsDispatch (323.63s)`). This matches run #153 (321.89s).
+
 ### 4c macOS — PASS on a SUBSTITUTE venue (the dev box)
 
 - **Venue note**: the macOS QA host was claimed (lease epoch 167) and checked first. It is still disk-full: `/System/Volumes/Data` 461G, 106M available, 100%, and its telemetry spool reports `no space left on device`. Nothing was staged or deleted there, and the claim was released. The leg ran on the dev box (macOS arm64, 29G free). It is labelled a substitute venue, not QA-host evidence.
