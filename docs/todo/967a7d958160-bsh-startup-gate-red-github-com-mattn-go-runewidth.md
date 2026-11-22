@@ -3,13 +3,15 @@ id: 967a7d958160
 kind: bug
 title: 'bsh startup gate red: github.com/mattn/go-runewidth init costs 12-14 ms (cap 5 ms/package, 15 ms total) in the bsh binary'
 seq: 625
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashsharp
     - release
     - gate
 created: 2026-11-22T16:00:49.888603Z
+weave: 149
+assignee: codex-gpt6-astra
 sprint: 692
 ---
 

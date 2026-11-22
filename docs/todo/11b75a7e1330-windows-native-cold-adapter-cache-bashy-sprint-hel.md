@@ -3,7 +3,7 @@ id: 11b75a7e1330
 kind: bug
 title: 'Windows native, cold adapter cache: ''bashy sprint --help'' runs ''go'' outside any module (''go: go.mod file not found'') instead of building the adapter; dispatch e2e red on Windows'
 seq: 626
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashy
@@ -11,6 +11,8 @@ labels:
     - adapter
     - release
 created: 2026-11-22T16:00:50.038804Z
+weave: 151
+assignee: codex-gpt5.6-sol
 sprint: 692
 ---
 

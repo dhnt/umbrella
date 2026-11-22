@@ -3,13 +3,15 @@ id: 389edc3a9dc8
 kind: bug
 title: 'Candidate ''go test ./...'' red in the official image: TestSourceRoute GOROOT, /var/cache/bashy permission, ACP 120 s deadlines, internal/agentos 10 m timeout'
 seq: 627
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashy
     - gate
     - release
 created: 2026-11-22T16:00:50.197077Z
+weave: 150
+assignee: muse-wonder
 sprint: 692
 ---
 
