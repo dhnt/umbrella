@@ -418,3 +418,32 @@ gate is the frozen tip as staged.
 - **Build**: a fresh clone at `1762e12c5254d52557daf81796e0be3baded62b1` in a temp directory; `GOWORK=off bashy dag build-bash build-bashy` (host Go `go1.27.4 darwin/arm64`), exit `0`, `52s`. Candidate `bin/bashy` sha256 `6def6a784950f861351869623601c9f09cbf50f47dc42fffea1e1c77d9629683`.
 - **Run**: fresh `bin/` copy, fresh `HOME`, empty `BASHY_ADAPTER_CACHE`, `BASHY_E2E_BIN=<fresh>/bin/bashy`; `./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
 - **Exit code**: `0`; **wall time**: `143s` (test `ok github.com/qiangli/bashy/internal/agentos 62.821s`)
+
+## Leg 5: shaping smoke — `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 bashy dag test-shaping-smoke test-shaping-smoke-regression` (lane 2, official image) — PASS, DOM checkpoint SKIPPED
+
+- **Chrome**: absent from the official image. `command -v google-chrome chromium chromium-browser google-chrome-stable headless_shell` found nothing, so the leg ran with `SHAPING_SMOKE_SKIP_DOM=1`. The browser checkpoint (`TestDOMExternalShapeCheckpoint`, `-tags verifydom`) is **SKIPPED, not passed**.
+- **Exit code**: `0`; **wall time**: `8.727s`; `dag: 2 target(s) ok`
+- **`test-shaping-smoke`**: `test-shaping-hello-world: PASS (25 checks) binary=/work/./bin/bashy candidate=f5c7e120ca8456c2427c46cb9b0384ee1be373fc`. The checks are register, console serving, two paired principals, wish/show/diff, verify (the app's `checks/smoke.bsh`, evidence sealed), preview, approve (alice moves, bob unaffected), undo and submit. There is no DOM-checkpoint line because it was skipped. Candidate `bin/bashy` sha256 `048a3d69fecb4e645bc584a2c4b74f9026243de8884e63d4014179651fd7ba2b`.
+- **`test-shaping-smoke-regression`**: `test-shaping-smoke-regression: ok (broken smoke check was refused)`
+- **Console bind note**: in this run the console was reached at `127.0.0.1` inside the container (`ok 2 - console serving on http://127.0.0.1:…`). The LAN-bound console was not exercised from another host.
+
+## Per-leg summary (rerun, frozen tip umbrella `bebf3e8ca`)
+
+| Leg | Command / venue | Exit | Wall | Result | First run (`8b8db523f`) |
+|---|---|---|---|---|---|
+| 1 | `bashy dag build` — lane 2, image rc.40-go1.27.4 | 0 | 167.421s | PASS (3 targets ok) | PASS |
+| 2 | `BASHY=./bin/bashy bashy dag test` — lane 2 | 1 | 248.738s | RED: `test-bash-container-mode` (`bashy dag: adapter yoke/dag/dag.bsh not found`), product-leaning, bisect candidate bashy `48d7c818`; 6/7 prereqs ran and passed before the stop | RED (`test-startup-linux`) |
+| 2+ | `bashy dag test-startup-linux verify-bashy-scratch` — lane 2 | 0 | 65.799s | PASS; `inittrace: 1.95 ms total (309 packages); max 0.18 ms (github.com/qiangli/bash/polyglot)` | startup RED (12–14 ms runewidth) |
+| 2+ | `./bin/bashy go test -timeout 30m ./...` (the `test` body) — lane 2 | 1 | 820.958s | RED: 27 ok / 1 FAIL `internal/agentos` — `TestSrcPinsMatchLinkedModules`, `TestSynergyDAGCheckAndList`, `TestSynergyDAGBoundedFixture`, `TestSynergyDAGRejectsEmptyImplementation`, `TestToolShortcutE2E` | RED (cmd/bashy + agentos timeout) |
+| 3 | `BASH53_OCI=podman bashy dag test-bash-gate` — gate host | 1 | 315.154s | RED: mode 0 86/86; mode 1 85/86, `histexpand` FAIL (only change by name vs first run / rc.39), product-leaning, bisect candidate bashsharp `cc848210`→`b1a3183` | PASS 86/86 both |
+| 4a | dispatch e2e, Linux lane 2, fresh install, cold cache | 0 | 93.966s | PASS | PASS |
+| 4b | dispatch e2e, Windows native (no host Go), fresh install, cold cache | 0 | 321.89s | PASS (run-1 `sprint --help` failure gone) | RED |
+| 4c | dispatch e2e, macOS, fresh install, cold cache | 0 | 143s | PASS on SUBSTITUTE venue (dev box; QA host still disk-full) | PASS (substitute) |
+| 5 | `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 bashy dag test-shaping-smoke test-shaping-smoke-regression` — lane 2 | 0 | 8.727s | PASS 25 checks + regression ok; DOM checkpoint **SKIPPED** (no Chrome in the image) | new leg |
+
+**Verdict: the candidate is RED.** Three legs carry unresolved failures: leg 2
+(`test-bash-container-mode` plus 5 `internal/agentos` tests) and leg 3 (mode-1
+`histexpand`). The fix round's three targets are now green: `test-startup-linux`,
+the in-image `cmd/bashy` tests, and the Windows cold-cache dispatch. The new
+failures are recorded with first-pass classes and bisect candidates and handed to
+the conductor. None was fixed, skipped or rerun in this story.
