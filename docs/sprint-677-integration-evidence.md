@@ -366,3 +366,18 @@ gate is the frozen tip as staged.
   100x /bin/true & wait $!: 0.56 s
   ```
   In the first run the max package init was 12–14 ms (`github.com/mattn/go-runewidth`) against the 5 ms budget. The lazy runewidth tables in bashsharp `b1a3183` remove it: `go-runewidth` is no longer the max, and the max is 0.18 ms.
+
+### Leg 2 continuation: the `test` body, `./bin/bashy go test -timeout 30m ./...` — RED, one package
+
+- **Exit code**: `1`; **wall time**: `820.958s`
+- **Package summary**: 27 `ok`, 1 `FAIL`, 8 `[no test files]`. The failing package is `github.com/qiangli/bashy/internal/agentos` (775.414s). It ran to completion inside the new 30-minute budget, with no timeout panic. `cmd/bashy` is `ok` (331.507s): the first run's `TestSourceRoute/*`, `TestRepairHermeticStrippedPathRunsThroughBashyRuntime` and both ACP tests no longer fail.
+- **Failing tests, verbatim**:
+  - `TestSrcPinsMatchLinkedModules` — `src_mount_test.go:13: yoke: src: yoke pin is out of sync with the linked module version v0.0.0-20261122161039-5f1365166f79`
+  - `TestSynergyDAGCheckAndList` (56.95s) — `testing.go:1619: TempDir RemoveAll cleanup: unlinkat /var/cache/bashy-build/tmp/TestSynergyDAGCheckAndList…/001/go/pkg/mod/go.yaml.in/yaml/v2@v2.4.4/apic.go: permission denied`
+  - `TestSynergyDAGBoundedFixture` (60.31s) — `synergy_dag_test.go:288: dag --json envelope: unexpected end of JSON input`, `exit=1`, empty stdout, stderr starting `go: downloading github.com/qiangli/coreutils v0.0.0-20261121101804-c5832f99ccf6 … go: downloading github.com/qiangli/yoke v0.0.0-20261121163358-be872cc5a395`
+  - `TestSynergyDAGRejectsEmptyImplementation` (59.05s) — `synergy_dag_test.go:514: failed DAG envelope: invalid character 'g' looking for beginning of value`, stderr `go: downloading github.com/qiangli/yoke v0.0.0-20261121163358-be872cc5a395 …`
+  - `TestToolShortcutE2E` (32.09s) — `toolshortcut_e2e_test.go:450: bashy agy did not exit after quit`
+- **First-pass classification**:
+  - `TestSrcPinsMatchLinkedModules`: product/repository consistency defect. bashy `1762e12c` bumped `go.mod` to yoke `5f136516`, but the matching `src` pin was not moved. The test caught a real mismatch.
+  - The three `TestSynergyDAG*`: product-leaning, the same cluster as the `test-bash-container-mode` failure. The candidate's `dag` verb now cold-builds its `yoke/dag` adapter with `go` from a yoke pin (`be872cc5`, the stale subpackage pin in the drift listing). The `go: downloading` output then breaks the `--json` envelope, and the read-only module cache left in the test's TempDir makes cleanup fail. The bisect candidate is again `48d7c818`.
+  - `TestToolShortcutE2E`: undetermined, venue-leaning (an interactive `agy` session quit under a headless container). It is not comparable with the first run, whose `internal/agentos` package died at the 10-minute timeout before it reported individual results.
