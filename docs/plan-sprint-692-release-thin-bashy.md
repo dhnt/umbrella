@@ -116,3 +116,26 @@ serial rerun on a cold cache); these rules cut that to the cost of the leg.
 These rules apply to the remaining cycle of this sprint (leg 2 rerun after
 `TestToolShortcutE2E`, then the release) and are inherited by follow-up
 sprints.
+
+6. **Downloads cost money: cache and build differentially.** The Go module
+   cache is content-addressed and immutable, so every lane shares one warm
+   module cache volume and never re-downloads a module graph; only the Go
+   build cache is fresh for the final evidence run. Adapter cold builds reuse
+   the lane's module cache (never a private tmp module cache that downloads
+   again). Toolchains and images are pulled once per host and reused by
+   digest. A step that would download the same bytes twice is a defect in the
+   step, not a cost of doing business.
+7. **One GitHub run per release, and it must not be able to fail on us.** No
+   builds, tests or retries on GitHub-hosted runners; the public workflows are
+   `release.yml` (publish the locally built, locally gated assets once) and
+   `promote.yml`. Before the single dispatch, every step the workflow performs
+   is run locally against the frozen candidate: `dag dist` produces the full
+   asset family and manifest, the local release gate receipt verifies against
+   that manifest and commit, the preflight script runs offline against the
+   notes commit and the uploaded draft, and the changelog passes the
+   public-claim checks. A release attempt that stops on GitHub because of a
+   bug or a build-script issue is a defect to root-cause before any retry;
+   there is no second attempt on a half-diagnosed failure. GitHub API traffic
+   stays within the single release run plus the promote run (no polling loops,
+   no per-story workflow dispatches), so rate limits and quota never gate the
+   release.
