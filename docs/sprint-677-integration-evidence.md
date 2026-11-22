@@ -447,3 +447,54 @@ gate is the frozen tip as staged.
 the in-image `cmd/bashy` tests, and the Windows cold-cache dispatch. The new
 failures are recorded with first-pass classes and bisect candidates and handed to
 the conductor. None was fixed, skipped or rerun in this story.
+
+---
+
+# Sprint 692 rc.40 candidate gate RERUN 3 (story e71e8ed7): third full run after gate-red round 2
+
+Follows the RERUN ORDER on story 458628c0 and the run #153 procedure (second section above),
+with one correction from the conductor: every dag target runs THROUGH THE CANDIDATE.
+Leg 1 builds `./bin/bashy` (the image's bundled bashy bootstraps that one build); every later
+dag target is invoked as `./bin/bashy dag <target>`, so the image's bashy is never the outer
+runner (that is what broke `test-bash-container-mode` in run #153). Owner: claude-opus5.5.
+No code fixes in this story: a red leg is recorded verbatim with a first-pass class, the
+conductor is told, and the next leg runs. Hosts are named by role only.
+
+## Frozen tip & venue setup
+
+- **Umbrella frozen tip**: `0c055a19ca27b7558611cc205467bbf6bb9743db` (`sync: bump bashy pin 5299e54b`), on `origin/main`; the later main commit `4cb96b55d` changes only docs and carries the same gitlinks. Verified at start with `git ls-tree` on both commits and each submodule's `git rev-parse HEAD`:
+  - **bashy**: `5299e54b7276afab352766aea20699888cfb43d6` (adapter repairs: DAG bootstrap output isolated, standalone meet pairing; on top of `6579ede8` src pin yoke `5f136516`)
+  - **bashsharp**: `b1a3183b426d3da50c562db18c4b970f3d91e2dc`
+  - **outpost**: `a1c93072a28afac25c59f53d83f0f369ba53d45e`
+  - **yoke**: `5f1365166f791be20e20f6bcc3c8e1804cd996d8`
+- **Venue**: the gate host, WSL2 Ubuntu 24.04, lane-2 resource, claimed free (epoch 12). Lane 1 (lapsed agy lease) was left alone.
+- **Staging**: `/root/lanes/lane2/s692-r3/bashy`, a fresh clone checked out at `5299e54b7276afab352766aea20699888cfb43d6` (`git rev-parse HEAD` verified, clean tree). Fresh cache volume `lane2-s692-r3-cache`, created for this run.
+- **Official image**: `localhost/bashy-build:v1.0.0-rc.40-go1.27.4-1171628e07d3`, image ID `f09ff792e4e0c1e84cd592472ba98d1d69ba3f501fbd15cf29f3ec4a6191ec18`, digest `sha256:1171628e07d3e7490458d9b0b484e689fee56c4a739e3f8ad577188eceece2ff`, matching `image`/`image_digest` in the staged `tools/bashy-build/image.lock` (same image as runs 1 and 2).
+- **Invocation**: container legs: `bashy oci run --rm --init --name lane2-s692r3-<step> --cpus 8 --memory 7g -v lane2-s692-r3-cache:/var/cache/bashy-build:U -v <staging>:/work:U -w /work -e BASHY_BUILD_RUN=1 -e GOFLAGS=-p=8 --entrypoint /usr/bin/dash <image> -c '<commands>'`; host legs run in the staged checkout directly. Each leg runs detached as a transient systemd unit (log and exit/wall meta under the lane's `results/`), polled about every 60–120 s, with a bounded WSL keepalive.
+
+### `bashy mod drift` verbatim (dev box, bashy at the frozen tip)
+
+```
+in-sync  github.com/qiangli/bashy -> bashsharp v0.0.0-20261122160840-b1a3183b426d
+stale    github.com/qiangli/bashy -> coreutils/third_party/goawk v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> readline v0.1.4-0.20261121101804-6ed12265d8dd
+in-sync  github.com/qiangli/bashy -> gotreesitter v0.0.0-20261121101804-5522e72a297d
+in-sync  github.com/qiangli/bashy -> yoke/external/ollama/src v0.0.0-20261016181410-b0d0bbba93ab
+in-sync  github.com/qiangli/bashy -> bash v0.0.0-20261121101805-42efe30317c4
+in-sync  github.com/qiangli/bashy -> bonsai v0.0.0-20261121101804-e25a870a0d4a
+stale    github.com/qiangli/bashy -> coreutils v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> gfy v0.0.0-20261121101804-aab4f6fad5be
+in-sync  github.com/qiangli/bashy -> outpost v0.14.38-0.20261122144618-a1c93072a28a
+cycle    github.com/qiangli/bashy -> ycode v0.3.1-dev.0.20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+cycle    github.com/qiangli/bashy -> ycode/examples/genie v0.0.0-20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+in-sync  github.com/qiangli/bashy -> yoke v0.0.0-20261122161039-5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/external/otel v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/llmgw v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/oci v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/provider v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004941-fa029d9c82fb
+```
+
+Drift note: identical to run #153. bashsharp and yoke are `in-sync`; the `cycle` lines are
+the known bashy<->ycode cycle; the `stale` lines (coreutils, goawk, the yoke subpackages)
+are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as staged.
