@@ -179,3 +179,7 @@ Master execution plan for Sprint 688 (worker supervision round 2), managed at L4
 ### sprint-689-master-execution-plan.md
 
 Filed plan for Sprint 689 (backlog, 2026-11-21). Records the shaping workflow model agreed in the 2026-11-21 review: individual (consumer, producer, one owner on many devices), group (shared real-time input plus per-app group features, Sprints 684/685) and team (sync and rebase onto the primary owner's line plus an approval rule). Delivers the missing individual multi-device case: an own-device line remote whose push is a compare-and-swap against the line authority (satellite, else primary outpost), rebase and re-verify on pull, offline work with catch-up on reconnect, plus root-causing the release-offer bug and the draft DOM flakes and one 1a/1b evidence record. A writer lease is needed only for several simultaneous writers on one shared draft (filed under 684 as G4); OS-provided inputs such as speech are ordinary text input.
+
+## handoff-sprint-692.md
+
+Handoff from the Sprint 677 conductor (2026-11-22): what 677 delivered (bsh module, per-command Bash# adapters, embedded adapters, Go 1.27.4, image roll, no-downgrade guard), the integration evidence, the 11 stories carried to Sprint 692 in priority order with recorded root causes, the clean-plate state, the binding rules and known traps.
