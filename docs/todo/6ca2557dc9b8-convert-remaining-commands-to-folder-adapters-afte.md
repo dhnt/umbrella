@@ -3,14 +3,15 @@ id: 6ca2557dc9b8
 kind: feature
 title: Convert remaining commands to folder adapters (after stats pilot)
 seq: 604
-status: assigned
+status: done
 priority: p0
 created: 2026-11-21T13:31:43.82403Z
-weave: 123
-assignee: agy-gemini4-carbon
+assignee: claude-opus5.5
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+closed: 2026-11-22T12:00:02.78703Z
+closed_by: claude-opus5.5
 ---
 
 Continuation of ee056056de3e under the FINAL STRUCTURE (operator 2026-11-21). PILOT DONE+LANDED: stats -> bashy/yoke/stats (bashy 742cfc72): few-line Bash# adapter + minimal main, yoke/internal/adapter cobra bridge, dispatch case calls runCommandAdapter; manager-verified standalone GOWORK=off build+test, 427 deps zero other-command packages, help parity identical. FOLLOW THAT PATTERN EXACTLY.

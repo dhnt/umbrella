@@ -3,14 +3,15 @@ id: 16574b71a591
 kind: feature
 title: Convert remaining folders + fix account regression (after optional/toolchain landed)
 seq: 605
-status: assigned
+status: done
 priority: p0
 created: 2026-11-21T14:21:18.576317Z
-weave: 124
-assignee: agy-gemini4-carbon
+assignee: claude-opus5.5
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+closed: 2026-11-22T12:00:03.75542Z
+closed_by: claude-opus5.5
 ---
 
 Continuation of ee056056de3e conversion under FINAL STRUCTURE. LANDED: stats pilot (742cfc72), optional classic+GNU (fba31dee+aa43e65d), toolchain 20 (f14538f0) - all pushed+umbrella-pinned, manager sample-verified (optional md5sum/tree tests ok, toolchain build ok, adapter tests green at f14538f0).

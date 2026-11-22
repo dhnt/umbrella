@@ -3,13 +3,15 @@ id: ee056056de3e
 kind: refactor
 title: 'Convert commands to folder adapters: bashy dispatch calls per-folder Bash# adapters (optional/toolchain/yoke/examples/custom)'
 seq: 588
-status: todo
+status: done
 priority: p0
 created: 2026-11-21T09:22:07.571881Z
-assignee: agy-gemini4-carbon
+assignee: claude-opus5.5
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+closed: 2026-11-22T12:00:04.754183Z
+closed_by: claude-opus5.5
 ---
 
 FINAL STRUCTURE (operator 2026-11-21 typed, via conductor claude+2; supersedes all earlier versions of this story):

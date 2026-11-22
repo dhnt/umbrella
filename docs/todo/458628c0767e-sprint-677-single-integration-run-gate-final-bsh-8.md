@@ -3,14 +3,11 @@ id: 458628c0767e
 kind: task
 title: 'Sprint 677 single integration run: gate.final + bsh 86/86 + 3-OS dispatch e2e'
 seq: 611
-status: assigned
+status: todo
 priority: p0
 created: 2026-11-21T16:08:15.84969Z
-weave: 140
 assignee: agy-gemini4-carbon
-sprint: 677
-sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
-sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+sprint: 692
 ---
 
 Sprint 677 integration run, LEG 1 RERUN in the NEW official image. Prior attempt (run #131) went red ONLY on the toolchain wall: image rc.37/go1.27.2 vs productgo go1.27.4 (evidence: docs/sprint-677-integration-evidence.md, umbrella 91094fa80 - APPEND leg-1 rerun results to that same doc; 7/8 dag test targets passed even then).

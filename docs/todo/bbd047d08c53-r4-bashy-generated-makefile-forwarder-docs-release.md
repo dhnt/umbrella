@@ -3,10 +3,9 @@ id: bbd047d08c53
 kind: chore
 title: 'R4 bashy: generated Makefile forwarder, docs, release-gate equivalence on the gate host'
 seq: 568
-status: assigned
+status: todo
 priority: p1
 created: 2026-11-20T18:51:58.526159Z
-weave: 138
 assignee: claude-opus5
 sprint: 660
 sprint_id: 666d2a0c-b433-5286-880b-b5b02134f5cf

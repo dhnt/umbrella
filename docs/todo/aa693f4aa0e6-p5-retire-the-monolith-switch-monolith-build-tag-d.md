@@ -6,9 +6,7 @@ seq: 591
 status: todo
 priority: p2
 created: 2026-11-21T09:22:08.016791Z
-sprint: 677
-sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
-sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+sprint: 692
 ---
 
 REPLAN + STAGING RULE (operator 2026-11-21: expand -> switch -> contract; avoid the last refactoring's mistake): P5 = SWITCH then CONTRACT, LAST, after P4c. IN SCOPE for 677; p2 = dependency order only. Repos: bashy, yoke. SWITCH phase: route the entry/certified profile to the catalog/generated-main path behind a flag/build tag with the old switch path still buildable; verify parity (targeted tests; integration at milestone gate only). CONTRACT phase (only after switch verified): delete the old hand-written switch (internal/agentos/agentos.go ~168 names), the bashy_cert_base profile and the 23-yoke-package path; de-duplicate code duplicated during expand/switch. No earlier story deletes or severs an existing path. Keep monolith build tag for FROM scratch/air-gapped until rollout verified; decision record (prebuilt vs build-on-demand) from P1/P3 measured numbers incl. bare-host first-use latency. Full gate runs at the milestone integration gate (.bashy/gate.final, conductor-called). Sprint 660 R4 (bbd047d0) runs AFTER this story: the generated Makefile forwarder must wrap the final post-switch build path, not be regenerated twice.
