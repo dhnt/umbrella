@@ -535,3 +535,13 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
   The transcript is followed by two empty lines.
 - **Now green in `internal/agentos`**: `TestSrcPinsMatchLinkedModules` (bashy `6579ede8` moved the yoke src pin), `TestSynergyDAGCheckAndList`, `TestSynergyDAGBoundedFixture` and `TestSynergyDAGRejectsEmptyImplementation` (`5299e54b` isolated the DAG bootstrap output). All four were red in run #153.
 - **Classification of `TestToolShortcutE2E`**: reproducible in this venue, so not a transient. The failure matches run #153 (31.94s vs 32.09s) in the message, the line and the transcript shape. It is 2/2 in the official image on lane 2, and no green run exists in this venue: run 1's package died at the timeout before it reported. The transcript shows that the PING steer cycle works: PING is echoed by the control channel and by the fake. The `chat steer agy quit` call that follows exits 0, but `quit` never appears in the PTY transcript, the fake never exits, and the 25s wait expires. The first-pass class is the steer-to-PTY delivery path or its test timing (the 3s resubmit window that the test waits out at `toolshortcut_e2e_test.go:357-364`), not the venue alone. Root cause belongs to the test's owner. It was not rerun here, per the test rule.
+
+## Leg 3: `BASH53_OCI=podman ./bin/bashy dag test-bash-gate` (gate host, staged checkout, candidate as outer runner) — PASS
+
+- **Exit code**: `0`; **wall time**: `308.036s`; `dag: 1 target(s) ok`
+- **Mode 0** (`BASH53_BASHPP=0`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-0.json (86 passed, 0 failed, 0 timed out, 0 skipped)`, sha256 `a2a97e10f34af06e5d31ee1712b2784d6b5a4940cf9b0aa0692d40053ee8809a`
+- **Mode 1** (`BASH53_BASHPP=1`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-1.json (86 passed, 0 failed, 0 timed out, 0 skipped)`, sha256 `9ea1f427b6b3fa05d60d580e8229e44d01baa0d9b3bc4afd82fb5af6da610a86`
+- **Fixture-name comparison**: each fixture's verdict, keyed by (mode, name), was compared across the three runs' leg-3 logs.
+  - Against run 1 (172/172 PASS, which matched rc.39 by name; rc.39 mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`): **IDENTICAL**, with the same 86 names in each mode.
+  - Against run #153, the only difference is `mode 1 histexpand FAIL -> PASS`.
+- **histexpand**: `PASS` in both modes. It did not fail again, so the conditional three single-fixture reruns were not needed and did not run. This agrees with story 630's root cause, a venue/scheduling transient (isolated mode-1 fixture PASS x3, identical `cmd/bash` text hashes).
