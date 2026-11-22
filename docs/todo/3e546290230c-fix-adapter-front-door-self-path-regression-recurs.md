@@ -3,9 +3,11 @@ id: 3e546290230c
 kind: bug
 title: Fix adapter front-door self-path regression (recursive DAG self path when BASHY=dag) from bashy 8a36ca1f
 seq: 614
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T20:45:11.640497Z
+weave: 139
+assignee: agy-gemini4-hydrogen
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization

@@ -3,12 +3,14 @@ id: ec0a696b907c
 kind: enhancement
 title: 'S2: Strip symbol table (-s -w) on non-Linux cmd/bashy builds (-20.4 MB on Darwin)'
 seq: 552
-status: todo
+status: assigned
 priority: p1
 labels:
     - build
     - bashy
 created: 2026-11-20T10:01:53.41457Z
+weave: 136
+assignee: genie-glm-5.3
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization

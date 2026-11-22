@@ -3,9 +3,11 @@ id: d775aecf9a06
 kind: bug
 title: Embed the command adapters in the bashy binary as the built-in default (fix 'adapter not found' outside a source tree)
 seq: 615
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T21:56:07.989123Z
+weave: 141
+assignee: agy-gemini4-carbon
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization

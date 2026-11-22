@@ -131,3 +131,56 @@ pointer and pinned the Yoke module and source mount in `00b9edcc`. The
 official Linux image passed Yoke's fleet short suite, both Bashy help
 snapshots, source-pin checks, and authenticated Bashy binary fixtures for
 status, acknowledgement, mute and threshold. The help goldens matched.
+
+### 2026-11-21 release gate evidence
+
+The exact integrated candidate passed the affected WSL release gate
+(master-attach 83 s, multi-attach 103 s, desktop-journey 87 s). The Linux
+image-build job then failed before checkout and smoke. Git rejected the
+isolated clone's reference because the previous release checkout is a linked
+worktree. The prior release reused that checkout directly. The Git common
+directory is present, and neither image publication nor deployment started.
+Classification: release-script venue setup. The recovery is to seed the
+isolated checkout from the native Git common repository, keeping the exact
+candidate and the release gates.
+
+The native smoke, full Linux suite, Postgres gate, and master image
+publication then passed for this exact tag. The satellite image built
+locally, but its first registry authentication returned HTTP 403 before
+any satellite image upload. A read-only replay with the configured
+credential from the dev box returned HTTP 401 at GitHub and HTTP 403 at
+the registry, isolating the failure from WSL, the image and the candidate.
+Classification: release credential unavailable. The replacement is a
+valid package-write credential from the operator. The independently
+verified master image can deploy with the additive schema migration
+while the satellites remain on the previous version.
+
+
+### 2026-11-21 implementation acceptance
+
+The live stop/recovery drill and interactive browser check are deferred to the epic or milestone integration gate. The exact candidate already passed the affected release, Linux and Postgres gates before this policy change. No repeats are required to close the implementation.
+
+Write and run fast unit tests during implementation. The operator calls the
+integration gate only when an epic or one of its milestones is complete.
+
+The master reached v0.18.81 (f80ec51) and is ready. All three satellites
+accepted the target and remain ready on v0.18.80. The signed updater
+retrieved the new target and started its pull, but its manifest requests
+returned HTTP 502 at the production bootstrap relay. An independent
+authenticated read from the package registry returned the published
+v0.18.81 manifest and expected digest. Classification: release venue
+relay or its upstream credential, not the missing master parity route
+or missing satellite image. The relay suppresses upstream error detail,
+so this evidence does not distinguish authentication from transport.
+Production credential or relay changes await the operator. A satellite
+owner session was verified against the paired host listing. The temporary
+verification token was revoked and no host was stopped.
+
+### Operator pause and rollback, 2026-11-21
+
+Reset all three satellite targets to v0.18.80 and rolled the master back
+to v0.18.80. The migration-only override was removed after rollback.
+The active deployment restored the exact prior spec. All four hubs
+reported v0.18.80 (8032ef5cf3), ready and HTTP 200 health. The satellite
+manifest relay failure remains unresolved. Rollout and integration work
+are paused until Sprint 677 completes.

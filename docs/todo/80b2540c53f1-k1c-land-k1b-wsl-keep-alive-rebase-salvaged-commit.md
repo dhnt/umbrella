@@ -3,11 +3,13 @@ id: 80b2540c53f1
 kind: bug
 title: 'K1c: land K1b WSL keep-alive - rebase salvaged commits onto S0, rerun unit tests, deliver (K1b ffd48cc9 remainder)'
 seq: 603
-status: todo
+status: assigned
 priority: p0
 labels:
     - windows
 created: 2026-11-21T12:04:41.903712Z
+weave: 137
+assignee: codex-gpt6.2-sol
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization

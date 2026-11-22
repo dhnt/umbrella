@@ -55,6 +55,7 @@
 - `sprint-634-master-execution-plan.md` — Sprint 634 film follow-ups: local recorded translate + text stages, bilingual subtitle Latin-font fix; approved plan
 - `sprint-635-lipsync-evidence.md` — Sprint 635: first visible lip sync (EchoMimicV3 on one rented GPU, then the full film with six lip-synced close-ups at zero cost on the Windows test host), pinned recipe, the twelve attempts root-caused, spend, what remains
 - `sprint-636-master-execution-plan.md` — Sprint 636 bashy apps UI: Apps under Recent on the landing page, hand-authored Flow mark on the Shape button; filed plan
+- `plan-sprint-652-outpost-reliability.md` — Windows outage diagnosis, host recovery, and deduplicated reachability and disk alerts
 - `plan-sprint-655-one-app.md` — Sprint 655 one app MVP: normative command contract plus a minimum shapeable checker; conformance optional, tiers the declarer's choice; S2-S8 deferred
 - `plan-sprint-662-shaping-friction.md` — Sprint 662: four shaping frictions found by Sprint 655 (contained checks, agent identity, git, jq); filed plan
 - `plan-agentic-tool-support.md` — Sprint 671: official agentic tool set (11 built-in seeds), demotions to examples, kimi rename, dsh graduation, latest models; filed plan

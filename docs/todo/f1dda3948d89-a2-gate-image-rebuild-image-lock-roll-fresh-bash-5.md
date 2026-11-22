@@ -3,12 +3,16 @@ id: f1dda3948d89
 kind: chore
 title: 'A2: gate-image rebuild (image.lock roll) + fresh Bash 5.3 86/86 both modes on go1.27.4'
 seq: 594
-status: todo
+status: done
 priority: p0
 created: 2026-11-21T10:34:55.082522Z
+weave: 132
+assignee: agy-gemini4-carbon
 sprint: 677
 sprint_id: 334e4662-d75c-5c5f-8671-7b62ea882de1
 sprint_title: Fast build, small core binary, and shapeable Yoke CLI modularization
+closed: 2026-11-21T20:59:26.603343Z
+closed_by: muse-wonder-full
 ---
 
 PAUSED (operator 2026-11-21, via conductor claude+2): all non-677 work paused until the 677 refactor completes, and inside 677 focus is ONLY the refactor (bsh own module / generator+dispatcher+pilot / convert all / retire switch). This side story is checkpointed here and STOPPED - do not staff or continue until the conductor unpauses it. State preserved: see salvage branches and prior records on this story.
