@@ -3,11 +3,15 @@ id: 458628c0767e
 kind: task
 title: 'rc.40 candidate gate: gate.final (dag build, dag test, Bash 5.3 86/86 both modes) + 3-OS dispatch e2e from a fresh install on the frozen tip'
 seq: 611
-status: assigned
+status: done
 priority: p0
 created: 2026-11-21T16:08:15.84969Z
+weave: 148
 assignee: muse-wonder
 sprint: 692
+closed: 2026-11-22T15:59:08.959526Z
+resolution: fixed
+closed_by: muse-wonder-r
 ---
 
 RESCOPE (operator 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): this is THE ONE full run of the sprint, after Wave 1 merges (P5 aa693f4a, bugs 42f79daa/3dd8b4ec, bumps 3f6a38f3/0774dc22, dag-test fixes 3043a867) and pin bumps. Owner agy, gate-host lane 2 (claim it), official image, attached. Frozen tip = merged bashy main + umbrella pin; record shas, image id, mod drift first. Legs: bashy dag build; bashy dag test; bashy dag test-bash-gate (host podman, 86/86 both modes compared by fixture name vs rc.39 evidence); then the 3-OS dispatch e2e (TestE2EAllListedCommandsDispatch) from a FRESH install with an empty adapter cache on the Linux lane, Windows native on the gate host, macOS on the QA host (claim each). Append evidence per leg to umbrella docs/sprint-677-integration-evidence.md (exact exit codes, wall times, failing names verbatim; hosts by role). A red leg: root cause on this story (or 3043a867), fix by the responsible vendor, rerun only the red leg (+ the Bash gate if engine inputs changed) until clean. No code fixes inside this story. TEST RULE (operator 2026-11-22): build + the smallest targeted unit tests for the changed packages only, then submit. No go test ./..., no gates, no integration per story or per commit. The one full run is the rc.40 candidate gate (458628c0) at sprint close; anything red there is root-caused and fixed until the full run is clean. Start on current heads (bashy mod drift; rebase before submit). Trailers: Sprint/Story/Story-ID + Agent; submodule commit+push first, then the umbrella pin.
