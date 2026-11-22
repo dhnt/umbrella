@@ -209,3 +209,22 @@ measure exactly that tree. Legs follow.
 - **Artifacts**: `bin/bash`, `bin/bash.real`, `bin/bashy` (candidate at `./bin/bashy` for leg 2)
 - The effect-cap lines (`needs unknown not in Effects`) are the runner's advisory report; the targets ran and passed.
 
+## Leg 2: `bashy dag test` (candidate `./bin/bashy`) — RED, one target
+
+- **Exit code**: `1`
+- **Wall time**: `307.173s`
+- **Verdict**: FAILED — `dag: 1/9 targets failed`
+- **Passed (8)**: `test-meet-spa-fresh-regression`, `test-meet-spa-fresh`, `test-build-fail-closed`, `test-isolated-lanes`, `test-release-qa-lane`, `test-build-tag-matrix`, `test-bash-container-mode`, `verify-bashy-scratch`
+- **Failed (1), verbatim**: `test-startup-linux`
+- **Failure evidence (verbatim, 4 of 4 runs including 3 standalone reruns)**:
+  ```
+  inittrace: 14.05 ms total (309 packages); max 12.00 ms (github.com/mattn/go-runewidth)
+  inittrace: 21.39 ms total (309 packages); max 14.00 ms (github.com/mattn/go-runewidth)
+  inittrace: 15.23 ms total (309 packages); max 13.00 ms (github.com/mattn/go-runewidth)
+  inittrace: 14.19 ms total (309 packages); max 12.00 ms (github.com/mattn/go-runewidth)
+  ==> test-startup-linux FAILED (exit 1)
+  ```
+  The gate in `scripts/test-startup-linux.sh` fails when any single package init exceeds 5 ms (or total exceeds 15 ms). The measured binary is now `bsh` (built from the pinned bashsharp module); its `github.com/mattn/go-runewidth` init costs 12–14 ms on this venue every run.
+- **Effect on the leg**: the `test` target's own body (`go test ./...`) did not run, because its prerequisite failed. A separate candidate `go test ./...` run was launched for classification (result appended below when it lands).
+- **First-pass classification**: test/venue boundary, not a product crash — the 5 ms per-package budget was calibrated for the previous binary; `bsh` deterministically exceeds it via `go-runewidth` init on the gate host's CPU (4/4 runs, 12–14 ms, low variance, so not load flake). No fix in this story per orders; the conductor was notified on the board and the run continues with leg 3.
+
