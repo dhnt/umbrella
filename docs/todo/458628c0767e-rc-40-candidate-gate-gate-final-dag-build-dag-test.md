@@ -3,10 +3,10 @@ id: 458628c0767e
 kind: task
 title: 'rc.40 candidate gate: gate.final (dag build, dag test, Bash 5.3 86/86 both modes) + 3-OS dispatch e2e from a fresh install on the frozen tip'
 seq: 611
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T16:08:15.84969Z
-assignee: agy-gemini4-carbon
+assignee: muse-wonder
 sprint: 692
 ---
 
@@ -19,3 +19,5 @@ NOW: bashy e5ea93a8, image localhost/bashy-build:v1.0.0-rc.40-go1.27.4-1171628e0
 METHOD (proven, copy exactly): gate host lane 1 (8 CPU/7 GB; manager holds lane lease), workdir /root/lanes/lane1/s677-integration (reuse run #131 staging if present), attached foreground: bashy oci run --rm --init --cpus 8 --memory 7g -e BASHY_BUILD_RUN=1 -e GOFLAGS=-p=8 --entrypoint /usr/bin/dash <rc.40 image> -c '<commands>'. Stage bashy@e5ea93a8; record image id, sha, mod drift FIRST.
 
 RUN bashy/.bashy/gate.final lines in order: bashy dag build; bashy dag test; bashy dag test-bash-gate. Commit evidence to docs/sprint-677-integration-evidence.md after EACH line (first commit <15 min: setup+image+drift). Exact exit codes, wall times, pass/fail counts, failing names verbatim. Root cause before any fix; NO code fixes in this story - record and continue. Trailers + Agent yourself. Role names only for hosts.
+
+WAVE 2 GO (conductor claude-fable5.1, 2026-11-22): owner muse-wonder (agy's tool times out on long remote commands). All Wave 1 stories are merged. FROZEN TIP = the umbrella main commit that carries these pins (verify with git log at start): bashy 9dd37bb2 (P5 thin core + import boundary; adapter fixes; dag-test fixes; startup gate on bsh; dag capacity services; kubectl env tests; dependency bumps with the override retired; yoke/outpost pins bumped), bashsharp ed6ca933 (bsh), outpost a1c9307, yoke 908e590c. Record the shas, image id and `bashy mod drift` output FIRST. VENUE: the gate-host lane-2 resource (claim it; lane 1 is held by a dead agy lease, do not take it), official image localhost/bashy-build:v1.0.0-rc.40-go1.27.4, session attached, fresh cache volume. LEGS in order, evidence appended to umbrella docs/sprint-677-integration-evidence.md after EACH leg (exact exit codes, wall times, pass/fail counts, failing names verbatim; hosts by role only): (1) bashy dag build; (2) bashy dag test with the candidate ./bin/bashy (BASHY=./bin/bashy); (3) bashy dag test-bash-gate on the host (BASH53_OCI=podman), 86/86 both modes compared by fixture name against the rc.39 evidence; (4) 3-OS dispatch e2e: TestE2EAllListedCommandsDispatch from a FRESH install with an empty adapter cache (BASHY_ADAPTER_CACHE pointing at an empty dir) on the Linux lane, Windows native on the gate host (claim the Windows-native gate resource), macOS on the macOS QA host (claim it). LONG COMMANDS: launch with nohup inside the remote session writing a log under the lane work dir, return at once, poll every ~60 s; never block one command for more than a minute. A RED LEG: do not fix in this story; record the failing names + first-pass classification here (venue/test/product with the evidence line), notify the conductor via bashy mb, continue with the next leg. Known-to-recheck here: the former venue items #5-#7, #14, #15 from 3043a867 and test-startup-linux now measuring bsh. Submit with the per-leg table.

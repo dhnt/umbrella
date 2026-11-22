@@ -3,11 +3,13 @@ id: 3f6a38f3dfd6
 kind: chore
 title: 'C: Dependency bumps for reachable module advisories + fresh govulncheck, retire/shrink vuln override'
 seq: 586
-status: todo
+status: done
 priority: p0
 created: 2026-11-21T08:29:57.498182Z
-assignee: agy-gemini4-carbon
+assignee: claude-fable5.1
 sprint: 692
+closed: 2026-11-22T15:09:19.369981Z
+closed_by: claude-fable5.1
 ---
 
 UNPAUSED + RESCOPE (operator 2026-11-22, decision D2 'full clean job'): p0, owner agy, one run together with C2 0774dc22. Bump every reachable module advisory in bashy, outpost and yoke to fixed versions (start from the salvaged WIP commits named on C2; minimal, no unrelated upgrades); fresh govulncheck per scope on a claimed gate-host lane (never the dev box) with yoke external/ollama+podman sources hydrated; RETIRE the d91599c2 override (bashy 7ddc31c9) and empty vuln-ignore of the fixed ids. A remaining reachable finding blocks the release; no new override. Record the govulncheck summary per scope in the submit. TEST RULE (operator 2026-11-22): build + the smallest targeted unit tests for the changed packages only, then submit. No go test ./..., no gates, no integration per story or per commit. The one full run is the rc.40 candidate gate (458628c0) at sprint close; anything red there is root-caused and fixed until the full run is clean. Start on current heads (bashy mod drift; rebase before submit). Trailers: Sprint/Story/Story-ID + Agent; submodule commit+push first, then the umbrella pin.
