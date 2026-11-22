@@ -565,3 +565,31 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
 - **Build**: a fresh clone at `5299e54b7276afab352766aea20699888cfb43d6` in a temp directory, built with `GOWORK=off bashy dag build-bash build-bashy` (host Go `go1.27.4 darwin/arm64`). This is a bootstrap build like leg 1. Exit `0`, `27s`. Candidate `bin/bashy` sha256 `fc6565e729cd9ef224238481dc59c37b3081c496337e7470045eaa1d93d057ec`.
 - **Run**: a fresh `bin/` copy, fresh `HOME`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>/bin/bashy`, then `./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
 - **Exit code**: `0`; **wall time**: `132s` (test `ok github.com/qiangli/bashy/internal/agentos 57.963s`)
+
+## Leg 5: shaping smoke — `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 ./bin/bashy dag test-shaping-smoke test-shaping-smoke-regression` (lane 2, official image) — PASS, DOM checkpoint SKIPPED
+
+- **Chrome**: absent from the official image. `command -v google-chrome chromium chromium-browser google-chrome-stable headless_shell` printed nothing, so the leg ran with `SHAPING_SMOKE_SKIP_DOM=1`. The browser checkpoint (`TestDOMExternalShapeCheckpoint`, `-tags verifydom`) is **SKIPPED, not passed**.
+- **Exit code**: `0`; **wall time**: `13.625s`
+- **`test-shaping-smoke`**: `test-shaping-hello-world: PASS (25 checks) binary=/work/./bin/bashy candidate=eae26dcdb5fd14aa2f985582771f579a299c3c8d`. These are the same 25 checks as run #153 (`ok 1` … `ok 25`, no `not ok`), and there is no DOM-checkpoint line because it was skipped. The binary is the leg-1 candidate, sha256 `d03c5f8ca94b4ca645ddad7a15b55d16f71c7d46edb040f6e630478115beeba4`.
+- **`test-shaping-smoke-regression`**: `test-shaping-smoke-regression: ok (broken smoke check was refused)`
+- **Console bind note**: the console was reached at `127.0.0.1` inside the container (`ok 2 - console serving on http://127.0.0.1:33042`). The LAN-bound console was not exercised from another host.
+
+## Per-leg summary (rerun 3, frozen tip umbrella `0c055a19c`, bashy `5299e54b`)
+
+| Leg | Command / venue | Exit | Wall | Result | Run #153 (`bebf3e8ca`) |
+|---|---|---|---|---|---|
+| 1 | `bashy dag build` (image bashy bootstrap) — lane 2, image rc.40-go1.27.4 | 0 | 175.081s | PASS (3 targets ok) | PASS |
+| 2 | `./bin/bashy dag test` — lane 2 | 1 | 944.785s | RED, `1/10 targets failed` (the `test` body only). 9 targets PASS, including `test-bash-container-mode`, `verify-bashy-scratch` and `test-startup-linux` (`inittrace: 1.78 ms total (309 packages); max 0.16 ms`). `go test ./...`: 27 ok / 1 FAIL `internal/agentos`, and the only failing test is `TestToolShortcutE2E` (`toolshortcut_e2e_test.go:450: bashy agy did not exit after quit`), reproducible (2/2 in this venue) | RED (`test-bash-container-mode` + 5 agentos tests) |
+| 3 | `BASH53_OCI=podman ./bin/bashy dag test-bash-gate` — gate host | 0 | 308.036s | PASS 86/86 both modes; names IDENTICAL to run 1 / rc.39; histexpand PASS, no rerun needed | RED (mode-1 histexpand) |
+| 4a | dispatch e2e, Linux lane 2, fresh install, cold cache | 0 | 89.891s | PASS | PASS |
+| 4b | dispatch e2e, Windows native (no host Go), fresh install, cold cache | 0 | 324.74s | PASS | PASS |
+| 4c | dispatch e2e, macOS, fresh install, cold cache | 0 | 132s | PASS on SUBSTITUTE venue (dev box; QA host still disk-full) | PASS (substitute) |
+| 5 | `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 ./bin/bashy dag test-shaping-smoke test-shaping-smoke-regression` — lane 2 | 0 | 13.625s | PASS 25 checks + regression ok; DOM checkpoint **SKIPPED** (no Chrome in the image) | PASS (DOM skipped) |
+
+**Verdict: the candidate is still RED, on one test.** Leg 2's `go test ./...` fails only
+`TestToolShortcutE2E`. It is reproducible, with the same message and transcript as run
+#153, and its root cause is not recorded yet. Every other leg is green: round 2's targets
+(`test-bash-container-mode`, `TestSrcPinsMatchLinkedModules`, the three `TestSynergyDAG*`
+and mode-1 `histexpand`) all pass in this run. Two leg qualifiers stay open and are not
+counted as passes: macOS ran on the dev-box substitute, and the shaping DOM checkpoint
+was skipped. Nothing was fixed, skipped or rerun in this story.
