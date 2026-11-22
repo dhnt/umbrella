@@ -3,10 +3,11 @@ id: 0774dc2209ac
 kind: chore
 title: 'C2: finish C - fresh govulncheck evidence + targeted builds on salvaged bumps (C 3f6a38f3 remainder)'
 seq: 600
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T11:26:49.459235Z
-assignee: agy-gemini4-carbon
+weave: 147
+assignee: muse-wonder
 sprint: 692
 ---
 
