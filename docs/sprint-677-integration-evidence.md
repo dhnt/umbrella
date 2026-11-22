@@ -397,3 +397,10 @@ gate is the frozen tip as staged.
   ```
 - **Fixture-name comparison**: each fixture's verdict, keyed by (mode, name), was compared with the first run's leg-3 log. The first run was 172/172 PASS and matched rc.39 by name (rc.39: mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`, 86/86 each). The comparison found one change: `mode 1 histexpand PASS -> FAIL`. Mode 0 has no NEW, RECOVERED or changed fixture. The fixture set is the same 86 names in both modes.
 - **First-pass classification**: product-leaning regression in the `BASH53_BASHPP=1` engine path. The engine inputs changed between the runs only through the bashsharp pin (`cc848210` -> `b1a3183`, bashy `bd4f47de`, the bsh lazy runewidth tables), so that is the bisect candidate. Not rerun: there is one full run per the test rule, and a single deterministic text diff gives no flake signal. The conductor was notified.
+
+## Leg 4: 3-OS dispatch e2e (`TestE2EAllListedCommandsDispatch`, fresh install, empty adapter cache)
+
+### 4a Linux (gate-host lane 2, official image) — PASS
+
+- **Command** (same script as the first run): fresh `bin/bashy` + `bin/bash` copied to `/tmp/fresh/bin`, then `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
+- **Exit code**: `0`; **wall time**: `93.966s` (test `ok github.com/qiangli/bashy/internal/agentos 59.052s`)
