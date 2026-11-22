@@ -151,3 +151,53 @@ dag: 1/1 targets failed
 ==> verify-bashy-scratch FAILED (exit 1)
 dag: 1/8 targets failed
 ```
+
+---
+
+# Sprint 692 rc.40 candidate gate (story 458628c0): THE ONE full run
+
+Frozen tip verified at start. Owner muse-wonder. All legs on claimed venues;
+hosts named by role only. No code fixes in this story: a red leg is recorded
+with failing names verbatim and first-pass classification, then the next leg
+continues.
+
+## Frozen tip & venue setup
+
+- **Umbrella**: `fde3c59308a0e500602fdee4d22b9d13516e9de2` (carries the pins below; verified with `git log` at start)
+- **bashy**: `9dd37bb28686a6f1dd9924f43372cbe96c1671db` (P5 thin core + import boundary; adapter fixes; dag-test fixes; startup gate on bsh; dag capacity services; kubectl env tests; dependency bumps with the override retired; yoke/outpost pins bumped)
+- **bashsharp**: `cc848210379216f2b73665d610e801c07bf45d5a` (umbrella pin; descendant of `ed6ca933`, the bsh commit named in the Wave 2 order — `ed6ca93` is its immediate parent)
+- **outpost**: `a1c93072a28afac25c59f53d83f0f369ba53d45e`
+- **yoke**: `908e590c1113a8ef8252f77775bed4dc602ab281`
+- **Venue**: the gate host, WSL2 Ubuntu 24.04, lane-2 resource (claimed, lease epoch 8; lane 1 left untouched). Windows-native gate resource and the macOS QA host also claimed for leg 4.
+- **Staging**: `/root/lanes/lane2/s692-rc40/bashy`, fresh clone checked out at `9dd37bb28686a6f1dd9924f43372cbe96c1671db` (`git rev-parse HEAD` verified). Fresh cache volume `lane2-s692-rc40-cache`.
+- **Official image**: `localhost/bashy-build:v1.0.0-rc.40-go1.27.4-1171628e07d3`, image ID `f09ff792e4e0c1e84cd592472ba98d1d69ba3f501fbd15cf29f3ec4a6191ec18`, digest `sha256:1171628e07d3e7490458d9b0b484e689fee56c4a739e3f8ad577188eceece2ff` per `tools/bashy-build/image.lock` in the staged checkout (`bashy_version=v1.0.0-rc.40`, `go_version=1.27.4`). In-image `go version` = `go1.27.4 linux/amd64` (the rc.37 toolchain wall is gone).
+- **Invocation**: attached session, `bashy oci run --rm --init --cpus 8 --memory 7g -e BASHY_BUILD_RUN=1 -e GOFLAGS=-p=8 --entrypoint /usr/bin/dash <image> -c '<commands>'`; long legs launched with `nohup` to a log under the lane work dir and polled.
+
+### `bashy mod drift` verbatim (dev box, at the frozen tip)
+
+```
+cycle    github.com/qiangli/bashy -> bashsharp v0.0.0-20261121160731-621e369d910d pinned 621e369d910d, HEAD cc8482103792
+stale    github.com/qiangli/bashy -> coreutils/third_party/goawk v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> readline v0.1.4-0.20261121101804-6ed12265d8dd
+in-sync  github.com/qiangli/bashy -> gotreesitter v0.0.0-20261121101804-5522e72a297d
+in-sync  github.com/qiangli/bashy -> yoke/external/ollama/src v0.0.0-20261016181410-b0d0bbba93ab
+in-sync  github.com/qiangli/bashy -> bash v0.0.0-20261121101805-42efe30317c4
+in-sync  github.com/qiangli/bashy -> bonsai v0.0.0-20261121101804-e25a870a0d4a
+stale    github.com/qiangli/bashy -> coreutils v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> gfy v0.0.0-20261121101804-aab4f6fad5be
+in-sync  github.com/qiangli/bashy -> outpost v0.14.38-0.20261122144618-a1c93072a28a
+cycle    github.com/qiangli/bashy -> ycode v0.3.1-dev.0.20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+cycle    github.com/qiangli/bashy -> ycode/examples/genie v0.0.0-20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+in-sync  github.com/qiangli/bashy -> yoke v0.0.0-20261122144618-908e590c1113
+stale    github.com/qiangli/bashy -> yoke/external/otel v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 908e590c1113
+stale    github.com/qiangli/bashy -> yoke/pkg/llmgw v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 908e590c1113
+stale    github.com/qiangli/bashy -> yoke/pkg/oci v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 908e590c1113
+stale    github.com/qiangli/bashy -> yoke/pkg/provider v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 908e590c1113
+in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004941-fa029d9c82fb
+```
+
+Drift note: the `cycle` lines are the known bashy<->sibling cycles; the `stale`
+lines name pins older than the dev-box submodule HEADs. The candidate under
+gate is the frozen tip itself (bashy `9dd37bb2` as staged), so the legs below
+measure exactly that tree. Legs follow.
+
