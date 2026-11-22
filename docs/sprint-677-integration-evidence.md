@@ -411,3 +411,10 @@ gate is the frozen tip as staged.
 - **Run**: a fresh directory on the Windows side with a fresh `HOME`/`USERPROFILE`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>\bin\bashy.exe`; `agentos.test.exe -test.run "^TestE2EAllListedCommandsDispatch$" -test.count=1 -test.timeout 20m -test.v`. `where go` on that host: `INFO: Could not find files for the given pattern(s).` (no host Go).
 - **Exit code**: `0`; **wall time**: `321.89s` (`--- PASS: TestE2EAllListedCommandsDispatch (321.68s)`)
 - **Comparison with the first run**: the first run's only failure, `sprint help does not carry the owner-accountability contract` (`go: go.mod file not found …`), does not reproduce. The cold adapter cache now gets a managed `toolchain\go.exe` and cold-builds the yoke adapters (`sprint.exe`, `dag.exe`, `weave.exe`, …) with no host Go. The wall time went from 43s to 322s because of those cold builds.
+
+### 4c macOS — PASS on a SUBSTITUTE venue (the dev box)
+
+- **Venue note**: the macOS QA host was claimed (lease epoch 166) and checked first. It is still disk-full (`/System/Volumes/Data` 461G, 110M available, 100%; its own telemetry spool reports `no space left on device`). Nothing could be staged there, nothing on it was deleted, and the claim was released. The leg ran on the dev box (macOS arm64, 33G free) and is labelled a substitute venue, not QA-host evidence.
+- **Build**: a fresh clone at `1762e12c5254d52557daf81796e0be3baded62b1` in a temp directory; `GOWORK=off bashy dag build-bash build-bashy` (host Go `go1.27.4 darwin/arm64`), exit `0`, `52s`. Candidate `bin/bashy` sha256 `6def6a784950f861351869623601c9f09cbf50f47dc42fffea1e1c77d9629683`.
+- **Run**: fresh `bin/` copy, fresh `HOME`, empty `BASHY_ADAPTER_CACHE`, `BASHY_E2E_BIN=<fresh>/bin/bashy`; `./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
+- **Exit code**: `0`; **wall time**: `143s` (test `ok github.com/qiangli/bashy/internal/agentos 62.821s`)
