@@ -240,3 +240,11 @@ measure exactly that tree. Legs follow.
   - `internal/agentos`: no individual `--- FAIL`; the package died with `panic: test timed out after 10m0s` (`TestPromotionStatusLineUnconfigured` among the running tests at 43s)
 - **First-pass classification**: venue-leaning. The `permission denied` cluster writes to `/var/cache/bashy/...` inside the container, outside the mounted build-cache volume — an environment path the image does not provision for test subprocesses. The ACP timeouts and the agentos 10-minute panic occurred on a heavily loaded 8-CPU venue (sibling packages took 375–600s each). None of these names is recorded as fixed here; they are handed to root-cause on their owning stories, and legs 3–4 proceed.
 
+## Leg 3: `bashy dag test-bash-gate` (gate host, `BASH53_OCI=podman`) — PASS
+
+- **Exit code**: `0` (`dag: 1 target(s) ok` for each mode)
+- **Wall time**: not captured by the wrapper (its exit/wall echo lost its variables through the nested shell quoting; the run itself is timed by its evidence files, both modes completing 07:45–07:48 gate-host time)
+- **Mode 0** (`BASH53_BASHPP=0`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-0.json`, sha256 `ebac53d7ea36405fb6a226d5cd57fac2c548dc4272ccf3b539f4f04f74c9ab8a`
+- **Mode 1** (`BASH53_BASHPP=1`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-1.json`, sha256 `d41fbec376529a9250e98bb8435d958b33bcaea40cacd30b809d1b0fa35fd9f9`
+- **Fixture-name comparison vs rc.39**: rc.39 evidence (mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`) sealed the same 86-fixture set. Both modes here pass all 86 with no failures, skips, or timeouts, so by fixture name there are no NEW, RECOVERED, or changed fixtures: 86/86 both modes, matching rc.39.
+
