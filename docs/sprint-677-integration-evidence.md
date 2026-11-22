@@ -505,3 +505,33 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
 - **Wall time**: `175.081s`
 - **Verdict**: PASS — `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`; `releaseeligibility: PASS`)
 - **Candidate**: `./bin/bashy` sha256 `d03c5f8ca94b4ca645ddad7a15b55d16f71c7d46edb040f6e630478115beeba4`; it is the outer runner of every later dag target (the DAG runner sets `BASHY`/`BASHY_EXE` to it).
+
+## Leg 2: `./bin/bashy dag test` (candidate as outer runner, lane 2, official image) — RED, one test
+
+- **Exit code**: `1`
+- **Wall time**: `944.785s`
+- **Verdict**: FAILED — `==> test FAILED (exit 1)`, `dag: 1/10 targets failed`. Only the `test` body failed. Every other target ran and passed.
+- **Passed (9)**: `test-meet-spa-fresh-regression`, `test-meet-spa-fresh`, `test-build-fail-closed`, `test-isolated-lanes`, `test-release-qa-lane`, `test-build-tag-matrix`, **`test-bash-container-mode`** (red in run #153 with `bashy dag: adapter yoke/dag/dag.bsh not found`; PASS now with the candidate as the outer runner), `verify-bashy-scratch` (via `build-bashy-scratch`; static ELF, no INTERP/NEEDED, no purego, `--version`/`supervisord --help`/retired-form smoke), `test-startup-linux`.
+- **`verify-bashy-scratch` note**: `SKIP FROM-scratch smoke (a usable container runtime is unavailable)`. The same SKIP line is in runs 1 and 2: there is no nested container runtime inside the build container. This is not new.
+- **`dag: effect cap: … needs unknown not in Effects` lines** for `test-release-qa-lane`, `test-build-tag-matrix` and `test-startup-linux` are diagnostics. The targets passed, and run #153 printed the same lines.
+- **`test-startup-linux`** on `bsh`: PASS. Verbatim:
+  ```
+  inittrace: 1.78 ms total (309 packages); max 0.16 ms (github.com/qiangli/bash/polyglot)
+  bashy -c true: 5.03 ms/process (20 runs)
+  100x /bin/true & wait $!: 0.57 s
+  ```
+- **`test` body (`go test -timeout 30m ./...`) package summary**: 27 `ok`, 1 `FAIL`, 8 `[no test files]`. `cmd/bashy` `ok` (316.873s). `FAIL github.com/qiangli/bashy/internal/agentos 598.452s` ran to completion with no timeout panic. Run #153 took 775.414s for that package.
+- **Failing test, verbatim** (the only `--- FAIL` in the log):
+  ```
+  --- FAIL: TestToolShortcutE2E (31.94s)
+      toolshortcut_e2e_test.go:450: bashy agy did not exit after quit
+          transcript:
+          chat: agy trust preseed: /tmp/bshye2e1804425296/.gemini/antigravity-cli/settings.json trustedWorkspaces += "/tmp/bshye2e1804425296/work"
+          chat: agy — governed + steerable (id agy, bashy dev). Ctrl-C ends it; from another terminal: `bashy chat steer agy "..."` / `attach agy`.
+          chat: "agy" started — watching inbox agy (`bashy mb send agy "..."`)
+          > PING
+          PING
+  ```
+  The transcript is followed by two empty lines.
+- **Now green in `internal/agentos`**: `TestSrcPinsMatchLinkedModules` (bashy `6579ede8` moved the yoke src pin), `TestSynergyDAGCheckAndList`, `TestSynergyDAGBoundedFixture` and `TestSynergyDAGRejectsEmptyImplementation` (`5299e54b` isolated the DAG bootstrap output). All four were red in run #153.
+- **Classification of `TestToolShortcutE2E`**: reproducible in this venue, so not a transient. The failure matches run #153 (31.94s vs 32.09s) in the message, the line and the transcript shape. It is 2/2 in the official image on lane 2, and no green run exists in this venue: run 1's package died at the timeout before it reported. The transcript shows that the PING steer cycle works: PING is echoed by the control channel and by the fake. The `chat steer agy quit` call that follows exits 0, but `quit` never appears in the PTY transcript, the fake never exits, and the 25s wait expires. The first-pass class is the steer-to-PTY delivery path or its test timing (the 3s resubmit window that the test waits out at `toolshortcut_e2e_test.go:357-364`), not the venue alone. Root cause belongs to the test's owner. It was not rerun here, per the test rule.
