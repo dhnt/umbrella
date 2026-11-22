@@ -593,3 +593,67 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
 and mode-1 `histexpand`) all pass in this run. Two leg qualifiers stay open and are not
 counted as passes: macOS ran on the dev-box substitute, and the shaping DOM checkpoint
 was skipped. Nothing was fixed, skipped or rerun in this story.
+
+# Sprint 692 rc.40 candidate gate LEG 2 RERUN (story 5cfdfc85): final leg-2 evidence for tip bashy `f1907987`
+
+Run under the gate loop rules (`docs/plan-sprint-692-release-thin-bashy.md`, "Gate loop rules").
+Since run #156 (the third section above), the change is bashy `5299e54b` → `f1907987` and yoke
+`5f136516` → `3eb700cd`. That change is the `pkg/bus` board fingerprint fix (story 632) plus the
+module/source pin table. It touches no engine input (bash, bashsharp, sh and coreutils are
+unchanged) and not the adapter path. Rule 2 therefore reruns only leg 2, and legs 1, 3, 4 and 5 of
+run #156 stand for this tip. Leg 1 was rebuilt here only to produce the candidate that leg 2 runs.
+Owner: claude-opus5.5. Hosts are named by role only.
+
+## Tip & venue setup
+
+- **Umbrella**: branch head `3fd26a769`. The gitlinks were checked at the start with `git ls-tree HEAD`:
+  - **bashy**: `f19079872b64b344f7bfed11a99ee82e455eca90` (`go.mod` requires `github.com/qiangli/yoke v0.0.0-20261122192157-3eb700cd39d9`)
+  - **bashsharp**: `b1a3183b426d3da50c562db18c4b970f3d91e2dc` (unchanged since run #156)
+  - **outpost**: `a1c93072a28afac25c59f53d83f0f369ba53d45e` (unchanged)
+  - **yoke**: `3eb700cd39d99455a5920800358edfe09cce0678`
+- **Venue**: the gate host, WSL2 Ubuntu 24.04, lane-2 resource, claimed free (epoch 13). Lane 1 (lapsed agy lease) was left alone.
+- **Staging**: `/root/lanes/lane2/s692-r4/bashy`, a fresh clone checked out at `f19079872b64b344f7bfed11a99ee82e455eca90` (`git rev-parse HEAD` verified, 0 dirty paths).
+- **Official image**: `localhost/bashy-build:v1.0.0-rc.40-go1.27.4-1171628e07d3`, image ID `f09ff792e4e0c1e84cd592472ba98d1d69ba3f501fbd15cf29f3ec4a6191ec18`, digest `sha256:1171628e07d3e7490458d9b0b484e689fee56c4a739e3f8ad577188eceece2ff`. It matches `image`/`image_digest` in the staged `tools/bashy-build/image.lock` and is the same image as runs #153 to #156.
+- **Caches (rules 3 and 6)**:
+  - The build cache is fresh. A new volume `lane2-s692-r4-cache`, created for this run, is mounted at `/var/cache/bashy-build`, which holds the image's `GOCACHE`, `BASHY_ADAPTER_CACHE` and `GOTMPDIR`.
+  - The module cache is shared and warm. A new volume `bashy-gomodcache-shared` is mounted over `GOMODCACHE` (`/var/cache/bashy-build/go/pkg/mod`). It was seeded once by a local `cp -a` of run #156's module cache (2.8G), with no network fetch. It is now the lane-shared module cache for later runs.
+  - Neither leg log contains a `go: downloading` line (0 in leg 1, 0 in leg 2). The only new module entry is `github.com/qiangli/yoke@v0.0.0-20261122192157-3eb700cd39d9`, written during leg 1. It is the one module this tip adds, not a re-download.
+- **Invocation**: `bashy oci run --rm --init --name lane2-s692r4-<step> --cpus 8 --memory 7g -v lane2-s692-r4-cache:/var/cache/bashy-build:U -v bashy-gomodcache-shared:/var/cache/bashy-build/go/pkg/mod:U -v <staging>:/work:U -w /work -e BASHY_BUILD_RUN=1 -e GOFLAGS=-p=8 --entrypoint /usr/bin/dash <image> -c '<commands>'`. Each step ran detached as a transient systemd unit (log and exit/wall meta under the lane's `results/`) and was polled, with a bounded WSL keepalive.
+
+## Leg 1 (rebuild of the same inputs): `bashy dag build` (image bashy bootstraps the candidate) — PASS
+
+- **Exit code**: `0`; **wall time**: `168.505s` (run #156: 175.081s)
+- **Verdict**: `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`; `elfaudit: PASS … retains runtime.fwdSig`, `releaseeligibility: PASS`)
+- **Candidate**: `./bin/bashy` sha256 `a2dce068d0d20669bf39e0a1a57e6b003424f56ee3f30f230a913409890d2fbd`, `--version` `bashy, GNU Bash 5.3 compatible, version 5.3.0(1)-bashy-dev (f190798)`
+
+## Leg 2: `./bin/bashy dag test` (candidate as outer runner, lane 2, official image) — PASS
+
+- **Exit code**: `0`; **wall time**: `1122.279s` (run #156: 944.785s, RED)
+- **Verdict**: `dag: 10 target(s) ok`. All of these passed: `test-meet-spa-fresh-regression`, `test-meet-spa-fresh`, `test-build-fail-closed`, `test-isolated-lanes`, `test-release-qa-lane`, `test-build-tag-matrix`, `test-bash-container-mode`, `verify-bashy-scratch` (via `build-bashy-scratch`: static ELF with no INTERP/NEEDED, no purego, and the `--version`/`supervisord --help`/retired-form smoke), `test-startup-linux` and `test`.
+- **`verify-bashy-scratch` note**: `SKIP FROM-scratch smoke (a usable container runtime is unavailable)`. Runs #153 to #156 print the same line, because there is no nested container runtime in the build container. This is not new.
+- **`dag: effect cap: … needs unknown not in Effects`** lines are the same diagnostics as in run #156.
+- **`test-startup-linux`** on `bsh`, verbatim:
+  ```
+  inittrace: 1.97 ms total (309 packages); max 0.17 ms (github.com/qiangli/bash/polyglot)
+  bashy -c true: 5.13 ms/process (20 runs)
+  100x /bin/true & wait $!: 0.56 s
+  ```
+- **`test` body (`./bin/bashy go test -timeout 30m ./...`) package summary**: 28 `ok`, 0 `FAIL`, 8 `[no test files]`, no `--- FAIL`, no `panic:`. The large packages: `cmd/bashy` `ok` 409.148s, `internal/agentos` `ok` 647.903s (run #156: FAIL 598.452s), `tools/elfaudit` `ok` 302.553s, `tools/productgo` `ok` 130.602s.
+- **Failing names**: none.
+- **`TestToolShortcutE2E`**, the only red in run #156, now passes inside `internal/agentos` `ok`. Story 632's root cause was the board fingerprint in yoke `pkg/bus` (fixed in `3eb700cd`), and its E2E went 3/3 in the image on lane 3. The test was not skipped and has no deadline change. The body runs without `-v`, so individual test names are not printed. Package `ok` covers every test in the package.
+- **Rule 4**: no red, so no test-class or venue-class fix was needed. Nothing was fixed, skipped or rerun in this story.
+
+## Which run covers which leg for tip bashy `f1907987` / yoke `3eb700cd` (rule 2)
+
+| Leg | Evidence run | Tip it ran on | Why it stands for `f1907987` | Result |
+|---|---|---|---|---|
+| 1 `bashy dag build` | this run (5cfdfc85); run #156 also PASS | `f1907987` | rebuilt here at this tip | PASS, 168.505s |
+| 2 `./bin/bashy dag test` | **this run (5cfdfc85)**, fresh build cache | `f1907987` | the fix's own leg | PASS, `10 target(s) ok`, 28 ok / 0 FAIL |
+| 3 `BASH53_OCI=podman ./bin/bashy dag test-bash-gate` | run #156 (e71e8ed7) | `5299e54b` | no engine input changed (bash, bashsharp, sh, coreutils pins unchanged) | PASS 86/86 both modes, names identical to run 1 / rc.39 |
+| 4a/4b/4c dispatch e2e | run #156 (e71e8ed7) | `5299e54b` | no adapter path or adapter template changed | PASS Linux / Windows native / macOS (dev-box **substitute** venue) |
+| 5 shaping smoke | run #156 (e71e8ed7) | `5299e54b` | shaping path untouched | PASS 25 checks + regression; DOM checkpoint **SKIPPED** (no Chrome in the image) |
+
+**Verdict: leg 2 is GREEN at tip bashy `f1907987`.** With run #156's legs 1, 3, 4 and 5, every
+leg of the candidate gate is green for this tip. Two qualifiers stay open and are not counted as
+passes: leg 4c ran on the dev-box substitute because the macOS QA host is disk-full, and the
+leg-5 DOM checkpoint was skipped.
