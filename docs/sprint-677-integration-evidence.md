@@ -552,3 +552,10 @@ are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as s
 
 - **Command** (the same script as runs 1 and 2): copy the fresh `bin/bashy` and `bin/bash` to `/tmp/fresh/bin`, then run `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`. The adapter cache directory is new and empty.
 - **Exit code**: `0`; **wall time**: `89.891s` (test `ok github.com/qiangli/bashy/internal/agentos 60.228s`)
+
+### 4c macOS — PASS on a SUBSTITUTE venue (the dev box)
+
+- **Venue note**: the macOS QA host was claimed (lease epoch 167) and checked first. It is still disk-full: `/System/Volumes/Data` 461G, 106M available, 100%, and its telemetry spool reports `no space left on device`. Nothing was staged or deleted there, and the claim was released. The leg ran on the dev box (macOS arm64, 29G free). It is labelled a substitute venue, not QA-host evidence.
+- **Build**: a fresh clone at `5299e54b7276afab352766aea20699888cfb43d6` in a temp directory, built with `GOWORK=off bashy dag build-bash build-bashy` (host Go `go1.27.4 darwin/arm64`). This is a bootstrap build like leg 1. Exit `0`, `27s`. Candidate `bin/bashy` sha256 `fc6565e729cd9ef224238481dc59c37b3081c496337e7470045eaa1d93d057ec`.
+- **Run**: a fresh `bin/` copy, fresh `HOME`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>/bin/bashy`, then `./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
+- **Exit code**: `0`; **wall time**: `132s` (test `ok github.com/qiangli/bashy/internal/agentos 57.963s`)
