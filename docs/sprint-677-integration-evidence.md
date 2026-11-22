@@ -498,3 +498,10 @@ in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004
 Drift note: identical to run #153. bashsharp and yoke are `in-sync`; the `cycle` lines are
 the known bashy<->ycode cycle; the `stale` lines (coreutils, goawk, the yoke subpackages)
 are unchanged from runs 1 and 2. The candidate under gate is the frozen tip as staged.
+
+## Leg 1: `bashy dag build` (image bashy bootstraps the candidate)
+
+- **Exit code**: `0`
+- **Wall time**: `175.081s`
+- **Verdict**: PASS — `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`; `releaseeligibility: PASS`)
+- **Candidate**: `./bin/bashy` sha256 `d03c5f8ca94b4ca645ddad7a15b55d16f71c7d46edb040f6e630478115beeba4`; it is the outer runner of every later dag target (the DAG runner sets `BASHY`/`BASHY_EXE` to it).
