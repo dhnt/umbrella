@@ -3,9 +3,11 @@ id: aa693f4aa0e6
 kind: refactor
 title: 'P5 contract: bashy = bsh + dispatcher + internal verbs; remove dead in-process command code; import-boundary test; scratch decision record'
 seq: 591
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T09:22:08.016791Z
+weave: 144
+assignee: claude-opus5.5
 sprint: 692
 ---
 

@@ -3,9 +3,10 @@ id: 3f6a38f3dfd6
 kind: chore
 title: 'C: Dependency bumps for reachable module advisories + fresh govulncheck, retire/shrink vuln override'
 seq: 586
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-21T08:29:57.498182Z
+weave: 145
 assignee: agy-gemini4-carbon
 sprint: 692
 ---
