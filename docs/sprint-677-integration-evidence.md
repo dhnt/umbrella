@@ -404,3 +404,10 @@ gate is the frozen tip as staged.
 
 - **Command** (same script as the first run): fresh `bin/bashy` + `bin/bash` copied to `/tmp/fresh/bin`, then `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
 - **Exit code**: `0`; **wall time**: `93.966s` (test `ok github.com/qiangli/bashy/internal/agentos 59.052s`)
+
+### 4b Windows native (gate host, Windows-native resource, no host Go) — PASS
+
+- **Build** (lane 2, official image): `GOOS=windows GOARCH=amd64 BIN_DIR=bin/win BASHY=./bin/bashy bashy dag build-bashy` plus `GOOS=windows GOARCH=amd64 ./bin/bashy go test -c -tags e2e -o bin/win/agentos.test.exe ./internal/agentos`; exit `0`, `165.689s`. `bashy.exe` sha256 `3427c252a82de47b9e5f5cb850dbcc061fe1840dc83a03ef00f368ec5b5e3a44`, `agentos.test.exe` sha256 `3e00fea5f8da94d5d9577a658bc23a50e59209a2a8b3da06461803d168d426d1`.
+- **Run**: a fresh directory on the Windows side with a fresh `HOME`/`USERPROFILE`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>\bin\bashy.exe`; `agentos.test.exe -test.run "^TestE2EAllListedCommandsDispatch$" -test.count=1 -test.timeout 20m -test.v`. `where go` on that host: `INFO: Could not find files for the given pattern(s).` (no host Go).
+- **Exit code**: `0`; **wall time**: `321.89s` (`--- PASS: TestE2EAllListedCommandsDispatch (321.68s)`)
+- **Comparison with the first run**: the first run's only failure, `sprint help does not carry the owner-accountability contract` (`go: go.mod file not found …`), does not reproduce. The cold adapter cache now gets a managed `toolchain\go.exe` and cold-builds the yoke adapters (`sprint.exe`, `dag.exe`, `weave.exe`, …) with no host Go. The wall time went from 43s to 322s because of those cold builds.
