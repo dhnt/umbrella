@@ -381,3 +381,19 @@ gate is the frozen tip as staged.
   - `TestSrcPinsMatchLinkedModules`: product/repository consistency defect. bashy `1762e12c` bumped `go.mod` to yoke `5f136516`, but the matching `src` pin was not moved. The test caught a real mismatch.
   - The three `TestSynergyDAG*`: product-leaning, the same cluster as the `test-bash-container-mode` failure. The candidate's `dag` verb now cold-builds its `yoke/dag` adapter with `go` from a yoke pin (`be872cc5`, the stale subpackage pin in the drift listing). The `go: downloading` output then breaks the `--json` envelope, and the read-only module cache left in the test's TempDir makes cleanup fail. The bisect candidate is again `48d7c818`.
   - `TestToolShortcutE2E`: undetermined, venue-leaning (an interactive `agy` session quit under a headless container). It is not comparable with the first run, whose `internal/agentos` package died at the 10-minute timeout before it reported individual results.
+
+## Leg 3: `BASH53_OCI=podman bashy dag test-bash-gate` (gate host, staged checkout) — RED, one fixture in mode 1
+
+- **Exit code**: `1`; **wall time**: `315.154s`; `==> test-bash-gate FAILED (exit 1)`, `dag: 1/1 targets failed`
+- **Mode 0** (`BASH53_BASHPP=0`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-0.json`, sha256 `ec4391bc0993fd12be904417ebaed40b888f58b7a4e109a6b4b24e8d4043ff86`
+- **Mode 1** (`BASH53_BASHPP=1`): `Results: 85 passed, 1 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-1.json`, sha256 `5bbf53f8d0317b3b9c1b6a2aa6f636399003119dc9eb59e5df884e460afd9fb8`; `bash53evidence: sealed gate requires 86/86 with no failures, timeouts or skips`
+- **Failing fixture, verbatim**:
+  ```
+    FAIL  histexpand
+          output differs from histexp.right
+          first diff at line 202
+          want: "echo a"
+          got:  "b"
+  ```
+- **Fixture-name comparison**: each fixture's verdict, keyed by (mode, name), was compared with the first run's leg-3 log. The first run was 172/172 PASS and matched rc.39 by name (rc.39: mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`, 86/86 each). The comparison found one change: `mode 1 histexpand PASS -> FAIL`. Mode 0 has no NEW, RECOVERED or changed fixture. The fixture set is the same 86 names in both modes.
+- **First-pass classification**: product-leaning regression in the `BASH53_BASHPP=1` engine path. The engine inputs changed between the runs only through the bashsharp pin (`cc848210` -> `b1a3183`, bashy `bd4f47de`, the bsh lazy runewidth tables), so that is the bisect candidate. Not rerun: there is one full run per the test rule, and a single deterministic text diff gives no flake signal. The conductor was notified.
