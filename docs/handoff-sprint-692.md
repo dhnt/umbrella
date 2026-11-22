@@ -1,6 +1,6 @@
 # Handoff: Sprint 677 closed, Sprint 692 (677 closure) ready to start
 
-Date: 2026-11-22. Outgoing conductor: claude+2 (Claude Opus 5.5 session). Incoming: the next
+Date: 2026-11-22 (updated about 12:30 PST after the clean-slate sweep). Outgoing conductor: claude+2 (Claude Opus 5.5 session). Incoming: the next
 managing agent (takes the Sprint 692 seat with `bashy sprint take 692 --owner <your name>`).
 
 ## What Sprint 677 delivered (ended 2026-11-22, merged on main)
@@ -38,19 +38,22 @@ Integration evidence (gate host, official image, lane 2):
 
 Acceptance is on the card (`bashy sprint show 692`). In priority order:
 
-1. **22d478f9 Adapter env leak (p0, IN FLIGHT as umbrella weave run #143, agy-gemini4-carbon).**
-   Root cause recorded: `runCommandAdapter` (bashy `internal/agentos/adapter_dispatch.go`) injects
-   `BASHY_SELF=/work/bin/bashy` into the `toolchain/go` adapter; it leaks into binaries `go test`
-   builds, so `bashySelfPath()` inside test binaries resolves to bashy and self-re-exec tests run
-   the wrong program. Also `jq` missing from the standalone `yoke/dag` adapter. Review #143's
-   delivery first: build + its unit tests + dependency test, rebase onto current main, merge.
-2. **3043a867 the 15 failures (p0).** First-pass classes on the story: venue (stale go1.27.2 tool
-   in the lane cache volume; container caps 8 CPU / 7 GB / pids too small for internal/agentos,
-   whose package hits the 10 m go test timeout), likely product (make-fallthrough hints empty:
-   bisect against Sprint 660 R4 74100d67; genie recipe profile missing id: bisect the sibling-pin
-   sync), expected change (common-options golden: review then `BASHY_UPDATE_COMMON_OPTIONS=1`),
-   test defect (bashy-build roll test doubles `/var/cache/` under the container TMPDIR). Many may
-   disappear with the env-leak fix: rerun before fixing more.
+1. **22d478f9 Adapter env leak (p0): MERGED** on bashy main `86c645bc` (weave #143,
+   agy-gemini4-carbon), umbrella pin `28993c05`. It passes BASHY_SELF and the adapter-trampoline
+   variables only to the `.bsh` adapter and strips them before any child (including `go test`
+   binaries) runs; `jq` is duplicated into `yoke/dag` (recorded in `yoke/COUPLED-EXCEPTIONS.md`).
+   Verified with targeted tests: genie recipe tests now pass; embedded-adapter drift test passes.
+   **Remaining step: accept the story on this card** (claim -> submit -> accept; its run is closed).
+2. **3043a867 the 15 failures (p0).** Rerun `bashy dag test` on the gate host first: the env-leak
+   fix may clear several. Known after the fix, on the dev box with targeted `-run` (they fail
+   identically on main without the fix, so they are pre-existing): `TestMakeFallthroughFrontDoor`,
+   `TestMakeFallthroughListAndHints`, `TestDagMakeHandlerShell` (make-fallthrough hint empty:
+   product, bisect against Sprint 660 R4 `74100d67`); `TestServiceMonitorSeedInternalAndCustomShareOneMechanism`
+   (venue on the dev box: the host's real schedule daemon holds the lock). Other first-pass
+   classes on the story: stale go1.27.2 tool in the lane cache volume (venue); container caps
+   8 CPU / 7 GB / pids too small for `internal/agentos`, which hits the 10 m go test timeout
+   (venue); common-options golden (expected: review, then `BASHY_UPDATE_COMMON_OPTIONS=1`);
+   bashy-build roll test doubles `/var/cache/` under the container TMPDIR (test defect).
 3. **458628c0 the single integration run (p0):** after 1-2, rerun on the gate host; record results
    on the card.
 4. **K1 73dbfa3a / K1b ffd48cc9 / K1c 80b2540c (p0):** bashy supervisord keeps the gate host's WSL
@@ -64,23 +67,37 @@ Acceptance is on the card (`bashy sprint show 692`). In priority order:
    bashsharp `bench/` (research and script inventory already merged).
 9. **P5 aa693f4a (p2), LAST:** retire the monolith switch (expand -> switch -> contract).
 
-## Clean plate: state at handoff
+## Clean plate: state at handoff (2026-11-22, about 12:30 PST)
 
-- **Weave queues:** every dead run abandoned; only umbrella #143 is live. All unintegrated commits
-  are preserved twice: `refs/salvage/abandoned-*` in each repo, and verified git bundles in
-  `~/.bashy/salvage/2026-11-22/` (one `.bundle` + `.log` per run/repo).
-- **Repos:** umbrella, bashy, bashsharp, outpost, yoke, coreutils, bash, sh, ycode clean and at
-  origin heads; every umbrella pin equals its repo's origin head (umbrella main 660a7c08).
-- **Dev box:** disk about 55 GB free after pruning. Its installed `~/.local/bin/bashy` is still
-  the old rc.37 build; an install candidate from current main is built in the outgoing
-  conductor's recovery worktree (the operator installs it from their own terminal; agents are not
-  allowed to replace the running shell binary).
+- **No live weave runs.** Every run is closed (merged, or abandoned with its work preserved).
+  `~/.bashy/weave` queue directories hold only metadata (the umbrella queue went from 1.6 GB to
+  5.5 MB).
+- **Every module is on main (readline and sh on master) with exactly one local branch, clean,
+  at its origin head; every umbrella pin equals that head.** All other local branches and review
+  worktrees were removed.
+- **Where preserved work lives (nothing was discarded):**
+  - `refs/salvage/abandoned-*` in each repo: commits from abandoned weave runs.
+  - `refs/salvage/2026-11-22-*` in umbrella, bashy and yoke: commits from removed review
+    worktrees, including the **bc800d20 inbox phone-model work** (bashy
+    `refs/salvage/2026-11-22-s652-bashy-inbox-review` = `969c888d`, yoke
+    `refs/salvage/2026-11-22-s652-yoke-inbox-review` = `f9c93f38`) and the Sprint 652
+    checkpoint (umbrella `refs/salvage/2026-11-22-s652-umbrella-checkpoint` = `e4e0893c`).
+  - Verified git bundles with commit logs in the dev box's `~/.bashy/salvage/2026-11-22/`
+    (`.` runs, `branches/`, `worktrees/`).
+- **Worktrees kept on purpose:** the bashy install candidate (built from main for the operator's
+  install) and `.agents/s690-parity` (Sprint 690, whose manager is live).
+- **Dev box:** disk about 55 GB free. Its installed `~/.local/bin/bashy` is still the old rc.37
+  build (it lacks the agy gemini4/opus5.5/sonnet5.5 agent records); launch agents with a fresh
+  build by path until the operator installs. Agents are not allowed to replace the running shell
+  binary.
 - **Other sprints:**
-  - 652 (outpost reliability): inbox phone-model fix bc800d20 (bashy queue runs abandoned, work in
-    salvage refs) and C4 (682) need re-staffing; close-reclaims-everything a52829ea paused.
-  - 682: waits on C4.
+  - 652 (outpost reliability): boot-scope bootstrap and reachability alerts done; inbox
+    phone-model fix bc800d20 needs a restart from current heads (use the salvage refs above as
+    reference); close-reclaims-everything a52829ea paused; cloudbox master parity follow-up open.
+  - 682: C4 consumer e2e waits on its yoke/bashy fixes landing (C4b 1082c8db) and one
+    pre-approved paid rerun.
   - 690 (Demo Queue): merged, its own manager live; in-room rehearsal open.
-  - 660: done except the parent story.
+  - 660: done except closing the parent story.
   - 616: done.
   - 684, 688: queued after 692.
 
