@@ -3,14 +3,17 @@ id: ffd48cc9993d
 kind: bug
 title: 'K1b: implement supervisord WSL keep-alive per approved design (K1 73dbfa3a)'
 seq: 599
-status: todo
+status: wontfix
 priority: p0
 labels:
     - windows
 created: 2026-11-21T11:19:35.118789Z
 assignee: agy-sonnet5.5
 sprint: 692
+closed: 2026-11-22T13:41:41.235917Z
 ---
+
+WONTFIX (operator rescope 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): not required to release v1.0.0-rc.40 as the thin bashy core + shapeable commands. Implementation of K1 (73dbfa3a), closed with it; salvaged commits remain in refs/salvage.
 
 PAUSED (operator 2026-11-21, via conductor claude+2): all non-677 work paused until the 677 refactor completes, and inside 677 focus is ONLY the refactor (bsh own module / generator+dispatcher+pilot / convert all / retire switch). This side story is checkpointed here and STOPPED - do not staff or continue until the conductor unpauses it. State preserved: see salvage branches and prior records on this story.
 

@@ -3,14 +3,17 @@ id: 73dbfa3a507e
 kind: bug
 title: 'K1: bashy supervisord keeps WSL instance alive while supervised oci jobs run (gate-host keep-alive product fix)'
 seq: 597
-status: todo
+status: wontfix
 priority: p0
 labels:
     - windows
 created: 2026-11-21T11:09:13.126424Z
 assignee: agy-sonnet5.5
 sprint: 692
+closed: 2026-11-22T13:41:41.090535Z
 ---
+
+WONTFIX (operator rescope 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): not required to release v1.0.0-rc.40 as the thin bashy core + shapeable commands. Venue tooling: gate-host runs stay session-attached. Design note is preserved in the salvaged weave #111 commit be717b1b (refs/salvage); reopen in the follow-up sprint if detached lane jobs are needed.
 
 PAUSED (operator 2026-11-21, via conductor claude+2): all non-677 work paused until the 677 refactor completes, and inside 677 focus is ONLY the refactor (bsh own module / generator+dispatcher+pilot / convert all / retire switch). This side story is checkpointed here and STOPPED - do not staff or continue until the conductor unpauses it. State preserved: see salvage branches and prior records on this story.
 

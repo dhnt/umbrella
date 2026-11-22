@@ -10,6 +10,8 @@ assignee: agy-gemini4-carbon
 sprint: 692
 ---
 
+UNPAUSED + RESCOPE (operator 2026-11-22, decision D2 'full clean job'): p0, delivered in the same run as C 3f6a38f3 by agy; see C for the current scope. The PAUSED notes below are void. TEST RULE (operator 2026-11-22): build + the smallest targeted unit tests for the changed packages only, then submit. No go test ./..., no gates, no integration per story or per commit. The one full run is the rc.40 candidate gate (458628c0) at sprint close; anything red there is root-caused and fixed until the full run is clean. Start on current heads (bashy mod drift; rebase before submit). Trailers: Sprint/Story/Story-ID + Agent; submodule commit+push first, then the umbrella pin.
+
 PAUSED (operator 2026-11-21, via conductor claude+2): all non-677 work paused until the 677 refactor completes, and inside 677 focus is ONLY the refactor (bsh own module / generator+dispatcher+pilot / convert all / retire switch). This side story is checkpointed here and STOPPED - do not staff or continue until the conductor unpauses it. State preserved: see salvage branches and prior records on this story.
 
 Remainder of C 3f6a38f3dfd6 after run #110 failure (classification + salvage recorded on C). STARTING POINT - salvaged WIP commits preserved in weave workspace ~/.bashy/weave/umbrella-f8ff73b3/workspaces/issue-110 submodules (fetch by full sha into your clones, do not redo the bumps): bashy ab591e31f3deb789235571758a70297cb45c312c, outpost 06f2121bd9e75ffa5316eae4ec78b14582899a87, yoke dab686f81819c4a76d5a6f3b5e0eeb9d10b64c07. Manager sanity already green: outpost go build ./... ok, go list -m ok in all three, scripts/test-govulncheck-release.py 8/8.

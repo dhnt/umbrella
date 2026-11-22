@@ -3,7 +3,7 @@ id: 80b2540c53f1
 kind: bug
 title: 'K1c: land K1b WSL keep-alive - rebase salvaged commits onto S0, rerun unit tests, deliver (K1b ffd48cc9 remainder)'
 seq: 603
-status: assigned
+status: wontfix
 priority: p0
 labels:
     - windows
@@ -11,7 +11,10 @@ created: 2026-11-21T12:04:41.903712Z
 weave: 137
 assignee: codex-gpt6.2-sol
 sprint: 692
+closed: 2026-11-22T13:41:41.377654Z
 ---
+
+WONTFIX (operator rescope 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): not required to release v1.0.0-rc.40 as the thin bashy core + shapeable commands. Remainder of K1b (ffd48cc9), closed with it.
 
 PAUSED (operator 2026-11-21, via conductor claude+2): all non-677 work paused until the 677 refactor completes, and inside 677 focus is ONLY the refactor (bsh own module / generator+dispatcher+pilot / convert all / retire switch). This side story is checkpointed here and STOPPED - do not staff or continue until the conductor unpauses it. State preserved: see salvage branches and prior records on this story.
 
