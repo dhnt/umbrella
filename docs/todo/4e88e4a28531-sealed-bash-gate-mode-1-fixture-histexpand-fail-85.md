@@ -3,13 +3,15 @@ id: 4e88e4a28531
 kind: bug
 title: 'Sealed Bash gate mode 1: fixture histexpand FAIL (85/86) on frozen tip bebf3e8ca; mode 0 86/86; first run and rc.39 had it PASS'
 seq: 630
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashy
     - gate
     - release
 created: 2026-11-22T18:10:01.757599Z
+weave: 155
+assignee: codex-gpt5.6-sol
 sprint: 692
 ---
 

@@ -3,7 +3,7 @@ id: 0d0922b39875
 kind: bug
 title: 'Adapter resolution regression after 48d7c818: ''bashy dag: adapter yoke/dag/dag.bsh not found'' in test-bash-container-mode; Synergy DAG tests get ''go: downloading'' instead of a JSON envelope'
 seq: 629
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashy
@@ -11,6 +11,8 @@ labels:
     - release
     - gate
 created: 2026-11-22T18:10:01.615071Z
+weave: 154
+assignee: codex-gpt6-astra
 sprint: 692
 ---
 
