@@ -143,5 +143,7 @@ sprints.
    produces release evidence runs on the gate host: the dag legs, `dag dist`
    for the asset family, the local release gate receipt, the shaping smoke,
    the dispatch e2e (Linux lane; Windows native on the same host; macOS on its
-   QA host). The dev box edits, runs targeted unit tests and conducts; it does
-   not build release assets or run suites (operator, 2026-11-22).
+   QA host). The dev box edits, runs small targeted package tests and
+   conducts; it does not build release assets, run suites, or carry the
+   workers' verification builds. Workers build and verify on a gate-host lane
+   (operator, 2026-11-22: do not overload the dev box).
