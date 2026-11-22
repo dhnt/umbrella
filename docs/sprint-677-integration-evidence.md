@@ -228,3 +228,15 @@ measure exactly that tree. Legs follow.
 - **Effect on the leg**: the `test` target's own body (`go test ./...`) did not run, because its prerequisite failed. A separate candidate `go test ./...` run was launched for classification (result appended below when it lands).
 - **First-pass classification**: test/venue boundary, not a product crash — the 5 ms per-package budget was calibrated for the previous binary; `bsh` deterministically exceeds it via `go-runewidth` init on the gate host's CPU (4/4 runs, 12–14 ms, low variance, so not load flake). No fix in this story per orders; the conductor was notified on the board and the run continues with leg 3.
 
+### Leg 2 diagnostic: candidate `go test ./...` (separate run, for classification)
+
+- **Exit code**: `1`; **wall time**: `650.271s`; 26 packages `ok`, 2 packages `FAIL`
+- **Failed packages**: `github.com/qiangli/bashy/cmd/bashy` (464.125s), `github.com/qiangli/bashy/internal/agentos` (600.429s, 10-minute panic timeout)
+- **Failing tests, verbatim**:
+  - `TestSourceRoute/go_extension`, `TestSourceRoute/go_flag_no_op`, `TestSourceRoute/go_flag_txt`, `TestSourceRoute/go_flag_no_extension`, `TestSourceRoute/go_module_directory`, `TestSourceRoute/non-main_refusal`, `TestSourceRoute/flag_beats_python_extension` — all with `bashy: resolve Go toolchain: mkdir /var/cache/bashy/bin/go/1.27.2: permission denied`
+  - `TestRepairHermeticStrippedPathRunsThroughBashyRuntime` — `go-version: pass=false reason="exit status 1" tail="Error: mkdir /var/cache/bashy/bin/go/1.27.2: permission denied"`
+  - `TestACPHelpIsHeraldACPHelpByteForByte` — `` `bashy acp --help` did not finish: context deadline exceeded `` (120.91s)
+  - `TestACPProcessLevelInitializeSessionPrompt` — `` `bashy acp` did not complete the ACP handshake: ... "context deadline exceeded" `` (123.72s); the same run logged a module-cache embed error: `embed baseline/adapters/docker-ps.yaml: open /var/cache/bashy-build/tmp/.../yoke@.../pkg/fleet/baseline/adapters/docker-ps.yaml: no such file or directory`
+  - `internal/agentos`: no individual `--- FAIL`; the package died with `panic: test timed out after 10m0s` (`TestPromotionStatusLineUnconfigured` among the running tests at 43s)
+- **First-pass classification**: venue-leaning. The `permission denied` cluster writes to `/var/cache/bashy/...` inside the container, outside the mounted build-cache volume — an environment path the image does not provision for test subprocesses. The ACP timeouts and the agentos 10-minute panic occurred on a heavily loaded 8-CPU venue (sibling packages took 375–600s each). None of these names is recorded as fixed here; they are handed to root-cause on their owning stories, and legs 3–4 proceed.
+
