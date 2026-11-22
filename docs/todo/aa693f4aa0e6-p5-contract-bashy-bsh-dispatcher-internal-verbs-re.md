@@ -3,10 +3,13 @@ id: aa693f4aa0e6
 kind: refactor
 title: 'P5 contract: bashy = bsh + dispatcher + internal verbs; remove dead in-process command code; import-boundary test; scratch decision record'
 seq: 591
-status: todo
+status: done
 priority: p0
 created: 2026-11-21T09:22:08.016791Z
+assignee: claude-fable5.1
 sprint: 692
+closed: 2026-11-22T14:32:31.981014Z
+closed_by: claude-fable5.1
 ---
 
 RESCOPE (operator 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): THIS IS THE FEATURE OF rc.40, p0. Scope: (1) remove the in-process command code that no bashy case uses now that every non-internal case calls its adapter: dead constructor/registration wiring in internal/agentos (agentos.go switch keeps only the internal verbs: model/agent/tool/person, commands, app, skill, self, run/agentic/awd/contain/limit/claim, dispatch-only names, and the adapter calls), the bashy_cert_base profile (cmd/bashy/main_core.go + app_boundary*/cert_* files, internal/core/commands.go, the releaseeligibility branch, dag.md cert lines) and the 23-yoke-package path. Keep bashy_scratch building the same thin bashy; the unwired catalog_dispatch path stays as is. (2) Add TestBashyImportBoundary (model: bashsharp/cmd/bsh/main_test.go TestBshImportBoundary): go list -deps ./cmd/bashy contains no package under optional/, toolchain/, yoke/<cmd>, custom/ or examples/ command entries. (3) Decision record (docs/ in bashy): scratch/air-gap image ships the thin core; on-demand command builds need the toolchain adapter + source pin; prebuilt-per-release is the fallback. Record before/after binary size and package count in the submit. Expand->switch->contract: delete only what is provably dead (go list -deps proof per removed package). Owner: claude. TEST RULE (operator 2026-11-22): build + the smallest targeted unit tests for the changed packages only, then submit. No go test ./..., no gates, no integration per story or per commit. The one full run is the rc.40 candidate gate (458628c0) at sprint close; anything red there is root-caused and fixed until the full run is clean. Start on current heads (bashy mod drift; rebase before submit). Trailers: Sprint/Story/Story-ID + Agent; submodule commit+push first, then the umbrella pin.
