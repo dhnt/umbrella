@@ -3,13 +3,15 @@ id: a3e6d41e5fb7
 kind: bug
 title: 'TestToolShortcutE2E fails deterministically in the official image: ''bashy agy did not exit after quit'' (steer ''quit'' never reaches the fake tool''s terminal)'
 seq: 632
-status: todo
+status: assigned
 priority: p0
 labels:
     - bashy
     - gate
     - release
 created: 2026-11-22T19:14:46.375725Z
+weave: 157
+assignee: codex-gpt6-astra
 sprint: 692
 ---
 
