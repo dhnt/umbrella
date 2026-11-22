@@ -201,3 +201,11 @@ lines name pins older than the dev-box submodule HEADs. The candidate under
 gate is the frozen tip itself (bashy `9dd37bb2` as staged), so the legs below
 measure exactly that tree. Legs follow.
 
+## Leg 1: `bashy dag build`
+
+- **Exit code**: `0`
+- **Wall time**: `169.351s`
+- **Verdict**: PASS — `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`)
+- **Artifacts**: `bin/bash`, `bin/bash.real`, `bin/bashy` (candidate at `./bin/bashy` for leg 2)
+- The effect-cap lines (`needs unknown not in Effects`) are the runner's advisory report; the targets ran and passed.
+
