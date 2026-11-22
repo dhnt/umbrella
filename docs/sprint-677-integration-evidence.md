@@ -336,3 +336,33 @@ gate is the frozen tip as staged.
 - **Wall time**: `167.421s`
 - **Verdict**: PASS — `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`)
 - **Artifacts**: `bin/bash`, `bin/bash.real`, `bin/bashy` (candidate at `./bin/bashy` for the later legs)
+
+## Leg 2: `BASHY=./bin/bashy bashy dag test` — RED, one target
+
+- **Exit code**: `1`
+- **Wall time**: `248.738s`
+- **Verdict**: FAILED — `dag: 1/7 targets failed`
+- **Passed (6)**: `test-meet-spa-fresh-regression`, `test-meet-spa-fresh`, `test-build-fail-closed`, `test-isolated-lanes`, `test-release-qa-lane`, `test-build-tag-matrix`
+- **Failed (1), verbatim**: `test-bash-container-mode`
+  ```
+  ==> test-bash-container-mode
+  bashy dag: adapter yoke/dag/dag.bsh not found
+  test-bash-container-mode: target test-bash-container failed
+  ==> test-bash-container-mode FAILED (exit 1)
+  dag: 1/7 targets failed
+  ```
+- **Comparison with the first run**: `test-bash-container-mode` PASSED in the first run (bashy `9dd37bb2`). Since then bashy gained three commits: `bd4f47de` (bashsharp pin bump), `48d7c818` (`fix(adapters): bootstrap cold help from pinned source`, story 11b75a7e, touching `internal/agentos/adapter_dispatch.go`) and `1762e12c` (test fixes). The error is printed by `internal/agentos/adapter_dispatch.go:307`. The script `scripts/test-bash-container-mode.sh` runs the candidate (`$BASHY`) as `bashy dag test-bash-container` inside a hermetic scratch repo (`PATH=<fakebin>:/usr/bin:/bin`, fake `go`), where the candidate's `dag` verb now does not find its `yoke/dag/dag.bsh` adapter.
+- **First-pass classification**: product-leaning regression. `48d7c818` is the bisect candidate (not yet bisected; no fix in this story). The conductor was notified on the board.
+- **Effect on the leg**: the dag stopped after this failure, so `verify-bashy-scratch`, `test-startup-linux` and the `test` body (`go test -timeout 30m ./...`) did not run under `dag test`. They ran next as continuations of this leg, with the same candidate and the same venue.
+
+### Leg 2 continuation: `BASHY=./bin/bashy bashy dag test-startup-linux verify-bashy-scratch` — PASS
+
+- **Exit code**: `0`; **wall time**: `65.799s`; `dag: 2 target(s) ok`
+- **`verify-bashy-scratch`**: PASS (static linux/amd64 ELF with no INTERP or NEEDED entries, no purego, `bashy --version` / `supervisord --help` / retired-form refusal smoke)
+- **`test-startup-linux`** on `bsh`: PASS. Verbatim:
+  ```
+  inittrace: 1.95 ms total (309 packages); max 0.18 ms (github.com/qiangli/bash/polyglot)
+  bashy -c true: 4.93 ms/process (20 runs)
+  100x /bin/true & wait $!: 0.56 s
+  ```
+  In the first run the max package init was 12–14 ms (`github.com/mattn/go-runewidth`) against the 5 ms budget. The lazy runewidth tables in bashsharp `b1a3183` remove it: `go-runewidth` is no longer the max, and the max is 0.18 ms.
