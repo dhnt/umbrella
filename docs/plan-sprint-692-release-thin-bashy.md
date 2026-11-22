@@ -79,3 +79,40 @@ gate-host lanes in the official image, never the dev box. Root cause recorded on
 any fix; venue problems are fixed in the venue. Expand, switch, contract: P5 deletes only what is
 dead. Every commit carries Sprint/Story/Story-ID trailers plus Agent; submodule commit and push
 first, then the umbrella pin. Hosts by role only. No tag or publish without the operator.
+
+## Gate loop rules (operator, 2026-11-22: "do it in this sprint")
+
+The purpose of this sprint and its predecessors is a fast build and release
+loop for software shaping: the certified shell separated from the rest, every
+bashy tool built on its own. The candidate gate must follow the same idea. One
+red cost about an hour in the first three runs (story, hand-off, merge, full
+serial rerun on a cold cache); these rules cut that to the cost of the leg.
+
+1. **Legs run in parallel.** After `dag build`, legs 2 (`dag test`), 3 (sealed
+   Bash gate), 4 (dispatch e2e per OS) and 5 (shaping smoke) are independent.
+   The gate worker claims two gate-host lanes plus the Windows-native and macOS
+   resources and runs them concurrently; a full run is bounded by the
+   `go test` body (about 15 minutes), not the sum of the legs.
+2. **Rerun only what the fix touched.** The sealed Bash gate reruns only when
+   an engine input changed (bash, bashsharp, sh, coreutils pins or sources).
+   Dispatch e2e reruns only when the adapter path or an adapter template
+   changed. A test-only fix in a package reruns leg 2 alone. The last run that
+   covered every leg at the frozen tip, plus the leg reruns on later tips,
+   together form the candidate evidence; the evidence doc names which run
+   covers which leg for the tip that is tagged.
+3. **Warm cache for intermediate reruns, fresh cache for the final run.** A fix
+   verification reuses the lane's cache volume. The run that produces the
+   evidence for the tagged tip uses a fresh volume, as before.
+4. **The gate worker fixes test-class and venue-class reds in place.** Root
+   cause and class are recorded on the story first (unchanged rule). When the
+   class is test or venue, the same worker fixes it, re-executes that test or
+   target in the image, and commits; the conductor merges and reruns the
+   affected leg. Product-class reds still get their own story and owner. The
+   sealed Bash gate is never edited by this rule.
+5. **No masked failures.** Every `go test` body runs with a timeout large
+   enough for the biggest package on the capped lane (`-timeout 30m` today),
+   so a run reports every failing name the first time.
+
+These rules apply to the remaining cycle of this sprint (leg 2 rerun after
+`TestToolShortcutE2E`, then the release) and are inherited by follow-up
+sprints.
