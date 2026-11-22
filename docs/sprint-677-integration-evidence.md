@@ -279,3 +279,171 @@ Each OS ran the candidate from a fresh install with `BASHY_ADAPTER_CACHE` pointi
 | 4b | dispatch e2e, Windows native, fresh install, cold cache | 1 | 43s | RED: `sprint --help` cold-cache `go` failure (product-leaning) |
 | 4c | dispatch e2e, macOS, fresh install, cold cache | 0 | 74s | PASS on substitute venue (QA host disk-full) |
 
+
+---
+
+# Sprint 692 rc.40 candidate gate RERUN (story 0a0f4dc2): second full run after the gate fix round
+
+Follows the RERUN ORDER on story 458628c0 (first run: umbrella `8b8db523f`, section above).
+Owner: claude-opus5.5 (reassigned by the conductor from muse-wonder, whose run #152
+hit a provider quota before producing work). No code fixes in this story: a red leg is
+recorded with failing names verbatim and a first-pass class, the conductor is told,
+and the next leg runs. Hosts are named by role only.
+
+## Frozen tip & venue setup
+
+- **Umbrella frozen tip**: `bebf3e8ca9fe8448406122635e97c515b887252f`. Gitlinks verified at start with `git ls-tree bebf3e8ca` and each submodule's `git rev-parse HEAD`:
+  - **bashy**: `1762e12c5254d52557daf81796e0be3baded62b1`
+  - **bashsharp**: `b1a3183b426d3da50c562db18c4b970f3d91e2dc` (bsh lazy runewidth tables)
+  - **outpost**: `a1c93072a28afac25c59f53d83f0f369ba53d45e`
+  - **yoke**: `5f1365166f791be20e20f6bcc3c8e1804cd996d8` (managed GOROOT pin)
+- **Venue**: the gate host, WSL2 Ubuntu 24.04, lane-2 resource. The lane-2 lease was still held by muse-wonder for this same story; after a claim request to the holder and a note to the conductor went unanswered, and with the lane verified idle (no containers), the lease was taken over (epoch 11) and announced. The lane-1 lease was left alone.
+- **Staging**: `/root/lanes/lane2/s692-rerun/bashy`, a fresh clone checked out at `1762e12c5254d52557daf81796e0be3baded62b1` (`git rev-parse HEAD` verified). Fresh cache volume `lane2-s692-rerun-cache`, created for this run.
+- **Official image**: `localhost/bashy-build:v1.0.0-rc.40-go1.27.4-1171628e07d3`, image ID `f09ff792e4e0c1e84cd592472ba98d1d69ba3f501fbd15cf29f3ec4a6191ec18`, digest `sha256:1171628e07d3e7490458d9b0b484e689fee56c4a739e3f8ad577188eceece2ff`, matching `image`/`image_digest` in the staged `tools/bashy-build/image.lock` (the same image as the first run).
+- **Invocation**: same driver as the first run: `bashy oci run --rm --init --name lane2-s692rr-<step> --cpus 8 --memory 7g -v lane2-s692-rerun-cache:/var/cache/bashy-build:U -v <staging>:/work:U -w /work -e BASHY_BUILD_RUN=1 -e GOFLAGS=-p=8 --entrypoint /usr/bin/dash <image> -c '<commands>'`. Each leg runs detached on the gate host as a transient systemd unit (log and exit/wall meta under the lane's `results/`) and is polled about every 60 s; a bounded WSL keepalive holds the distro up.
+
+### `bashy mod drift` verbatim (dev box, bashy at the frozen tip)
+
+```
+in-sync  github.com/qiangli/bashy -> bashsharp v0.0.0-20261122160840-b1a3183b426d
+stale    github.com/qiangli/bashy -> coreutils/third_party/goawk v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> readline v0.1.4-0.20261121101804-6ed12265d8dd
+in-sync  github.com/qiangli/bashy -> gotreesitter v0.0.0-20261121101804-5522e72a297d
+in-sync  github.com/qiangli/bashy -> yoke/external/ollama/src v0.0.0-20261016181410-b0d0bbba93ab
+in-sync  github.com/qiangli/bashy -> bash v0.0.0-20261121101805-42efe30317c4
+in-sync  github.com/qiangli/bashy -> bonsai v0.0.0-20261121101804-e25a870a0d4a
+stale    github.com/qiangli/bashy -> coreutils v0.0.0-20261121101804-c5832f99ccf6 pinned c5832f99ccf6, HEAD 47dbc82478bc
+in-sync  github.com/qiangli/bashy -> gfy v0.0.0-20261121101804-aab4f6fad5be
+in-sync  github.com/qiangli/bashy -> outpost v0.14.38-0.20261122144618-a1c93072a28a
+cycle    github.com/qiangli/bashy -> ycode v0.3.1-dev.0.20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+cycle    github.com/qiangli/bashy -> ycode/examples/genie v0.0.0-20261121101805-4c6cee72ad8a pinned 4c6cee72ad8a, HEAD 3ef72c8114d3
+in-sync  github.com/qiangli/bashy -> yoke v0.0.0-20261122161039-5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/external/otel v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/llmgw v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/oci v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+stale    github.com/qiangli/bashy -> yoke/pkg/provider v0.0.0-20261121163358-be872cc5a395 pinned be872cc5a395, HEAD 5f1365166f79
+in-sync  github.com/qiangli/bashy -> yoke/external/podman/src v6.0.0-20261013004941-fa029d9c82fb
+```
+
+Drift note: the bashsharp pin is now `in-sync` (it was `cycle` in the first run).
+The `cycle` lines are the known bashy<->ycode cycle; the `stale` lines (coreutils,
+goawk, the yoke subpackages) are unchanged from the first run. The candidate under
+gate is the frozen tip as staged.
+
+## Leg 1: `bashy dag build`
+
+- **Exit code**: `0`
+- **Wall time**: `167.421s`
+- **Verdict**: PASS — `dag: 3 target(s) ok` (`build-bash`, `build-bashy`, `build`)
+- **Artifacts**: `bin/bash`, `bin/bash.real`, `bin/bashy` (candidate at `./bin/bashy` for the later legs)
+
+## Leg 2: `BASHY=./bin/bashy bashy dag test` — RED, one target
+
+- **Exit code**: `1`
+- **Wall time**: `248.738s`
+- **Verdict**: FAILED — `dag: 1/7 targets failed`
+- **Passed (6)**: `test-meet-spa-fresh-regression`, `test-meet-spa-fresh`, `test-build-fail-closed`, `test-isolated-lanes`, `test-release-qa-lane`, `test-build-tag-matrix`
+- **Failed (1), verbatim**: `test-bash-container-mode`
+  ```
+  ==> test-bash-container-mode
+  bashy dag: adapter yoke/dag/dag.bsh not found
+  test-bash-container-mode: target test-bash-container failed
+  ==> test-bash-container-mode FAILED (exit 1)
+  dag: 1/7 targets failed
+  ```
+- **Comparison with the first run**: `test-bash-container-mode` PASSED in the first run (bashy `9dd37bb2`). Since then bashy gained three commits: `bd4f47de` (bashsharp pin bump), `48d7c818` (`fix(adapters): bootstrap cold help from pinned source`, story 11b75a7e, touching `internal/agentos/adapter_dispatch.go`) and `1762e12c` (test fixes). The error is printed by `internal/agentos/adapter_dispatch.go:307`. The script `scripts/test-bash-container-mode.sh` runs the candidate (`$BASHY`) as `bashy dag test-bash-container` inside a hermetic scratch repo (`PATH=<fakebin>:/usr/bin:/bin`, fake `go`), where the candidate's `dag` verb now does not find its `yoke/dag/dag.bsh` adapter.
+- **First-pass classification**: product-leaning regression. `48d7c818` is the bisect candidate (not yet bisected; no fix in this story). The conductor was notified on the board.
+- **Effect on the leg**: the dag stopped after this failure, so `verify-bashy-scratch`, `test-startup-linux` and the `test` body (`go test -timeout 30m ./...`) did not run under `dag test`. They ran next as continuations of this leg, with the same candidate and the same venue.
+
+### Leg 2 continuation: `BASHY=./bin/bashy bashy dag test-startup-linux verify-bashy-scratch` — PASS
+
+- **Exit code**: `0`; **wall time**: `65.799s`; `dag: 2 target(s) ok`
+- **`verify-bashy-scratch`**: PASS (static linux/amd64 ELF with no INTERP or NEEDED entries, no purego, `bashy --version` / `supervisord --help` / retired-form refusal smoke)
+- **`test-startup-linux`** on `bsh`: PASS. Verbatim:
+  ```
+  inittrace: 1.95 ms total (309 packages); max 0.18 ms (github.com/qiangli/bash/polyglot)
+  bashy -c true: 4.93 ms/process (20 runs)
+  100x /bin/true & wait $!: 0.56 s
+  ```
+  In the first run the max package init was 12–14 ms (`github.com/mattn/go-runewidth`) against the 5 ms budget. The lazy runewidth tables in bashsharp `b1a3183` remove it: `go-runewidth` is no longer the max, and the max is 0.18 ms.
+
+### Leg 2 continuation: the `test` body, `./bin/bashy go test -timeout 30m ./...` — RED, one package
+
+- **Exit code**: `1`; **wall time**: `820.958s`
+- **Package summary**: 27 `ok`, 1 `FAIL`, 8 `[no test files]`. The failing package is `github.com/qiangli/bashy/internal/agentos` (775.414s). It ran to completion inside the new 30-minute budget, with no timeout panic. `cmd/bashy` is `ok` (331.507s): the first run's `TestSourceRoute/*`, `TestRepairHermeticStrippedPathRunsThroughBashyRuntime` and both ACP tests no longer fail.
+- **Failing tests, verbatim**:
+  - `TestSrcPinsMatchLinkedModules` — `src_mount_test.go:13: yoke: src: yoke pin is out of sync with the linked module version v0.0.0-20261122161039-5f1365166f79`
+  - `TestSynergyDAGCheckAndList` (56.95s) — `testing.go:1619: TempDir RemoveAll cleanup: unlinkat /var/cache/bashy-build/tmp/TestSynergyDAGCheckAndList…/001/go/pkg/mod/go.yaml.in/yaml/v2@v2.4.4/apic.go: permission denied`
+  - `TestSynergyDAGBoundedFixture` (60.31s) — `synergy_dag_test.go:288: dag --json envelope: unexpected end of JSON input`, `exit=1`, empty stdout, stderr starting `go: downloading github.com/qiangli/coreutils v0.0.0-20261121101804-c5832f99ccf6 … go: downloading github.com/qiangli/yoke v0.0.0-20261121163358-be872cc5a395`
+  - `TestSynergyDAGRejectsEmptyImplementation` (59.05s) — `synergy_dag_test.go:514: failed DAG envelope: invalid character 'g' looking for beginning of value`, stderr `go: downloading github.com/qiangli/yoke v0.0.0-20261121163358-be872cc5a395 …`
+  - `TestToolShortcutE2E` (32.09s) — `toolshortcut_e2e_test.go:450: bashy agy did not exit after quit`
+- **First-pass classification**:
+  - `TestSrcPinsMatchLinkedModules`: product/repository consistency defect. bashy `1762e12c` bumped `go.mod` to yoke `5f136516`, but the matching `src` pin was not moved. The test caught a real mismatch.
+  - The three `TestSynergyDAG*`: product-leaning, the same cluster as the `test-bash-container-mode` failure. The candidate's `dag` verb now cold-builds its `yoke/dag` adapter with `go` from a yoke pin (`be872cc5`, the stale subpackage pin in the drift listing). The `go: downloading` output then breaks the `--json` envelope, and the read-only module cache left in the test's TempDir makes cleanup fail. The bisect candidate is again `48d7c818`.
+  - `TestToolShortcutE2E`: undetermined, venue-leaning (an interactive `agy` session quit under a headless container). It is not comparable with the first run, whose `internal/agentos` package died at the 10-minute timeout before it reported individual results.
+
+## Leg 3: `BASH53_OCI=podman bashy dag test-bash-gate` (gate host, staged checkout) — RED, one fixture in mode 1
+
+- **Exit code**: `1`; **wall time**: `315.154s`; `==> test-bash-gate FAILED (exit 1)`, `dag: 1/1 targets failed`
+- **Mode 0** (`BASH53_BASHPP=0`): `Results: 86 passed, 0 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-0.json`, sha256 `ec4391bc0993fd12be904417ebaed40b888f58b7a4e109a6b4b24e8d4043ff86`
+- **Mode 1** (`BASH53_BASHPP=1`): `Results: 85 passed, 1 failed, 0 skipped, 0 timed out`; evidence `bin/bash53-evidence-1.json`, sha256 `5bbf53f8d0317b3b9c1b6a2aa6f636399003119dc9eb59e5df884e460afd9fb8`; `bash53evidence: sealed gate requires 86/86 with no failures, timeouts or skips`
+- **Failing fixture, verbatim**:
+  ```
+    FAIL  histexpand
+          output differs from histexp.right
+          first diff at line 202
+          want: "echo a"
+          got:  "b"
+  ```
+- **Fixture-name comparison**: each fixture's verdict, keyed by (mode, name), was compared with the first run's leg-3 log. The first run was 172/172 PASS and matched rc.39 by name (rc.39: mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`, 86/86 each). The comparison found one change: `mode 1 histexpand PASS -> FAIL`. Mode 0 has no NEW, RECOVERED or changed fixture. The fixture set is the same 86 names in both modes.
+- **First-pass classification**: product-leaning regression in the `BASH53_BASHPP=1` engine path. The engine inputs changed between the runs only through the bashsharp pin (`cc848210` -> `b1a3183`, bashy `bd4f47de`, the bsh lazy runewidth tables), so that is the bisect candidate. Not rerun: there is one full run per the test rule, and a single deterministic text diff gives no flake signal. The conductor was notified.
+
+## Leg 4: 3-OS dispatch e2e (`TestE2EAllListedCommandsDispatch`, fresh install, empty adapter cache)
+
+### 4a Linux (gate-host lane 2, official image) — PASS
+
+- **Command** (same script as the first run): fresh `bin/bashy` + `bin/bash` copied to `/tmp/fresh/bin`, then `HOME=/tmp/fresh/home BASHY_ADAPTER_CACHE=/tmp/fresh/adapter-cache BASHY_E2E_BIN=/tmp/fresh/bin/bashy ./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
+- **Exit code**: `0`; **wall time**: `93.966s` (test `ok github.com/qiangli/bashy/internal/agentos 59.052s`)
+
+### 4b Windows native (gate host, Windows-native resource, no host Go) — PASS
+
+- **Build** (lane 2, official image): `GOOS=windows GOARCH=amd64 BIN_DIR=bin/win BASHY=./bin/bashy bashy dag build-bashy` plus `GOOS=windows GOARCH=amd64 ./bin/bashy go test -c -tags e2e -o bin/win/agentos.test.exe ./internal/agentos`; exit `0`, `165.689s`. `bashy.exe` sha256 `3427c252a82de47b9e5f5cb850dbcc061fe1840dc83a03ef00f368ec5b5e3a44`, `agentos.test.exe` sha256 `3e00fea5f8da94d5d9577a658bc23a50e59209a2a8b3da06461803d168d426d1`.
+- **Run**: a fresh directory on the Windows side with a fresh `HOME`/`USERPROFILE`, an empty `BASHY_ADAPTER_CACHE` (0 entries at start) and `BASHY_E2E_BIN=<fresh>\bin\bashy.exe`; `agentos.test.exe -test.run "^TestE2EAllListedCommandsDispatch$" -test.count=1 -test.timeout 20m -test.v`. `where go` on that host: `INFO: Could not find files for the given pattern(s).` (no host Go).
+- **Exit code**: `0`; **wall time**: `321.89s` (`--- PASS: TestE2EAllListedCommandsDispatch (321.68s)`)
+- **Comparison with the first run**: the first run's only failure, `sprint help does not carry the owner-accountability contract` (`go: go.mod file not found …`), does not reproduce. The cold adapter cache now gets a managed `toolchain\go.exe` and cold-builds the yoke adapters (`sprint.exe`, `dag.exe`, `weave.exe`, …) with no host Go. The wall time went from 43s to 322s because of those cold builds.
+
+### 4c macOS — PASS on a SUBSTITUTE venue (the dev box)
+
+- **Venue note**: the macOS QA host was claimed (lease epoch 166) and checked first. It is still disk-full (`/System/Volumes/Data` 461G, 110M available, 100%; its own telemetry spool reports `no space left on device`). Nothing could be staged there, nothing on it was deleted, and the claim was released. The leg ran on the dev box (macOS arm64, 33G free) and is labelled a substitute venue, not QA-host evidence.
+- **Build**: a fresh clone at `1762e12c5254d52557daf81796e0be3baded62b1` in a temp directory; `GOWORK=off bashy dag build-bash build-bashy` (host Go `go1.27.4 darwin/arm64`), exit `0`, `52s`. Candidate `bin/bashy` sha256 `6def6a784950f861351869623601c9f09cbf50f47dc42fffea1e1c77d9629683`.
+- **Run**: fresh `bin/` copy, fresh `HOME`, empty `BASHY_ADAPTER_CACHE`, `BASHY_E2E_BIN=<fresh>/bin/bashy`; `./bin/bashy go test -tags e2e -run '^TestE2EAllListedCommandsDispatch$' ./internal/agentos -count=1 -timeout 20m`
+- **Exit code**: `0`; **wall time**: `143s` (test `ok github.com/qiangli/bashy/internal/agentos 62.821s`)
+
+## Leg 5: shaping smoke — `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 bashy dag test-shaping-smoke test-shaping-smoke-regression` (lane 2, official image) — PASS, DOM checkpoint SKIPPED
+
+- **Chrome**: absent from the official image. `command -v google-chrome chromium chromium-browser google-chrome-stable headless_shell` found nothing, so the leg ran with `SHAPING_SMOKE_SKIP_DOM=1`. The browser checkpoint (`TestDOMExternalShapeCheckpoint`, `-tags verifydom`) is **SKIPPED, not passed**.
+- **Exit code**: `0`; **wall time**: `8.727s`; `dag: 2 target(s) ok`
+- **`test-shaping-smoke`**: `test-shaping-hello-world: PASS (25 checks) binary=/work/./bin/bashy candidate=f5c7e120ca8456c2427c46cb9b0384ee1be373fc`. The checks are register, console serving, two paired principals, wish/show/diff, verify (the app's `checks/smoke.bsh`, evidence sealed), preview, approve (alice moves, bob unaffected), undo and submit. There is no DOM-checkpoint line because it was skipped. Candidate `bin/bashy` sha256 `048a3d69fecb4e645bc584a2c4b74f9026243de8884e63d4014179651fd7ba2b`.
+- **`test-shaping-smoke-regression`**: `test-shaping-smoke-regression: ok (broken smoke check was refused)`
+- **Console bind note**: in this run the console was reached at `127.0.0.1` inside the container (`ok 2 - console serving on http://127.0.0.1:…`). The LAN-bound console was not exercised from another host.
+
+## Per-leg summary (rerun, frozen tip umbrella `bebf3e8ca`)
+
+| Leg | Command / venue | Exit | Wall | Result | First run (`8b8db523f`) |
+|---|---|---|---|---|---|
+| 1 | `bashy dag build` — lane 2, image rc.40-go1.27.4 | 0 | 167.421s | PASS (3 targets ok) | PASS |
+| 2 | `BASHY=./bin/bashy bashy dag test` — lane 2 | 1 | 248.738s | RED: `test-bash-container-mode` (`bashy dag: adapter yoke/dag/dag.bsh not found`), product-leaning, bisect candidate bashy `48d7c818`; 6/7 prereqs ran and passed before the stop | RED (`test-startup-linux`) |
+| 2+ | `bashy dag test-startup-linux verify-bashy-scratch` — lane 2 | 0 | 65.799s | PASS; `inittrace: 1.95 ms total (309 packages); max 0.18 ms (github.com/qiangli/bash/polyglot)` | startup RED (12–14 ms runewidth) |
+| 2+ | `./bin/bashy go test -timeout 30m ./...` (the `test` body) — lane 2 | 1 | 820.958s | RED: 27 ok / 1 FAIL `internal/agentos` — `TestSrcPinsMatchLinkedModules`, `TestSynergyDAGCheckAndList`, `TestSynergyDAGBoundedFixture`, `TestSynergyDAGRejectsEmptyImplementation`, `TestToolShortcutE2E` | RED (cmd/bashy + agentos timeout) |
+| 3 | `BASH53_OCI=podman bashy dag test-bash-gate` — gate host | 1 | 315.154s | RED: mode 0 86/86; mode 1 85/86, `histexpand` FAIL (only change by name vs first run / rc.39), product-leaning, bisect candidate bashsharp `cc848210`→`b1a3183` | PASS 86/86 both |
+| 4a | dispatch e2e, Linux lane 2, fresh install, cold cache | 0 | 93.966s | PASS | PASS |
+| 4b | dispatch e2e, Windows native (no host Go), fresh install, cold cache | 0 | 321.89s | PASS (run-1 `sprint --help` failure gone) | RED |
+| 4c | dispatch e2e, macOS, fresh install, cold cache | 0 | 143s | PASS on SUBSTITUTE venue (dev box; QA host still disk-full) | PASS (substitute) |
+| 5 | `BASHY_SMOKE_BIN=./bin/bashy SHAPING_SMOKE_SKIP_DOM=1 bashy dag test-shaping-smoke test-shaping-smoke-regression` — lane 2 | 0 | 8.727s | PASS 25 checks + regression ok; DOM checkpoint **SKIPPED** (no Chrome in the image) | new leg |
+
+**Verdict: the candidate is RED.** Three legs carry unresolved failures: leg 2
+(`test-bash-container-mode` plus 5 `internal/agentos` tests) and leg 3 (mode-1
+`histexpand`). The fix round's three targets are now green: `test-startup-linux`,
+the in-image `cmd/bashy` tests, and the Windows cold-cache dispatch. The new
+failures are recorded with first-pass classes and bisect candidates and handed to
+the conductor. None was fixed, skipped or rerun in this story.
