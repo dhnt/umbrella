@@ -3,10 +3,11 @@ id: 3043a8673980
 kind: bug
 title: 'dag test red on the gate host: root-cause each failure (venue/test/product), fix where the cause lives, until bashy dag test is green'
 seq: 622
-status: todo
+status: assigned
 priority: p0
 created: 2026-11-22T10:15:13.889158Z
-assignee: agy-gemini4-carbon
+weave: 146
+assignee: muse-wonder
 sprint: 692
 ---
 
