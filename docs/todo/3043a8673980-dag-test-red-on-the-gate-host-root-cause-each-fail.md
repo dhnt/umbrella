@@ -3,11 +3,13 @@ id: 3043a8673980
 kind: bug
 title: 'dag test red on the gate host: root-cause each failure (venue/test/product), fix where the cause lives, until bashy dag test is green'
 seq: 622
-status: todo
+status: done
 priority: p0
 created: 2026-11-22T10:15:13.889158Z
-assignee: agy-gemini4-carbon
+assignee: claude-fable5.1
 sprint: 692
+closed: 2026-11-22T14:27:08.835173Z
+closed_by: claude-fable5.1
 ---
 
 RESCOPE (operator 2026-11-22, Sprint 692 plan docs/plan-sprint-692-release-thin-bashy.md): p0, owner muse, venue = a claimed gate-host lane in the official image rc.40-go1.27.4, session attached, candidate ./bin/bashy built from current bashy main (the env-leak fix 86c645bc is merged and clears part of the 15). Deliverable: classification table (name, class venue/test/product, cause, fix location) on this story, then fixes where the cause lives: venue in the lane/preflight (stale go1.27.2 tool cache volume, container caps), test defects in the tests, product defects in the product with a unit test. No skips, no quarantines. Done when bashy dag test is green on the lane with the candidate. TEST RULE (operator 2026-11-22): build + the smallest targeted unit tests for the changed packages only, then submit. No go test ./..., no gates, no integration per story or per commit. The one full run is the rc.40 candidate gate (458628c0) at sprint close; anything red there is root-caused and fixed until the full run is clean. Start on current heads (bashy mod drift; rebase before submit). Trailers: Sprint/Story/Story-ID + Agent; submodule commit+push first, then the umbrella pin.
