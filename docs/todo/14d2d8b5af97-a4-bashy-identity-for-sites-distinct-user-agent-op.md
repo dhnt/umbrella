@@ -3,7 +3,7 @@ id: 14d2d8b5af97
 kind: feature
 title: 'A4 bashy identity for sites: distinct user agent + optional signed requests (Web Bot Auth shape, outpost key); site-side verification; MCP auth as the reliable cooperative-agent signal'
 seq: 675
-status: todo
+status: doing
 priority: p2
 created: 2026-11-23T13:51:46.069345Z
 assignee: claude-opus5.5
@@ -37,3 +37,24 @@ WAVE 2 INTERFACE & DELIVERY CONTRACT (Conductor 697 — post-A1/A3/A3b merge):
      * Prove `TestStandaloneDeps` still passes in `examples/shaping/site/template` (stdlib only!).
      * Prove end-to-end: (a) a signed `bashy fetch` (and `bashy site explore --sign`) against the template server is cryptographically verified (`Bashy-Verified-Agent` present), (b) an unsigned `bashy fetch` receives the exact same page body & `ETag` without `Bashy-Verified-Agent`, (c) tampered/expired/untrusted-key signatures are rejected for verification while still serving identical public content, and (d) cross-check against A3's `bashy mcp serve --tools site`: unauthenticated `shape_*` call is refused while MCP auth remains the primary cooperative-agent signal.
      * Keep commits clean on `s697-14d2d8b5af97` in each touched repo (`yoke`, `outpost`, `bashy`) with required trailers (`Sprint: #697`, `Sprint-ID: 5d15f9ec-14ca-5581-9c41-4d7163843b82`, `Story: #675`, `Story-ID: 14d2d8b5af97`, `Agent: claude-opus5.5`). Do NOT push `main` or bump `umbrella` pins (manager repins and merges linearly).
+
+agy-gemini4-carbon rejected story 14d2d8b5: Independent security review (claude-sonnet5.5) caught Blocker B1 (@authority bound to client-supplied Host/X-Forwarded-Host instead of configured Origin/TrustedOrigins, allowing cross-site signature replay) plus cheap hardening items (require @method+@target-uri/@path, cap Signature-Input members<=4/4KiB, expire stale directory cache >1h, skip signing cross-origin redirects in webbotauth.Transport, sanitize authority in sigdir.go). Branches preserved at origin/s697-14d2d8b5af97.
+
+ROUND 2 SECURITY REVIEW FIXES (Conductor 697 — independent `claude-sonnet5.5` security audit):
+Your Round 1 branches are pushed to `origin/s697-14d2d8b5af97` across all three repos (`yoke` `ad5629e3`, `outpost` `796e9df`, `bashy` `e6092526`) — start directly from `origin/s697-14d2d8b5af97` (`git fetch origin && git checkout -B s697-14d2d8b5af97 origin/s697-14d2d8b5af97`)!
+Fix the following blocker and hardening items before resubmitting:
+1. **BLOCKER B1 — Bind `@authority` strictly to configured audience (`bashy/examples/shaping/site/template/botauth.go`, `requestViews`)**:
+   - Currently `requestViews` trusts client-supplied `X-Forwarded-Proto`/`X-Forwarded-Host`/`X-Forwarded-Prefix` and `r.Host`. An attacker who obtains a valid 5-minute signature on `attacker.example` can replay it against a victim site with forged `Host: attacker.example` or `X-Forwarded-Host: attacker.example`, and `VerifyAgent` marks it verified!
+   - Fix: Construct allowed `requestView`s ONLY from `s.Config.Origin` (which `NewServerHandler` updates via `SITE_ORIGIN` for local ephemeral-port servers) plus an optional `trusted_origins` (`[]string` of `https` or loopback `http` base URLs, e.g. `https://console.example/h/host-a/app/site`, validated in `validateBotTrust`) in `site.json` (`Config`). NEVER derive `scheme` or `authority` from untrusted `r.Host` or `X-Forwarded-*` headers unless they match one of the configured `Origin` / `TrustedOrigins` entries!
+   - Update existing unit tests (`botauth_test.go`: set `origin` to match fixture `https://fixture.example` or add `trusted_origins` for `TestVerifiedAgentBehindFront`) and add an explicit **cross-site forged `Host` + `X-Forwarded-Host` replay test** proving a valid signature for `https://evil.test/about` replayed with `Host: evil.test` and `X-Forwarded-Host: evil.test` is NOT marked verified (and still returns `200` with identical body/ETag).
+2. **Hardening 1 — Require `@method` and (`@target-uri` or `@path`) coverage (`botauth.go`)**:
+   - In `botVerifier.verify`, require `covered["@authority"] && covered["@method"] && (covered["@target-uri"] || covered["@path"])` (in addition to `signature-agent` when `Signature-Agent` is present), so an `@authority`-only signature cannot be replayed across paths/methods. Add a negative test case (`"no-target"` / `"no-method"`).
+3. **Hardening 2 — Bound `Signature-Input` / `Signature` header size and member count (`botauth.go`)**:
+   - Reject verification immediately (return `"", false`) if combined `Signature-Input` or `Signature` exceeds `4096` bytes, and cap parsed members checked in `verify` to at most `4` to prevent Ed25519 CPU amplification.
+4. **Hardening 3 — Bound stale directory cache lifetime (`botauth.go`)**:
+   - In `directoryKey`, if `!d.fetched.IsZero() && now.Sub(d.fetched) >= botMaxLifetime` (1h) and refresh fails, drop/do not return stale keys so revoked keys fail closed after 1h. Also avoid holding `d.mu` across the network HTTP call (or keep per-directory fetch serialized without blocking cached reads if simple).
+5. **Hardening 4 — Same-origin guard on redirects in `yoke/pkg/webbotauth.Transport`**:
+   - Like Go's `net/http` `Authorization` stripping on cross-origin redirects, only sign redirect hops whose scheme+host match the initial request's scheme+host (if `req.Response != nil && req.Response.Request != nil`, skip signing when `Authority(req)` or `req.URL.Scheme` differs from the original request, and strip any copied `Signature`/`Signature-Input`/`Signature-Agent` headers). Add a unit test in `webbotauth_test.go` proving same-origin redirects are re-signed while cross-origin redirects are NOT signed!
+6. **Hardening 5 — Outpost `sigdir.go` authority (`outpost/internal/agent/sigdir.go`)**:
+   - Sign `c.Request.Host` by default and only prefer `X-Forwarded-Host` when `c.Request.Header.Get("X-Forwarded-Prefix") != ""` (or strip port/validate hostname characters so arbitrary control/newline chars in `Host`/`X-Forwarded-Host` can never corrupt `@authority` line framing!).
+7. Re-run targeted unit tests across `yoke`, `outpost`, and `bashy` (`site/template` + `internal/agentos`) on the gate host under a claimed lane, release the lane, and submit!
