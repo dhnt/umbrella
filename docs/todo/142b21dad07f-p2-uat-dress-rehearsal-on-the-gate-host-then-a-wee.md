@@ -3,15 +3,17 @@ id: 142b21dad07f
 kind: test
 title: 'P2 UAT: dress rehearsal on the gate host, then a weekly class on one page'
 seq: 660
-status: assigned
+status: done
 priority: p2
 labels:
     - page
     - software-shaping
 created: 2026-11-23T12:00:00.687086Z
-weave: 179
+weave: 180
 assignee: claude-opus5.5
 sprint: 696
+closed: 2026-11-23T16:32:23.381668Z
+closed_by: agy-gemini4-carbon
 ---
 
 Dress rehearsal on the claimed gate host with fake identities on both doors (satellite member, LAN anonymous), a ballot, a form collection, a timer and an export; then the live class on Sunday 2026-11-29 through the satellite door with the LAN door as fallback. Outcome and any defects recorded in the class repository and as todos here; bashy docs stay general (the class is a test case, not the product). If the rehearsal fails, the class runs on today's tools. Spec: docs/page-live-group-page.md.
