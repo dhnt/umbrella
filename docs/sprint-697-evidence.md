@@ -74,3 +74,15 @@ All builds and `go test` runs below were executed on the Linux gate host under a
     - Unsigned and browser requests received byte-identical bodies, `ETag`, `Content-Type`, and `200` status without `Bashy-Verified-Agent` (zero cloaking).
     - Untrusted keys, forged `Host`/`X-Forwarded-Host` cross-site replays, expired/tampered signatures, and non-allowlisted `Signature-Agent` directories were rejected for verification (never fetched when non-allowlisted) while still serving `200` with identical content.
     - Cross-check against A3's `bashy mcp serve --tools site --outpost`: unauthenticated `shape_wish` and Web-Bot-Auth-signed `shape_wish` were both refused (`owner tier required`), confirming MCP authentication remains the primary cooperative-agent authorization boundary.
+
+---
+
+## 5. Story #677 (`7e1330837e36`) — A6: Design Index, KB Runbook `make-your-site-agent-ready`, and `bashy` README/Skill Convention
+
+- **Assignee**: `muse-wonder`
+- **Merged Commits**: `bashy` `9446986ebe2d129fea85580adaa5de71a2bb7392`, `umbrella` `28c9dfacff4c17bc9819748cfcf26723ee5cfc86` (pin bump `acff3132ff8b88955212bccc86385ff1ea2d4ce5`)
+- **Verification**:
+  - Contract cross-checked against shipped `A1`, `A3`, `A3b`, and `A4` source (`bashy mcp serve --transport http --tools site --site-app|--site-dir [--outpost]`, `bashy site explore|attach|cite|shape|recipe|key [--sign] [--signature-agent]`, `bashy fetch [--sign]`, `site.json` `trusted_bot_keys`/`trusted_key_directories`/`trusted_origins`, Decisions 1–3 settled).
+  - `bashy kb show make-your-site-agent-ready` & `bashy kb doctor` — PASS (authored via `bashy kb add`).
+  - Gate-host `go test -count=1 -run 'TestSkillHelp|TestCommandsCatalogSources' ./internal/agentos` (`bashy`) — PASS.
+  - `script/scrub-gate.sh --all` (`umbrella`) — PASS (exit `0`).
