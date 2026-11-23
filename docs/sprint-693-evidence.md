@@ -112,6 +112,10 @@ and Markdown; `/about` links home and home links `/about`; the Shape badge
 (`/?shape=open`) is kept on both pages. Citation form proven live:
 `https://ai.dhnt.io/about#team @ 361e576b8921`.
 
+Satellites: all three accepted the v0.18.82 target (204) at 12:26Z and still
+reported v0.18.80 seven minutes later, the relay blocker recorded at v0.18.81;
+the fleet runs mixed and the satellite rollout stays an operator item.
+
 Visitor leg (headless Chrome via `bashy browser --mode solo` on the gate host)
 and agent leg (`bashy fetch`) both read `/about`, reached home and returned,
 and extracted the same section ids `about, team, contact` (see the discovery

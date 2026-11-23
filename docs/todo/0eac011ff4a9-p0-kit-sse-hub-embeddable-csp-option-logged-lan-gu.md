@@ -3,12 +3,14 @@ id: 0eac011ff4a9
 kind: feature
 title: 'P0 kit: SSE hub, embeddable CSP option, logged LAN guard'
 seq: 651
-status: todo
+status: assigned
 priority: p0
 labels:
     - page
     - software-shaping
 created: 2026-11-23T11:59:59.356296Z
+weave: 166
+assignee: agy-opus5.5
 sprint: 696
 ---
 
