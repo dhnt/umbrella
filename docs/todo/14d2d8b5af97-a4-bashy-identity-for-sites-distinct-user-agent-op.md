@@ -3,11 +3,13 @@ id: 14d2d8b5af97
 kind: feature
 title: 'A4 bashy identity for sites: distinct user agent + optional signed requests (Web Bot Auth shape, outpost key); site-side verification; MCP auth as the reliable cooperative-agent signal'
 seq: 675
-status: doing
+status: done
 priority: p2
 created: 2026-11-23T13:51:46.069345Z
 assignee: claude-opus5.5
 sprint: 697
+closed: 2026-11-23T20:18:54.312232Z
+closed_by: agy-gemini4-carbon
 ---
 
 Design: docs/agent-ready-sites.md Layer 2 (identity). bashy fetch and the site verbs send a stable user agent and, when the owner enables it, sign requests with the outpost identity in the HTTP Message Signatures (RFC 9421) Web Bot Auth shape with a public key directory; the template verifies signatures and may unlock agent-only affordances for verified bashy agents only; the MCP endpoint's authentication is the primary signal. Detection never gates content (no cloaking). Plan: docs/sprint-697-master-execution-plan.md (vendor proposal claude-opus5.5; the conductor assigns). WORKER RULES: branch off the repo's integration branch; commit with trailers Sprint: #697 / Sprint-ID: <uuid on the card> / Story: #<seq> / Story-ID: <id> / Agent: <your name>; targeted tests only, builds on the gate host; do not bump umbrella pins or push umbrella; submit with bashy sprint submit 697 <id> --as <your name> -m '<verify commands, results, commit SHA>'.
@@ -58,3 +60,8 @@ Fix the following blocker and hardening items before resubmitting:
 6. **Hardening 5 — Outpost `sigdir.go` authority (`outpost/internal/agent/sigdir.go`)**:
    - Sign `c.Request.Host` by default and only prefer `X-Forwarded-Host` when `c.Request.Header.Get("X-Forwarded-Prefix") != ""` (or strip port/validate hostname characters so arbitrary control/newline chars in `Host`/`X-Forwarded-Host` can never corrupt `@authority` line framing!).
 7. Re-run targeted unit tests across `yoke`, `outpost`, and `bashy` (`site/template` + `internal/agentos`) on the gate host under a claimed lane, release the lane, and submit!
+
+DELIVERY & GATE VERIFICATION:
+- Commits merged linearly: `yoke` `35ce40805fecd526a8e57a88b68b4dd4573aae30`, `outpost` `f84b2a77e6da61e7a23a99e76483c4eb886c4476`, `bashy` `dd0dbd705f5d743f1601d81afd17931b22b47c56`, `umbrella` `89634cdd811dab1191df8183dee3faf5cf865943`.
+- Security review: independent read-only review (`claude-sonnet5.5`) VERDICT: PASS (RFC 9421 `ed25519`/`web-bot-auth` verification, allowlisted `trusted_key_directories` SSRF guard, read-only `BASHY_SIGN_KEY`/hostkey access, and zero-cloaking invariant verified).
+- Gate-host verification (under claimed lane): `yoke` (`pkg/webbotauth`, `cmds/fetch`, `pkg/skills`, `pkg/atlas`), `outpost` (`./internal/agent` key directory), `bashy/examples/shaping/site/template` (`TestStandaloneDeps` + `botauth` suite), and `bashy/internal/agentos` (`TestSrcPinsMatchLinkedModules|TestSiteVerbs|TestSiteMCP|TestSkillHelp|TestCommandsCatalogSources`) all PASS; live e2e (a)-(d) verified signed vs unsigned byte/ETag parity and A3 MCP unauthenticated/Web-Bot-Auth-signed `shape_wish` refusal.
