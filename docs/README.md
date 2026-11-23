@@ -193,6 +193,15 @@ Wire-level evidence for Sprint 693: the live before-state of the company pages (
 
 Sprint 692 plan of record after the operator rescope of 2026-11-22: one goal, release v1.0.0-rc.40 with bashy as the invariant core (bsh plus dispatcher and internal verbs) and every other command an independently built, shapeable binary behind its adapter. Lists the done-when criteria, the kept stories with vendor owners, the three fleet waves, and the binding rules; records what was closed wontfix and the deferred per-command module split.
 
+## handoff-sprint-694.md
+
+Handoff from Sprint 692 to the Sprint 694 manager. State of record: `v1.0.0-rc.40-dev`
+published as a pre-release only, tier verdict FAIL (Windows product defect, since fixed on
+bashy main; macOS venue), nothing promoted. Gives the rc.41 recipe (which gate legs to
+rerun and which to reuse, dist, receipt, one release run, three-lane tier verdict,
+promotion on the operator's go), the carry-over stories in order, the venue facts and
+traps learned on 2026-11-22/23, and the clean-up candidates.
+
 ## handoff-sprint-692.md
 
 Handoff from the Sprint 677 conductor (2026-11-22): what 677 delivered (bsh module, per-command Bash# adapters, embedded adapters, Go 1.27.4, image roll, no-downgrade guard), the integration evidence, the 11 stories carried to Sprint 692 in priority order with recorded root causes, the clean-plate state, the binding rules and known traps.
