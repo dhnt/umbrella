@@ -29,12 +29,32 @@ both paths and carried no section ids and no revision.
 | S2a discovery runner (bashy `examples/shaping/discover`) | muse, run #160, bashy `dcde5281` + `27298e41`, 13 files | `GOWORK=off go test ./...` ok 3.98 s; fixture server implements the plan contract; fast-forwarded to bashy main; umbrella pin `6b971eef8` | accepted 2026-11-22 |
 | S0b `dhnt/site` content | claude, run #161, `github.com/dhnt/site` main `6067c3fc` (content, `site.json`, LICENSE, NOTICE, README, `skills/dhnt-site/SKILL.md`) | content fetched from GitHub and read; front matter `title/path/summary/sections`, `## Heading {#id}` | superseded by the S0b assembly below |
 | S0b `dhnt/site` final assembly | claude-opus5.5, run #164, `github.com/dhnt/site` main `be766e2` + annotated tag `v0.1.0`, generated from the bashy site template at bashy `7473e814` | `GOWORK=off go build ./...`, `go vet ./...`, `go test -count=1 ./...` ok 0.328 s; `site check .` all four frozen checks pass; `bashy shape verify` pass, sealed `86a667c9`, hermetic `HOME`/`BASHY_HOME`, no public host, parent env scrubbed; stale wish refused (`stale, re-read`); three-representation parity per page via the exported extractors; `go get github.com/dhnt/site@v0.1.0` from GitHub then `go build ./...` ok in a scratch module | submitted 2026-11-23; revisions `/` `ae73c65006b9`, `/about` `361e576b8921`; unblocks S1b and S3 |
-| S1a hosted-plane public pages | codex, cloudbox run #65, cloudbox dev `dea63ff` | `go test -race ./internal/publicsite` ok; UI tests green; route-golden and server-package tests need a Linux venue (`make test CONTAINER_RUNTIME="bashy podman"` on the Linux test host) | merged to dev, submitted; Linux gate owed at the S1 release gate |
-| S0c importable library package | agy, run #163 | | working |
+| S1a hosted-plane public pages | codex, cloudbox run #65, cloudbox dev `dea63ff` | `go test -race ./internal/publicsite` ok; UI tests green; Linux gate below | accepted 2026-11-23 |
+| S1b hosted plane imports `github.com/dhnt/site` v0.1.0 | codex, cloudbox run #66, cloudbox dev `e70a031` (fixture removed; hub JSON byte-equal to the module's `RenderJSON`) | `go test -race ./internal/publicsite` ok; UI tests green; Linux gate below | accepted 2026-11-22 |
+| S0c importable library package | agy, run #163, bashy `7473e814` (root `package site`, `cmd/server`, `site init --module`, optional `summary`) | `go vet` + `go test` in `template/` ok 1.0 s; script tests ok 51.3 s; fast-forwarded to bashy main; umbrella pin `9c49d22f0` | accepted 2026-11-22 |
+| S3 owner round trip | muse, run #165 | see the section below | accepted 2026-11-23 |
+
+## S1 Linux gate (hosted plane, candidate cloudbox dev `e70a031`)
+
+Venue: the gate host's Linux lane (WSL, podman 4.9.3), the exact cloudbox
+`make test` container recipe: `golang:1.27.2-alpine`, `apk add gcc musl-dev
+linux-headers git bash`, `GOTOOLCHAIN=auto`, the warm `cloudbox-gomodcache` and
+`cloudbox-gobuildcache` volumes, `--cpus 8 --memory 12g`, `go test -short
+./hub/...` from the workspace root.
+
+| Run | Result | Notes |
+|---|---|---|
+| 1, 06:42–06:53Z, default timeout | 40 ok, 2 FAIL | both root-caused to the shipped tree, not the product: `internal/api` `TestNoDirectDBImportFromChokepointConsumers` parsed an AppleDouble `._appstore.go` left by the macOS tar; `internal/provisioning` hit the 10 min default timeout (the package needs about 11.5 min at 8 CPUs) and `TestUserDataEmbedsInstallerVerbatim` failed because the tar path rewrite had changed the `script/install-satellite-vm.sh` symlink target |
+| repairs | | `._*` files deleted; symlink restored to `../hub/internal/provisioning/install-satellite-vm.sh`; `internal/api` ok on candidate (76.8 s) and on the base `7e514cc` (76.4 s); the single provisioning test ok on both |
+| final, 07:47–07:59Z, `-timeout 30m` | **exit 0, 42 packages ok, 0 FAIL** | includes `internal/server` (route goldens), `internal/publicsite`, `internal/handlers`, `internal/api`, `internal/provisioning` |
+
+The second build host's podman VM, tried first, stopped creating processes
+mid-run (`getpwnam(root) failed`, I/O errors in WSL); it was not restarted and
+is left for the operator.
 
 ## Live after state
 
-Pending S1 (hosted-plane release).
+Pending the hosted-plane release (operator go; release playbook steps 3 to 7).
 
 ## Discovery matrix (S2)
 
