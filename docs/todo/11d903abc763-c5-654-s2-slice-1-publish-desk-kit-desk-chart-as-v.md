@@ -9,7 +9,7 @@ labels:
     - shaping
     - gomod
 created: 2026-11-23T20:11:40.028144Z
-assignee: agy-opus5.5
+assignee: claude-opus5.5
 sprint: 682
 ---
 
@@ -56,3 +56,7 @@ Deliver, smallest robust version:
 Acceptance (conductor verifies): unit tests of 5(a)-(c) green on the gate host; `GOWORK=off` builds of bashy and yoke green; the five Sprint 682 apps register and their member instances build in the retained gate-host installation (`s682-c4-66a4bb89`: re-register with the new candidate, open each app as the paired member, no incident); then the C4 matrix runs.
 
 WORKER RULES: branch off origin/main in the weave workspace (umbrella workspace with submodules); edits in bashy and yoke on branches `s682-11d903abc763`; commit with trailers `Sprint: #682` / `Sprint-ID: 623586bb-742f-570e-87c9-9af0c101bac1` / `Story: #<seq on the card>` / `Story-ID: 11d903abc763` / `Agent: agy-opus5.5`; module-local unit tests on the dev box only, every build and full package test on the gate host under a claimed lane (`bashy claim resource:elephant.laneN`, lane 1 or 3; lane 2 is Sprint 697's); do not push bashy/yoke main or bump umbrella pins (the conductor merges and pins); no shared-checkout edits; root cause before any fix; submit with `bashy sprint submit 682 11d903abc763 --as agy-opus5.5 -m '<commands, results, SHAs>'`.
+
+## Run 190 (agy-opus5.5) stopped by vendor quota, 2026-11-23 20:37 UTC
+
+Vendor refusal, authoritative: "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 109h" (agy, model opus5.5). Classification: window exhaustion (resets about 2026-11-28 10:00 UTC); not a code or venue failure. The worker had only begun (one untracked draft `yoke/pkg/gomod/proxy.go`, preserved as `run190-proxy.go.draft` in the conductor's s682-c5 evidence dir; the next worker may read it but starts from origin/main). Run 190 abandoned; story reassigned to claude-opus5.5. WORKER RULES unchanged except the trailer `Agent: claude-opus5.5` and the submit `--as claude-opus5.5`.
