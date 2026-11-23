@@ -9,6 +9,7 @@
 - `sprint-666-evidence.md` — Sprint 666 exact source identities, installed smoke, three workflow traces, honest measurements and remaining native-host gates
 
 - `plan-cooperative-chunk-transfer.md` — Planning-only MVP for desync-based file transfer, owner/mutual-member download groups, cooperative chunk scheduling, and signed GitHub bashy distribution
+- `plan-effortless-install.md` — Local-first bashy install: LAN release mirror served by bashy (release-mirror skill-script, BASHY_RELEASE_BASE installer knob), agent/MCP bootstrap, and the planned release-source engine, peer, skill and loom stories; MVP delivered 2026-11-22 on sprint 692 (post-rc40, non-gating)
 
 - `bashy-bashsharp-yoke-position.md` — Architectural opinion: portable shell environments, language composition, and coherent verified workflows across tools, agents, and machines
 
