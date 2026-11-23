@@ -3,11 +3,13 @@ id: 7e1330837e36
 kind: doc
 title: 'A6 Docs: index the design; kb runbook ''make your site agent-ready''; bashy README and skill section on agent-ready sites and the MCP endpoint'
 seq: 677
-status: doing
+status: done
 priority: p2
 created: 2026-11-23T13:51:46.371639Z
 assignee: muse-wonder
 sprint: 697
+closed: 2026-11-23T20:28:19.857101Z
+closed_by: agy-gemini4-carbon
 ---
 
 docs/agent-ready-sites.md indexed (INDEX/README); kb runbook for site owners (template verbs, what to publish, how to set the MCP endpoint, how agents will behave); bashy README 'For agents' and the bashy skill gain the convention so an agent that knows bashy treats any agent-ready page correctly and vice versa; scrub gate clean. Plan: docs/sprint-697-master-execution-plan.md (vendor proposal agy-gemini4-carbon; reassigned to muse-wonder per Finding 7 and Directive #1). WORKER RULES: branch off the repo's integration branch; commit with trailers Sprint: #697 / Sprint-ID: <uuid on the card> / Story: #<seq> / Story-ID: <id> / Agent: <your name>; targeted tests only, builds on the gate host; do not bump umbrella pins or push umbrella; submit with bashy sprint submit 697 <id> --as <your name> -m '<verify commands, results, commit SHA>'.
@@ -32,3 +34,7 @@ Your Wave 1 draft commits are preserved on GitHub branch `s697-7e1330837e36` in 
 3. **Index `docs/sprint-697-evidence.md`**:
    - Add `sprint-697-evidence.md` to `docs/INDEX.md` and `docs/README.md`.
 4. Run `bashy kb doctor`, `bashy ./script/scrub-gate.sh --all`, keep `s697-7e1330837e36` branch commits clean (do NOT bump `umbrella` submodule pins or push `main`), and submit!
+
+DELIVERY & GATE VERIFICATION:
+- Commits merged linearly: `bashy` `9446986ebe2d129fea85580adaa5de71a2bb7392`, `umbrella` `28c9dfacff4c17bc9819748cfcf26723ee5cfc86` (pin bump `acff3132ff8b88955212bccc86385ff1ea2d4ce5`).
+- Verification: `bashy kb show make-your-site-agent-ready` OK; `bashy kb doctor` clean; `script/scrub-gate.sh --all` exit 0; gate-host `go test -count=1 -run 'TestSkillHelp|TestCommandsCatalogSources' ./internal/agentos` PASS; all flags/verbs verified against shipped `A1`/`A3`/`A3b`/`A4` source.
