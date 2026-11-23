@@ -187,16 +187,28 @@ Code `claude mcp add --transport http`, Codex, Gemini CLI, OpenCode; chat
 products through their connector settings). So the site owner fixes an **MCP
 endpoint** and the block names it:
 
-- served by `bashy mcp serve --transport http`, which already exists
-  (stateless Streamable HTTP at `/mcp`, outpost identity authentication),
-  with a new `site` tool profile backed by the site module: `list_pages`,
-  `read_page`, `cite`, and the shape tools (`wish`, `verify`, `preview`,
-  `approve`, `undo`) gated to the owner principal by the existing shape
-  service;
-- reachable at a fixed URL the owner chooses, through outpost or the hosted
-  relay like any other app, authenticated per the MCP specification (bearer
-  or OAuth 2.1 with the protected-resource metadata), anonymous at most for
-  the read tools and only if the owner says so;
+- **same origin, same auth, a proxy not a redirect** (operator direction
+  2026-11-23): the endpoint is `<origin>/mcp` on the site itself, served by the
+  same front that serves the pages (the hosted plane for dhnt.io, the outpost
+  app for a companion site) and reverse-proxied to `bashy mcp serve
+  --transport http` on the owner's engine, exactly as the pages are proxied
+  today. The MCP Streamable HTTP transport is plain `POST` plus a
+  server-sent-events `GET` on one path, so it rides the existing proxy and
+  the existing session: the caller is the same principal the pages see
+  (anonymous, signed-in, member, owner, from the session cookie or the
+  signed relationship stamp), and the tool set follows the same tiers:
+  anonymous gets the read tools only if the owner allows, members get what
+  their audience admits, the owner gets the shape tools. A redirect to
+  another host would drop the cookie and the stamp, so there is none; for
+  clients that cannot carry the site cookie, the MCP authorization metadata
+  (`/.well-known/oauth-protected-resource`) points at the site's own sign-in,
+  which is already the OAuth flow, so "log in to the site" and "authorize the
+  MCP client" are one step. Like a WebSocket upgrade, the agent stays on the
+  page's origin and only changes protocol;
+- behind the proxy, `bashy mcp serve` gains a `site` tool profile backed by
+  the site module: `list_pages`, `read_page`, `cite`, and the shape tools
+  (`wish`, `verify`, `preview`, `approve`, `undo`) gated by the proxied
+  principal through the existing shape service;
 - advertised in the agent block and in `/.well-known/mcp/server-card.json`.
 
 This also settles identity: an authenticated MCP session is the one reliable
