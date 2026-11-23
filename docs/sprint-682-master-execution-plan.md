@@ -81,11 +81,14 @@ What blocked C4 and what has happened since:
    repair calls automatically. Not a regression (same code at the 11-21 yoke
    pin); the 11-21 preflight read that incident page as success, and the C1
    acceptance test builds in place so it never covered the console path.
-   Recorded on C4 and as umbrella bug todo `d35e0de8` with three options:
-   rewrite relative replaces to the registered source's siblings at build
-   time (product), make the example apps self-contained modules (apps), or
-   both with a test that builds from an extracted tree. This is a decision
-   for the operator before any fix; step 7 waits on it.
+   Recorded on C4 and as umbrella bug todo `d35e0de8`. **Operator decision
+   2026-11-23:** no app may depend on another app's module tree; every app
+   builds independently. Copying siblings into the managed repository,
+   vendoring, and build-time path rewrites are rejected. The fix is a local
+   Go module proxy serving `desk-kit`/`desk-chart` as versioned modules, with
+   the apps requiring them and the console setting `GOPROXY`; design and
+   acceptance on the bug todo and the follow-up story (umbrella store,
+   standalone, unowned). Step 7 waits on that story.
 
 ## Closure steps
 
@@ -140,10 +143,10 @@ for the build and the matrix.
 
 ## Decisions for the operator
 
-1. Finding 9: which fix (product, apps, or both), and where it is worked
-   (a C-type small repair if the build-time replace rewrite proves small, else
-   a follow-up story). Step 7 runs after it lands, on the same retained
-   installation; the one-run approval is intact (nothing paid was started).
+1. Finding 9 is decided (local Go module proxy). Remaining: which sprint
+   owns the proxy story and who works it; whether Sprint 682 ends now with C4
+   carried over to that sprint, or stays open until the proxy lands. The
+   retained gate-host installation and the one-run approval are intact.
 2. If a row is red after root cause: fund a second run, or close C4 on the
    runbook walkthrough plus the green rows and carry the red row as a todo.
 3. Whether to schedule the operator pre-install for board, whiteboard and
