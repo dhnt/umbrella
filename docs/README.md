@@ -169,6 +169,10 @@ Sprint 660 plan, written by the conductor: inventory of every bashy-family Makef
 
 Sprint 681 plan: extend the existing tool-command declarations (`commands:` in tool YAML, the canonical vocabulary) to session-control commands, measured per vendor, and add `bashy chat command <session> <name>` so a manager can clear, rename, resume or exit a live controlled session without restarting it, with the declared commands discoverable in `bashy chat sessions --json`.
 
+### sprint-682-evidence.md
+
+Wire-level evidence for Sprint 682: the accepted stories with their delivery SHAs and verification, the kb runbook walkthrough, and the 2026-11-23 gate-host preflight of the C4 member matrix (frozen candidate identity, disposable installation, Bedrock GLM-5 route smoke, two paired synthetic device principals, dry run) that went RED at the first app request because the console cannot build any desk example app as a shaped member instance (sibling `replace` directives unresolved in the extracted tree); no paid row was started.
+
 ### sprint-682-master-execution-plan.md
 
 Closure plan for Sprint 682 (written 2026-11-23 after review): where the seven stories stand (five accepted; C4 member e2e open with the runbook walkthrough passed but the five-app live matrix never green; C4b submitted and unaccepted), the review findings (the ycode Genie receiver half of the approved framing fix never landed on main and is landed as C4c; stale runs and branches; four bypass entries; install-wrapped rows outside the approval; venue contention with Sprint 697), the nine closure steps with spend and status, the recipe for the one approved paid matrix run, the `sprint end` gates, and the decisions left to the operator. Design and story spec of record remains `plan-s682-consumer-shaping-example-apps.md`.
