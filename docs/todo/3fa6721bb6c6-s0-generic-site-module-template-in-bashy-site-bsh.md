@@ -6,6 +6,7 @@ seq: 641
 status: assigned
 priority: p1
 created: 2026-11-23T03:16:09.231565Z
+weave: 159
 assignee: agy-gemini4-carbon
 sprint: 693
 ---
