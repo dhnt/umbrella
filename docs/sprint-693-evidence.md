@@ -52,6 +52,28 @@ The second build host's podman VM, tried first, stopped creating processes
 mid-run (`getpwnam(root) failed`, I/O errors in WSL); it was not restarted and
 is left for the operator.
 
+## S1 release e2e gate (hosted plane, candidate cloudbox dev `e70a031`)
+
+The release playbook's step 2: `script/e2e-multisat.sh` against the gate
+host's Linux lane over the playbook's transport wrapper (ssh-alias route),
+affected range `v0.18.81..HEAD`, which selects the `desktop-journey`
+scenario, with the Chrome image and the browser checks required.
+
+| Run | bashy / outpost in the sandbox | Result | Cause |
+|---|---|---|---|
+| 1 | local umbrella build (bashy `c8650eb4`, the rc.40 thin core; outpost `a1c9307`) | FAIL, 21 s, fixture step `member invite` | the adapter command tried to fetch a Go toolchain from go.dev inside the no-network sandbox (bashy finding `4f8f81c2ad8c`) |
+| 2 | harness default release `v1.0.0-rc.27` | FAIL, 21 s, fixture step `member invite` | `member: command not found` (the pinned release predates the verb; the previous release's gate had used a pre-rc.40 umbrella bashy) |
+| 3 | released `v1.0.0-rc.37` (`BASHY_TAG`), the latest promoted release | **PASS, exit 0, 77 s, 29/29 checks OK** incl. the six browser checks | |
+
+Evidence: `cloudbox/.e2e-multisat/desktop-journey/evidence.json` (private
+checkout), identities cloudbox `e70a031…`, bashy `v1.0.0-rc.37`, klatch
+`1.2.7`. The candidate is unchanged across the three runs; both failures were
+harness pins, not product defects.
+
+Gate status for the hosted-plane release of `e70a031`: unit suite PASS (42
+packages), desktop-journey e2e PASS. Release (tag, deploy gate on the host,
+images, App Platform spec, satellites, live smoke) awaits the operator's go.
+
 ## Live after state
 
 Pending the hosted-plane release (operator go; release playbook steps 3 to 7).
