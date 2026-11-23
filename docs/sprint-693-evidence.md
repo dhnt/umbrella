@@ -49,8 +49,9 @@ linux-headers git bash`, `GOTOOLCHAIN=auto`, the warm `cloudbox-gomodcache` and
 | final, 07:47–07:59Z, `-timeout 30m` | **exit 0, 42 packages ok, 0 FAIL** | includes `internal/server` (route goldens), `internal/publicsite`, `internal/handlers`, `internal/api`, `internal/provisioning` |
 
 The second build host's podman VM, tried first, stopped creating processes
-mid-run (`getpwnam(root) failed`, I/O errors in WSL); it was not restarted and
-is left for the operator.
+mid-run (`getpwnam(root) failed`, I/O errors in WSL); its system drive was
+found completely full shortly after. It was not restarted and is left for the
+operator.
 
 ## S1 release e2e gate (hosted plane, candidate cloudbox dev `e70a031`)
 
