@@ -203,7 +203,11 @@ Execution plan for Sprint 697 (backlog, planning only, reviewed with the operato
 
 ### agent-ready-sites.md
 
-Design of record for making a shaping-enabled website explorable by any agentic tool the way a repository with `AGENTS.md` is. Grounded in the Sprint 693 live matrix and a review of shipped agent behavior: no agent probes well-known files or follows link relations, every agent reads the body it receives, and content negotiation decides that body. Design: an in-page agent block placed first in every representation (the first-contact rule, including error pages), Markdown-first serving to agent `Accept` headers and user agents without cloaking, a pointer layer of existing conventions, an owner-set MCP endpoint served by `bashy mcp serve` so an agent switches protocol instead of downloading a binary, bashy as the reference consumer with a verifiable identity, and a feel-at-home acceptance matrix. Stories A1–A6 on Sprint 697, planning only; operator decisions listed.
+Design of record for making a shaping-enabled website explorable by any agentic tool the way a repository with `AGENTS.md` is. Grounded in the Sprint 693 live matrix and a review of shipped agent behavior: no agent probes well-known files or follows link relations, every agent reads the body it receives, and content negotiation decides that body. Design: an in-page agent block placed first in every representation (the first-contact rule, including error pages), Markdown-first serving to agent `Accept` headers and user agents without cloaking, a pointer layer of existing conventions, an owner-set MCP endpoint served by `bashy mcp serve --transport http --tools site --site-app <app>` (or `--site-dir <dir>`; `--outpost` behind outpost's `<app>/mcp` proxy) so an agent switches protocol instead of downloading a binary, bashy as the reference consumer (`bashy site key`, `--sign` RFC 9421 Web Bot Auth, `site.json` `trusted_bot_keys`/`trusted_key_directories`/`trusted_origins`), and a feel-at-home acceptance matrix. Stories A1–A6 + A3b on Sprint 697; Decisions 1–3 settled (Decision 3: A4 landed optional signing + verification alongside stable `bashy-fetch/<version>` / `bashy-site/<version>` user agents), Decision 4 reserved.
+
+### sprint-697-evidence.md
+
+Sprint 697 shipped-contract record: A1 template channels, A3 same-origin `/mcp` endpoint, A3b `bashy site` verbs, A4 Web Bot Auth identity with Decision 3 settled, A6 docs and the `make-your-site-agent-ready` kb runbook, with verification gates.
 
 ### sprint-693-evidence.md
 
