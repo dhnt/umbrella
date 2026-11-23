@@ -86,3 +86,33 @@ All builds and `go test` runs below were executed on the Linux gate host under a
   - `bashy kb show make-your-site-agent-ready` & `bashy kb doctor` — PASS (authored via `bashy kb add`).
   - Gate-host `go test -count=1 -run 'TestSkillHelp|TestCommandsCatalogSources' ./internal/agentos` (`bashy`) — PASS.
   - `script/scrub-gate.sh --all` (`umbrella`) — PASS (exit `0`).
+
+---
+
+## 6. Story #672 (`d80f551b7d18`) — A2: Hosted-Plane Agent-Ready Channels & Same-Origin `/mcp` Auth Dispatch (Merged to `dev`, Verified, Not Live)
+
+- **Assignee**: `codex-gpt6-astra`
+- **Disposition**: **Merged to hosted-plane `dev` (`0c628d5afadfe4a9cd95ea5fb426abf8fc74d84b`), verified, NOT live; live verification = Sprint 699 `T1` (`76eac0eace23`) checklist** (absorbs standalone `Accept` tie-break follow-up `60b2b1007498`).
+- **Wire-Level Contract Verified on `dev` (`dev-host` + `gate-host`)**:
+  - Consumes `github.com/dhnt/site` `v0.2.1` (`f924301cab64`) for `/` and `/about` (`GET` + `HEAD`), `.md`/`.json` twins, and all 14 root and `/.well-known/*` discovery channels (`/agents.txt`, `/AGENTS.md`, `/README.md`, `/skill.md`, `/humans.txt`, `/robots.txt`, `/llms.txt`, `/sitemap.xml`, `/feed.xml`, `/.well-known/agent-skills/index.json`, `/.well-known/mcp/server-card.json`, `/.well-known/agent-card.json`, `/.well-known/api-catalog`, `/.well-known/security.txt`).
+  - Emits `Vary: Accept, User-Agent`, `Bashy-Shaped`, RFC 8288 `Link` relations, strong revision `ETag`, and `Cache-Control: private, no-cache, no-transform` on every public page/channel response; session-cookie root redirect (`302`) runs prior to content negotiation without page `ETag`/`Link`.
+  - Breaks equal-`q` `Accept` ties by listing order (`Accept: text/markdown, text/html, */*` -> `text/markdown`) and serves Markdown-first to listed `agent_user_agents` when `Accept` is empty or `*/*`.
+  - HTML shell preserves `<script id="agent-recipe" type="text/bashsharp">`, `<div hidden>`, `<noscript>`, DOM-first `<p id="agent-note" role="note">`, and `<section id="agents">` across client-side hydration cleanup, with identical visible and hidden prose twins.
+  - Same-origin `/mcp` auth dispatch (Conductor Rule-7 Option B):
+    - `Authorization: Bearer ...` callers route exclusively to the existing OAuth-backed MCP gateway (`401 WWW-Authenticate` on invalid/expired Bearer, never downgrading to cookie or anonymous proxy; zero diff to master `/.well-known/oauth-protected-resource`).
+    - Non-Bearer `POST` and SSE `GET` callers route through optional session-cookie verification to an unbuffered (`FlushInterval: -1`) reverse proxy to the configured site MCP upstream (prefix-stripping all client identity headers before stamping validated principal identity, stripping portal session/elevation cookies, non-Bearer `Authorization`, client query parameters, and upstream `Set-Cookie`/`Location`), or return `401 WWW-Authenticate` with resource metadata when no upstream is configured.
+    - Standalone mode mounts the same `/mcp` dispatch and `/.well-known/oauth-protected-resource` endpoints (`dev`/loopback host fallback validated against header/authority injection).
+- **Independent Security Review (`claude-sonnet5.5`)**: Round 1 returned for `/mcp` proxy boundary hardening; Round 2 (`0c628d5`) resolved all items and passed re-review (`VERDICT: PASS`).
+- **Gates Executed**:
+  - `dev-host` module race tests + UI unit suite (`41/41`) — PASS.
+  - `gate-host` Linux `go vet` + primary/satellite builds + 5-package short suite (`67.7s`, covering existing MCP gateway suite, 3-caller dispatch matrix, live unbuffered SSE flush, route table goldens) — PASS.
+  - `gate-host` containerized release E2E gate (`desktop-journey`, headless Chrome required) — PASS (exit `0`, `75s`).
+
+---
+
+## 7. Deferred to Sprint 699 (`docs/sprint-699-master-execution-plan.md` — Release Train 1)
+
+Per operator policy (`CLAUDE.md`, 2026-11-23: no hosted-plane deploy per sprint; hosted changes ride one coordinated release train):
+
+- **A2 Live Edge Verification (`T1` / `76eac0eace23`)**: Live `dhnt.io` channel/header `curl` verification, edge HTML `ETag`/`no-transform` measurement, and live 3-caller `/mcp` curl matrix run as `T1` checklist items in Sprint 699 after the coordinated deploy.
+- **Story #676 (`4e147ad3e84b`) — A5: Feel-at-Home Acceptance Matrix**: Moved to **Sprint 699** (`cd912f8e8`); runs against live `dhnt.io` after `T1` deploys.
