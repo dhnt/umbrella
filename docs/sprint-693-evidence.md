@@ -117,9 +117,39 @@ and agent leg (`bashy fetch`) both read `/about`, reached home and returned,
 and extracted the same section ids `about, team, contact` (see the discovery
 matrix below).
 
-## Discovery matrix (S2)
+## Discovery matrix (S2), live site, 2026-11-23 12:3xZ
 
-Pending the live release. Runner: `bashy --bashsharp bashy/examples/shaping/discover/discover.bsh matrix https://ai.dhnt.io --md`.
+Runner: `bashy --bashsharp bashy/examples/shaping/discover/discover.bsh matrix
+https://ai.dhnt.io --md`; every client was handed only the page URL
+`https://ai.dhnt.io/about`. Browser leg on the gate host (headless Chrome is
+never run on the dev box); agent-CLI legs on the dev box where those CLIs are
+installed. "Discovery" is what the client needed to reach a structured
+representation: `self-md` = got Markdown by itself, `twin` = found or needed
+the direct `.md`/`.json` twin, `skill` = would need the reading skill.
+
+| Client | Request it sent | Received | Section ids it extracted | Discovery | fetched llms.txt | followed rel=alternate |
+|---|---|---|---|---|---|---|
+| curl (default `*/*`) | GET `*/*` | text/html | about, team, contact | twin (alternate link present) | no | no |
+| curl with the Claude Code header | GET `text/markdown, text/html, */*` | text/html (origin prefers HTML on equal q; follow-up filed) | about, team, contact | twin | no | no |
+| `bashy fetch` | GET | text/html | about, team, contact | twin | no | no |
+| `bashy fetch --md` | GET, converted locally | Markdown from the HTML | about, founder & team, contact (headings, not ids) | self-md | no | no |
+| `bashy browser --mode solo` (headless Chrome, gate host) | rendered page | text/html (rendered) | about, team, contact | twin | no | no |
+| claude (Claude Code CLI, its fetch tool) | agent fetch | not observed: the CLI's web fetch was not permitted in a non-interactive run | none | skill | no | no |
+| codex (its fetch tool) | agent fetch | error, no page read | none | skill | no | no |
+| gemini | absent on the host | | | | | |
+| agy (its fetch tool) | agent fetch | text/html | about, team, contact; listed `/about.md` and `/about.json` among the links | twin | no | no |
+| opencode (its fetch tool) | agent fetch | text/html (inferred; its tool hides response headers) | about, team, contact | twin | no | no |
+
+Findings: every client that could fetch the page extracted the same three
+section ids from the server-rendered HTML; none fetched `/llms.txt` or
+followed `rel=alternate` on its own (matching the research expectation); the
+only negotiated Markdown path that fired by itself is `bashy fetch --md`'s
+local conversion; the Claude Code style header did not negotiate Markdown
+because the origin breaks ties toward HTML (cloudbox follow-up
+`60b2b1007498`). Two agent CLIs could not fetch at all in a non-interactive
+run and would need the `dhnt-site` skill (the twins and the citation record)
+handed to them. Raw tables: gate host and dev box runs, kept with the sprint
+scratch; the dev-box run's agent legs are the clients bashy works with.
 
 ## Owner round trip (S3)
 
