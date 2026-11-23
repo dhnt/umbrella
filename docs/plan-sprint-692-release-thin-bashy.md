@@ -147,3 +147,15 @@ sprints.
    conducts; it does not build release assets, run suites, or carry the
    workers' verification builds. Workers build and verify on a gate-host lane
    (operator, 2026-11-22: do not overload the dev box).
+
+## Outcome (2026-11-23, sprint closed)
+
+Delivered: thin core + adapters (P5 contract, import-boundary test), adapter first-use
+fixes, dependency bumps with the vulnerability override retired, `dag test` green on the
+gate host, candidate gate green (three full runs + a leg-2 rerun, all reds root-caused),
+34-asset dist in 208 s warm, local release gate receipt, `v1.0.0-rc.40-dev` published as a
+pre-release (bashy `6c36c0a7`). Tier verdict FAIL (Windows product defect 5cb66dcf, fixed
+on main `802c5f40` and proven on the Windows lane; macOS lane blocked by a host venue
+problem that has since cleared). Not delivered: promotion. The release story carries over
+to Sprint 694 as rc.41 together with the LAN-install stories and the GOOS-inherit adapter
+bug. Evidence: `docs/sprint-677-integration-evidence.md`.

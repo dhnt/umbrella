@@ -9,7 +9,7 @@ labels:
     - release
 created: 2026-11-22T13:43:36.816088Z
 assignee: claude-fable5.1
-sprint: 692
+sprint: 694
 ---
 
 Owner: conductor claude-fable5.1 (no worker). Runs ONLY after the candidate gate 458628c0 is green on the frozen tip. Steps per bashy/docs/release-runbook.md and the bashy-release-promotion memory: (1) CHANGELOG.md entry for v1.0.0-rc.40 with the public-claim checks (docs/public-claims-evidence.md); (2) scripts/local-release-gate.sh in the official image on a claimed gate-host lane, GOWORK=off, strict license + all vulnerability profiles, NO override (D2) - a red finding blocks; (3) record the receipt as a Git note under refs/notes/bashy-local-gates, push it, note the immutable notes commit; (4) push tag v1.0.0-rc.40-dev at the frozen commit, dispatch release.yml ONCE with evidence_commit; (5) tier verdict: native tier smoke on the three QA lanes (Linux lane, Windows gate host, macOS QA host), commit release/tier-verdicts/<c8>.json with umbrella tag candidate/bashy-v1.0.0-rc.40; (6) refs/qa/v1.0.0-rc.40/{linux,darwin,windows}; (7) on the operator's typed go: bare tag v1.0.0-rc.40 + promote.yml with the pinned tier_verdict URL; checksums.txt identical to -dev. No retries on half-diagnosed failures: root cause first. Hosts by role only.
@@ -24,3 +24,15 @@ PROCEDURE (conductor, 2026-11-22; gate loop rules 6-8 apply: everything builds a
 7. ONE GitHub run: push tag v1.0.0-rc.40-dev at C; gh workflow run release.yml -f evidence_commit=N (~2-3 min publish-only). On a GitHub-side failure: root cause first, no retry.
 8. QA refs refs/qa/v1.0.0-rc.40/{linux,darwin,windows} -> V; on the OPERATOR'S TYPED GO: push bare tag v1.0.0-rc.40 at C; gh workflow run promote.yml -f version=v1.0.0-rc.40 -f tier_verdict=https://raw.githubusercontent.com/qiangli/bashy/V/release/tier-verdicts/<c8>.json; checksums.txt identical to -dev. Then sprint end 692 --gate.
 Disclosures for the go decision: macOS legs ran on the dev box as a substitute until the QA host has disk; the DOM checkpoint moves from SKIPPED to run in step 4.
+
+CARRY-OVER to Sprint 694 (conductor claude-fable5.1, 2026-11-23): DONE in 692 — changelog
+rc.40 section, 34-asset dist, local release gate receipt (override retired), note ref,
+`v1.0.0-rc.40-dev` published as a pre-release (two release.yml runs: the first failed on a
+preflight token permission, fixed in release.yml), tier verdict recorded
+(bashy release/tier-verdicts/6c36c0a7.json = FAIL). NOT DONE — promotion: the tier verdict
+failed on Windows (product defect 5cb66dcf, fixed on bashy main 802c5f40) and the macOS
+lane did not run (host venue, since cleared). Remaining for the next candidate (rc.41):
+rerun the affected legs (dispatch e2e 3-OS + agentos tests; full dag test if main carries
+new product code), dist, receipt, one release.yml run, tier verdict PASS on three lanes,
+QA refs, bare tag + promote.yml on the operator's typed go. Update the outpost on the
+Windows lane first (its supervisor rolls a foreign bashy back to its own release).

@@ -707,3 +707,42 @@ the candidate (release tooling only):
 
 Dry run of the 09e3103c collector against the 8225827f reports: PASS, database
 2026-11-11T02:51:11Z = upstream, 1030 pruned modules across the three scopes.
+
+## Tier verdict for rc.40 (2026-11-23, umbrella weave run #162, claude-opus5.5) — FAIL
+
+Native tier smoke of `v1.0.0-rc.40-dev` (bashy `6c36c0a7`, outpost `a1c9307`, yoke
+`3eb700cd`, umbrella `1ec2434b`) with the rc.37 tier-smoke kit, assets installed from the
+verified LAN copy on each lane. Record: bashy `release/tier-verdicts/6c36c0a7.json`
+(bashy `e230d065`, reassembled by the conductor from the fold evidence after the run
+workspace was reclaimed). Raw runs: tier-smoke kit `.gfy-out/tier-smoke/runs/20261123t05*`.
+
+| OS fold | Result | Class | Cause |
+|---|---|---|---|
+| Linux (gate host WSL lane) | PASS: tier1, tier2, tier3 | — | — |
+| Windows (Windows lane) | FAIL: tier1 `commands` and `inspect` | product | every Go adapter fails its first-use build: the adapter cache root reaches `go.exe` in MSYS form (bashy story 5cb66dcf) |
+| macOS (QA host) | INCOMPLETE: no tier ran | venue | the host had exhausted its ephemeral TCP ports before the run (about 39k TIME_WAIT); cleared by itself by 22:27 PST (TIME_WAIT 30) |
+
+Two venue findings on the Windows lane, not blocking: the login-PATH `bashy` is the
+outpost-managed copy and outpost's supervisor rolled a swapped-in rc.40 back to its own
+release within 10 s (update outpost first on a lane before a tier run); the probes ran the
+verified rc.40 binary by absolute path. Side finding: `bashy -s` with the script on a pipe
+drops the rest of a command list after an external child that inherits stdin (pre-existing,
+also in older builds; GNU bash does not) — track separately.
+
+**Fix and proof (2026-11-23, conductor).** bashy `802c5f40`: `appendAdapterEnv` exports
+`BASHY_ADAPTER_CACHE` in drive form with forward slashes on Windows (override kept,
+respelled only when MSYS-form; `XDG_CACHE_HOME` honoured; other hosts unchanged); unit tests
+`TestAdapterCacheExportWindowsUsesDriveForm`, `TestAppendAdapterEnvExportsCacheOnWindowsOnly`.
+Proof on the Windows lane with a windows/amd64 cross-build of `802c5f40` from the official
+image on the gate host (2 min, warm shared cache), no cache override, adapter cache cleared:
+`mktemp`, `jq --version`, `seq 1 3` each cold-built and ran with rc=0; `mktemp.exe`,
+`jq.exe`, `seq.exe` present under the user's `.cache/bashy/adapters/optional`. The 3-OS
+dispatch e2e had missed the defect because the test exports a native `BASHY_ADAPTER_CACHE`
+itself.
+
+**Decision (conductor, operator delegated 2026-11-22 "leave the decisions to you"):** rc.40 is
+not promoted. `v1.0.0-rc.40-dev` stays published as a pre-release with the known issue and
+workaround in its notes. The next candidate (rc.41, Sprint 694) carries the fix; it reruns
+the affected legs (dispatch e2e on three OSes, agentos tests; full `dag test` if main carries
+new product code), dist, receipt, one `release.yml` run, a three-lane tier verdict, QA refs
+and promotion on the operator's typed go.
