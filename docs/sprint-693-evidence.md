@@ -42,14 +42,202 @@ Pending the live release. Runner: `bashy --bashsharp bashy/examples/shaping/disc
 
 ## Owner round trip (S3)
 
-S0b delivered the shaped-app face, so S3 is unblocked. One round trip is
-already proven on `github.com/dhnt/site` `be766e2` in a hermetic
-`HOME`/`BASHY_HOME` (registered locally, never a public host): a wish on
-`/about` carrying `section=team revision=361e576b8921` yields a candidate
-whose `bashy shape verify` passes all four frozen checks plus `shape/compat`,
-sealed `86a667c908ec61ba9d6fbb5e744c6a3adfc01bb5c29f6caa96d06a6fa19f95d4`;
-a wish carrying a superseded revision is refused with `stale, re-read: page
-/about section team is at revision 361e576b8921`. S3 still owes the owner's
-engine host: candidate preview in all three representations at the new
-revision, `approve` isolation across principals, `undo`, and the live
-`ETag` held stable throughout.
+Run 2026-11-23T05:42Z–05:47Z on the owner's workstation console (the bashy
+apps service on loopback port 22749; the `bashy shape` CLI talks to the same
+engine). No engine change. Base: `github.com/dhnt/site` main `be766e2`, tag
+`v0.1.0`; base page revisions `/` = `ae73c65006b9`, `/about` =
+`361e576b8921`. Every command below was run as recorded; hosts are named by
+role only.
+
+### (0) Live before-state
+
+```
+curl -sS -D - -o about-before.html https://ai.dhnt.io/about
+HTTP/2 200
+content-type: text/html; charset=utf-8
+(no ETag, no Vary, no Link)
+3782 bytes, sha256 f9c64b91fd8b5ebec489712fa2eb43449ee6add3a70898a4a6cfa5ba74eae446
+```
+
+### (1) Register the shaped app
+
+```
+bashy app add dhnt-site --type shaped --source https://github.com/dhnt/site --label 'DHNT site'
+dhnt-site -> /dhnt-site/ (shaped, https://github.com/dhnt/site)
+
+bashy shape status dhnt-site --json
+{"app":"dhnt-site","principal":"dhnt:agent/muse-wonder",
+ "active":"be766e2ba3909e9733811326f00df07ac24aace0","candidates":[]}
+
+curl -sS http://127.0.0.1:22749/dhnt-site/about.json
+HTTP/1.1 403 Forbidden, body "authentication required" (24 bytes)
+```
+
+The console refuses anonymous callers, so the owner view below is the
+`bashy shape status/show/history --json` output (same engine). The base
+itself serves all three twins at the base revision (candidate-module server
+run from the imported checkout):
+
+```
+GET /about      200 ETag: "361e576b8921" text/html; charset=utf-8        2711 bytes, Vary: Accept
+GET /about.md   200 ETag: "361e576b8921" text/markdown; charset=utf-8    1661 bytes, Vary: Accept
+GET /about.json 200 ETag: "361e576b8921" application/json; charset=utf-8 3976 bytes, Vary: Accept
+```
+
+`bashy shape history dhnt-site --json` after registration: base
+`be766e2ba3909e9733811326f00df07ac24aace0`, release `v0.1.0` at
+2026-11-23T05:35:20Z.
+
+### (2) Wish — agent route blocked, hand import used
+
+```
+bashy shape wish dhnt-site --page /about --element 'section=team revision=361e576b8921' \
+  --agent agy:gemini4-carbon "Copy edit in the Founder & team section of content/about.md: \
+  change 'leads product and engineering' to 'leads product, engineering and design'. Change nothing else."
+```
+
+Result, identically for `agy:gemini4-carbon` (candidate `0f1e269f3ddcbc24`),
+fallback `codex:gpt6-astra` (`686dce0db1e8b613`), fallback `claude:opus5`
+(`d8c3d6fdad2f26a5`), and a repeat from a directory containing a `go.mod`
+(`0e4fd400ee67c081`): `status: failed`, error `shaping agent: delegate:
+exit status 1: go: go.mod file not found in current directory or any parent
+directory; see 'go help modules'`. The delegate runs outside any module
+directory on this venue, so no agent-generated candidate was produced; the
+exact refusal is recorded here and the run continued per plan.
+
+The identical one-line edit was then imported by hand:
+
+```
+bashy shape wish dhnt-site --page /about --element 'section=team revision=361e576b8921' \
+  --from <hand-made copy of the base checkout with only that line changed> \
+  "Copy edit in the Founder & team section of content/about.md: change \
+  'leads product and engineering' to 'leads product, engineering and design'. Change nothing else."
+{"id":"9f5cf68fe47e7700","status":"ready",
+ "base_rev":"be766e2ba3909e9733811326f00df07ac24aace0",
+ "rev":"59b3ce0d212c64547811dc702194fdcd3a673ed1"}
+```
+
+Candidate id: `9f5cf68fe47e7700`. Source diff is exactly one line in
+`content/about.md` (`leads product and engineering` → `leads product,
+engineering and design`); the engine's `shape diff` also lists the
+auto-created shaping tracking files under `docs/todo/`, which are engine
+bookkeeping, not content.
+
+### (3) Stale base
+
+A second wish carrying the home page's revision was imported the same way
+(candidate `edd68ddeff2459fc`, `section=team revision=ae73c65006b9`).
+`bashy shape verify dhnt-site edd68ddeff2459fc` returned `verdict pass`:
+the `--from` import carries no wish-provenance file into the candidate, so
+the frozen `checks/stale-base.bsh` had no element to compare on this path
+and passed vacuously — a real gap in the import path, recorded as observed,
+not as the expected refusal. Running that same frozen check directly
+against the true base with the stale element gives the contract refusal:
+
+```
+SITE_BASE_DIR=<base checkout> SITE_WISH_PAGE=/about \
+SITE_WISH_ELEMENT='section=team revision=ae73c65006b9' checks/stale-base.bsh
+stale-base: fail (stale, re-read: page /about section team is at revision 361e576b8921, wish had ae73c65006b9)
+exit 1
+```
+
+The same direct check with `revision=361e576b8921` prints `stale-base: pass`
+(exit 0). The stale candidate was then discarded:
+`bashy shape reject dhnt-site edd68ddeff2459fc` → `status: rejected` (its
+isolated workspace is removed on reject; a later `shape show` for it finds
+no candidate record). This matches the earlier hermetic S0b record, where
+an agent-carried stale wish was refused by name at verify; on this venue
+the refusal is proven for the frozen check itself, and the import path's
+missing provenance is the honest delta.
+
+### (4) Verify, diff, preview — one new revision in three representations
+
+```
+bashy shape verify dhnt-site 9f5cf68fe47e7700
+status: verified, verdict pass (checks/links-resolve, checks/render-determinism,
+checks/stale-base, checks/unique-ids, shape/compat), seal
+253dded54a7af1d5b85449c4a511600a58f7bc980b465cfa85098bf4c1fa14f1
+
+bashy shape diff dhnt-site 9f5cf68fe47e7700
+one content line in content/about.md, as in (2)
+
+bashy shape preview dhnt-site 9f5cf68fe47e7700
+url: http://127.0.0.1:22749/shape/dhnt-site/preview/9f5cf68fe47e7700/
+```
+
+Anonymous fetches of the preview's `/about`, `/about.md` and `/about.json`
+each return `HTTP/1.1 403 Forbidden` / `authentication required` — the
+console's refusal, recorded, never candidate bytes. The owner view is the
+candidate module's own server/render from its isolated workspace (the same
+code the preview proxies), and all three representations carry ONE new
+revision, `6960548106fa` (base `361e576b8921`):
+
+```
+GET /about      200 ETag: "6960548106fa" text/html; charset=utf-8        2719 bytes, Vary: Accept
+GET /about.md   200 ETag: "6960548106fa" text/markdown; charset=utf-8    1669 bytes, Vary: Accept
+GET /about.json 200 ETag: "6960548106fa" application/json; charset=utf-8 3992 bytes, Vary: Accept
+HTML  <meta name="revision" content="6960548106fa">, section ids about, team, contact
+MD    front matter "revision: 6960548106fa", headings {#about} {#team} {#contact}
+JSON  {"path":"/about","revision":"6960548106fa","sections":["about","team","contact"]}
+All three show: "leads product, engineering and design"
+```
+
+That is the owner (HTML) and Bashy (Markdown/JSON) inspecting the same
+candidate: one revision, the edited copy, unchanged section ids
+`[about team contact]` in every representation.
+
+### (5) Approve and isolation
+
+```
+bashy shape approve dhnt-site 9f5cf68fe47e7700   → status: approved
+bashy shape status dhnt-site --json
+active: 59b3ce0d212c64547811dc702194fdcd3a673ed1 (the candidate, owner principal)
+curl -sS http://127.0.0.1:22749/dhnt-site/about.json   (anonymous, no cookie)
+HTTP/1.1 403 Forbidden, "authentication required" — a refusal, never the candidate
+```
+
+A second principal cannot be minted on this console here (no pairing was
+performed), so the honest limit is: no second browser principal was
+exercised. At the CLI layer, `bashy shape status dhnt-site --user
+'dhnt:agent/second-principal-probe' --json` resolves to a different
+represented user and still shows `active:
+be766e2ba3909e9733811326f00df07ac24aace0` (the base) with no candidates —
+the approved candidate is active only for the owner's principal.
+
+### (6) Undo and history
+
+```
+bashy shape undo dhnt-site
+{"Revision":"be766e2ba3909e9733811326f00df07ac24aace0",
+ "Previous":"59b3ce0d212c64547811dc702194fdcd3a673ed1"}
+bashy shape status dhnt-site --json   → active be766e2ba3909e9733811326f00df07ac24aace0 (base again)
+bashy shape history dhnt-site --json  → two versions listed:
+  activate 59b3ce0d212c64547811dc702194fdcd3a673ed1  v0.0.0-20261123054334-59b3ce0d212c  2026-11-23T05:46:35Z
+  undo     be766e2ba3909e9733811326f00df07ac24aace0  v0.1.0                              2026-11-23T05:47:01Z
+  plus release v0.1.0 be766e2ba3909e9733811326f00df07ac24aace0
+```
+
+### (7) Live after-state
+
+```
+curl -sS -D - -o about-after.html https://ai.dhnt.io/about   (2026-11-23T05:47:07Z)
+HTTP/2 200, content-type: text/html; charset=utf-8, no ETag
+3782 bytes, sha256 f9c64b91fd8b5ebec489712fa2eb43449ee6add3a70898a4a6cfa5ba74eae446
+cmp about-before.html about-after.html → byte-identical
+```
+
+The public page kept its published revision; S1 has not been released yet,
+so the live shell is untouched by the engine round trip, as required.
+
+### Outcome and limits
+
+Proven on the owner's engine host: registration by git URL, a verified
+candidate (`9f5cf68fe47e7700`) whose HTML, Markdown and JSON agree on one
+new revision (`6960548106fa`) with only the requested copy edit, approval
+scoped to the owner principal, anonymous refusal, undo to the base, both
+versions in history, and a byte-identical live page before and after.
+Not proven here, recorded plainly: agent-generated wishes (all three
+routes refused by the delegate's working directory, see step 2); the
+stale-base refusal at `verify` time for `--from` imports (the frozen check
+itself refuses by name when given the provenance, see step 3); and a
+second paired browser principal (none minted, see step 5).
