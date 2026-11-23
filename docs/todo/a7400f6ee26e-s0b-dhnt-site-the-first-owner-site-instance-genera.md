@@ -6,6 +6,7 @@ seq: 643
 status: assigned
 priority: p1
 created: 2026-11-23T04:13:49.606411Z
+weave: 161
 assignee: claude-opus5.5
 sprint: 693
 ---
