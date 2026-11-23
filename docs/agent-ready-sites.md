@@ -205,10 +205,13 @@ endpoint** and the block names it:
   which is already the OAuth flow, so "log in to the site" and "authorize the
   MCP client" are one step. Like a WebSocket upgrade, the agent stays on the
   page's origin and only changes protocol;
-- behind the proxy, `bashy mcp serve` gains a `site` tool profile backed by
-  the site module: `list_pages`, `read_page`, `cite`, and the shape tools
-  (`wish`, `verify`, `preview`, `approve`, `undo`) gated by the proxied
-  principal through the existing shape service;
+- behind the proxy, `bashy mcp serve --transport http --tools site` takes a
+  required target — `--site-app <app>` (or `--site-dir <dir>`) — and
+  `--outpost` when fronted by outpost's `<app>/mcp` reverse proxy; its
+  `site` tool profile is backed by the site module: `list_pages`,
+  `read_page`, `cite`, and the owner-gated shape tools (`shape_wish`,
+  `shape_verify`, `shape_preview`, `shape_approve`, `shape_undo`) gated by
+  the proxied principal through the existing shape service;
 - advertised in the agent block and in `/.well-known/mcp/server-card.json`.
 
 This also settles identity: an authenticated MCP session is the one reliable
@@ -232,12 +235,17 @@ consumer:
   request is the existing `shape push`.
 - `bashy fetch` surfaces the agent block first when a page has one, reads
   `/agents.txt` and the `Bashy-Shaped` header, and lists the `Link` relations.
-- **bashy identifies itself**: a distinct user agent (today `bashy-fetch`) and,
-  on the owner's choice, a signed request in the Web Bot Auth shape using the
-  outpost identity, so a dhnt-style site can verify that a bashy agent is
-  calling and unlock agent-only affordances (the skill handshake, shaping
-  entry points) for it alone. This is the only population we can detect
-  reliably, and we detect it because we are both ends.
+- **bashy identifies itself** (A4, landed): stable user agents
+  `bashy-fetch/<version>` and `bashy-site/<version>`, plus optional RFC 9421
+  Web Bot Auth signing — `--sign` (`BASHY_SIGN_REQUESTS=1`) and
+  `--signature-agent <https-url>` (`BASHY_SIGNATURE_AGENT`) on
+  `bashy fetch` and the `bashy site` verbs, keyed by the outpost Ed25519
+  identity. `bashy site key [--json]` prints that public key JWK + RFC 7638
+  `keyid` for `site.json`. A site may set optional `trusted_bot_keys`,
+  `trusted_key_directories` and `trusted_origins` in `site.json` and answer
+  verified callers with `Bashy-Verified-Agent`; verification never gates or
+  alters page content. This is the only population we can detect reliably,
+  and we detect it because we are both ends.
 - **The bashy README and skill** (what an agent reads when it is handed the
   bashy repository) gain a section on agent-ready sites, so an agent that
   knows bashy knows what to do with any such page, and vice versa.
@@ -267,8 +275,9 @@ can be added to the pointer layer later at no design cost.
 |---|---|---|
 | A1 | Template: the redundant announcement channels above (`/agents.txt`, `Bashy-Shaped` header, hidden recipe + visible block, link relations, well-known files, robots/sitemap/feed/noscript/JSON-LD), `agent:` front matter and meta twin, `/AGENTS.md`, `/skill.md`, `/llms.txt` preamble, Markdown-first for listed agent user agents, tie-break by order; `site check` enforces visible/hidden equivalence; regenerate `dhnt/site` | bashy `examples/shaping/site`, `dhnt/site` |
 | A2 | Hosted plane serves the new paths, headers and serving rule (absorbs cloudbox follow-up 60b2b1007498); one release; live verification | hosted plane |
-| A3 | bashy consumer verbs `site explore`, `attach`, `cite`, `shape`; `skills add` from a URL; `fetch` surfaces the agent block | bashy, yoke |
-| A4 | bashy identity for sites: distinct user agent and optional signed requests (Web Bot Auth shape, outpost key); site-side verification in the template | bashy, outpost, template |
+| A3 | Site MCP endpoint at `<origin>/mcp`: same-origin proxy with the pages' auth to `bashy mcp serve --transport http --tools site --site-app <app>` (or `--site-dir <dir>`; `--outpost` behind outpost's `<app>/mcp` proxy); server card | bashy, outpost, template |
+| A3b | bashy consumer verbs `site explore`, `attach`, `cite`, `shape`, `recipe`; `skills add` from a URL; `fetch` surfaces the agent block | bashy, yoke |
+| A4 | bashy identity for sites: `bashy site key`, `--sign` + `--signature-agent` (RFC 9421 Web Bot Auth, outpost key), stable `bashy-fetch/<version>` / `bashy-site/<version>` user agents; `site.json` `trusted_bot_keys` / `trusted_key_directories` / `trusted_origins` verification in the template | bashy, outpost, template |
 | A5 | "Feel at home" acceptance: discovery runner task-prompt leg; matrix on the live site for the fleet clients, a browser and a chat fetcher; findings recorded | bashy `examples/shaping/discover`, evidence |
 | A6 | Docs: this design indexed; kb runbook "make your site agent-ready"; bashy README and skill section | umbrella, bashy |
 
@@ -276,13 +285,20 @@ Order: A1 → A2 (live) and A1 → A3 → A4 in parallel; A5 after A2 and A3; A6
 alongside. A1 plus A2 is the MVP that changes what every agent sees; A3 to A5
 make the claim provable and give bashy agents the native path.
 
-## Decisions reserved for the operator
+## Decisions
 
-1. Publish `/AGENTS.md` (recommended, as the honest analog with no consumer
-   yet) or rely on the in-page block plus `/skill.md` only.
-2. Markdown-first for listed agent user agents (recommended; Mintlify's rule;
-   same content, different representation) or `Accept` negotiation only.
-3. Signed bashy requests in A4 now, or user agent only and signing later.
-4. Whether the shaping entry point on a live site is advertised to every agent
-   (register the source as a shaped app on your own engine) or only to
-   verified bashy agents.
+1. **Settled:** publish `/AGENTS.md` as the honest analog with no consumer
+   yet, alongside the in-page block plus `/skill.md` (A1 scope).
+2. **Settled:** Markdown-first for listed agent user agents (Mintlify's
+   rule; same content, different representation), in addition to `Accept`
+   negotiation with listing-order tie-break (A1 scope).
+3. **Settled (A4 landed):** optional RFC 9421 Web Bot Auth signing
+   (`--sign` / `BASHY_SIGN_REQUESTS=1`, `--signature-agent` /
+   `BASHY_SIGNATURE_AGENT`) plus `site.json` verification
+   (`trusted_bot_keys`, `trusted_key_directories`, `trusted_origins`,
+   `Bashy-Verified-Agent`), alongside stable `bashy-fetch/<version>` and
+   `bashy-site/<version>` user agents. Signing is opt-in and never gates
+   content.
+4. **Reserved:** whether the shaping entry point on a live site is
+   advertised to every agent (register the source as a shaped app on your
+   own engine) or only to verified bashy agents.
