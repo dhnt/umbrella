@@ -54,3 +54,23 @@ All builds and `go test` runs below were executed on the Linux gate host under a
   - **OpenCode 2.2.6** (`opencode mcp add --url`): connected; verified `read_page` + `cite` (`/about#about` matching `sections[].sha256`); `member` `shape_approve` refused by name and tier.
   - **Anonymous caller**: public `list_pages` / `read_page` / `cite` allowed; `shape_undo` refused (`refused: caller anonymous (tier anonymous) is not authorized for shape_undo; owner tier required`, audit exit `126`).
   - **Gemini CLI**: binary absent on `dev-host` (scheduled on `gate-host` in A5).
+
+---
+
+## 4. Story #675 (`14d2d8b5af97`) — A4: `bashy` Identity for Sites (Stable User Agents, RFC 9421 Web Bot Auth Signing & Verification)
+
+- **Assignee**: `claude-opus5.5`
+- **Merged Commits**: `yoke` `35ce40805fecd526a8e57a88b68b4dd4573aae30` (on `ad5629e3cf07`), `outpost` `f84b2a77e6da61e7a23a99e76483c4eb886c4476` (on `796e9df05ba2`), `bashy` `dd0dbd705f5d743f1601d81afd17931b22b47c56` (`dd388b511cbf` + `e60925260074` + consumer repin), `umbrella` `df696d10cc6b0d564f4cdc3fe7ac68244c7d5cd7`
+- **Independent Security Review (`claude-sonnet5.5`)**:
+  - Round 1 caught **Blocker B1** (`@authority` reconstructed from client-supplied `Host`/`X-Forwarded-*` instead of configured `origin`/`trusted_origins`, enabling cross-site signature replay) plus five hardening items.
+  - Round 2 fixed `B1` (`requestViews` bound strictly to `site.json` `origin` + validated `trusted_origins`, with `TestVerifiedAgentCrossSiteReplay`), required `@authority` + `@method` + (`@target-uri` or `@path`), capped `Signature-Input`/`Signature` (`<= 4096B`, `<= 4` members), dropped stale directory keys after `1h` without holding the lock across HTTP fetches, skipped signing cross-origin redirect hops in `webbotauth.Transport`, and validated `outpost` directory `@authority` charset; Round 2 re-review returned **`VERDICT: PASS`**.
+- **Gate-Host Verification**:
+  - `yoke`: `go test -count=1 ./pkg/webbotauth/... ./cmds/fetch/... ./pkg/skills ./pkg/atlas` — PASS (incl. RFC 8037 Ed25519 JWK thumbprint vector, `TestFetchUserAgentAndSign`, `TestTransportCrossOriginRedirectUnsigned`).
+  - `outpost`: `go test -count=1 -tags fb_archives -run 'TestWebBotAuth|TestKeyDirectory|TestSignature|TestJWK|TestSiteMCP|TestProxy|TestApp' ./internal/agent` — PASS (`GET /.well-known/http-message-signatures-directory` on root + site app mounts).
+  - `bashy/examples/shaping/site/template`: `go test -count=1 ./...` — 17/17 PASS (`TestStandaloneDeps` stdlib-only closure, `TestVerifiedAgentNoCloaking`, `TestVerifiedAgentCrossSiteReplay`, `TestVerifiedAgentBehindFront`, `TestVerifiedAgentKeyDirectory`, `TestVerifiedAgentDirectoryStale`, `TestBotTrustValidation`).
+  - `bashy/internal/agentos`: `go test -count=1 -run 'TestSrcPinsMatchLinkedModules|TestSiteVerbs|TestSiteMCP|TestSkillHelp|TestCommandsCatalogSources' ./internal/agentos` — PASS.
+  - Live end-to-end (44/44 checks):
+    - Signed `bashy fetch --sign` and `bashy site explore --sign` (plus `BASHY_SIGN_REQUESTS=1`) verified against the template server (`Bashy-Verified-Agent: keyid="<kid>"; shape="..."; mcp="..."`).
+    - Unsigned and browser requests received byte-identical bodies, `ETag`, `Content-Type`, and `200` status without `Bashy-Verified-Agent` (zero cloaking).
+    - Untrusted keys, forged `Host`/`X-Forwarded-Host` cross-site replays, expired/tampered signatures, and non-allowlisted `Signature-Agent` directories were rejected for verification (never fetched when non-allowlisted) while still serving `200` with identical content.
+    - Cross-check against A3's `bashy mcp serve --tools site --outpost`: unauthenticated `shape_wish` and Web-Bot-Auth-signed `shape_wish` were both refused (`owner tier required`), confirming MCP authentication remains the primary cooperative-agent authorization boundary.
