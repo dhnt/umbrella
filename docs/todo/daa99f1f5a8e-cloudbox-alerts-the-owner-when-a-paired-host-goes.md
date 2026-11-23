@@ -3,13 +3,14 @@ id: daa99f1f5a8e
 kind: feature
 title: Cloudbox alerts the owner when a paired host goes offline or unreachable
 seq: 388
-status: assigned
+status: done
 priority: p0
 created: 2026-11-17T11:51:11.253915Z
 assignee: codex-gpt6.2-sol
 sprint: 652
 sprint_id: 48a699fb-076f-5442-995a-b12987a45bea
 sprint_title: Outpost reliability and host-offline alerting on cloudbox
+closed: 2026-11-23T17:58:56.219466Z
 closed_by: codex-gpt6.2-sol
 ---
 
