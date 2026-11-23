@@ -72,6 +72,21 @@ What blocked C4 and what has happened since:
    on the gate host. The matrix needs the Windows host's WSL lane for one
    session. Action: take the lane claim and announce on `mb` before the run.
 
+9. **The console cannot build any desk example app as a shaped member
+   instance (found 2026-11-23, blocks step 7).** `buildServer` in the
+   webconsole extracts the app's committed tree alone and runs `go build`
+   there; the five apps' `go.mod` files replace sibling directories
+   (`../kit`, `../chart`), so every member instance fails to build, the
+   console serves its self-healing incident page and spends shaping-agent
+   repair calls automatically. Not a regression (same code at the 11-21 yoke
+   pin); the 11-21 preflight read that incident page as success, and the C1
+   acceptance test builds in place so it never covered the console path.
+   Recorded on C4 and as umbrella bug todo `d35e0de8` with three options:
+   rewrite relative replaces to the registered source's siblings at build
+   time (product), make the example apps self-contained modules (apps), or
+   both with a test that builds from an extracted tree. This is a decision
+   for the operator before any fix; step 7 waits on it.
+
 ## Closure steps
 
 Owner: the conductor (claude-fable5.1), holding the 682 seat from the
@@ -86,8 +101,8 @@ for the build and the matrix.
 | 3 | Bump bashy's ycode pin (ycode is a versioned dependency, not a sibling pin, so `go get` not `mod sync`); bump the umbrella `ycode` and `bashy` gitlinks | none | done 2026-11-23 (bashy `b6394ca6`; umbrella sync commit) |
 | 4 | Reassign C4 to the conductor; commit and push the story file first | none | done 2026-11-23 (bashy `d64886dc`) |
 | 5 | Prune: weave 133 and 134 records (nothing reclaimable; both terminal), branch `s682/c4-gate` (integrated, deleted), `s682/c4-receiver` (integrated, deleted) | none | done 2026-11-23 |
-| 6 | Gate-host preflight, no model call: claim the WSL lane; build the frozen candidate (bashy main at the bumped pin, `GOWORK=off`); disposable installation per `examples/shaping/hello-world/e2e-matrix.md`; register the five apps; `e2e-agent.sh --dry-run`; recursive DAG fixture; Node 18 and `ws` via `run-node-ws.sh --preflight`; paired Chrome for two synthetic members | none | pending |
-| 7 | The ONE approved paid run: `e2e-agent.sh` for form, notepad, session, viewer, chart as member A on the shared Sonnet route; board, whiteboard, table SKIP by design; per-row evidence log, DOM assertions from the paired browser, screenshot optional and bounded | one paid matrix | awaiting the operator's word to launch (approval of 11-21 stands; new facts: the ycode pin bump and lane sharing with 697) |
+| 6 | Gate-host preflight, no model call: claim the WSL lane; build the frozen candidate (bashy main at the bumped pin, `GOWORK=off`); disposable installation per `examples/shaping/hello-world/e2e-matrix.md`; register the five apps; `e2e-agent.sh --dry-run`; paired Chrome for two synthetic members | none | done 2026-11-23 up to the first app request, then RED: see finding 9 and `sprint-682-evidence.md` |
+| 7 | The ONE approved paid run: `e2e-agent.sh` for form, notepad, session, viewer, chart as member A; model route per the operator (Amazon Bedrock, GLM-5 is the only model the account can invoke; Claude and GPT ids are not enabled); board, whiteboard, table SKIP by design; per-row evidence log, DOM assertions from the paired browser | one paid matrix | NOT started; approval intact; blocked by finding 9 |
 | 8 | Green: accept C4 (closes goals c4 and kb), write `docs/sprint-682-evidence.md` (wire-level, hosts by role, per-row markers, candidate SHAs, manifest SHA), file the pre-install follow-up todo. Red: root cause on the story first; no second paid run without the operator | none | pending |
 | 9 | `sprint end 682` (every story closed, repos pushed and pinned, drift read); release the lane; record the scorecard beside this plan | none | pending |
 
@@ -125,8 +140,10 @@ for the build and the matrix.
 
 ## Decisions for the operator
 
-1. Launch the one approved paid matrix now (step 7), with the ycode pin
-   bump included in the candidate and the lane shared with Sprint 697.
+1. Finding 9: which fix (product, apps, or both), and where it is worked
+   (a C-type small repair if the build-time replace rewrite proves small, else
+   a follow-up story). Step 7 runs after it lands, on the same retained
+   installation; the one-run approval is intact (nothing paid was started).
 2. If a row is red after root cause: fund a second run, or close C4 on the
    runbook walkthrough plus the green rows and carry the red row as a todo.
 3. Whether to schedule the operator pre-install for board, whiteboard and
