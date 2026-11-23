@@ -657,3 +657,36 @@ Owner: claude-opus5.5. Hosts are named by role only.
 leg of the candidate gate is green for this tip. Two qualifiers stay open and are not counted as
 passes: leg 4c ran on the dev-box substitute because the macOS QA host is disk-full, and the
 leg-5 DOM checkpoint was skipped.
+
+---
+
+# Sprint 692 release step evidence (story 28283465), candidate bashy c4d7ee67
+
+Candidate = the gated tip bashy f1907987 plus docs-only and release-tooling
+commits (CHANGELOG rc.40; `scripts/dist.py`: SPA freshness probed through the
+candidate, per-target clone mtimes pinned, explicit budget cap; `scripts/
+verify-meet-spa-release.sh`: meet warm-up). Build inputs of the product are
+unchanged, so the candidate gate evidence above (runs #156 + #158) applies.
+Pins: bashsharp b1a3183, outpost a1c9307, yoke 3eb700cd, bash 42efe303.
+
+## Dist (gate host, lane 3, official image rc.40-go1.27.4, 2026-11-22)
+
+| Attempt | Result | Cause / fix |
+|---|---|---|
+| 1 | FAIL `meet-spa-check` | the builder image's bundled bashy predates the toolchain adapters (`adapter toolchain/pnpm/pnpm.bsh not found`); dist now probes pnpm through the candidate after the host build |
+| 2 | FAIL `linux/amd64-spa` "server did not become ready" | fresh per-target clone mtimes made the warm `meet` adapter rebuild inside the 15 s window; mtimes pinned to commit time, `meet --help` warmed first |
+| 3, 4 | FAIL budget exhausted (300 s) | six-platform compile on a partly warm cache sums to ~580 s; operator: 300 s stays the target, explicit cap allowed |
+| 5 | **PASS** | `--budget-seconds 1500`; `complete: true`, `elapsed_seconds` 439.087, 34 assets, checksums.txt 33 lines; shared build cache `bashy-build-cache` |
+
+Assets: gate host WSL `/root/lanes/lane3/s692-release/dist/assets`, the gate host
+Windows user folder `bashy-rc40-candidate/` (CANDIDATE.txt), and the dev box
+`~/Downloads/bashy-rc40-candidate` (33/33 checksums verified) for the LAN mirror.
+
+## Shaping smoke with the browser checkpoint (2026-11-23 02:27Z)
+
+`scripts/test-shaping-hello-world.sh /work/dist/products/linux/amd64/bashy` in
+`localhost/e2e-shaping:py312` (Chromium) on the gate host, `--network host`,
+`SHAPING_SMOKE_DOM_TEST` = `go test -c -tags verifydom ./pkg/webconsole` built
+from yoke 3eb700cd in the build image: **PASS, 27 checks**, including
+`browser checkpoint: alice sees 'Hello, Shaping!'` and `bob sees 'Hello,
+World!'`. The DOM SKIP recorded in runs #153/#156 is resolved for this candidate.
