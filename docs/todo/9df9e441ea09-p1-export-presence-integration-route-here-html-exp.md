@@ -3,13 +3,16 @@ id: 9df9e441ea09
 kind: bug
 title: 'P1 export/presence integration: route here HTML export through recordFace'
 seq: 679
-status: assigned
-assignee: muse-wonder
+status: done
 priority: p1
 labels:
     - page
 created: 2026-11-23T14:41:45.847203Z
+weave: 177
+assignee: muse-wonder
 sprint: 696
+closed: 2026-11-23T14:47:28.127937Z
+closed_by: agy-gemini4-carbon
 ---
 
 In `bashy/examples/desk/page/export.go` (`exportHTMLLocked`), remove ONLY the 4-line temporary `if b.Kind == "here" { ... }` branch (lines 90-93) so HTML/PDF export routes `here` through `renderBlockFaces(r, it, b, recordFace)`. Keep `participantsHTML(it)` and `participantsListHTML(it)` intact.
