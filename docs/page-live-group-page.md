@@ -183,6 +183,36 @@ export. `page export` writes per-handle answers for collections (sign-ups,
 team names, consent status) and tallies with handles for votes, so the record
 shows who voted and who answered.
 
+### Roles and views: the organizer sees both faces (operator, 2026-11-23)
+
+Several engines have two different views: brainstorm's facilitator panel and
+participant board, demo-queue's organizer, presenter and projector pages,
+form's owner results and respondent page, session's owner, participant and
+display pages. The page has three roles, **organizer** (the page owner, holds
+the owner key), **participant** and **viewer**, and every block renders for a
+role:
+
+- A block kind declares which faces it has (`organizer`, `participant`,
+  `display`). For a native block the adapter knows both the owner-keyed API
+  (results, open/close, phase, assign turn) and the participant path; for an
+  embed block the two faces are two URLs, the private one with the engine's
+  own facilitator fragment or key.
+- **The organizer sees both faces of a dual-view block**: side by side when
+  the screen is wide, tabs ("Organizer", "Participant", "Display") when it is
+  not, with the organizer face first. Participants and viewers get only their
+  face; the organizer face, its controls and the sibling's facilitator key are
+  never in their HTML, state or export.
+- **View as participant** is a page-level toggle for the organizer that
+  renders the whole page exactly as a participant sees it (same identity
+  rules, a throwaway participant identity), so the facilitator can check what
+  the room sees before saying "open your pages". A `display` face (projector)
+  is the page opened with `?view=display`: the organizer's choice of blocks,
+  large type, no controls; it is what demo-queue's projector and session's
+  display page already are, and the organizer may put either in an embed.
+- Owner keys of embedded items are held by the page server in the page's
+  store under the organizer's key (the desk no-secrets rule applies: they are
+  item keys, not credentials, and never appear in `show` or export).
+
 ### Two speeds of "on demand": where software shaping comes in
 
 | Need during a meeting | Speed | Mechanism |
@@ -222,6 +252,7 @@ general). If the dress rehearsal fails, the class runs on today's tools.
 | join: short code and handle | p0 | Join code as the page path on every door (`?id=` kept), generator and per-host uniqueness, fixed LAN port, `page open` prints both links, QR codes and the code; join screen with principal detection, handle prompt for anonymous participants, the `<handle>@<address>` binding and reclaim rules, facilitator rename/merge/kick, OTel attributes. Tests: a refresh keeps one vote; the same handle from a second address is refused; satellite participants get distinct forwarded addresses; the export has no addresses. |
 | blocks: poll and form (native) | p0 | Adapter over form's API; `page block add poll|form`; the participant identity is the respondent key, carried to form through the per-participant cookie jar; one answer and one vote budget per identity, resubmit replaces; facilitator open, close and results visibility from the page; results view `handle → answer` and `option → votes (handles)`; `--anonymous` hides handles; tallies over SSE. Proof: a three-votes-per-participant ballot with distinct fake identities, one refreshing and re-voting, counted once. |
 | blocks: text and book, embed, timer | p0 | Viewer page and notepad note inline; `embed:` iframe for whiteboard, table and Klatch; a timer with facilitator controls and SSE ticks. |
+| roles and views: organizer sees both faces | p0 | Block kinds declare their faces (organizer, participant, display); native adapters carry both the owner-keyed API and the participant path, embeds carry two URLs; the organizer sees dual-view blocks side by side or in tabs, participants only their face, the organizer face and the sibling facilitator key never in participant HTML, state or export; page-level "view as participant" toggle; `?view=display` projector face. Proof on brainstorm (facilitator panel + board) and demo-queue (organizer + projector) as embeds, and on form (results + respondent) as a native. |
 | export to the record | p1 | `page export --to md` with block states inline, in the shape of a session record; `--to pdf` through viewer's headless-Chrome path. |
 | brainstorm block (native, read and vote) | p1 | Cards and voting from the page; phase controls stay in brainstorm (link out). |
 | presence and hands | p1 | `here` and `hands` blocks on the SSE stream. |
@@ -252,6 +283,8 @@ for join codes (hosted-plane ticket, public wire contract only).
 - UAT: the Sunday 2026-11-29 class.
 - Name: `page`.
 - A short, typeable URL and path for participants.
+- The organizer sees both views of a block whose app has an admin view and a
+  user view (brainstorm, demo-queue, form, session); participants never do.
 - Anonymous participants join with a handle bound to their address for the
   session; authenticated participants are known from the stamp; the identity
   is the respondent key for tallies and form collection.
