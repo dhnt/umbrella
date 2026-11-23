@@ -7,9 +7,9 @@ status: assigned
 priority: p1
 created: 2026-11-21T11:16:39.414412Z
 assignee: codex-gpt6.2-sol
-sprint: 652
-sprint_id: 48a699fb-076f-5442-995a-b12987a45bea
-sprint_title: Outpost reliability and host-offline alerting on cloudbox
+sprint: 698
+sprint_id: 3da6b228-61d4-5302-931a-565e4862813b
+sprint_title: 'Outpost reliability follow-up: master reachability parity and disk pressure'
 ---
 
 Follow-up to daa99f1f. Direct master status for a paired host and the master indexed host listing must expose the same owner-scoped state, last observation, and alert projection as the paired satellite. Use authenticated owner boundaries, stale/unknown semantics and one-way CLI-to-existing-UI parity, including transferred/revoked pairings. Operator approved the current release with satellite verification while this remains separate.

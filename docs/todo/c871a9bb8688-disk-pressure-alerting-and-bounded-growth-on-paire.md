@@ -6,9 +6,9 @@ seq: 391
 status: todo
 priority: p1
 created: 2026-11-17T12:02:01.258936Z
-sprint: 652
-sprint_id: 48a699fb-076f-5442-995a-b12987a45bea
-sprint_title: Outpost reliability and host-offline alerting on cloudbox
+sprint: 698
+sprint_id: 3da6b228-61d4-5302-931a-565e4862813b
+sprint_title: 'Outpost reliability follow-up: master reachability parity and disk pressure'
 ---
 
 Operator 2026-11-17: the always-on Windows test host's 2 TB disk once filled completely because of an OTel bug (unbounded telemetry writes). Go caches are now kept there permanently by policy, so growth must be bounded and visible. Scope: outpost reports free space per volume (Windows and its WSL distros) with its heartbeat; cloudbox alerts the owner once per threshold crossing (e.g. 80%, 90%, 95%), deduplicated, with the same bashy CLI path as the offline alert; and each local store we write (OTel, logs, evidence, caches) has a declared retention or size cap, with the top growers named in the alert. Root-cause the earlier OTel fill if it isn't recorded yet. Acceptance: a fixture that writes past a threshold yields exactly one alert naming the volume and the fastest-growing directory.
