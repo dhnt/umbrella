@@ -75,9 +75,47 @@ Gate status for the hosted-plane release of `e70a031`: unit suite PASS (42
 packages), desktop-journey e2e PASS. Release (tag, deploy gate on the host,
 images, App Platform spec, satellites, live smoke) awaits the operator's go.
 
-## Live after state
+## Live after state (hosted plane v0.18.82, deployed 2026-11-23 12:26Z)
 
-Pending the hosted-plane release (operator go; release playbook steps 3 to 7).
+Operator go given 2026-11-23. Tag `v0.18.82` = cloudbox `e70a031`; release
+build on the test host: smoke PASS, deploy gate PASS (full Linux suite and
+Postgres), images pushed; master App Platform deployment `2fd3aba0…` ACTIVE
+12/12 at 12:26Z with only the three image tags changed; `/version` reports
+`v0.18.82`, commit `e70a0317`, `mode=master`, `ready:true`; the three
+anonymous desktop routes return 401. Fleet before: master and three
+satellites on v0.18.80.
+
+Live edge, 2026-11-23T12:26Z:
+
+| Request | Status | Content-Type | ETag | Vary | Link |
+|---|---|---|---|---|---|
+| `GET /` | 200 | text/html | none through the edge (origin sets it; `<meta name="revision">` = `ae73c65006b9`) | Accept | alternates `/index.md`, `/index.json` |
+| `GET /about` | 200 | text/html | none through the edge (meta revision `361e576b8921`) | Accept | alternates `/about.md`, `/about.json` |
+| `GET /index.md` | 200 | text/markdown | `"ae73c65006b9"` | Accept | both twins |
+| `GET /index.json` | 200 | application/json | `"ae73c65006b9"` | Accept | both twins |
+| `GET /about.md` | 200 | text/markdown | `"361e576b8921"` | Accept | both twins |
+| `GET /about.json` | 200 | application/json | `"361e576b8921"` | Accept | both twins |
+| `GET /robots.txt`, `/llms.txt` | 200 | text/plain | | | |
+
+Negotiation on `/about`: `Accept: text/markdown` → Markdown (ETag
+`361e576b8921`); `application/json` → JSON; `*/*` → HTML; a Markdown fetch
+followed by a default fetch returns HTML (no variant bleed). The Claude Code
+header `text/markdown, text/html, */*` returns HTML because the origin
+prefers HTML on equal q; filed as cloudbox follow-up `60b2b1007498`
+(tie-break by listing order), together with the edge-stripped HTML ETag.
+
+Same section and revision across the three representations of `/about`:
+HTML ids `about team contact`, Markdown `{#about} {#team} {#contact}`, JSON
+`about team contact`, all at revision `361e576b8921`. Home: ids `what start
+shape` at `ae73c65006b9`. Navigation Home / About / GitHub present in HTML
+and Markdown; `/about` links home and home links `/about`; the Shape badge
+(`/?shape=open`) is kept on both pages. Citation form proven live:
+`https://ai.dhnt.io/about#team @ 361e576b8921`.
+
+Visitor leg (headless Chrome via `bashy browser --mode solo` on the gate host)
+and agent leg (`bashy fetch`) both read `/about`, reached home and returned,
+and extracted the same section ids `about, team, contact` (see the discovery
+matrix below).
 
 ## Discovery matrix (S2)
 
