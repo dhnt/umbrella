@@ -4,12 +4,13 @@ kind: test
 title: 'P2 UAT: dress rehearsal on the gate host, then a weekly class on one page'
 seq: 660
 status: assigned
-assignee: claude-opus5.5
 priority: p2
 labels:
     - page
     - software-shaping
 created: 2026-11-23T12:00:00.687086Z
+weave: 179
+assignee: claude-opus5.5
 sprint: 696
 ---
 
@@ -39,3 +40,18 @@ Wave 5b P2 Gate-Host Dress Rehearsal & Class Runbook brief (`assignee: claude-op
 4. **Deliverables in Repo (`./script/scrub-gate.sh` MUST pass — ZERO real hostnames, OS usernames, home paths, or non-RFC5737 IPs!)**:
    - Write `docs/sprint-696-rehearsal-evidence.md` in `umbrella` containing: (a) pinned SHAs, claimed gate-host lane (`<claimed-gate-host>.lane1`, epoch 10, role-described), and D1–D4 verdict summary; (b) scrubbed verbatim command/test evidence for D1, D2, D3, and D4; (c) the **Sunday 2026-11-29 Operator Live Class Runbook** (pre-flight check, starting sibling apps + `page publish-outpost --port PORT` + `page serve --lan --port PORT`, creating the class page from `templates/` with `--code`, sharing satellite primary + LAN fallback links/QR, live second-speed data verbs vs rehearsed `shape wish`, post-class `page close` + `page export --to md|html|pdf` into the class repository, and explicit fallback trigger to run on standalone tools if pre-flight fails).
    - Commit any `bashy` change (`register_shaped_test.go` + any root-caused `page` fix) on `s696-142b21dad07f` (`BASHY_AGENT=claude-opus5.5`, contiguous trailers `Sprint: #696`, `Sprint-ID: a5df88f3-7163-5811-b45e-c16809082c06`, `Story: #660`, `Story-ID: 142b21dad07f`, `Agent: claude-opus5.5`), commit `docs/sprint-696-rehearsal-evidence.md` (+ `bashy` pin if changed) at umbrella root (`./script/scrub-gate.sh` exit 0, same contiguous trailers), run `bashy sprint submit 696 142b21dad07f --as claude-opus5.5 -m "..."`, and leave both working trees 100% clean without pushing (do NOT release the gate-host claim yourself; the manager will release it after verifying).
+
+Relaunch continuation brief (after weave run `#179` hit default `--points 3` wrapper `max-runtime 48m0s exceeded` — tooling/venue ceiling, not worker error; relaunched with `--points 8` = `2h` max-runtime and `--idle-timeout 25m`):
+- **Preserved work to start from (DO NOT redo from scratch)**:
+  1. In `bashy`: `git --external=true fetch origin s696-142b21dad07f && git --external=true checkout -B s696-142b21dad07f origin/s696-142b21dad07f` (`6f16fecf`, already holding `3a3e4657` Genie registration assertion + `6f16fecf` standalone shaped-fork `os.Stat` skip guard caught by D2 on the gate host).
+  2. In `umbrella`: `git --external=true fetch origin s696-142b21dad07f-wip` (`9edf34ec3`) holds your drafted `docs/sprint-696-rehearsal-evidence.md` + `docs/INDEX.md` + `docs/README.md` (`git --external=true checkout FETCH_HEAD -- docs/sprint-696-rehearsal-evidence.md docs/INDEX.md docs/README.md`).
+  3. Local `/tmp/s696/` (`rx.sh`, `up.sh`, `10-d2.sh`, `12-run.sh`, `rehearse.sh`, `rehearse.mjs`, `run4.log`) and the gate-host WSL2 directory `/root/s696-uat-142b` (Node v22.12.0, Go 1.27.4 cache, and `bashy` checkout) are preserved intact and ready to reuse immediately (gate-host elevation cookie is live with active keep-alive).
+- **Root cause ALREADY reproduced & proven for the single remaining D1 failure in `run4.log` (`403 POST /dress-rehearsal {"error":{"message":"Use the page page"}}`)**:
+  - Empirical gate-host Chrome 143 probe proved that because `desk-kit` sets `Referrer-Policy: no-referrer` (`kit/guard.go:36`), a real Chromium HTML `<form method="post">` join submission sends `{"origin":"null","secFetchSite":"same-origin","secFetchMode":"navigate"}`.
+  - Both `kit.GuardPOST` (`bashy/examples/desk/kit/kit.go:384`) and `joinFormAllowed` (`bashy/examples/desk/page/join_http.go:69`) parsed `"null"` with `url.Parse`, saw `u.Host == ""`, and refused with `403` / `400`!
+  - **Fix (product defect #2, caught by D1)**: In `kit.GuardPOST` (`kit/kit.go`) and `joinFormAllowed` (`page/join_http.go`), accept `origin == "null"` **ONLY when `r.Header.Get("Sec-Fetch-Site") == "same-origin"`** (continuing to refuse `Origin: null` when `Sec-Fetch-Site` is empty, `cross-site`, or `same-site`!). Add unit tests for `Origin: null` with `Sec-Fetch-Site: same-origin` (allowed) vs empty/`cross-site`/`same-site` (refused) in `examples/desk/kit` and `examples/desk/page`, and verify `GOWORK=off go test -count=1 ./...` in both `desk/kit` and `desk/page`.
+- **Finish & record**:
+  1. Upload the `kit.go` + `join_http.go` (+ tests) changes to `/root/s696-uat-142b/bashy` on the claimed gate host, re-run D2 (`TestDeskRegisterScriptsUsePublicShapedAppPath/page`) and `12-run.sh` (`rehearse.sh` + `rehearse.mjs` covering D1 real-browser `EventSource` live updates + `Last-Event-ID`, D3 `%PDF-1.4` headless-Chrome PDF, and D4 two-door multi-identity rehearsal + 17-secret zero-leak export audit) and confirm **all checks PASS (`driver-exit=0`, `failures=0`)**.
+  2. Clean up `/root/s696-uat-142b` and `/root/.s696*` on the gate host (and `/tmp/s696` locally after capturing evidence) once all verbatim outputs are recorded.
+  3. Update `docs/sprint-696-rehearsal-evidence.md` with ALL four PASS verdicts, both gate-host root-caused fixes (D2 standalone fork check + D1 Chromium `Referrer-Policy: no-referrer` `Origin: null` form POST), scrubbed verbatim outputs (be sure to scrub `<gate-host>.local` in `lan_url` to `<claimed-gate-host>.local` so `./script/scrub-gate.sh` exits 0!), and the Sunday `2026-11-29` operator runbook.
+  4. Commit on `s696-142b21dad07f` in `bashy` and at umbrella root (`git add bashy docs/sprint-696-rehearsal-evidence.md docs/INDEX.md docs/README.md`, `./script/scrub-gate.sh` exit 0, contiguous `Sprint`/`Sprint-ID`/`Story`/`Story-ID`/`Agent: claude-opus5.5` trailers), run `bashy sprint submit 696 142b21dad07f --as claude-opus5.5 -m "..."`, and leave both working trees 100% clean.
