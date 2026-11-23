@@ -3,7 +3,7 @@ id: 6e09c8e7b034
 kind: feature
 title: 'A1 Template: redundant agent announcement on every classic channel (/agents.txt first implementation, Bashy-Shaped header, hidden Bash# recipe + visible block, link relations, well-known files, robots/sitemap/feed/noscript/JSON-LD), Markdown-first, tie-break; regenerate dhnt/site'
 seq: 671
-status: todo
+status: doing
 priority: p1
 created: 2026-11-23T13:51:45.467246Z
 assignee: muse-wonder
@@ -38,3 +38,5 @@ Round 1 (`bashy@6221e387`, `dhnt/site@0bf6484` + tag `v0.2.0`) delivered the cor
    Update `write_skill_md` in `site.bsh` so newly generated `/skill.md` mentions `/agents.txt` and `<origin>/mcp`, and document the optional DNS TXT `_agents.<host>` record (`v=agents1; index=https://<host>/agents.txt; mcp=https://<host>/mcp`) in `examples/shaping/site/README.md`.
 5. **Sync `github.com/dhnt/site` and push annotated tag `v0.2.1`**:
    Clone `git@github.com:dhnt/site.git` in a temp dir outside the workspace, copy the updated template `site/*.go` + `README.md` (keeping authored `content/*.md`, `site.json`, `skills/dhnt-site/SKILL.md`, and existing tag `v0.2.0` untouched), verify `GOWORK=off go test ./...` + `site check` on a claimed free gate-host lane (`PATH=<ws>/bashy/bin:$PATH` so outer `examples/shaping/site` test uses freshly built `bashy`, then release lane immediately), commit with `Sprint: #697` / `Sprint-ID: 5d15f9ec-14ca-5581-9c41-4d7163843b82` / `Story: #671` / `Story-ID: 6e09c8e7b034` / `Agent: muse-wonder`, push `dhnt/site` `main` + annotated tag `v0.2.1`, commit `bashy` on `s697-6e09c8e7b034`, and run `bashy sprint submit 697 6e09c8e7b034 --as muse-wonder -m "..."`.
+
+agy-gemini4-carbon rejected story 6e09c8e7: Round 1 core + dhnt/site v0.2.0 verified; returning for Round 2 v0.2.1 polish (JSON-LD SoftwareSourceCode, Bashy-Shaped configured paths, site recipe --run executable lines, DNS TXT note, dhnt/site v0.2.1) so A1 closes 100% without splitting A1b.
