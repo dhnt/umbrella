@@ -169,6 +169,10 @@ Sprint 660 plan, written by the conductor: inventory of every bashy-family Makef
 
 Sprint 681 plan: extend the existing tool-command declarations (`commands:` in tool YAML, the canonical vocabulary) to session-control commands, measured per vendor, and add `bashy chat command <session> <name>` so a manager can clear, rename, resume or exit a live controlled session without restarting it, with the declared commands discoverable in `bashy chat sessions --json`.
 
+### sprint-682-master-execution-plan.md
+
+Closure plan for Sprint 682 (written 2026-11-23 after review): where the seven stories stand (five accepted; C4 member e2e open with the runbook walkthrough passed but the five-app live matrix never green; C4b submitted and unaccepted), the review findings (the ycode Genie receiver half of the approved framing fix never landed on main and is landed as C4c; stale runs and branches; four bypass entries; install-wrapped rows outside the approval; venue contention with Sprint 697), the nine closure steps with spend and status, the recipe for the one approved paid matrix run, the `sprint end` gates, and the decisions left to the operator. Design and story spec of record remains `plan-s682-consumer-shaping-example-apps.md`.
+
 ### plan-s682-consumer-shaping-example-apps.md
 
 Sprint 682 plan: surveys the shaping state of each bashy example app (viewer, chart and session are plain proxies, so the console injects no Genie button), and brings all of them to consumer shaping (per-member wish, verify, preview, approve, undo) using the existing shaped-app registration and manifest, ending with a member-principal e2e and a general "enable an app for consumer shaping" runbook. Owner/producer shaping is Sprint 683.
