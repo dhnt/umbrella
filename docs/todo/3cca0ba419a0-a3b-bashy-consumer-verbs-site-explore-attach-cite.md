@@ -3,11 +3,13 @@ id: 3cca0ba419a0
 kind: feature
 title: 'A3b bashy consumer verbs: site explore / attach / cite / shape; skills add from a URL; fetch surfaces the agent block'
 seq: 674
-status: todo
+status: done
 priority: p1
 created: 2026-11-23T13:51:45.918828Z
 assignee: codex-gpt6.2-sol
 sprint: 697
+closed: 2026-11-23T18:31:43.335581Z
+closed_by: agy-gemini4-carbon
 ---
 
 Design: docs/agent-ready-sites.md Layer 2 (CLI) and the channels table. bashy is the first consumer of /agents.txt: site explore URL fetches /agents.txt first (fallback: the Bashy-Shaped header, the Link relations, the agent block in the Markdown twin, /AGENTS.md, /llms.txt), prints the agent block, then index, twins, source, edit, MCP endpoint, skill, revision (--json = parsed agents.txt + agent: object + header values); site attach URL admits the skill from /.well-known/agent-skills/index.json or /skill.md through the verified-admission gate (bashy skills add gains URL input) and records the site in the kb; site cite URL#id returns the citation record; site shape URL registers the source repository as a shaped app on this host and prints the shaping sequence; site recipe URL prints the page's text/bashsharp recipe and runs it ONLY on an explicit --run, inside the verifier sandbox with effects capped to read,net and targets restricted to the page's origin and the URLs the recipe names (a recipe asking for more is shown, never run); bashy fetch prints the agent block first and reports Bashy-Shaped and the Link relations. Script tests against the template's fixture server and against a site without any of the channels (graceful: 'not an agent-ready site'). Plan: docs/sprint-697-master-execution-plan.md (vendor proposal agy-gemini4-carbon; reassigned to codex-gpt6.2-sol per Directive #1). WORKER RULES: branch off the repo's integration branch; commit with trailers Sprint: #697 / Sprint-ID: <uuid on the card> / Story: #<seq> / Story-ID: <id> / Agent: <your name>; targeted tests only, builds on the gate host; do not bump umbrella pins or push umbrella; submit with bashy sprint submit 697 <id> --as <your name> -m '<verify commands, results, commit SHA>'.
@@ -26,3 +28,8 @@ WAVE 1 CONTRACT & FILE DISJOINTNESS (binding):
   * `bashy fetch`: when an HTML/Markdown/JSON response carries an agent block, `Bashy-Shaped`, or agent `Link` relations, surfaces the agent block first and reports `Bashy-Shaped` and `Link` relations (adding `agent_block`, `bashy_shaped`, `links` in `--json` `bashy-fetch-v1` while keeping existing `fetch_test.go` assertions passing).
   * Tests: build an `httptest.Server` fixture implementing the A1 channel contract plus a plain server with none of the channels (`'not an agent-ready site'`).
 - VENUE & PROVENANCE: Discover and claim a free gate-host WSL lane (`lane2` or `lane3` from `bashy resource list`) via `bashy claim` before running gate-host builds/`go test`, ship with `COPYFILE_DISABLE=1`, and release immediately after. Leave `bashy` consuming `yoke` via workspace `go.work` (do NOT pin workspace-only `yoke` SHAs in `bashy/go.mod`; manager repins linearly at merge). Branch `s697-3cca0ba419a0` in `yoke` and `bashy`; commit with `BASHY_AGENT=codex-gpt6.2-sol` and trailers `Sprint: #697` / `Sprint-ID: 5d15f9ec-14ca-5581-9c41-4d7163843b82` / `Story: #674` / `Story-ID: 3cca0ba419a0` / `Agent: codex-gpt6.2-sol`. Public scrub rule: describe hosts by role only, never machine names, logins, IPs, or home paths.
+
+DELIVERY & GATE VERIFICATION:
+- Commits merged linearly: `yoke` `bd32f1b398d9c185ddae5b2d902c308bd995dde9`, `bashy` `628f7088d0de11e780ca37856ef643b0f09f7401` (rebased + repinned `bashy/go.mod`, `bashy/yoke/go.mod`, and `bashy/internal/agentos/src_mount.go`), `umbrella` `0eefc405db8152ca73d86dfe73efab9d0ad729b7`.
+- Security review: independent read-only review (`claude-sonnet5.5`) VERDICT: PASS (zero blockers; `site recipe --run` AST + `read,net` same-origin cap and `skills add` SHA-256 + admission gate verified).
+- Gate-host verification (official Linux Go 1.27.4 container under claimed lane): `go test -count=1 ./cmds/fetch/... ./pkg/skills ./pkg/atlas` PASS; `GOWORK=off go -C bashy build ./cmd/bashy` + `GOWORK=off go -C bashy/yoke build ./...` PASS; `GOWORK=off go -C bashy test -count=1 ./internal/agentos -run "TestSrcPinsMatchLinkedModules|TestSiteVerbs|TestCommandsCatalogSources"` PASS (0.243s); live cross-verification of built `bashy site explore` and `bashy site cite` against `github.com/dhnt/site@v0.2.0` PASS.
