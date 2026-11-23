@@ -2,8 +2,8 @@
 
 Sprint UUID: `cdef0a9b-7ae4-54d0-bd26-139ef3609d4a`. Epic: software-shaping.
 State: **backlog, planning only** (filed 2026-11-22, reviewed and rescoped
-2026-11-22 against the state of the art; to be confirmed with the operator
-before a conductor is assigned). The sprint card and its stories are
+2026-11-22 against the state of the art; operator decisions recorded the same
+evening, see below; ready for a conductor). The sprint card and its stories are
 authoritative; this document records the review, the research, the decisions
 and the order of work.
 
@@ -71,10 +71,19 @@ Two research passes on primary sources; details and URLs at the end.
 
 ## Decision: one content module, two deployments, one renderer
 
-The home and About content, with explicit section ids, and the renderer that
-turns it into an HTML fragment, Markdown and JSON with one revision identifier,
-live in **one small public Go module** (proposed `github.com/dhnt/site`). It is
-consumed twice:
+The pattern is generic, and dhnt.io is only its first instance: **every site
+owner gets a `<owner>/site` repository** generated from one bashy template,
+the way `website.bsh` already scaffolds a companion layer for an existing
+static site. The template (a `site.bsh` skill-script with an embedded skill
+and a `template/` tree, in bashy next to the website example) writes the
+content files, a self-contained stdlib Go renderer and server, and the
+shaped-app face. bashy is the only tool needed to create, render, check, serve
+and shape a site; the hosted plane and outposts are themselves built on bashy.
+
+`github.com/dhnt/site` is the first repository generated this way. It holds
+the home and About content with explicit section ids and the renderer that
+turns them into an HTML fragment, Markdown and JSON with one revision
+identifier. It is consumed twice:
 
 1. **Live.** The hosted plane imports the module at a pinned version. It
    renders the two pages' content and shared navigation server-side into the
@@ -94,6 +103,11 @@ Publishing an approved candidate to the live site is a pull request on the
 module, a pin bump and a hosted-plane release: a **follow-up**, exactly as the
 acceptance requires ("the public page continues to serve its published
 revision").
+
+The live update is dogfood on the real company site and must not break it:
+the sign-in launcher, the signed-in redirect, OAuth, the presentation panel
+(`/?shape=open`) and every existing route behave exactly as before, and a
+Markdown or JSON request never changes what a browser receives.
 
 Alternatives considered: keeping the prose inside the hosted plane and
 snapshotting it for the engine (two sources, drift, the candidate is not the
@@ -119,6 +133,15 @@ the shell, plan-gated, vendor-dependent). Both rejected.
   content document; a copy change changes it, a rendering change does not.
 - **Citation.** `{url, section_id, revision, section_sha256, quote}`; the
   human form is `https://ai.dhnt.io/about#team @ <revision>`.
+- **Home content (design settled by the conductor).** Title "DHNT"; one
+  paragraph: dhnt turns the computers you already own into one self-hostable,
+  agent-operable mesh; bashy is the foundation; cloudbox and outpost are built
+  on bashy. Sections `#what` (what dhnt is, links to the dhnt and bashy
+  repositories), `#start` (install in one line; the README is the agent skill;
+  bashy is all you need), `#shape` (the existing "Shape this page" link).
+  Navigation Home / About / GitHub, shared with `/about`, which keeps
+  `#about`, `#team`, `#contact`. Short on purpose: the pilot proves the
+  mechanism, not the copy.
 - **Wish provenance.** `bashy shape wish site --page /about --element
   'section=team revision=<rev>' "<copy edit>"`. A frozen check fails the
   candidate when `revision` is not the base revision of the page ("stale,
@@ -130,25 +153,27 @@ Dependency order. Vendor is a proposal (the operator assigns).
 
 | # | Story | Tag | Vendor | Acceptance |
 |---|---|---|---|---|
-| S0 | **Content module** `dhnt/site` (new, p1): content for home and About with declared section ids; renderer to HTML fragment, Markdown, JSON with revision and per-section hashes; stdlib server with negotiation, twins, `Vary`, `ETag`, `Link`, `robots.txt`, `llms.txt`; `shaped.json`, `contract.bsh`, `checks/` (render determinism, unique ids, links resolve, stale-base) | public repo, Go | codex or claude | `go test ./...` green; the same content renders byte-identical twice; `bashy shape verify` passes in the verifier's scrubbed environment; the three representations of `/about` list the same links and section ids |
-| S1 | **Live publication** on `ai.dhnt.io` (rescoped): the hosted plane serves `/` and `/about` from the module (server-rendered block per page, shared nav), the twins, negotiation and headers above, `robots.txt`, `llms.txt`; the browser application renders the module's JSON | hosted plane, release | claude (private repo) | Through the live edge: `curl` with `Accept: text/markdown`, `application/json` and default each return the right body with `Vary: Accept` and the same `ETag`; a Markdown fetch followed by an HTML fetch of the same URL returns HTML (no variant bleed); the no-JavaScript HTML of `/about` and the rendered page show the same sections and ids; from `/about` both a visitor (headless browser) and an agent (`bashy fetch`) reach `/`, return, and cite `about#team @ <rev>` identically |
-| S2 | **Agent discovery evidence + Bashy site skill** (rescoped, WebMCP removed): a cataloged skill `dhnt-site` (how to read the pages: header, twins, citation record) admitted with `bashy skills add` and exported; the discovery matrix run on the live site, each client started with only the page URL | evidence, skill | agy | Matrix recorded for: `curl` default (`*/*`), the Claude Code header `text/markdown, text/html, */*`, `bashy fetch` with and without `--md`, `bashy browser --mode solo` (rendered text and links), and one third-party fetcher we can observe; for each: representation received, whether it found a structured format by itself, or needed the direct twin or the skill. Whether anything fetched `llms.txt` or followed `rel=alternate` is recorded, not assumed |
-| S2b | **WebMCP `read_page` probe** (new, p2, **non-gating**): feature-detected `document.modelContext.registerTool('read_page')` returning the page JSON; verified in Chrome under the origin-trial token or flag with `bashy browser eval` (`getTools`, `executeTool`); result recorded | probe | agy | One recorded run with browser version, flag or token, and the tool output; absence of the API degrades to nothing. Dropping this story is an acceptable operator decision |
-| S3 | **Owner shaping round trip on the engine** (rescoped; depends on S0, not on S1): register the module as a shaped app on the owner's engine host; wish from `/about#team` at the observed revision with a reversible copy edit; stale-base check; verify; preview; the owner (browser, signed in) and Bashy (CLI) read the candidate's HTML and Markdown or JSON and find the same candidate revision; approve; undo; isolation and live stability checked | engine, evidence | claude | Candidate HTML, `.md` and `.json` carry one new revision and the edited copy; a stale revision in the wish is refused by name; after approval the owner's `/site/about` shows the edit, an anonymous request and a second principal see the base; `bashy shape undo` restores the base and history lists both; the live `ai.dhnt.io/about` `ETag` is unchanged before and after |
+| S0 | **Generic site template in bashy** (new, p1): `examples/shaping/site/site.bsh` (`init`, `render`, `serve`, `check`; `--dry-run`, `--json`) with `template/`: content Markdown with declared section ids; renderer to HTML fragment, Markdown, JSON with revision and per-section hashes; stdlib server with negotiation, twins, `Vary`, `ETag`, `Link`, `robots.txt`, `llms.txt`; `shaped.json`, `contract.bsh`, `checks/` (render determinism, unique ids, links resolve, stale-base); the `<owner>-site` skill emitted per instance | bashy, example | codex or claude | script tests and `GOWORK=off go test` in the template on the gate host; `init` on a sample yields a repo whose `bashy shape verify` passes in the verifier's scrubbed environment; the three representations list the same links and section ids |
+| S0b | **`dhnt/site`, the first instance** (new, p1): generated with the template; home and About content; nothing dhnt-specific in the template | public repo | claude | `go test ./...` green; `bashy shape verify` passes; a second owner can generate `<other>/site` from the same template with different content |
+| S1 | **Live publication** on `ai.dhnt.io` (rescoped): the hosted plane serves `/` and `/about` from the module (server-rendered block per page, shared nav), the twins, negotiation and headers above, `robots.txt`, `llms.txt`; the browser application renders the module's JSON; **non-breaking** for every existing route and flow | hosted plane, release | claude (private repo) | Through the live edge: `curl` with `Accept: text/markdown`, `application/json` and default each return the right body with `Vary: Accept` and the same `ETag`; a Markdown fetch followed by an HTML fetch of the same URL returns HTML (no variant bleed); the no-JavaScript HTML of `/about` and the rendered page show the same sections and ids; from `/about` both a visitor (headless browser) and an agent (`bashy fetch`) reach `/`, return, and cite `about#team @ <rev>` identically |
+| S2 | **Agent discovery evidence + Bashy site skill** (rescoped, WebMCP removed): a cataloged skill `dhnt-site` (how to read the pages: header, twins, citation record) admitted with `bashy skills add` and exported; the discovery matrix run on the live site, each client started with only the page URL | evidence, skill | agy | Matrix recorded for at least the clients bashy works with: the fleet's agent CLIs (claude, codex, gemini/agy, opencode) reading the page with their own fetch tool, `curl` default (`*/*`), `bashy fetch` with and without `--md`, `bashy browser --mode solo` (rendered text and links), and one third-party fetcher we can observe; for each: representation received, whether it found a structured format by itself, or needed the direct twin or the skill. Whether anything fetched `llms.txt` or followed `rel=alternate` is recorded, not assumed |
+| S3 | **Owner shaping round trip on the engine** (rescoped; depends on S0b, not on S1): register the module as a shaped app on the owner's engine host; wish from `/about#team` at the observed revision with a reversible copy edit; stale-base check; verify; preview; the owner (browser, signed in) and Bashy (CLI) read the candidate's HTML and Markdown or JSON and find the same candidate revision; approve; undo; isolation and live stability checked | engine, evidence | claude | Candidate HTML, `.md` and `.json` carry one new revision and the edited copy; a stale revision in the wish is refused by name; after approval the owner's `/site/about` shows the edit, an anonymous request and a second principal see the base; `bashy shape undo` restores the base and history lists both; the live `ai.dhnt.io/about` `ETag` is unchanged before and after |
 
-Removed from scope versus the filed stories: the WebMCP tool in the live gate
-(moved to S2b, non-gating), "new gateway tools", OpenAPI, a standalone
-Linkset (all already follow-ups on the card).
+Removed from scope versus the filed stories: the WebMCP tool (operator
+decision 2026-11-22: dropped; story 2ab6237d wontfix, goal retired), "new
+gateway tools", OpenAPI, a standalone Linkset (all already follow-ups on the
+card).
 
 ## Order and critical path
 
 ```
-S0 ──► S1 (live release) ──► S2 ──► S2b
- └───► S3 (engine; needs only S0)
+S0 ──► S0b ──► S1 (live release) ──► S2
+         └───► S3 (engine; needs only S0b)
 ```
 
 S3 no longer waits for the live release, which is the only step with an
-external approval gate (a hosted-plane release). S0 is the one new artifact.
+external approval gate (a hosted-plane release, go given 2026-11-22). S0 and
+S0b are the new artifacts; S0 is reusable by every later site.
 
 ## Gates and venues
 
@@ -162,26 +187,28 @@ external approval gate (a hosted-plane release). S0 is the one new artifact.
 - Evidence: `docs/evidence/sprint-693-dhnt-io-navigation.md`, wire-level only
   (URLs, headers, bodies, candidate and revision ids); hosts by role; no
   hosted-plane internals.
-- Close: S0, S1, S2, S3 accepted with evidence; S2b accepted or dropped with a
-  recorded reason; `dhnt-site` skill exported; pins bumped where the module is
-  consumed.
+- Close: S0, S0b, S1, S2, S3 accepted with evidence; `dhnt-site` skill
+  exported; pins bumped where the module is consumed.
 
-## Decisions reserved for the operator
+## Operator decisions (2026-11-22)
 
-1. **Content home**: new public repo `dhnt/site` (recommended) or another
-   public location for the module.
-2. **WebMCP**: keep S2b as a p2 probe or drop it.
-3. **Live release coupling**: S1 needs one hosted-plane release; confirm the
-   window. The edge's Markdown zone toggle stays off (recommended) so the
-   measured behavior is ours.
-4. **Vendors** as proposed, or reassign.
-5. **Home content**: what the agent-visible `/` says besides the pitch and the
-   links (a short paragraph and the navigation is enough for the pilot).
+1. **Content home**: `dhnt/site`, as the first instance of the generic
+   `<owner>/site` pattern; every other site gets its own `<owner>/site` from
+   the same bashy template.
+2. **WebMCP**: dropped (story wontfix, goal retired).
+3. **Live update**: yes, as long as nothing breaks; dogfood on the real site.
+   One hosted-plane release for S1; the edge's Markdown zone toggle stays off.
+   Discovery evidence covers at least the clients bashy works with.
+4. **Vendors**: as proposed above unless reassigned at start.
+5. **Home design**: left to the conductor; settled in the contracts section.
+   Cloudbox and outpost are built on bashy; bashy is all you need, so the
+   template, the skill and the shaping workflow are bashy verbs, not new
+   tooling.
 
 ## Not doing
 
-Publishing an approved candidate to the live site; MCP or A2A cards; an MCP
-server for the site; Web Bot Auth or Content-Signal policies; changing the
+Publishing an approved candidate to the live site; WebMCP; MCP or A2A cards;
+an MCP server for the site; Web Bot Auth or Content-Signal policies; changing the
 `dhnt.io` to `ai.dhnt.io` redirect; the presentation panel (`/?shape=open`)
 stays as it is; any Sprint 669 milestone.
 
