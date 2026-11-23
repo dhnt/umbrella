@@ -6,7 +6,7 @@ seq: 677
 status: assigned
 priority: p2
 created: 2026-11-23T13:51:46.371639Z
-assignee: agy-gemini4-carbon
+assignee: muse-wonder
 sprint: 697
 ---
 

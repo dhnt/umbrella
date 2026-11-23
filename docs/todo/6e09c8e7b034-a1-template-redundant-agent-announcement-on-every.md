@@ -3,7 +3,7 @@ id: 6e09c8e7b034
 kind: feature
 title: 'A1 Template: redundant agent announcement on every classic channel (/agents.txt first implementation, Bashy-Shaped header, hidden Bash# recipe + visible block, link relations, well-known files, robots/sitemap/feed/noscript/JSON-LD), Markdown-first, tie-break; regenerate dhnt/site'
 seq: 671
-status: assigned
+status: todo
 priority: p1
 created: 2026-11-23T13:51:45.467246Z
 assignee: agy-gemini4-carbon

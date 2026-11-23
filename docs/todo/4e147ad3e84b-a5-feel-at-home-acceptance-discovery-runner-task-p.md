@@ -3,7 +3,7 @@ id: 4e147ad3e84b
 kind: test
 title: 'A5 Feel-at-home acceptance: discovery runner task-prompt leg; matrix on the live site for the fleet CLIs, a browser and a chat fetcher; record who read the block, fetched skill/index, connected to MCP or used bashy, cited correctly'
 seq: 676
-status: assigned
+status: todo
 priority: p1
 created: 2026-11-23T13:51:46.219172Z
 assignee: muse-wonder

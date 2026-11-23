@@ -3,8 +3,8 @@ id: 3cca0ba419a0
 kind: feature
 title: 'A3b bashy consumer verbs: site explore / attach / cite / shape; skills add from a URL; fetch surfaces the agent block'
 seq: 674
-status: assigned
-priority: p2
+status: todo
+priority: p1
 created: 2026-11-23T13:51:45.918828Z
 assignee: agy-gemini4-carbon
 sprint: 697

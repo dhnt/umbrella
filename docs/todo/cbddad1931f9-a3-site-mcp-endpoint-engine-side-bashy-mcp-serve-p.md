@@ -1,9 +1,9 @@
 ---
 id: cbddad1931f9
 kind: feature
-title: 'A3 Site MCP endpoint: bashy mcp serve profile ''site'' (list_pages, read_page, cite, owner-gated shape tools) at a fixed owner-set URL; published through outpost or the hosted relay; server card'
+title: 'A3 Site MCP endpoint, engine side: bashy mcp serve profile ''site'' (list_pages, read_page, cite, tiered shape tools), the outpost app''s same-origin /mcp proxy for companion sites, the server card from site.json'
 seq: 673
-status: assigned
+status: todo
 priority: p1
 created: 2026-11-23T13:51:45.761555Z
 assignee: claude-opus5.5

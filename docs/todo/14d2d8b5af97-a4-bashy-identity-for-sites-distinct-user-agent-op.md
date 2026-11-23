@@ -3,7 +3,7 @@ id: 14d2d8b5af97
 kind: feature
 title: 'A4 bashy identity for sites: distinct user agent + optional signed requests (Web Bot Auth shape, outpost key); site-side verification; MCP auth as the reliable cooperative-agent signal'
 seq: 675
-status: assigned
+status: todo
 priority: p2
 created: 2026-11-23T13:51:46.069345Z
 assignee: claude-opus5.5

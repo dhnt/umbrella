@@ -191,7 +191,7 @@ Review and rescope (2026-11-22) of Sprint 693, the dhnt.io pilot for navigation 
 
 ### sprint-697-master-execution-plan.md
 
-Execution plan for Sprint 697 (backlog, planning only, reviewed with the operator 2026-11-23): the seven stories that make shaping-enabled sites explorable by any agent (A1 template channels incl. `/agents.txt`, A2 hosted-plane release, A3 owner-set MCP endpoint served by `bashy mcp serve`, A3b bashy `site` verbs, A4 bashy identity to sites, A5 feel-at-home acceptance matrix, A6 docs), their vendors and points, the three waves, the gates and venues, the rules carried from Sprint 693, and the decisions settled or still reserved.
+Execution plan for Sprint 697 (backlog, planning only, reviewed with the operator 2026-11-23): the seven stories that make shaping-enabled sites explorable by any agent (A1 template channels incl. `/agents.txt`, A2 hosted-plane release incl. the same-origin `/mcp` proxy, A3 MCP engine side via `bashy mcp serve` profile `site`, A3b bashy `site` verbs, A4 bashy identity to sites, A5 feel-at-home acceptance matrix, A6 docs), their vendors and points, the three waves, the gates and venues, the rules carried from Sprint 693, the story review of 2026-11-23 (eight findings with proposed story changes: statuses, A3b priority, A3 title, the unowned hosted-plane proxy, A1 size, A4 dependency, vendor load, decision lists), a start checklist, and the decisions settled or still reserved.
 
 ### agent-ready-sites.md
 
