@@ -275,6 +275,52 @@ presenter target; brainstorm and session dropping polling for the kit hub;
 LAN identity and app discovery (an outpost sprint); a hosted short redirector
 for join codes (hosted-plane ticket, public wire contract only).
 
+## Delivery rules for the Sprint 696 manager and workers
+
+Binding for every run on this sprint; the story files point here.
+
+1. **Current heads.** Every run starts from the current `origin/main` of
+   bashy (and of the umbrella for story files), never from the shared
+   checkout or stale pins. One branch per story in bashy, `s696-<story-id>`;
+   rebase onto current origin and rerun the story's unit tests before
+   `sprint submit`. Push the branch; never rewrite main; never edit the shared
+   checkout directly.
+2. **Where the code lives.** `bashy/examples/desk/kit` (stdlib only, additive
+   changes, the memo fixture and every desk tool's contract test stay green)
+   and the new `bashy/examples/desk/page` (own Go module, `replace desk-kit =>
+   ../kit`, Go 1.27). No Go import of any other command; composition over
+   HTTP only. No change to form, brainstorm, viewer, notepad or any other app
+   in this sprint; a gap found there is a filed todo with evidence.
+3. **Tests on the dev box are small.** `GOWORK=off go test ./...` in the
+   touched module only, plus the kit `contracttest`. No browser or Playwright
+   runs, no full bashy build, no gates, no containers on the dev box; anything
+   heavier is deferred to the final run on the gate host and recorded as
+   deferred on the story. A build or test step over five minutes needs a
+   recorded reason.
+4. **Root cause before any fix.** A formerly green test that goes red is
+   named, reproduced and classified (product, test, environment) on the story
+   before anything changes. A pre-existing failure is recorded, never
+   silently repaired or reported as passing.
+5. **Security contract is tested, not asserted.** Participant HTML, `state`
+   and `export` never contain the organizer face, its controls or any
+   sibling facilitator key; a refresh never yields a second vote; the same
+   handle from a second address is refused; exports carry no addresses.
+6. **Commits.** Trailers `Sprint: #696`, `Sprint-ID:`, `Story: #N`,
+   `Story-ID:`, `Agent: <assignee>` on every delivery commit; the hook's
+   attribution WARN is a blocker. Small commits, one story per branch.
+7. **Scope.** No cloudbox or outpost change, no release, no live merge
+   engine, no new collaboration engine. p1 and p2 stories do not start
+   without the conductor's go on the sprint thread.
+8. **Manager duties.** Assign p0 in this order: kit first; then page
+   skeleton and join in parallel; then poll/form, text/embed/timer and roles
+   and views. Review by re-running the story's tests on the branch, merge to
+   bashy main promptly, run `bashy mod drift` for the touched modules, bump
+   the umbrella bashy pin (`git add bashy`, never `git add -A`), checkpoint
+   on the card after every step, announce merges on the board, and close a
+   story only on its own criteria plus the relevant regression. Workspaces
+   are deleted when a run finishes unless retained with an owner and a
+   reason. An unresolved failure is never "fixed".
+
 ## Decisions (operator, 2026-11-23)
 
 - Architecture: a page of live blocks over the existing apps, not a merged

@@ -13,3 +13,5 @@ sprint: 696
 ---
 
 Native blocks book:<id>/pN (viewer page rendered inline) and note:<id> (notepad note); embed:<same-origin path or URL> as an iframe for whiteboard, table, Klatch and the demo-queue projector (needs the kit CSP option); timer:<name> with facilitator start/stop/reset and ticks over SSE, visible to all. Each block kind is one small renderer under blocks/ plus a template so a shaping wish can add a kind. Spec: docs/page-live-group-page.md.
+
+Delivery rules: docs/page-live-group-page.md, section "Delivery rules for the Sprint 696 manager and workers" (current heads, one branch per story in bashy, module-local unit tests only on the dev box, root cause before fix, security contract tested, trailers incl. Agent:, no scope beyond the story).
