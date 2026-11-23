@@ -184,7 +184,7 @@ S0b are the new artifacts; S0 is reusable by every later site.
   host; raw request and response headers are kept as evidence.
 - S1 ships in an ordinary hosted-plane release with the operator's go; no
   release is implied by this plan.
-- Evidence: `docs/evidence/sprint-693-dhnt-io-navigation.md`, wire-level only
+- Evidence: `docs/sprint-693-evidence.md`, wire-level only
   (URLs, headers, bodies, candidate and revision ids); hosts by role; no
   hosted-plane internals.
 - Close: S0, S0b, S1, S2, S3 accepted with evidence; `dhnt-site` skill

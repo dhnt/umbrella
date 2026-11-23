@@ -185,6 +185,10 @@ Filed plan for Sprint 689 (backlog, 2026-11-21). Records the shaping workflow mo
 
 Review and rescope (2026-11-22) of Sprint 693, the dhnt.io pilot for navigation and shaping by people and agents. Records what the live site serves today (one single-page shell for `/` and `/about`, no revision, no negotiation, no robots.txt), the Nov-2026 state of the art with verdicts (server-rendered HTML with declared section ids and `Accept: text/markdown` at the origin carry weight; llms.txt, `rel=alternate` and WebMCP do not, so they are cheap or non-gating), and the decision: one public content module (`dhnt/site`) with one renderer for HTML, Markdown and JSON under one revision, consumed by the hosted plane for the live pages and registered unchanged as a shaped app on the owner's engine. Stories S0 generic site template in bashy (`site.bsh`), S0b `dhnt/site` as the first `<owner>/site` instance, S1 non-breaking live publication, S2 discovery evidence for the clients bashy works with plus the `dhnt-site` skill, S3 owner round trip on the engine (depends on S0b only); WebMCP dropped by the operator; the citation record, wish-provenance and home-content contracts; venues; the operator decisions recorded 2026-11-22.
 
+### sprint-693-evidence.md
+
+Wire-level evidence for Sprint 693: the live before-state of the company pages (one single-page shell for `/` and `/about`, Accept ignored, no robots.txt or llms.txt, no revision), then one row per story with the worker's delivery (commit ids) and the conductor's own verification, and the sections that the live release, the discovery matrix and the owner round trip fill in. Hosts by role; no hosted-plane internals.
+
 ## plan-sprint-692-release-thin-bashy.md
 
 Sprint 692 plan of record after the operator rescope of 2026-11-22: one goal, release v1.0.0-rc.40 with bashy as the invariant core (bsh plus dispatcher and internal verbs) and every other command an independently built, shapeable binary behind its adapter. Lists the done-when criteria, the kept stories with vendor owners, the three fleet waves, and the binding rules; records what was closed wontfix and the deferred per-command module split.
