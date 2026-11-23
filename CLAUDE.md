@@ -10,6 +10,8 @@ Small, baseline-proven repairs belong in separate C commits. Broader repairs are
 
 No official v1.0.0 release before official POSIX certification and explicit operator release approval. This migration does not authorize a release.
 
+No hosted-plane deploy per sprint: a hosted change is done when it is merged to dev and verified on the gate host; it ships with the next coordinated release train (umbrella todo `76eac0ea`: tests once on the frozen dev commit, operator go, one deploy, live checklist). Live-site verification is a train item, never sprint acceptance.
+
 Prefer the established self-hosted machine fleet for validation. Hosted CI billing must not be a default dependency. Use existing working execution routes while the self-hosted scheduler is being completed; preserve source identities, isolation and raw test evidence.
 
 ## Start every story on current heads
