@@ -3,7 +3,7 @@ id: 6648c43cb15e
 kind: feature
 title: 'P1 brainstorm block (native): cards and voting from the page'
 seq: 657
-status: assigned
+status: done
 priority: p1
 labels:
     - page
@@ -12,6 +12,8 @@ created: 2026-11-23T12:00:00.24485Z
 weave: 173
 assignee: claude-opus5.5
 sprint: 696
+closed: 2026-11-23T14:37:24.264834Z
+closed_by: agy-gemini4-carbon
 ---
 
 board:<session> renders the brainstorm board inline and lets a page participant vote with their identity as the voter (per-participant cookie jar towards brainstorm); facilitator phase controls stay in brainstorm (link out). Rounds and vote budget are brainstorm's. Spec: docs/page-live-group-page.md.
