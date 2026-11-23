@@ -122,6 +122,40 @@ be learned by a tool that knows them: Markdown front matter `agent:`
 `<meta name="agent:instructions">`, and the Markdown-first serving rule
 described in Layer 1.
 
+### Redundant announcement channels (operator direction, 2026-11-23)
+
+The announcement is cheap, so it is made on every classic channel at once.
+Each one is standard pre-agentic HTTP or HTML; none depends on a consumer
+existing today; bashy consumes all of them. The table says who reads what,
+from the evidence, so nobody mistakes redundancy for reach.
+
+| Channel | Standard | Who reads it today | Note |
+|---|---|---|---|
+| `/agents.txt` at the site root: plain text, `key: value` lines (`site`, `index`, `markdown`, `json`, `skill`, `mcp`, `source`, `edit`, `shape`, `cite`, `bashy`), the agent block as prose below | plain text at a root path, the `robots.txt` / `humans.txt` / `security.txt` shape; the well-known registration was declined, the root path needs none | nobody automatically; **bashy is the first implementation**, producer and consumer | the file every bashy CLI fetches first when it visits a site |
+| `<link rel="alternate" type="text/markdown">`, `application/json`; `rel="describedby"` to `/llms.txt`; per page `rel="edit"`, `rel="via"`; `rel="service-doc"` to `/AGENTS.md` and `rel="service-desc"` to the MCP server card (RFC 8631); `rel="canonical"`, `rel="author"`, `rel="help"` | HTML link types, RFC 8288 `Link` header, all registered relations | Lighthouse's agentic audit, crawlers, bashy; no fetch tool follows them | sent as `Link` headers on every response, including HEAD and errors, because some clients HEAD first |
+| `Bashy-Shaped: <comma-separated values>` response header (module, revision, agents.txt, skill, mcp, source, shape) | HTTP allows any field name; the `X-` prefix is deprecated by RFC 6648, so the field is `Bashy-Shaped` | bashy, curl users, proxies | sent on every representation and on errors |
+| hidden agent recipe at the start of the body: `<script type="text/bashsharp">` with a short Bash# recipe (fetch the twins, read `/agents.txt`, attach the skill, connect to MCP) and a `<div hidden>` with the same instructions in prose | HTML: unknown script types are inert and legal; `hidden` is a standard attribute | raw-HTML readers (curl-based agents, bashy); converters and accessibility trees drop scripts and hidden elements, so most agents never see this one | redundancy only; the visible block carries the message |
+| visible one-line note first in the DOM and the full `## For agents` block | HTML | every agent that fetches the page, every browser agent, every person | the primary channel |
+| Markdown twin opening block + `agent:` front matter; `<meta name="agent:instructions">`, `<meta name="generator" content="bashy site <version>">` | Markdown, HTML meta | Claude Code, OpenCode, Gemini CLI by negotiation; Cloudflare precedent for the meta | |
+| `/AGENTS.md`, `/README.md`, `/skill.md`, `/llms.txt` with preamble | root text files | `npx skills add` (skill), bashy; others when linked | |
+| `/.well-known/agent-skills/index.json`, `/.well-known/mcp/server-card.json`, `/.well-known/agent-card.json` (A2A, registered), `/.well-known/api-catalog` (RFC 9727 linkset naming the MCP endpoint and the twins), `/.well-known/security.txt` (RFC 9116, with `Policy:` → `/AGENTS.md`) | well-known URIs, three of them IANA-registered | `skills` CLI, A2A and MCP clients once pointed, Lighthouse, bashy | |
+| `robots.txt` comment block and `Sitemap:`; `sitemap.xml` listing pages and twins; Atom feed advertised with `rel="alternate"` whose description carries the block | robots, sitemaps, Atom, all classic | crawlers and feed readers; fetch tools parse robots without passing it to the model | the robots comment is for people and crawler operators |
+| `<noscript>` copy of the agent block | HTML | no-JavaScript readers and a few converters | classic, free |
+| JSON-LD `WebSite` with `potentialAction` and `SoftwareSourceCode.codeRepository` | schema.org | search engines' index layer, not agents at fetch time | |
+| DNS `TXT _agents.<host>` naming `/agents.txt` and the MCP endpoint | DNS TXT, the SPF/DMARC shape | bashy only | optional, out of band, survives when the web server is down |
+
+Two risks, handled in the stories:
+
+- **Hidden text is a search-engine cloaking signal.** The hidden recipe and
+  `<div hidden>` must say exactly what the visible block says, nothing more,
+  and the visible block must exist on the same page; the template enforces
+  that equivalence in `site check`.
+- **A page-supplied script is untrusted input.** bashy never executes the
+  `text/bashsharp` recipe by default. `bashy site explore` prints it; running
+  it is an explicit choice, in the verifier's sandbox, with the effect cap
+  limited to `read,net` and the target restricted to the page's own origin and
+  the URLs the recipe names. A recipe that asks for more is shown, not run.
+
 ### Layer 1: serving and the pointer layer
 
 - **Markdown first for agents.** Negotiate by `Accept` with ties broken by
@@ -184,7 +218,8 @@ consumer:
   app on this host (`bashy app add --type shaped --source <repo>`) and print
   the wish, verify, preview, approve and undo sequence; promotion by pull
   request is the existing `shape push`.
-- `bashy fetch` surfaces the agent block first when a page has one.
+- `bashy fetch` surfaces the agent block first when a page has one, reads
+  `/agents.txt` and the `Bashy-Shaped` header, and lists the `Link` relations.
 - **bashy identifies itself**: a distinct user agent (today `bashy-fetch`) and,
   on the owner's choice, a signed request in the Web Bot Auth shape using the
   outpost identity, so a dhnt-style site can verify that a bashy agent is
@@ -218,7 +253,7 @@ can be added to the pointer layer later at no design cost.
 
 | # | Story | Where |
 |---|---|---|
-| A1 | Template: in-page agent block in all three representations, `agent:` front matter and HTML meta twin, `/AGENTS.md`, `/skill.md`, `/.well-known/agent-skills/index.json`, `/llms.txt` preamble, `rel=describedby/edit/via` links, Markdown-first for listed agent user agents, tie-break by order; regenerate `dhnt/site` | bashy `examples/shaping/site`, `dhnt/site` |
+| A1 | Template: the redundant announcement channels above (`/agents.txt`, `Bashy-Shaped` header, hidden recipe + visible block, link relations, well-known files, robots/sitemap/feed/noscript/JSON-LD), `agent:` front matter and meta twin, `/AGENTS.md`, `/skill.md`, `/llms.txt` preamble, Markdown-first for listed agent user agents, tie-break by order; `site check` enforces visible/hidden equivalence; regenerate `dhnt/site` | bashy `examples/shaping/site`, `dhnt/site` |
 | A2 | Hosted plane serves the new paths, headers and serving rule (absorbs cloudbox follow-up 60b2b1007498); one release; live verification | hosted plane |
 | A3 | bashy consumer verbs `site explore`, `attach`, `cite`, `shape`; `skills add` from a URL; `fetch` surfaces the agent block | bashy, yoke |
 | A4 | bashy identity for sites: distinct user agent and optional signed requests (Web Bot Auth shape, outpost key); site-side verification in the template | bashy, outpost, template |
