@@ -1,7 +1,7 @@
 ---
 id: d80f551b7d18
 kind: feature
-title: 'A2 Hosted plane: serve the agent-ready paths, headers and serving rule for dhnt.io (absorbs the Accept tie-break follow-up); one release; live verification'
+title: 'A2 Hosted plane: serve the agent-ready paths, headers and serving rule for dhnt.io (absorbs the Accept tie-break follow-up) plus the same-origin /mcp proxy; one release; live verification'
 seq: 672
 status: todo
 priority: p1
