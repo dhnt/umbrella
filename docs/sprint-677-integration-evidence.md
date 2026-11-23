@@ -690,3 +690,20 @@ Windows user folder `bashy-rc40-candidate/` (CANDIDATE.txt), and the dev box
 from yoke 3eb700cd in the build image: **PASS, 27 checks**, including
 `browser checkpoint: alice sees 'Hello, Shaping!'` and `bob sees 'Hello,
 World!'`. The DOM SKIP recorded in runs #153/#156 is resolved for this candidate.
+
+## Local release gate receipt (2026-11-23, gate host lane 3, official image)
+
+Every run of `scripts/local-release-gate.sh` passed its scans: license gate 388
+modules, 0 unreviewed findings; govulncheck v1.9.0 on go1.27.4, 0 reachable in
+bashy (default, `embed_runner`, `bashy_engines`), outpost and yoke, no override.
+The receipt collector itself refused three times, each a rule defect fixed on
+the candidate (release tooling only):
+
+| Candidate | Refusal | Cause / fix |
+|---|---|---|
+| c4d7ee67 | database older than seven days | vuln.go.dev's index has been unchanged since 2026-11-11; the collector now records the upstream index time fetched live and accepts an older database only when the two match (147e1f2b) |
+| 147e1f2b | un-downloaded module missing h1: go.mod sum | ~300 graph modules per scope are pruned from every build (no go.sum line, never downloaded); recorded as `go_mod_pruned` (87d951bf, 0a6d014d) |
+| 0a6d014d, 8225827f | pruned module carries lock data | a pruned module may carry a zip hash in go.sum (slim-sprig, ginkgo) or sit extracted in the shared module cache (go-openapi/swag); only go.mod lock data is forbidden and no cache-derived digest is recorded (8225827f, 09e3103c) |
+
+Dry run of the 09e3103c collector against the 8225827f reports: PASS, database
+2026-11-11T02:51:11Z = upstream, 1030 pruned modules across the three scopes.
