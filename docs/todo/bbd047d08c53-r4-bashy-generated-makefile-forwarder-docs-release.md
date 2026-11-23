@@ -3,13 +3,15 @@ id: bbd047d08c53
 kind: chore
 title: 'R4 bashy: generated Makefile forwarder, docs, release-gate equivalence on the gate host'
 seq: 568
-status: todo
+status: done
 priority: p1
 created: 2026-11-20T18:51:58.526159Z
 assignee: claude-opus5
 sprint: 660
 sprint_id: 666d2a0c-b433-5286-880b-b5b02134f5cf
 sprint_title: 'Post-rc38: DAG-only build entrypoints and Bashy make fallback'
+closed: 2026-11-23T17:42:42.422718Z
+closed_by: claude-opus5.5
 ---
 
 Plan §R4. Conductor runs the gate: both Bash 5.3 modes 86/86 same named fixtures as rc.38; sequence with the release-pipeline refactor. Parent 5bc29f7f.
@@ -83,3 +85,48 @@ repaired here.
 R3 (`a97acb748321`) is still `status: assigned` although its work is merged in
 bashy (`372e6e61`, merge `289d60e4`). Its owner is muse-wonder-full, so it was
 left alone.
+
+## Closeout verification (2026-11-23, conductor claude-opus5.5)
+
+Provenance, checked against origin:
+
+- R4 is bashy `74100d67` (rebase of `d0c44657`) on `origin/main`. The umbrella
+  record is `e8d799851`, a cherry-pick of `9176cc8f1` + `a79cca74e`. The
+  original `9176cc8f1` is not on `origin/main`, and its content landed
+  unchanged.
+- `74100d67` is an ancestor of both gated tips, `5299e54b` (Leg 3) and
+  `f1907987` (Leg 2). Between those tips only the yoke pin moved, so no engine
+  input changed.
+- The umbrella `origin/main` bashy gitlink `b6394ca6` contains `74100d67`.
+
+Gate evidence. This was **reused, not run fresh** in this closeout. It is
+recorded in `docs/sprint-677-integration-evidence.md` and
+`docs/release-failure-ledger.md`:
+
+- **Leg 3:** `BASH53_OCI=podman ./bin/bashy dag test-bash-gate`, run #156
+  (story e71e8ed7), on bashy `5299e54b`, gate host, official image. Result:
+  86/86 in both modes, with names identical to run 1, which matched rc.39.
+  - rc.39 candidate `33c90247` was gated fresh at 86/86 in each mode, with no
+    NEW, RECOVERED or changed fixture by name against rc.38. Evidence sha256:
+    mode 0 `365ab01e…f243`, mode 1 `2f059ded…e9b5`.
+  - So the fixture set matches rc.38 by name in both modes, through rc.39.
+- **Leg 2:** `./bin/bashy dag test`, run fresh by story 5cfdfc85 on bashy
+  `f1907987`, gate host, official image. Result: PASS, 10 targets ok; the Go
+  test body had 28 ok and 0 FAIL.
+  - At `f1907987`, `test` requires all nine former `make test` prerequisites
+    (the eight script checks plus test-meet-spa-fresh), so `bashy dag test`
+    covers the former `make test`.
+
+Forwarder freshness:
+
+- `bashy dag --makefile --check` is ok at `74100d67`.
+- It was stale at `5299e54b` and on `origin/main` because of `66f1d4e5`
+  (Sprint 692), which reworded the test-startup-linux description in `dag.md`
+  without regenerating the Makefile. The drift is one comment line; the
+  forwarded command was unchanged, so the gate is unaffected.
+- Fixed on bashy main as `4fe6599e`, and `--check` is ok there. The umbrella
+  bashy gitlink pick-up is left to the live Sprint 697 baseline pin-sync claim.
+
+Pre-existing, separate: the gofmt half of `fmtcheck` (todo 622ea2bc2803).
+
+Verdict: R4 acceptance is met. Close.
