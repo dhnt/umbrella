@@ -3,11 +3,13 @@ id: 6f77b3f3588e
 kind: feature
 title: S4 Notepad adopts the revision store; roster members and named guests co-edit; export a named revision
 seq: 572
-status: todo
+status: assigned
 priority: p2
 labels:
     - group-shaping
 created: 2026-11-20T21:08:47.186002Z
+weave: 209
+assignee: codex-gpt6.2-sol
 sprint: 684
 sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
 sprint_title: 'Group shaping rod: one shared-item contract for every bashy app, proven on Klatch and Notepad'
@@ -26,3 +28,7 @@ For a formerly green test failure, stop and report names, commit and venue for i
 Publish kit v0.3.0 and chart v0.1.2 via the local module proxy. Update register-modules.sh, repin the eight kit consumers and four chart consumers and generate their go.sum entries with Go. Build and run each consumer unit suite at the new pins. Use a private gate proxy while iterating.
 
 For the S4 module publication, use a new private proxy, GOMODCACHE and GOCACHE under lane scratch for each candidate. Only accepted bytes may enter the shared proxy and shared caches. Publish from clean committed trees. Regenerate chart's kit checksum before publishing chart, then regenerate the other consumers' sums with Go. The manager verifies those sums against the final commit and publishes that commit to the shared proxy. Run the full kit, Page and Notepad suites and the Go unit suites of the other direct consumers. Retain test evidence for the exact candidate SHA. Claim a free gate lane only for the build and test step, and release it when done. Use the prepared SSH transport from the host KB and the full repository on the gate. If a baseline fails, report its name and cause before a fix. Send concerns and candidate evidence to the manager through the board.
+
+## Candidate regression
+
+Run 209 reproduced Notepad TestDeskContract on the same gate lane. It passed at e7d329a4 and failed at b4e6419a. The behind-shell new-note check expected HTTP 200 and got 403. The candidate classified a loopback request carrying only the shell mount prefix as remote, which denied creation. This is a product regression in the new Notepad admission path. The scoped repair restores local mounted-shell creation while preserving roster and named-guest checks on existing notes.
