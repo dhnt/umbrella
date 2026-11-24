@@ -3,7 +3,7 @@ id: 7c1ad004f53d
 kind: test
 title: R2 A logged-in stranger reaches a satellite's public apps as account (pseudonymous, never a member)
 seq: 709
-status: blocked
+status: todo
 priority: p1
 labels:
     - shaping
@@ -22,3 +22,7 @@ Stays on the card as blocked: cannot start until cloudbox ticket bc9c36080649 la
 ## Moved to the backlog at the close of Sprint 706 (2026-11-24)
 
 Still blocked on cloudbox ticket bc9c36080649 (satellite admission rung). Sprint 706 closed on its A/O/C acceptance; this story is not done and is not reported as done. Re-plan when the ticket lands.
+
+## Shelved 2026-11-24 (operator)
+
+Shelved for now over privacy concerns: admitting a logged-in non-member through a satellite means cloudbox vouches for a stranger to a satellite operator it does not control. The per-app pseudonym keeps the email from the app owner, but a rogue satellite owner would still see all traffic through the satellite and could recognize, track or correlate logged-in visitors across apps without their choosing that relationship. Needs a privacy design review (what a satellite may learn, retention, consent) before any work; not blocked on code. Cloudbox ticket bc9c36080649 is unaffected.

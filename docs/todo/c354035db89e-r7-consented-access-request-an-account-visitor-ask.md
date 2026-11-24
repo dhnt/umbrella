@@ -16,3 +16,7 @@ Spec: docs/access-tiers.md (the only in-product path from account to member). Ca
 ## Rescoped 2026-11-24 (KISS/MVP review, operator-approved plan)
 
 Moved out of Sprint 706 to the backlog: blocked on R2 (7c1ad004f53d, itself blocked on cloudbox ticket bc9c36080649) and on an unfiled cloudbox ticket. Re-plan after R2 lands.
+
+## Shelved 2026-11-24 (operator)
+
+Shelved with R2 (7c1ad004f53d), which it depends on: the account-to-member path assumes a logged-in stranger can reach a satellite's apps, which is shelved over privacy concerns.
