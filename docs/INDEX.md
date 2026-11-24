@@ -4,6 +4,8 @@
 
 - `sprint-656-master-execution-plan.md` — RC38 release-pipeline reconciliation: delivered infrastructure, exact benchmark limits, remaining QA work and current operator release hold.
 
+- `sprint-675-master-execution-plan.md` — Sprint 675 review (2026-11-24) and execution order: evidence lineage from Sprint 575, eight review findings, phases R1 to R7, working rules and open operator decisions.
+
 - `plan-posix-certification-after-separation.md` — Sprint 675 follow-up: investigate all 67 S575 residual results and prepare evidence-backed POSIX certification packets using the tagged baseline.
 
 - `sprint-666-evidence.md` — Sprint 666 exact source identities, installed smoke, three workflow traces, honest measurements and remaining native-host gates
