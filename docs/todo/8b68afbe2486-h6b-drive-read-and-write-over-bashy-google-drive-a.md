@@ -15,6 +15,8 @@ sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
 ---
 
+Start note 2026-11-24 (conductor): H6 is merged (bashy 29cd8db6, examples/trove). Build drive: and gh: as mounts in that example; the drive: credential projection comes from H2 (secret exec --google-root, yoke 529c5d3b, merging separately), so use a fake gws/gh on PATH and a fake vault in tests. Required in this story: runTrove in trove_test.go must fail closed against the real vault: default BASHY_CLOUDBOX_URL to a dead loopback endpoint unless a test supplies its fake. Rebase onto origin heads before submitting; record the verify command with the run.
+
 Staffing 2026-11-24: glm, starts when H6 merges (needs its mount seam) and H2 (vault projection).
 
 Planned vendor: glm. Example level, after H2 and H6. Moved from Sprint 639 S4 on 2026-11-23 (the trove is now Sprint 691's virtual drive). drive: via bashy google drive-list|drive-search|drive-get|drive-upload; the mount's account names the vault entry google/<account>/credentials that H2 projects into the call; gh: via bashy gh api (repo tree, issues as entries), read-only (writes stay 639 S4b). Hermetic tests against fake google/gh binaries (pattern examples/google/test_cli_wrapper.py). Accept: trove ls /drive and /repo list and cat; trove put lands in Drive; tests need no live account; one live smoke with the operator's own bring-your-own-project account recorded by role. Spec: docs/sprint-691-master-execution-plan.md; design: docs/trove-content-app-design.md
