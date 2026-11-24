@@ -1,5 +1,7 @@
 # Umbrella docs — index
 
+- [dhnt.io renovation pilot](dhnt-site-renovation-pilot.md) — Sprint 707 positioning, owner-led homepage renovation and two-person shaping test.
+
 - `sprint-656-release-handoff.md` — Next-TUI RC38 handoff: operator hold, accepted infrastructure, remaining security/candidate qualification, release route and preserved POSIX evidence.
 
 - `sprint-656-master-execution-plan.md` — RC38 release-pipeline reconciliation: delivered infrastructure, exact benchmark limits, remaining QA work and current operator release hold.

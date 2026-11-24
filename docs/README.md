@@ -1,5 +1,7 @@
 # Umbrella docs — catalog
 
+- [dhnt.io renovation pilot](dhnt-site-renovation-pilot.md) — Sprint 707 tests everyday language and the developer promise by shaping the existing homepage. Its form pilot covers personal scope, understandable refusal, voluntary adoption and one upstream update.
+
 - **`sprint-656-master-execution-plan.md`** — Current RC38 pipeline and QA-follow-up status, preserving the original rc.37 venue plan. Separates accepted infrastructure from frozen-candidate security/build/upload qualification, records the warm-cache benchmark limits, and leaves unresolved defects, design work and operator-held publication explicit.
 
 - **`sprint-675-master-execution-plan.md`** — Review of Sprint 675 before start and its master execution plan. Records that Sprint 575 story `ca76921cf9e5` is the evidence source and Sprint 571 only the origin of the story identities; that the sealed evidence archive was located and checksum-verified and is indexed in the private harness kit; the frozen-source, toolchain, mixed-engine and no-licensed-venue constraints; the phase order (Phase 0 verification, R1 ledger, R2-R5 in parallel, conditional R6, R7 handoff); output placement and stop conditions; and the operator decisions still open (go, reviewer, probes). Planning only.
