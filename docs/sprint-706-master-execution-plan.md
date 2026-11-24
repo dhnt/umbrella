@@ -62,6 +62,26 @@ Changes from the filing:
 Sprint done: R6, R1, R3 and R5 closed, R2 recorded as blocked. The R5 defaults
 below still need the operator's confirmation before R5 is assigned.
 
+## A/O/C critical path: a real test before Christmas (operator, 2026-11-24)
+
+The case is on R5. O hosts the app and owns the member list; A (company /
+support, no outpost) and C (contractor / support, with an outpost) are O's
+members; group support is granted shape; O approves. Members already reach O's
+app through the satellite, so the account word (R1, R3) and the public wish
+list (R6) are off this path and run in parallel.
+
+| By (PST) | Step | Story |
+|---|---|---|
+| 11-27 | the owner grants group support from the CLI | S14 `ef2ce499a64a` |
+| 12-04 | a granted member wishes, verifies, previews; the owner approves (R8 baseline first) | R5 `5c1b07e994f1` |
+| 12-04 | open pages pick up an approved version | R10 `3b89e914ed66` |
+| 12-09 | C pulls and pushes through the owner's site MCP (day-1 reachability check) | R9 `b15e7074d8ba` |
+| 12-11 | release-train candidate with these, after the operator says go | train item |
+| 12-14 to 12-18 | real A/O/C test on real hosts, operator-held | live |
+
+Risk: if an MCP client on C's machine cannot reach O's site MCP as a member
+(R9 step 0), C uses the browser path A uses and the gap is filed with its cause.
+
 ## R5 defaults (operator to confirm at review)
 
 1. The owner grants shape per app feature through the Sprint 641 `features`

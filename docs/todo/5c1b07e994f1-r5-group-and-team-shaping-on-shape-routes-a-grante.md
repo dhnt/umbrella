@@ -29,6 +29,6 @@ Acceptance (unit tests on the gate host, fakes):
 1. A and C each wish through the site MCP or the browser on O's host; O approves; the version records the member as author and O's allowance as the spend, with the member as spender.
 2. A member outside group support: the wish demotes to O's request queue. An account stranger and an anonymous visitor: configuration only.
 3. Two members change the same feature: the second is refused with both revisions returned.
-4. The approved version is what everyone gets on the next page load; no redeploy.
+4. The approved version reaches every open page without a redeploy (R10).
 
-Not in the MVP (follow-ups, file only when asked): C building and verifying on C's own host and pushing to O (shape push/pull needs a member-authenticated remote on O's outpost); live push of a new version to open pages; named maintainers other than the owner.
+Split for the before-Christmas real test (operator, 2026-11-24): this story is the member grant (shape_wish, shape_verify, shape_preview admitted for a granted member; shape_approve stays the owner's). C's pull/push is R9 (b15e7074d8ba); open pages picking up an approved version is R10 (3b89e914ed66). Still out: building and verifying a candidate with C's own host resources, and approvers other than the owner.
