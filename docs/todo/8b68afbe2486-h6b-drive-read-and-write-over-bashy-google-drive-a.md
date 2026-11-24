@@ -10,8 +10,8 @@ labels:
     - content
     - trove
 created: 2026-11-14T23:25:52.918388Z
-weave: 236
-assignee: ycode-cascade-x3
+weave: 238
+assignee: codex-gpt6.2-sol
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost

@@ -3,9 +3,11 @@ id: 94c3aa2293c4
 kind: feature
 title: 'H1b hosted runner executes an approved gated call: the signed identity carries the settled approval (approval_id, digest, effects); the runner allows exactly those effects for that one call'
 seq: 706
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-24T14:36:58.449177Z
+weave: 237
+assignee: claude-fable5.2
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
