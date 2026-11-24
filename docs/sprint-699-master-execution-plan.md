@@ -47,6 +47,30 @@ a cadence). A5 runs after T1 is live.
 - Later hosted changes join as they merge to dev; each adds its live check to
   the T1 checklist.
 
+## Before any tag or release cut: pins at heads (recorded 2026-11-24)
+
+Sprints 684 and 685 closed with dependency pins that trail their repository
+heads, because Sprint 675's coreutils pin sync was still in flight and is the
+next writer of all of them. **Nothing is tagged, frozen or cut from this
+train until these are confirmed clean**, on the frozen commit:
+
+- `bashy mod drift` at the umbrella root shows no `stale` row. Known stale at
+  the time of writing: bashy → bashsharp and ycode → bashsharp (pinned
+  `fa2401af`; bashsharp `main` had `abe0538` and `08fabb3`).
+- Every umbrella gitlink equals its repository's default-branch head. Known
+  behind: bashsharp, coreutils, yoke, outpost.
+- The bashy/ycode pair is at its one-commit minimum (those two modules
+  require each other, so one side always trails by exactly one pin commit).
+- Pin commits are forward only: a new gitlink must contain the one on origin.
+
+Known red tests to carry into the gate as recorded failures, not as passes,
+unless Sprint 703 has fixed them first: ycode
+`TestHarnessStreamWaitsForAppendNotifications` (bug `08ee6df70b5d`: with a
+current bashy the agent's kb lookup gets no context) and `bashy/yoke/fetch`
+`TestStandaloneHelpAndDeps` (`bf5c8c71f65e`). Any other failure is new and
+blocks. Three ycode timing tests fail only when the gate host is busy
+(`5469f847be3f`): run the comparison on an idle lane.
+
 ## Gates
 
 - Pre-release, once: container unit suite, desktop-journey e2e with
