@@ -3,6 +3,12 @@
 Rescoped 2026-11-24 at the operator's review. The card and its stories are
 authoritative; this page is the map. Planning only until assigned.
 
+**Held (operator, 2026-11-24)** until Sprint 701 decides go or no-go on the
+UI SDK and Sprint 705 S3 specifies the malleable UI for agents. Then re-review
+O1 and O2 against that UI: the form, viewer and brainstorm rows may be rebuilt
+starters, and web offer/adopt (open decision 1) belongs to that design. O0 and
+703 D4 do not depend on the UI and may proceed in 703.
+
 ## Finding: the owner side is platform, not per-app work
 
 The owner/producer verbs already exist for every app registered
