@@ -313,8 +313,9 @@ identically before and after the pin changes of these sprints.
 
 What follows:
 
-- **Sprint 703** (backlog, planning only): the defects and gaps these sprints
-  found but did not own. The agent's kb context (`08ee6df70b5d`, needs an
+- **Sprint 703** (backlog, planning only; 18 stories; start from
+  `handoff-sprint-684-685.md`): every defect and gap these sprints found but
+  did not own, beginning with the pin cleanup (F0). The agent's kb context (`08ee6df70b5d`, needs an
   operator ruling first), the two red tests, three load-sensitive ycode tests,
   the Session test teardown leak (`790d4c29d660`), lifting the revision wiring
   into the kit's shared handler (Page and Notepad carry about 250 and 580

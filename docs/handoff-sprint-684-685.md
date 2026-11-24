@@ -11,7 +11,7 @@ stories are authoritative.
 |---|---|---|
 | 684 | done, 4 of 4 | revision store in the desk kit; Page, Session and Notepad adopt it |
 | 685 | done, 2 of 2 | `meet poll` ballot fix; coverage matrix |
-| 703 | backlog, not reviewed, nobody assigned | nine follow-up stories from 684 and 685 |
+| 703 | backlog, not reviewed, nobody assigned | every bug and issue still to resolve from 684 and 685: 18 stories, first one (F0, p0) is the pin cleanup below |
 | 699 | backlog | release train; integration stories I1 and I2 of this epic live here |
 
 Merged heads from these sprints: bashy `9135c8c8` (features; later pin-only
@@ -78,9 +78,14 @@ acceptance.
   owner/member workflow (the operator confirms before that instance is
   started). Run them on integrated main at the frozen commits.
 - **Sprint 703** must be reviewed with the operator before anything is
-  assigned. Its first story needs a decision, not code. Its second (lifting
-  the revision wiring into the kit's shared handler) should land before
-  another app adopts the store.
+  assigned. Order: F0 `c901b030` (pins at heads, p0; it is the check in the
+  section above and gates the release train); then the two p1 stories: the
+  agent kb bug `08ee6df70b5d`, which needs a decision before code, and the
+  kit handler lift `60b4624b22f9`, which should land before another app
+  adopts the store; then the p2 bugs (red tests, test teardown, board, fleet
+  probe, viewer, gate host bashy, weave resume); the p3 items last (shared
+  agent name, sprint comment author, `ps` keywords, and the four coverage
+  follow-ups: whiteboard, storyboards, brainstorm registration, table).
 
 ## Lessons for the next manager
 
