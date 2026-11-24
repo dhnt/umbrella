@@ -22,11 +22,11 @@ Step 0 = the R8 baseline (d8b7f10afa31): targeted unit tests yoke pkg/shape/...,
 
 ## Minimum acceptance case (operator, 2026-11-24): small business with a contractor
 
-Three people in one group (support) across two circles (company: O and A; contractor: C), one app, one line on O's host. O is the primary owner (the host owner) and sits in company / support like A; as host owner O passes every audience regardless, so the listing is for the record, not for access.
+One app, one line on O's host, judged from O's member list (the outpost resolves relationships against its host owner's list; names on A's or C's own lists do not matter). O is the primary owner and owns circles company and contractor and group support; A is in company / support, C in contractor / support.
 
 | Who | Level | Relationship to O | Circle / group | How they shape |
 |---|---|---|---|---|
-| O, office manager/admin | owner (O's outpost hosts the app) | owner | company / support (same as A) | shapes locally; the only approver |
+| O, office manager/admin | owner (O's outpost hosts the app) | owner | owns the member list (circles company, contractor; group support) | shapes locally; the only approver |
 | A, business owner | account (no outpost) | member | company / support | browser or site MCP on O's host, the member path (workflow 2) |
 | C, contractor | owner (C's own outpost) | member | contractor / support | builds and verifies a candidate on C's host, pushes it to O, pulls O's line back (workflow 3) |
 
