@@ -42,3 +42,29 @@ No cloudbox ticket is needed. Access is the owner's (share per app + the Sprint 
 - shape_push (site MCP, shape scope): takes a unified diff and the base revision. Refused with ErrConflict naming base and active when base != the owner's active revision (the R5a rule). Otherwise the patch is applied to CloneAt(base) in a candidate workspace and committed as a candidate (extend Import, service.go ~435, to accept a patch; CopyWorkspace stays directory-only), Principal = the member, ActivationPrincipal = the owner, then verified on the owner's host. shape_approve stays the owner's.
 - A member without the shape scope, an account and an anonymous caller are refused both tools; nothing is written for them.
 Acceptance: yoke unit tests (patch import, stale base refusal, scope refusal) and bashy site MCP tests with the existing stubs; gate host only. E2E is M3.
+
+## Step 0 and M2 delivery, 2026-11-24
+
+M1's route inspection confirms that C can present the exchanged `host:proxy`
+bearer to the satellite for an app O shared with C. O's outpost checks the
+app grant and forwards the signed member identity and audience to the same
+`/mcp` endpoint used by the browser. M2 exercised that signed request over
+Streamable HTTP with fixture identities on the gate host. The client token
+exchange is covered by M1. The cross-machine acceptance run belongs to M3.
+
+`shape_pull` returns `result.revision` and `result.files` from O's committed
+tree. Each file has a path, Git mode and base64 content. Source and patch
+transfers have an 8 MiB limit. `shape_push` takes `base_revision` and a
+unified text diff in `patch`. A successful result includes the verified
+candidate ID, C as principal and O as activation principal. O can pass that
+ID to `shape_approve`. A stale push reports the submitted and active
+revisions before creating a candidate.
+
+Gate evidence for Yoke `4ee516f5` and Bashy `1b3d428e`: 66 top-level
+`pkg/shape` tests and 12 focused `internal/agentos` tests passed with
+`GOWORK=off`, the committed module pin and `-count=1`. The site template
+suite and vet for both affected packages passed. The signed HTTP test
+checked the pulled file bytes, verified candidate attribution, owner-side
+verifier and stale refusal. The scope matrix checked that denied calls
+never reached the executor. The lifecycle test checked the active revision
+before and after owner approval.
