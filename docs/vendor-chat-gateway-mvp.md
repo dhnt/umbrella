@@ -41,7 +41,8 @@ The research in the stories of those four sprints stays as reference. The disput
    - A failed sync call falls back to pull with the same idempotency key, so the work runs exactly once.
      A gated sync call is likewise re-dispatched over pull with the same key: a gated call always
      settles on the pull route (decision 3).
-   - Every reply reports `route: sync|pull`.
+   - Every reply reports `route: sync|pull` (Sprint 691 adds `hosted`; see
+    "Hosted route" below, so the full set is `route: sync|pull|hosted`).
    - Every delegation or gated action is a master task. A gated sync call claims the same task before the
      pull route settles it, so any client can resume it by task id, including another vendor's client.
 3. **Seven tools, text first, the same for every vendor.**
@@ -174,6 +175,97 @@ digest-bound approval there.
    reason `denied`. An approval nobody answers is denied after the bounded
    wait (`DenyUnanswered`) and the task ends as `cancelled` with reason
    `approval-unanswered`. Either way the candidate never executes.
+
+## Hosted route (Sprint 691 H3)
+
+> **Status: draft — pending review by the cloudbox owner.** The master-side
+> implementation is tracked as a cloudbox ticket filed by the operator and
+> referenced here by id only (never quoted). Ticket id: _pending — to be
+> recorded on story `770e8b83683e` before this section leaves draft._
+
+The gateway's route set is `sync | pull | hosted`. Every reply reports
+`route: sync|pull|hosted`. The hosted route runs the call on a
+dhnt-provisioned, on-demand `bashy mcp serve --hosted` runner acting as the
+caller; it is the fallback for cloudbox-registered users who have no live
+paired outpost.
+
+**Routing rule (chosen per call, in order).**
+
+1. **Live paired outpost → `sync`.** If the caller has a paired outpost that
+   is live (attached to an authorized satellite that admits the caller), the
+   call takes the sync route exactly as in decision 2. A live outpost always
+   wins.
+2. **Registered caller with no host, or host offline → `hosted`.** If the
+   caller is cloudbox-registered and has no paired outpost, or the paired
+   outpost is not live, the master dispatches the call to a hosted runner.
+3. **Owner-host-bound verbs → `pull` as today.** A verb bound to an app that
+   lives on someone's outpost (the owning host must execute it) never takes
+   the hosted route; it follows the pull route and its durable task exactly
+   as before, even when the caller would otherwise qualify for `hosted`.
+   A failed sync call still falls back to pull with the same idempotency
+   key (decision 2); the hosted route does not change that fallback.
+
+**Per-call identity and secrets token.** For each hosted call the master
+mints a versioned, signed, short-TTL identity payload and a caller-scoped
+`secrets:read` token, and sends both with the call to the runner:
+
+```json
+{"version": 1, "caller": "<opaque profile id>", "task_id": "…",
+ "idempotency_key": "…", "secrets_token": "<short-lived secrets:read token>"}
+```
+
+- `caller` is the opaque profile id of the registered caller; the runner
+  treats it as the principal for the call.
+- `task_id` and `idempotency_key` are the master task's ids, so a retried
+  or re-dispatched call with the same key never starts new work.
+- `secrets_token` is a short-lived token scoped to `secrets:read` for that
+  caller only. The runner uses it to pull the caller's vault secrets itself
+  (for example under `bashy secret exec`); no credential passes through the
+  gateway, and nothing persists on the runner after the call.
+- The payload is signed by the master and verified by the runner per
+  request, in the same fail-closed manner as the `--outpost` identity:
+  an unsigned, expired or replayed payload is refused and nothing runs.
+
+**Gated calls settle by the caller on the master.** The effect policy is
+unchanged: `read` runs, writes are audited, and
+`destroy`/`spend`/`cred`/`priv` gate. On the hosted route there is no owning
+host, so the runner executes nothing for a gated call and answers `gated`
+with its effects; the caller settles the approval on the master through the
+existing `approve` tool, bound to its digest (`approval_id`, `digest`,
+`decision: "approve"|"deny"`). This is the one exception to decision 2's
+"owning host decides": with no owning host the caller is the settler, and a
+remote or stale-digest decision still fails closed. A denial, or an
+approval nobody answers within the bounded wait, ends the task as
+`cancelled` and the gated call never executes.
+
+**Audit.** Hosted calls are audited as `mcp-hosted`, with the caller as the
+principal in the audit line, alongside the existing `mcp-<tool>` audit for
+master-native desktop tools.
+
+**Runner registration.** A hosted runner is registered with the master
+before it may receive calls. At registration the master provisions the
+runner's verification key — the public key material the runner uses to
+verify master-signed per-call identities — and the runner holds its side
+of that trust as a `0600` key file re-read per request, loopback only,
+failing closed on any verification error (the same posture as
+`bashy mcp serve --outpost`). An unregistered runner, or one whose
+verification key does not match the master's signer, receives no hosted
+calls. Runner provisioning and key rotation are master-side operations
+tracked by the cloudbox ticket referenced above; this document specifies
+only the public wire: signed payload in, `route: hosted` on every reply.
+
+**Connected accounts.** A hosted user connects a Google account through a
+portal consent step on the master. The step completes the user's own
+bring-your-own-project OAuth client — there is no dhnt-owned Google OAuth
+client — using a web redirect to the master (no browser loopback callback
+on a host, since there is no host). On consent the master writes the
+resulting refresh token to the user's vault under
+`google/<acct>/credentials`, where `<acct>` names the connected account.
+Hosted calls then project that vault entry into the call for its duration
+only; the account list is derived from the vault names (`google/*`), with
+no second inventory. A user who also has a laptop may instead run
+`bashy google auth-login` there and push the credential with
+`bashy google auth-export --to-vault`.
 
 ## Clients in the MVP
 
