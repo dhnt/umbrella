@@ -221,7 +221,7 @@ Design of record (operator decisions 2026-11-24) for who a caller is across the 
 
 ### sprint-683-master-execution-plan.md
 
-Sprint 683 rescope (backlog, planning only, reviewed with the operator 2026-11-24). The owner/producer verbs (release, offer, adopt, submit) already work for every shaped app, and the 682 build blocker is fixed on bashy main, so the sprint is now about evidence: O0 confirms the fix and closes its todo, O1 runs an owner publish e2e on the apps the operator uses most (form/poll, then viewer, then brainstorm), and O2 writes the owner kb runbook. Also covers why form definitions are data rather than shaping, the dependencies on Sprints 703 and 706, what is not done, and open decisions.
+Sprint 683 (backlog, held until Sprints 701 and 705 S3 settle the agent UI; repositioned 2026-11-24 on one shapeable page whose embedded components are equally shapeable, the model for any website). The owner/producer verbs (release, offer, adopt, submit) already work for every shaped app, and the 682 build blocker is fixed on bashy main, so the sprint is now about evidence: O0 confirms the fix and closes its todo, O1 runs an owner publish e2e on the apps the operator uses most (form/poll, then viewer, then brainstorm), and O2 writes the owner kb runbook. Also covers why form definitions are data rather than shaping, the dependencies on Sprints 703 and 706, what is not done, and open decisions.
 
 ### sprint-706-master-execution-plan.md
 
