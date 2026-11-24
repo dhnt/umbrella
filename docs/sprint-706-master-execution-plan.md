@@ -33,6 +33,35 @@ consolidates the stories kept from the sprints it retires.
 Order: R8 and R1 first (baseline, then the word), R4 and R6 any time, R3 after
 R1, R5 after R1 and R8, R2 when the cloudbox ticket lands, R7 after R2.
 
+## MVP rescope (2026-11-24, operator-approved)
+
+KISS review against the code. Active scope is five steps, in order:
+
+1. **R6** default personalization wish list (bashy). Independent.
+2. **R1a** consumers accept `account`, with `signed-in` kept as a logged alias
+   (yoke `pkg/coopauth`, bashy `internal/agentos/mcp_site.go`, website
+   template, desk kit); consumer pins bump.
+3. **R1b** outpost produces `account`, plus the wire doc and the OS-elevation note.
+4. **R3** vocabulary sweep, absorbing R4's Status lines (one doc commit).
+5. **R5** group and team shaping on shape routes; step 0 is the R8 baseline record.
+
+Changes from the filing:
+
+- R1 needs no cloudbox ticket: the outpost derives the stamp from its held
+  grant copies (`outpost/internal/agent/grants.go`). The cross-repo shared
+  fixture is dropped; per-repo alias tests suffice.
+- R4 merged into R3; R8 folded into R5 step 0 (both `wontfix`, pointing
+  there).
+- R5 fixture trimmed to owner, granted member, ungranted member, account and
+  anonymous. Its tests grant through `shaped.json` audiences, so Sprint 703 S14
+  gates only CLI grants.
+- R2 stays on the card as `blocked` on cloudbox ticket `bc9c36080649`; R7 moved
+  to the backlog until R2 lands.
+- The `signed-in` alias is removed no earlier than one release after R1b.
+
+Sprint done: R6, R1, R3 and R5 closed, R2 recorded as blocked. The R5 defaults
+below still need the operator's confirmation before R5 is assigned.
+
 ## R5 defaults (operator to confirm at review)
 
 1. The owner grants shape per app feature through the Sprint 641 `features`
@@ -73,5 +102,5 @@ todo `0d657f972c91`).
 
 ## Open items
 
-The cloudbox stamp-producer ticket for R1 and the cloudbox half of R7 are not
-filed yet; record their ids on the stories when they are.
+The cloudbox half of R7 is not filed yet; record its id on R7 when it is. The
+R1 cloudbox stamp-producer ticket is void (the outpost produces the stamp).

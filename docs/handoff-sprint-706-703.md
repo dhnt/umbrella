@@ -64,9 +64,14 @@ table; approvers are the owner plus named maintainers; no driver lease
 (sequential revisions, conflicts refused with both revisions, rebase and
 re-verify before approval).
 
-**Open items:** the cloudbox tickets for R1's stamp producer and R7's hosted
-half are not filed; record their ids on the stories when they exist. Cloudbox
-is private: name tickets by id, never quote their contents here.
+**Open items:** R7's hosted half has no cloudbox ticket yet; record its id
+on the story when it exists. Cloudbox is private: name tickets by id, never
+quote their contents here.
+
+**Rescoped 2026-11-24 (KISS/MVP, operator-approved):** the active order is R6,
+R1a (consumers), R1b (outpost), R3 (+R4), R5 (+R8 baseline as step 0). R2 is
+blocked on the cloudbox ticket and R7 is in the backlog. R1 needs no cloudbox
+ticket. Details: `docs/sprint-706-master-execution-plan.md`, "MVP rescope".
 
 ## Sprint 703 in one screen
 
