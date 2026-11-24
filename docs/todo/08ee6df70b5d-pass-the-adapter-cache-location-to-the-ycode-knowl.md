@@ -18,3 +18,7 @@ Run 220 at ycode 8ad8cd19: TestHarnessStreamWaitsForAppendNotifications fails 5/
 Run 223 tested the unchanged one-second assertion on the gate. An adapter-cache-only allowlist, XDG-cache-only, the four cache-location variables together, and HOME alone each failed (1.07–1.12 seconds). The default adapter and XDG cache variables were unset. The fixture also replaces HOME with a temporary directory. Keeping the effective adapter cache across that fixture change allowed the assertion to pass with a cache-only allowlist (V5, 1.38 seconds total test time).
 
 With the cache resolved and a known page in a disposable repository ring, the real command returned the page in JSON but exited 1 because the required agent ring lacked YCODE_DATA_DIR. The harness consequently selected empty knowledge. Providing a store location to a shared command policy requires an operator decision about least privilege. Run 223 is reference evidence. The supervisor deferred the product repair for a separately planned story. Keep this bug open at p1.
+
+## Sprint 703 review 2026-11-24 (operator)
+
+Operator ruling (F1): the kb command may receive only the adapter's cache location and the Go build cache variables (the minimum to find or build its binary); nothing else from the parent environment. Unblocked for code.
