@@ -3,12 +3,14 @@ id: dd7214790c33
 kind: task
 title: 'H4 pilot runner on the primary Linux build host: image, hosted entry, tunnel to the master, hosted-runner skill-script'
 seq: 666
-status: todo
+status: assigned
 priority: p1
 labels:
     - bashy-hosting
     - infra
 created: 2026-11-23T13:18:04.529734Z
+weave: 239
+assignee: agy-gemini4-hydrogen
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost

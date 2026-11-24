@@ -3,18 +3,19 @@ id: 8b68afbe2486
 kind: feature
 title: 'H6b drive: (read and write over bashy google drive-*) and gh: (read-only over bashy gh api) mounts for the trove; account bound per mount; hermetic fakes'
 seq: 293
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - content
     - trove
 created: 2026-11-14T23:25:52.918388Z
-weave: 238
 assignee: codex-gpt6.2-sol
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+closed: 2026-11-24T15:15:58.102368Z
+closed_by: claude-opus5.5
 ---
 
 Start note 2026-11-24 (conductor): H6 is merged (bashy 29cd8db6, examples/trove). Build drive: and gh: as mounts in that example; the drive: credential projection comes from H2 (secret exec --google-root, yoke 529c5d3b, merging separately), so use a fake gws/gh on PATH and a fake vault in tests. Required in this story: runTrove in trove_test.go must fail closed against the real vault: default BASHY_CLOUDBOX_URL to a dead loopback endpoint unless a test supplies its fake. Rebase onto origin heads before submitting; record the verify command with the run.
