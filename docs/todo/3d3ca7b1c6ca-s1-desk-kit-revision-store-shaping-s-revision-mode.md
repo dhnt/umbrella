@@ -3,11 +3,13 @@ id: 3d3ca7b1c6ca
 kind: feature
 title: 'S1 Desk-kit revision store: shaping''s revision model for an artifact (history, undo, restore, save against base_rev)'
 seq: 578
-status: todo
+status: assigned
 priority: p1
 labels:
     - group-shaping
 created: 2026-11-20T21:42:54.820612Z
+weave: 193
+assignee: agy-gemini4-carbon
 sprint: 684
 sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
 sprint_title: 'Group shaping rod: one shared-item contract for every bashy app, proven on Klatch and Notepad'
@@ -24,3 +26,5 @@ Run builds and unit tests only in the assigned gate-host Linux lane. The manager
 For a formerly green test failure, stop and report names, commit and venue for investigation. Compare with last green, bisect and record product, test or venue cause on the story before a repair assignment. Keep every existing test enabled. Fetch and rebase before submitting. Preserve the candidate and redo against fresh heads if the rebase is nontrivial. Re-run the story suite on the submitted SHA. Supply branch, commit, commands, counts and exits, baseline and candidate evidence. Include Sprint, Story, Story-ID and Agent trailers. The manager owns merges, tags, proxy publication, pin updates and pushes. Use host roles in all public evidence.
 
 The manager reserved gate lane 2 for this story.
+
+Publish kit v0.2.0 and chart v0.1.1 via the local module proxy. Update the two version lines in examples/desk/register-modules.sh, repin all eight kit consumers and all four chart consumers, and generate their go.sum entries with Go. Build and run each consumer unit suite at the new pins. Use a private gate proxy for candidate builds and reserve the shared proxy for accepted bytes. The version identifiers belong to the proxy.
