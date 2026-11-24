@@ -54,10 +54,13 @@ is conditional on a proven defect. R7 `2f848bba27c7` consolidates.
    companion 493-TP shell archive are now indexed in the private harness kit
    (`docs/S575-FULL-D-EVIDENCE-INDEX-20261119.md` there), which had no record
    of them before. On that workstation an agent reads the location without
-   probing the system: `bashy kb search --user "S575 evidence archive"`
-   (host knowledge base page `s575-posix-evidence-archive-location`; the
-   host store is not searched from inside a repository unless `--user` is
-   given). Restricted content never enters this repository.
+   probing the system, from any directory or checkout:
+   `bashy kb context --for "S575 evidence archive location"` reads the
+   repository and host knowledge bases together and returns the host page
+   `s575-posix-evidence-archive-location`. (`bashy kb search` reads one
+   store at a time and needs `--user` inside a repository; making it
+   host-wide by default is filed as a todo.) Restricted content never
+   enters this repository.
 2. **Private harness checkout was behind.** The measured harness commit
    `6966bc6` is on the kit's origin default branch; the workstation's local
    checkout was 12 commits behind and was fast-forwarded during this review.
