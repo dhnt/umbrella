@@ -81,7 +81,7 @@ then **brainstorm**.
 
 | Story | Prio | Depends on |
 |---|---|---|
-| O0 confirm the console builds the desk-family apps as member instances from the module proxy; close `d35e0de8` with that evidence | p0 | 703 F11 `d246ca4e` (gate host bashy current) |
+| O0 `b23982703c71` confirm the console builds the desk-family apps from the module proxy; close `d35e0de8`. **Moved to Sprint 703** | p0 | 703 F11 `d246ca4e` (gate host bashy current) |
 | O1 owner publish e2e skill-script: form, then viewer, then brainstorm rows | p1 | O0; 703 D4 `90f03f54`; 706 R8 `d8b7f10afa31` |
 | O2 kb runbook "Publish a shaped version to members" | p2 | O1 |
 
