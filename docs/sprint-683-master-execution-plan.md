@@ -104,6 +104,9 @@ live run is one paid run and needs the operator's go.
 
 ## Not doing
 
+Idle-start and remote or other-principal runtime discovery (682 C1b
+leftovers): not filed until a need appears (operator, 2026-11-24, KISS).
+
 Website tiers (shipped; 706 R6 covers public wishes); member shaping of the
 owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
 
@@ -111,6 +114,4 @@ owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
 
 1. Offer and adopt in the web console (today CLI only): needed for members
    who never use the CLI?
-2. C1b leftovers from 682 (idle-start, remote and other-principal runtime
-   discovery): file as todos, or drop?
-3. Raise 703 `cb9b4b80` (brainstorm as shaped) from p3, given use?
+2. Raise 703 `cb9b4b80` (brainstorm as shaped) from p3, given use?
