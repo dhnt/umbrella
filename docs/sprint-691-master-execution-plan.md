@@ -1,8 +1,8 @@
 # Sprint 691: hosted bashy and the trove virtual drive for cloudbox users without a live outpost
 
 Sprint UUID: `2c1803fe-634b-51fb-818c-9ac8e2a5428c`. Epic: bashy-hosting.
-Status: **planning only**, rescoped 2026-11-23 from a one-story capacity spike; no
-implementation started, no manager appointed. The sprint card and its stories are
+Status: **active** since 2026-11-24 (conductor claude-opus5.5), rescoped 2026-11-23 from a
+one-story capacity spike and to its MVP on 2026-11-24. The sprint card and its stories are
 authoritative; this document records the framing, the review and the decisions.
 
 ## Operator framing (2026-11-23)
@@ -102,7 +102,32 @@ skill-scripts; nothing from the hosted control plane is quoted here.
 | T1 | Test case: a registered user with no outpost asks their agent for their latest Gmail threads and saves a note into `/drive/notes`: `route: hosted`, zero spend, no send; then the same prompts with a paired test outpost online (`route: sync`) and stopped (`route: hosted`); a `/home` mount on that outpost answers "host offline" when stopped; one member action on a shared shaping-enabled app through `run` shows the existing path untouched | test case, skill-script | claude | one Bash# script composing `run` calls; people and hosts by role; ids recorded |
 | O1 | Optional, p2: atlas entries for the Tier-6 cloud CLIs (effects `cred`, `net`, `remote`; `spend` on billable providers) so they become typed, effect-gated MCP tools | core (yoke/atlas), small | agy | `bashy mcp tools --tools aws --json` lists it with effects; denied without `--allow cred` |
 
-## Lanes
+## MVP rescope and execution plan (operator, 2026-11-24)
+
+- **Live checks go to the release train.** Hosted changes ship with the next train
+  (todo `76eac0ea`) and live checks are train items, never sprint acceptance. H4 is
+  accepted on a call signed by a **fake master signer** (test key, the H1 identity
+  format) over the tunnel; the live gateway call answering `route: hosted` and **T1**
+  moved to Sprint 699 (goal `hosted-route-t1`, story `dfd4ebb81eb9`).
+- **O1** left the sprint (backlog, p3). H5 stays: it runs on the pilot, not live.
+- The Sprint 697 A3 blocker is cleared: the `site` profile landed; H1 adds `--hosted`
+  as a third profile in the same switch.
+- Staffing, at most one worker per vendor at a time: claude H1, codex H2 (its
+  `pkg/secrets` and Google parts run beside H1; the per-call wiring rebases onto H1),
+  muse H3, agy H6 then H4 and H5, glm H6b once H6 and H2 merge.
+- Every repo is synced to its origin default head before a wave starts and resynced
+  between merges (`bashy mod drift` clean apart from the bashy-ycode cycle).
+
+| Wave | Stories | Starts when |
+|---|---|---|
+| 1 | H1 (claude), H2 hermetic part (codex), H3 doc (muse), H6 (agy) | now |
+| 2 | H2 wiring onto H1; H6b (glm) | H1 merged; H6 and H2 merged |
+| 3 | H4 pilot with the fake master signer, then H5 load test (agy) | H1, H2, H6b merged |
+| Train (699) | live `route: hosted`, T1 | the H3 cloudbox ticket merged to dev |
+
+Critical path: H1 → H2 wiring → H6b → H4 → H5.
+
+## Lanes (original, superseded by the waves above)
 
 H3 (wire) and H1 start together; H6 starts at once (hermetic; its hosted acceptance
 waits for H1 and H2); H2 after H1; H6b after H2 and H6; H4 after H1 and H2; H5 and T1
@@ -119,8 +144,8 @@ Every story starts from current heads (`bashy mod drift`, pins bumped, build and
 tests first); commits carry the sprint trailers; submodule edits are committed and
 pushed inside the submodule before the pin bump.
 
-Close: H1–H4, H6 and H6b accepted; H5 recorded; T1 recorded by role; the hosted
-section merged; no private plane internals in this repo.
+Close: H1–H4, H6 and H6b accepted; H5 recorded; the hosted section merged; T1 and the
+live `route: hosted` call handed to Sprint 699; no private plane internals in this repo.
 
 ## Decisions (operator, 2026-11-23)
 
