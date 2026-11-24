@@ -20,11 +20,18 @@ deferred run after it and nowhere else.
 | T1 | Deploy train 1 (`76eac0ea`): contents, pre-release gate once on the frozen dev commit, operator GO, tag, images, master deploy, satellites, live smoke, live checklist | umbrella | new | conductor of this sprint | the cloudbox playbook run once; the live checklist recorded in `sprint-699-evidence.md` |
 | A5 | Feel-at-home matrix on the live dhnt.io (`4e147ad3e84b`) | umbrella | Sprint 697 | muse-wonder (proposal) | table per client recorded as observed on the live site, after T1 |
 | C4 | Member-principal shaping e2e across the five example apps (`8e5204e127c4`) | bashy | Sprint 682 | conductor | the one approved paid matrix on the retained gate-host installation after Sprint 682 C5 lands; green rows accepted, red rows root-caused |
+| I1 | group-shape skill-script (`9c585822`): one Bash# acceptance run on Page, Session and Notepad (roster member admitted, history / undo / restore, removal and outsider refused, guest by name, PDF of a named revision); fills the coverage matrix verdicts | umbrella | group shaping epic (Sprints 684/685) | conductor | green on integrated main at the frozen commits on the gate host, after Sprint 684 S1–S4 merge |
+| I2 | Klatch owner/member workflow (`5b72b105`): sync, two members, removal, outsider, repeat sync | umbrella | Sprint 684 | conductor | recorded on the running instance; the operator confirms before it is started |
 
 Sprint 697 A2 itself stays in Sprint 697, accepted on dev evidence (merged,
 verified, not live); its live verification is T1's checklist.
 
 ## Order
+
+I1 and I2 (added 2026-11-24) do not need the deploy either: they are the
+integration tests of the group shaping epic, whose sprints close on unit
+tests only (`sprint-684-685-master-execution-plan.md`). I1 waits for Sprint
+684 S1–S4; I2 can run any time the instance is up.
 
 C4 does not need the deploy: it runs on the gate host as soon as Sprint 682
 C5 is merged, and is only here so that live and e2e verification is planned
