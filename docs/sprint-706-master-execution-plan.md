@@ -1,8 +1,9 @@
 # Sprint 706: access tiers across cloudbox and bashy
 
 Sprint UUID: `626dbf6e-b665-5fbc-818b-54aa5c972a8c`. Epic: software-shaping.
-Status: **backlog, planning only**, filed 2026-11-24 from the access-tier
-review with the operator. Review with the operator before any assignment.
+Status: **closed 2026-11-24** on its A/O/C acceptance (sandbox e2e with fake
+accounts). The operator's real-host test follows; bugs found start a new plan.
+Filed the same day from the access-tier review with the operator.
 The model itself is `docs/access-tiers.md`; this page lists the stories, their
 dependencies and venues, and the sprints closed with the filing.
 
@@ -128,3 +129,38 @@ todo `0d657f972c91`).
 
 The cloudbox half of R7 is not filed yet; record its id on R7 when it is. The
 R1 cloudbox stamp-producer ticket is void (the outpost produces the stamp).
+
+## Outcome (closed 2026-11-24)
+
+Acceptance: `bashy dag test-group-shaping-e2e` (R11) passed 44 checks twice in
+fresh official-image containers on the claimed gate host, with fake accounts,
+a stub agent, no LLM and no OS password. Scenario: O owns the host and the
+member list; scopes A edit (company / support), C shape (contractor / support);
+C wishes, verifies and previews through the site MCP; O approves and history
+credits C on O's line; the served page and the panel switch to the new version;
+A's code wish lands on O's queue; outsiders, account and anonymous callers are
+refused; a stale approval is refused naming both revisions.
+
+| Story | Merged |
+|---|---|
+| R1 `account` stamp, alias `signed-in` | yoke 99731cbd; bashy 7dc2fc12; outpost 8b1c366 (consumers first, producer last) |
+| R3 + R4 vocabulary and plan Status lines | umbrella b68434a41; bashy 5fd3f2b9; outpost 1be619d |
+| R5a shaping scope core | yoke 83aa3ad7 |
+| R5b site MCP scope gate + `bashy shape scope` | bashy 48a0b8d2 |
+| R5c member wish box in the website panel | bashy f07f57d9 |
+| R6 visitor personalization wishes | bashy f33f2b0e |
+| R10 served site follows the owner's approval | bashy a762690e |
+| R11 A/O/C sandbox e2e | bashy 856ef007, ec945de7 |
+| R8 baseline | folded into R5a step 0 (green on the gate host before the change) |
+
+Review fixes made by the conductor: R10 followed the newest activation of any
+principal (a member's per-person version could have become the public site);
+it now follows only the owner's line. Pins at close: bashy 8ae6dddf, outpost
+86b50e6, yoke 2615421d; umbrella pins match.
+
+Not done, moved to the backlog: R2 `7c1ad004f53d` (cloudbox ticket
+bc9c36080649), R9 `b15e7074d8ba` (needs a cloudbox member token; C uses the
+browser path meanwhile), R7 `c354035db89e` (after R2). Pre-existing, filed to
+Sprint 703: adapterembed `chart.bsh` drift `01b745b81dfb`. Unchanged drift
+outside this sprint's edges: ycode and bashsharp pin an older yoke; the
+bashy/ycode cycle is synced by hand.
