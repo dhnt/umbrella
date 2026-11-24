@@ -23,3 +23,8 @@ Build tests/group-shaping-e2e/run.py (bashy dag target, gate host only):
 - no LLM: a stub agent CLI on PATH that applies a fixed edit (step 0: confirm the agent binding the site MCP uses can be a stub; record how).
 - scenario: O sets scopes (A edit, C shape) with bashy shape scope; C wishes, verifies, previews through <mount>/mcp as C; O approves; the served page shows the change and the panel sees the new version id (R10); A's code wish lands as a request on O's queue; a member outside support, an account and an anonymous caller are refused shaping; a stale candidate is refused naming both revisions; no step uses an OS password.
 Depends on R5a, R5b, R5c, R10. Acceptance: green twice on the gate host in the official image, raw logs kept.
+
+## Phases (conductor, 2026-11-24)
+
+Phase 1 (start now, independent of R5a/R5b/R5c/R10): build the harness in bashy tests/group-shaping-e2e/ with a bashy dag target. Fake grants server with the fake accounts; real outpost with loopback trust; website enable + serve + site MCP --outpost in one bashy-base container; stub agent CLI (record how the site MCP's agent binding resolves to it). Prove it with TODAY's behavior: O (owner) wishes, verifies, previews, approves through <mount>/mcp; A and C (members) can read but are refused shaping; an outsider and an anonymous caller are refused. Commit phase 1 green.
+Phase 2 (after R5a, R5b, R5c and R10 merge; the conductor will message): flip the member assertions to the scoped scenario in the story above. Run only on the gate host (or the secondary gate host when its lanes are claimed), never the dev box; take a bashy claim on the host first.
