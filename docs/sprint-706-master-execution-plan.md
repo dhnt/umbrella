@@ -59,8 +59,9 @@ Changes from the filing:
   to the backlog until R2 lands.
 - The `signed-in` alias is removed no earlier than one release after R1b.
 
-Sprint done: R6, R1, R3 and R5 closed, R2 recorded as blocked. The R5 defaults
-below still need the operator's confirmation before R5 is assigned.
+Sprint done (operator, 2026-11-24): the A/O/C e2e (R11) is green in the bashy
+sandbox with fake accounts; R6, R1 and R3 close on their unit tests; R2 and R9
+are recorded as blocked. The operator then runs the real test.
 
 ## A/O/C critical path: a real test before Christmas (operator, 2026-11-24)
 
@@ -83,17 +84,17 @@ list (R6) are off this path and run in parallel.
 C's CLI pull/push (R9 `b15e7074d8ba`) is blocked on a cloudbox member token; for
 the test C shapes in the browser like A.
 
-(R9 step 0), C uses the browser path A uses and the gap is filed with its cause.
 
-## R5 defaults (operator to confirm at review)
+## R5 decisions (operator, 2026-11-24)
 
-1. The owner grants shape per app feature through the Sprint 641 `features`
-   audience grammar; no per-member role table.
-2. Approvers are the owner plus named maintainers, for members and
-   contributing owners alike.
-3. No driver lease: sequential revisions, conflicts refused with both
-   revisions returned (Sprint 684 rule); a candidate is rebased and
-   re-verified before approval (the Sprint 640 T8 rule).
+1. Sharing an app is the existing cloudbox share (view). The new part is the
+   shaping scope (edit, shape) per app, in the app's `shaped.json`, set by the
+   owner with `bashy shape scope`; no per-member role table.
+2. The owner approves; approvers other than the owner are out.
+3. No driver lease: a candidate on a stale base is refused, naming both
+   revisions.
+4. App access uses the member's cloudbox login or a token, never an OS
+   password.
 
 ## Venues
 
