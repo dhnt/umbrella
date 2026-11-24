@@ -49,6 +49,8 @@ a cadence). A5 runs after T1 is live.
 
 ## Before any tag or release cut: pins at heads (recorded 2026-11-24)
 
+Step-by-step version, with the commands: [handoff-sprint-684-685.md](handoff-sprint-684-685.md).
+
 Sprints 684 and 685 closed with dependency pins that trail their repository
 heads, because Sprint 675's coreutils pin sync was still in flight and is the
 next writer of all of them. **Nothing is tagged, frozen or cut from this
