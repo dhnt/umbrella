@@ -3,16 +3,19 @@ id: b15e7074d8ba
 kind: feature
 title: 'M2 Site MCP shape_pull and shape_push: a scoped member pulls the owner''s line and pushes a patch'
 seq: 723
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T20:46:03.189825Z
 due: 2026-12-09T00:00:00Z
+assignee: codex-gpt6.2-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+closed: 2026-11-24T23:19:10.583591Z
+closed_by: claude-opus5.5
 ---
 
 Part of the A/O/C case on R5 (5c1b07e994f1): C, a member with an outpost, pulls O's line, changes it on C's own machine with C's own tools, and pushes the change back; O approves. KISS: no new transport and no cloudbox change. Two tools are added to the site MCP that O's host already serves through O's outpost (bashy internal/agentos/mcp_site.go), gated by the same member grant as R5:
