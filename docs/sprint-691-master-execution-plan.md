@@ -115,6 +115,7 @@ skill-scripts; nothing from the hosted control plane is quoted here.
 - Staffing, at most one worker per vendor at a time: claude H1, codex H2 (its
   `pkg/secrets` and Google parts run beside H1; the per-call wiring rebases onto H1),
   muse H3, agy H6 then H4 and H5, glm H6b once H6 and H2 merge.
+- The H3 master side is cloudbox todo `eed85934` (filed 2026-11-24).
 - Every repo is synced to its origin default head before a wave starts and resynced
   between merges (`bashy mod drift` clean apart from the bashy-ycode cycle).
 

@@ -16,6 +16,8 @@ sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
 ---
 
+Master-side ticket: cloudbox todo eed85934 (filed 2026-11-24 at the operator's request; cited by id only, never quoted).
+
 Staffing 2026-11-24: muse (doc). The master-side cloudbox ticket is filed by the operator; until its id exists the doc PR stays draft-reviewed and the ticket id is added before close.
 
 Planned vendor: muse (doc); the master-side ticket is filed by the operator and referenced here by id, never quoted. Add the hosted section to docs/vendor-chat-gateway-mvp.md: route: hosted beside sync|pull; rule = live paired outpost -> sync; registered caller with no host or host offline -> hosted; owner-host-bound verbs (an app that lives on someone's outpost) -> pull as today; per-call identity payload (caller, task_id, idempotency_key, secrets_token; versioned, signed, short TTL) and secrets:read token minting; hosted gated calls settle by the CALLER on the master (approve); audit mcp-hosted; runner registration (how the master provisions the runner verification key); connected accounts: the portal consent step completing the user's own bring-your-own-project OAuth client (web redirect to the master) and writing the refresh token to the user's vault under google/<acct>/credentials. Accept: section reviewed by the cloudbox owner; ticket id recorded on this story. Spec: docs/sprint-691-master-execution-plan.md
