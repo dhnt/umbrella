@@ -5,7 +5,7 @@ authoritative; this page is the map. Planning only until assigned.
 
 **Held (operator, 2026-11-24)** until Sprint 701 decides go or no-go on the
 UI SDK and Sprint 705 S3 settles the model below. Then re-review O1 and O2
-against it. O0 and 703 D4 do not depend on the UI and may proceed in 703.
+against it. O0 moved to Sprint 703 (2026-11-24) to proceed with D4; neither depends on the UI.
 
 ## Direction: one shapeable page, equally shapeable components
 
