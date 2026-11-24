@@ -3,17 +3,18 @@ id: b5adee105b13
 kind: feature
 title: 'H1 bashy mcp serve --hosted: per-call master-signed identity, scratch home, timeout, output cap, no shell sessions, caller as principal'
 seq: 663
-status: assigned
+status: done
 priority: p1
 labels:
     - bashy-hosting
     - mcp
 created: 2026-11-23T13:18:03.953357Z
-weave: 232
 assignee: claude-fable5.2
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+closed: 2026-11-24T14:18:24.815694Z
+closed_by: claude-opus5.5
 ---
 
 Staffing 2026-11-24: claude (reassigned from codex; the seam is the Sprint 697 A3 site profile in bashy/internal/agentos/mcp.go, add --hosted as a third profile beside outpost and site). Start from current heads.

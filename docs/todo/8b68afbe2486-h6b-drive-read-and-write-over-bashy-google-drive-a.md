@@ -3,13 +3,15 @@ id: 8b68afbe2486
 kind: feature
 title: 'H6b drive: (read and write over bashy google drive-*) and gh: (read-only over bashy gh api) mounts for the trove; account bound per mount; hermetic fakes'
 seq: 293
-status: todo
+status: assigned
 priority: p1
 labels:
     - shaping
     - content
     - trove
 created: 2026-11-14T23:25:52.918388Z
+weave: 236
+assignee: ycode-cascade-x3
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost

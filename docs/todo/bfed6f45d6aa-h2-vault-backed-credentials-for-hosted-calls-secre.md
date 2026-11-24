@@ -3,17 +3,18 @@ id: bfed6f45d6aa
 kind: feature
 title: 'H2 vault-backed credentials for hosted calls: secret exec per call, Google credentials file projected into scratch, auth-export --to-vault'
 seq: 664
-status: assigned
+status: done
 priority: p1
 labels:
     - bashy-hosting
     - secrets
 created: 2026-11-23T13:18:04.15048Z
-weave: 233
 assignee: codex-gpt6.2-sol
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+closed: 2026-11-24T14:36:20.956677Z
+closed_by: claude-opus5.5
 ---
 
 Review 2026-11-24 (conductor, after 1306704e1): the yoke projection (529c5d3b) is accepted as is. Rework: (1) auth-status default must stay local (spec corrected above; the earlier wording caused a regression for local users), vault presence only with --vault, plus a regression test for the default-root path; (2) a test wrote google/alice@example.com/credentials to the operator's real vault (deleted by the conductor): add the fail-closed hermetic guard; (3) the 2 auth-import NameError failures already fail on main (bashy todo 06938b9a), out of scope; (4) the per-call wiring still waits for H1.

@@ -3,12 +3,14 @@ id: 770e8b83683e
 kind: doc
 title: 'H3 public wire and routing: route hosted, routing rule, caller-settled approval, connected accounts; master side as a cloudbox ticket'
 seq: 665
-status: todo
+status: assigned
 priority: p1
 labels:
     - bashy-hosting
     - wire
 created: 2026-11-23T13:18:04.340436Z
+weave: 231
+assignee: muse-wonder
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost

@@ -3,18 +3,19 @@ id: 804b7d9720e0
 kind: feature
 title: 'H6 MVP trove, the virtual drive: path-keyed bashy-trove-v1 layout in the vault; mount add|ls|rm; ls|find|stat|cat|put|add over dir:, dir:@host, git:'
 seq: 290
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - content
     - trove
 created: 2026-11-14T23:25:52.485725Z
-weave: 235
 assignee: agy-gemini4-neon
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+closed: 2026-11-24T14:26:51.555793Z
+closed_by: claude-opus5.5
 ---
 
 Staffing 2026-11-24: agy (one worker per vendor; claude holds H1). Hermetic first; the hosted-call acceptance waits for H1 and H2. Start from current heads.
