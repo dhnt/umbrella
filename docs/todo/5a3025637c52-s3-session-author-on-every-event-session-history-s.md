@@ -3,12 +3,11 @@ id: 5a3025637c52
 kind: feature
 title: 'S3 Session: author on every event, session history, session undo'
 seq: 687
-status: assigned
+status: todo
 priority: p1
 labels:
     - group-shaping
 created: 2026-11-24T07:30:49.142471Z
-weave: 194
 assignee: claude-opus5.5
 sprint: 684
 sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
@@ -25,6 +24,14 @@ Run builds and unit tests only in the assigned gate-host Linux lane. The manager
 
 For a formerly green test failure, stop and report names, commit and venue for investigation. Compare with last green, bisect and record product, test or venue cause on the story before a repair assignment. Keep every existing test enabled. Fetch and rebase before submitting. Preserve the candidate and redo against fresh heads if the rebase is nontrivial. Re-run the story suite on the submitted SHA. Supply branch, commit, commands, counts and exits, baseline and candidate evidence. Include Sprint, Story, Story-ID and Agent trailers. The manager owns merges, tags, proxy publication, pin updates and pushes. Use host roles in all public evidence.
 
-The manager reserved gate lane 3 for this story.
+Confirm the manager’s current gate lane reservation before each test run.
 
 Supervisor observed two baseline Session suite hangs over 35 minutes at bashy 6d88b2ac, during session.bsh demo invoking sprint add, following two errors and one failure. Investigate on the gate host with bounded commands before feature work. Report failing and hanging test names, last-green comparison, bisection and classification for the manager to record here before a fix.
+
+## Baseline investigation
+
+The last recorded green Session suite at b7d70e4c ran 65 tests. At 6d88b2ac, run 198 bisected the unrelated-workspace registration test failure to 610c959f (parent b28edcec). Bare serve now starts the host listener. The test fixture still expected a standalone build and exit. The fixture repair at e7d329a4 exercises the supported standalone build with an unrelated GOWORK and retains its assertions. All five registration tests passed on the gate in 147.737 seconds.
+
+The real registration rehearsal and the demo pipe and SIGINT tests also encountered cold Go builds under each test’s temporary HOME. Run 198 classified this as a venue issue. The lane wrapper now supplies explicit warm GOCACHE and GOMODCACHE and honors per-run overrides (umbrella 3d9c0e594). With the original deadlines, the pipe test passed in 25.6 seconds, SIGINT in 51.5 seconds and registration rehearsal in 107.4 seconds.
+
+Two investigations remain open. Run 199 is tracing surviving demo processes after interruption. Run 210 is investigating the on-disk snapshot difference in Flows.test_demo_verb_and_dag on the repaired full checkout at e7d329a4. Feature work requires a green full baseline.
