@@ -16,20 +16,28 @@ sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy
 
 Spec: docs/access-tiers.md (workflow 2; team shaping = members shaping the primary owner's app). Absorbs Sprint 640 T1/T8 and Sprint 689 D2's rule; Sprint 706 R8's baseline is step 0.
 
-## MVP (operator, 2026-11-24: KISS; cloudbox sees only owner and members)
+## MVP (operator, 2026-11-24: KISS; sharing exists, the shaping scope is new)
 
-To cloudbox and the outpost there are only the host owner and the host owner's members; real-world roles (business owner, office admin, contractor) make no difference.
+To cloudbox and the outpost there are only the host owner and the owner's members. Sharing an app with a member already works (cloudbox grant, the console; who can reach the app = view). What is new is the shaping scope on top of that share. Nothing implements it today: Sprint 638 S6 (701ee51247b9) designed per-audience levels but was superseded and never built.
 
-Case: O owns the host and the member list. A (circle company, group support; no outpost) and C (circle contractor, group support; has an outpost) are O's members. One shaped.json feature audience {groups:[support]} grants shape. O approves.
+Case: O hosts the app and owns the member list. A (circle company, group support; no outpost) and C (circle contractor, group support; has an outpost) are O's members, and the app is shared with group support. O sets scopes: A edit, C shape. O approves.
 
-Change: allowShape in bashy internal/agentos/mcp_site.go and the website template admit a member when the app's feature audience grants shape (the 641 audience grammar; no role table, no lease). Every wish runs on O's host with O's LLM allowance.
+Scopes (owner-defined, stored in the app's shaped.json on O's host, using the existing audience grammar of circles, groups and emails; identity and membership stay cloudbox's):
+- view: the existing share; nothing new.
+- edit: change content and declared settings, saved as revisions with the author.
+- shape: wish, verify and preview code changes, plus pull/push (R9).
+Approve stays the owner's for every scope. A wish beyond the caller's scope demotes to a request on the owner's queue. Access is by cloudbox login or token, never an OS password.
+
+Change:
+- Owner verb (CLI parity with any UI): `bashy shape scope ls|set|rm --app APP edit|shape --group G|--circle C|--email E --json`; owner only; writes shaped.json; an unknown scope is refused.
+- Enforcement in one place per surface: `allowShape` in bashy internal/agentos/mcp_site.go and the website template check the caller's verified member stamp (circle, groups) against the app's scopes; no other role table, no lease.
 
 Acceptance (unit tests on the gate host, fakes):
 0. Baseline: yoke pkg/shape/..., pkg/src/... and bashy agentos shape tests green on current heads, recorded once (ex-R8).
-1. A and C each wish through the site MCP or the browser on O's host; O approves; the version records the member as author and O's allowance as the spend, with the member as spender.
-2. A member outside group support: the wish demotes to O's request queue. An account stranger and an anonymous visitor: configuration only.
-3. Two members change the same feature: the second is refused with both revisions returned.
+1. With A at edit and C at shape: C wishes, verifies and previews a code change; O approves; the version records C as author and O's allowance as the spend. A's content edit lands as a revision authored by A. A's code wish demotes to a request.
+2. A member of the share without a scope can view only; an account stranger and an anonymous visitor get configuration only; neither can set scopes.
+3. Two members change the same item: the second is refused with both revisions returned.
 4. The approved version reaches every open page without a redeploy (R10).
-5. No step asks A or C for O's OS password (operator rule 2026-11-24: the owner must not have to share the OS password with members or contractors). A and C come in with their own cloudbox login (browser) or a token (CLI, MCP); shaping is gated by the relationship stamp plus the feature grant, never by OS elevation. The outpost doc says cloudbox stamps `admin` for every sharee who clears elevation on a require_login:true app. If a member can only reach the app by clearing O's host elevation, the test app runs require_login:false (members are still stamped `member` through the satellite) and the elevation dependency is filed as a cloudbox ticket by id.
+5. No step asks A or C for O's OS password.
 
-Split for the before-Christmas real test (operator, 2026-11-24): this story is the member grant (shape_wish, shape_verify, shape_preview admitted for a granted member; shape_approve stays the owner's). C's pull/push is R9 (b15e7074d8ba); open pages picking up an approved version is R10 (3b89e914ed66). Still out: building and verifying a candidate with C's own host resources, and approvers other than the owner.
+Out: a scope field on the cloudbox grant rule itself (cleaner long term, a private cloudbox ticket; follow-up only); approvers other than the owner; building a candidate with C's own host resources.
