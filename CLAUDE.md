@@ -114,6 +114,10 @@ checks explicit; an unresolved failure is never "fixed".
 ## KISS / MVP and mass-change planning
 
 Deliver the smallest robust change that meets the authorized acceptance criteria.
+Prefer narrow additions that preserve existing behavior and call paths. When
+changing working code, record why the change is needed and cover the affected
+behavior with regression tests. Avoid preserving duplicate paths merely to make
+a diff additive.
 Inspect existing code, commands, KB and design records before proposing new
 mechanisms or stories. Reuse existing solutions and identifiers. A complete
 parent/child address can provide uniqueness; a missing per-record UUID is not
