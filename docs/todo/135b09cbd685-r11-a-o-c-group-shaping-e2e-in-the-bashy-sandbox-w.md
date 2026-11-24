@@ -3,17 +3,18 @@ id: 135b09cbd685
 kind: test
 title: R11 A/O/C group shaping e2e in the bashy sandbox with fake accounts (sprint acceptance)
 seq: 727
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T21:09:08.027071Z
-weave: 245
 assignee: codex-gpt6.2-astra
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
+closed: 2026-11-24T22:27:43.71466Z
+closed_by: claude-opus5.5
 ---
 
 Sprint acceptance for the A/O/C case (operator, 2026-11-24): one e2e in the bashy sandbox with fake accounts; the operator runs the real-host test after the sprint closes, and bugs found start a new plan.

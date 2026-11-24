@@ -3,15 +3,18 @@ id: cb70d339abff
 kind: feature
 title: R5b Site MCP shaping scope for members and the bashy shape scope owner verb
 seq: 725
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T21:09:07.511626Z
+assignee: codex-gpt6-astra
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
+closed: 2026-11-24T22:10:56.884256Z
+closed_by: claude-opus5.5
 ---
 
 Part of R5 (5c1b07e994f1, the shaping scope; read its Code inspected notes first). bashy only.

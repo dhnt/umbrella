@@ -3,15 +3,18 @@ id: aad949e099ef
 kind: feature
 title: R5c Member wish box in the shaped website panel, scope-gated, through the site MCP
 seq: 726
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T21:09:07.768377Z
+assignee: agy-gemini4-carbon
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
+closed: 2026-11-24T22:17:54.992909Z
+closed_by: claude-opus5.5
 ---
 
 Part of R5 (5c1b07e994f1). bashy examples/shaping/website/template only (module site-shaping, no bashy/yoke imports: standalone_deps_test.go).

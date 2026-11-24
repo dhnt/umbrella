@@ -3,17 +3,18 @@ id: 5c1b07e994f1
 kind: feature
 title: 'R5a Shaping scope core (yoke): scopes in shaped.json, member candidates on the owner''s line, out-of-scope wish to the owner''s queue'
 seq: 712
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T18:25:09.233837Z
-weave: 241
 assignee: agy-gemini4-carbon
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
+closed: 2026-11-24T21:56:45.351421Z
+closed_by: claude-opus5.5
 ---
 
 Spec: docs/access-tiers.md (workflow 2; team shaping = members shaping the primary owner's app). Absorbs Sprint 640 T1/T8 and Sprint 689 D2's rule; Sprint 706 R8's baseline is step 0.

@@ -3,17 +3,18 @@ id: d346682b1f23
 kind: doc
 title: 'R3 Vocabulary sweep: docs and kb say anonymous / account / member / owner; ''user'' only for the OS user'
 seq: 710
-status: assigned
+status: done
 priority: p2
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T18:25:08.574569Z
-weave: 244
 assignee: agy-gemini4-hydrogen
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
+closed: 2026-11-24T21:37:49.936148Z
+closed_by: claude-opus5.5
 ---
 
 Spec: docs/access-tiers.md. Update: docs/sprint-691-master-execution-plan.md tier table (tier 1 = anonymous configures declared features, nothing kept); docs/shaping-enable-a-website.md and docs/sprint-615-master-execution-plan.md (four visitor tiers -> the four relationships with account for signed-in); bashy kb/defaults/pages/shaping-enable-an-existing-website.md, set-up-outpost-install-pair-publish-apps-and-keep-a-host-private.md, run-a-class-or-meeting-on-one-page.md; bashy docs/ui-cli-parity.md; outpost/docs/cooperative-web-apps.md wording after R1. Validate the candidate kb page 'access tiers' in the umbrella kb. No code. Acceptance: rg for 'signed-in' in those docs finds only the alias note; 'user' appears only for the OS user.

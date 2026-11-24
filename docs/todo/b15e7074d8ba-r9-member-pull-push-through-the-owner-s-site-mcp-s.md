@@ -10,9 +10,6 @@ labels:
     - access-tiers
 created: 2026-11-24T20:46:03.189825Z
 due: 2026-12-09T00:00:00Z
-sprint: 706
-sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
-sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
 ---
 
 Part of the A/O/C case on R5 (5c1b07e994f1): C, a member with an outpost, pulls O's line, changes it on C's own machine with C's own tools, and pushes the change back; O approves. KISS: no new transport and no cloudbox change. Two tools are added to the site MCP that O's host already serves through O's outpost (bashy internal/agentos/mcp_site.go), gated by the same member grant as R5:
@@ -30,3 +27,7 @@ Acceptance (unit tests on the gate host, fakes): pull returns source plus revisi
 ## Blocked 2026-11-24
 
 Needs a member token issued by cloudbox (none exists; see Code inspected). For the A/O/C test C shapes in the browser like A (R5c). Unblocks when the cloudbox member-token ticket lands; record its id here.
+
+## Moved to the backlog at the close of Sprint 706 (2026-11-24)
+
+Still blocked: no member token exists (cloudbox would issue it; no ticket filed yet). For the A/O/C test C shapes in the browser through the panel wish box (R5c). Re-plan when a cloudbox member-token ticket exists.
