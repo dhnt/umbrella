@@ -98,7 +98,9 @@ with no person behind it is anonymous with provenance.
 4. A logged-in stranger is admissible to `require_login=false` apps on a
    satellite as `account`, without becoming a member. Today the satellite
    admits mutual members only, so the relationship collapses to anonymous:
-   the open gap, owned by cloudbox (Sprint 706 R2).
+   the open gap, owned by cloudbox (Sprint 706 R2). **Shelved 2026-11-24
+   (operator)** over privacy concerns: a rogue satellite owner could track or
+   correlate logged-in visitors; needs a privacy design review first.
 5. One authority (cloudbox), one vocabulary. Every surface (UI, CLI, API, MCP,
    hosted runner) derives level and relationship from the same stamps and
    grants. No second permissions engine in any public module.
@@ -151,7 +153,7 @@ it remotely through the gateway or the site MCP, the same path as a member.
 | Workflow 1 on sites and the desktop | done (Sprint 641 M4/M6, 693, 697 A3) |
 | Workflow 2 for content on Page, Session, Notepad | done (Sprints 684, 685) |
 | Workflow 2 and 3 on shape routes (a granted member shapes with the owner's LLM on the owner's host) | gap: `allowShape` is owner-only; Sprint 706 R5 |
-| The `account` relationship through a satellite | gap: the admission rung, cloudbox; Sprint 706 R2 |
+| The `account` relationship through a satellite | shelved (privacy review first); R2 `7c1ad004f53d` |
 | The path from `account` to `member` inside the product | gap; Sprint 706 R7 |
 | The stamp word `account` | Sprint 706 R1 |
 
