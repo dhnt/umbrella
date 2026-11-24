@@ -1,9 +1,9 @@
 ---
 id: 350c3c3b5ddb
 kind: feature
-title: 'T3 Refactor-phase and --contract verifier primitive (--phase refactor)'
+title: T3 Refactor-phase and --contract verifier primitive (--phase refactor)
 seq: 159
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shaping
@@ -12,6 +12,7 @@ created: 2026-11-12T18:10:17.540168Z
 sprint: 621
 sprint_id: 12e0ca54-4941-5b64-bc6c-4eb80ac71a59
 sprint_title: 'Software Shaping TDD workflow: Red-Green-Refactor verification across web, CLI, and service shaping'
+closed: 2026-11-24T15:14:57.390648Z
 ---
 
 ## KNOWN TRAPS (`bashy kb context`)

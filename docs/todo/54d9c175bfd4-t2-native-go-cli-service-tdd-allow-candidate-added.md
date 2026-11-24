@@ -3,7 +3,7 @@ id: 54d9c175bfd4
 kind: feature
 title: 'T2 Native Go/CLI/service TDD: allow candidate-added tests with Red-on-Base and Green-on-Candidate accounting'
 seq: 158
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shaping
@@ -12,6 +12,7 @@ created: 2026-11-12T18:10:17.421944Z
 sprint: 621
 sprint_id: 12e0ca54-4941-5b64-bc6c-4eb80ac71a59
 sprint_title: 'Software Shaping TDD workflow: Red-Green-Refactor verification across web, CLI, and service shaping'
+closed: 2026-11-24T15:14:55.86861Z
 ---
 
 ## KNOWN TRAPS (`bashy kb context`)

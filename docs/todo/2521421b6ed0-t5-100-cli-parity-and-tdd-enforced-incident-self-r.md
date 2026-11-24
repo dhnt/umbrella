@@ -1,9 +1,9 @@
 ---
 id: 2521421b6ed0
 kind: feature
-title: 'T5 100% CLI parity and TDD-enforced incident self-repair across web, CLI, and service apps'
+title: T5 100% CLI parity and TDD-enforced incident self-repair across web, CLI, and service apps
 seq: 161
-status: todo
+status: wontfix
 priority: p2
 labels:
     - shaping
@@ -12,6 +12,7 @@ created: 2026-11-12T18:10:17.791244Z
 sprint: 621
 sprint_id: 12e0ca54-4941-5b64-bc6c-4eb80ac71a59
 sprint_title: 'Software Shaping TDD workflow: Red-Green-Refactor verification across web, CLI, and service shaping'
+closed: 2026-11-24T15:15:00.384807Z
 ---
 
 ## KNOWN TRAPS (`bashy kb context`)

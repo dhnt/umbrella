@@ -3,7 +3,7 @@ id: 227e29b78d35
 kind: feature
 title: 'T1 Red-on-Base verifier primitive: prove candidate-added checks fail on base before passing on candidate'
 seq: 157
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shaping
@@ -12,6 +12,7 @@ created: 2026-11-12T18:10:17.300995Z
 sprint: 621
 sprint_id: 12e0ca54-4941-5b64-bc6c-4eb80ac71a59
 sprint_title: 'Software Shaping TDD workflow: Red-Green-Refactor verification across web, CLI, and service shaping'
+closed: 2026-11-24T15:14:54.389005Z
 ---
 
 ## KNOWN TRAPS (`bashy kb context`)

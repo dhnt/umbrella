@@ -2,6 +2,8 @@
 
 Sprint 621 `12e0ca54-4941-5b64-bc6c-4eb80ac71a59`, epic `software-shaping`. Reviewed 2026-11-12.
 
+> **Closed won't do 2026-11-24 (operator decision).** Kept as a design record. Shaping's gate is already the declared checks re-run at approval; red-on-base only rejects a tautological candidate-added check, a single-todo repair if ever needed, not a six-story sprint. The project moved on to property shaping (Sprint 641), group shaping (684/685) and the shaping MVP (669). Stories T1–T6 are `wontfix` in `docs/todo/`.
+
 ## Primary goal (one sentence)
 
 Deliver a **KISS/MVP, Unix-composable Test-Driven Development (`Red → Green → Refactor`)** workflow for software shaping where every operation is a small `bashy shape ... --json` CLI verb (100% UI-to-CLI parity across `web`, `cli`, and `service`), composed by a shapeable **Bash# skill-script** (`examples/shaping/tdd/shape-tdd.bsh` + `shape-tdd.json`), gated by a portable **`bashy dag` recipe** (`examples/shaping/tdd/dag.md`), and driven by an iterative **sprint retro (`triage → replan → repeat`)** loop.

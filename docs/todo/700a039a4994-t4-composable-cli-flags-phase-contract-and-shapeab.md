@@ -3,7 +3,7 @@ id: 700a039a4994
 kind: feature
 title: T4 Composable CLI flags (--phase, --contract) and shapeable Bash# skill-script (shape-tdd.bsh + shape-tdd.json)
 seq: 160
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shaping
@@ -13,6 +13,7 @@ created: 2026-11-12T18:10:17.654477Z
 sprint: 621
 sprint_id: 12e0ca54-4941-5b64-bc6c-4eb80ac71a59
 sprint_title: 'Software Shaping TDD workflow: Red-Green-Refactor verification across web, CLI, and service shaping'
+closed: 2026-11-24T15:14:58.878616Z
 ---
 
 ## KNOWN TRAPS (`bashy kb context`)
