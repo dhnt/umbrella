@@ -1,7 +1,7 @@
 ---
 id: 5c1b07e994f1
 kind: feature
-title: 'R5 Group and team shaping on shape routes: a granted member shapes the owner''s app on the owner''s host with the owner''s LLM, attributed, budgeted, approver-gated'
+title: 'R5a Shaping scope core (yoke): scopes in shaped.json, member candidates on the owner''s line, out-of-scope wish to the owner''s queue'
 seq: 712
 status: todo
 priority: p1
@@ -52,3 +52,13 @@ Out: a scope field on the cloudbox grant rule itself (cleaner long term, a priva
 - shaped.json: appserver.Manifest (appserver/manifest.go:51-65) uses DisallowUnknownFields (175-184); a scopes key must be added to the struct (yoke release, then consumer pins). No features/levels/audiences/scopes exist today.
 - Audience grammar to reuse: website template audience.go:15-52 (Circles, Groups, Emails); the template verifies stamps itself (identity.go:49-97, no coopauth).
 - Member browser route: requests through outpost carry the member stamp; the site MCP is proxied at <mount>/mcp (outpost internal/agent/site_mcp.go:34-51). There is no member shaping UI today: the template's shape link is owner-only (main.go:195,203,236), and console pairing (yoke webconsole/pair_cmd.go) is an owner-device LAN ticket with operator authority, not a member route.
+
+## Split 2026-11-24 after code inspection (operator: e2e in the sandbox with fakes is the sprint acceptance)
+
+This story is now R5a, the yoke core (the A/O/C case and the scope model above still hold):
+- appserver.Manifest gains `scopes` ({edit|shape: {circles, groups, emails}}), validated; unknown scope names refused (DisallowUnknownFields stays).
+- A candidate whose Principal is a scoped member activates on the owner's line (ActivationPrincipal = the owner) with Principal/RepresentedUser = the member as author; per-person versions are unchanged for everyone else.
+- An out-of-scope wish files a request on the OWNER's queue (fileRequest today writes to the wisher's own dir).
+- Approve's ErrConflict names the active and base revisions.
+- Baseline first (ex-R8): yoke pkg/shape/..., pkg/src/..., webconsole shaped tests green on current heads, recorded.
+Acceptance: unit tests in yoke on the gate host. Siblings: R5b cb70d339abff (site MCP + owner verb), R5c aad949e099ef (panel wish box), R10 3b89e914ed66, e2e R11 135b09cbd685.

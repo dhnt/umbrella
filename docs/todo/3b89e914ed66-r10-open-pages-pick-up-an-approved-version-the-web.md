@@ -1,7 +1,7 @@
 ---
 id: 3b89e914ed66
 kind: feature
-title: 'R10 Open pages pick up an approved version: the website template polls the active version id'
+title: 'R10 The served website follows an approval and open pages pick up the new version id'
 seq: 724
 status: todo
 priority: p1

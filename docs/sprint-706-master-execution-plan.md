@@ -73,17 +73,16 @@ list (R6) are off this path and run in parallel.
 
 | By (PST) | Step | Story |
 |---|---|---|
-| 12-04 | shaping scopes on a shared app (view exists; edit and shape are new, set with `bashy shape scope`); the owner approves (R8 baseline first) | R5 `5c1b07e994f1` |
-| 12-04 | open pages pick up an approved version | R10 `3b89e914ed66` |
-| 12-09 | C pulls and pushes through the owner's site MCP (day-1 reachability check) | R9 `b15e7074d8ba` |
-| 12-11 | release-train candidate with these, after the operator says go | train item |
-| 12-14 to 12-18 | real A/O/C test on real hosts, operator-held | live |
+| 12-04 | yoke core: scopes in shaped.json, member candidates on the owner's line, out-of-scope wish to the owner's queue (baseline first) | R5a `5c1b07e994f1` |
+| 12-04 | site MCP scope gate and `bashy shape scope` | R5b `cb70d339abff` |
+| 12-09 | member wish box in the website panel | R5c `aad949e099ef` |
+| 12-09 | the served site follows an approval; pages pick up the version id | R10 `3b89e914ed66` |
+| 12-11 | A/O/C e2e in the bashy sandbox with fake accounts: **sprint acceptance**, then close | R11 `135b09cbd685` |
+| after close | real hosts and accounts, run by the operator; bugs start a new plan | operator |
 
-App access uses tokens, never an OS password (operator rule, 2026-11-24): the
-owner never shares the host's OS password with members or contractors. A and C
-come in with their own cloudbox login or a token, and shaping is gated by the
-relationship stamp and the grant, never by OS elevation (R5 acceptance 5).
-Risk: if an MCP client on C's machine cannot reach O's site MCP as a member with a token
+C's CLI pull/push (R9 `b15e7074d8ba`) is blocked on a cloudbox member token; for
+the test C shapes in the browser like A.
+
 (R9 step 0), C uses the browser path A uses and the gap is filed with its cause.
 
 ## R5 defaults (operator to confirm at review)

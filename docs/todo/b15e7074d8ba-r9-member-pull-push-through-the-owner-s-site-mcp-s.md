@@ -3,7 +3,7 @@ id: b15e7074d8ba
 kind: feature
 title: 'R9 Member pull/push through the owner''s site MCP: shape_pull and shape_push for a granted member'
 seq: 723
-status: todo
+status: blocked
 priority: p1
 labels:
     - shaping
@@ -26,3 +26,7 @@ Acceptance (unit tests on the gate host, fakes): pull returns source plus revisi
 - Member token: NOT FOUND. The site MCP under require_login needs a cloudbox hop (outpost apps.go:1194-1205), else 401 with Bearer resource metadata naming the site as its own authorization server (site_mcp.go:78-92), and no OAuth authorization/token endpoint exists anywhere in outpost, yoke or bashy. The expose token (apps.go:159-189) carries no identity (treated as anonymous); the outpost MCP bearer is the host owner's admin token (conf/file.go:285-293); shape --remote uses an owner-paired console cookie (shape_remote.go:28-65). OS-password routes (outbound connect/login, outpost connect) are excluded by the operator rule.
 - So C's CLI/MCP client cannot reach O's site MCP as a member today. It needs a member token issued by cloudbox (the identity authority): a private cloudbox ticket. Until then C shapes in the browser like A (R5).
 - wish --from accepts a directory only (helpers.go:367 CopyWorkspace), local only (shape_remote.go:129-132,163). No archive/bundle export of a shaped app exists; nearest: Diff (helpers.go:299), src.ExportPatch (yoke pkg/src/patch.go:17), CloneAt (helpers.go:120).
+
+## Blocked 2026-11-24
+
+Needs a member token issued by cloudbox (none exists; see Code inspected). For the A/O/C test C shapes in the browser like A (R5c). Unblocks when the cloudbox member-token ticket lands; record its id here.
