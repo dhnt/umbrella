@@ -3,11 +3,12 @@ id: ed3051699fee
 kind: bug
 title: 'bashy meet poll: ballots never match a --choice that carries a description after the colon (room 46 round 3: 5/5 votes invalid)'
 seq: 234
-status: todo
+status: done
 priority: p1
 labels:
     - meet
 created: 2026-11-13T15:19:52.437018Z
+closed: 2026-11-24T11:57:52.275475Z
 ---
 
 Observed 2026-11-13 in meeting 2026-11-13-commercializing-bashy-software-shaping-product-a-f067, round 3 poll by the facilitator. Every seat (codex-gpt5.6-sol, claude-opus5.5, agy-gemini3.8-flash, muse-spark1.3, codex-shaping-business-review) answered with the key, e.g. 'classroom-satellites', and every vote is recorded status=invalid; the tally will report no clear result.
