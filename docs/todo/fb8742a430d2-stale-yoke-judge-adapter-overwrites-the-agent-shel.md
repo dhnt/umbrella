@@ -3,9 +3,10 @@ id: fb8742a430d2
 kind: bug
 title: Stale yoke judge adapter overwrites the agent shell shims with its own path
 seq: 722
-status: todo
+status: done
 priority: p3
 created: 2026-11-24T19:49:57.353877Z
+closed: 2026-11-24T21:22:01.776637Z
 ---
 
 RESOLVED ON THE DEV BOX 2026-11-24; kept open only for the hardening below.
