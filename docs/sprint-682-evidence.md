@@ -72,3 +72,11 @@ server/cli.go:19:2:  desk-kit@v0.0.0:   replacement directory ../kit does not ex
 
 board, whiteboard, table: operator pre-install rows, outside the approval;
 recorded as SKIP by design.
+
+## C5, the module-proxy slice (2026-11-23, accepted on the integrated main)
+
+- yoke `4ecd4d06` (worker): `bashy mod proxy publish|status`, proxy-aware console and verifier builds, `app add` refuses escaping replaces. yoke `ccefeeed` (worker, round 2): required checks read the proxy. yoke `dcccc0fa` (conductor, round 3): required checks inherit the host `GOMODCACHE`/`GOCACHE`.
+- bashy `56b5b1a1` (worker): `desk-kit`/`desk-chart` published as `github.com/qiangli/bashy/examples/desk/{kit,chart}` v0.1.0; eight consumers require them, no sibling `replace`; `register-modules.sh`; extracted-tree build test. bashy `6a10293f` (conductor): fork-test homes get `BASHY_GOMOD_PROXY`. bashy `9a24fd30` (conductor): yoke pins to `dcccc0fa`, go.sum from `go`.
+- Review rounds and root causes, each recorded before its fix: (1) verifier check runner lacked the proxy environment (product, worker fixed); (2) one hand-computed go.sum hash wrong (process, conductor fixed, sums now from `go`); (3) fork-test fixture published no proxy into its homes (test, conductor fixed); (4) checks ran with no Go caches and eight parallel forks exceeded the 2-minute check budget (product exposed by C5, conductor fixed). Long suites were then run only on the integrated local main, per the operator's rule.
+- Gate host (Windows host WSL lane 1): `GOWORK=off` build of the integrated candidate; `TestSrcPinsMatchLinkedModules` ok; `TestDeskToolsShipShapedServer`, `TestDeskToolsForkAndRollback` (eight apps), `TestDeskRegisterScriptsUsePublicShapedAppPath`: ok, 673 s. Baseline comparison: fork test green on main before C5 and green alone on the candidate; red only under the full parallel suite before fix (4).
+- Merge: linear fast-forward of bashy main to `9a24fd30`, yoke main to `dcccc0fa`, umbrella gitlinks bumped.
