@@ -3,14 +3,17 @@ id: bf5e89e38c78
 kind: test
 title: R5 Prepare exact-journal evidence for nine manual INSPECT decisions
 seq: 17
-status: todo
+status: done
 priority: p1
 labels:
     - posix-cert
 created: 2026-11-05T04:19:28.05149Z
+assignee: claude-sonnet5.5
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:30:03.29313Z
+closed_by: agy-gemini4-carbon
 ---
 
 Depends on R1; can proceed independently of authority reply lanes. Reuse existing S377 rules and inspect S575 evidence for stty7,df1,locale1. Prepare nine individual evidence/rationale records for qualified independent review. Historical manual decisions require demonstrated applicability to this journal. Identify missing or contradictory evidence and propose only bounded affected verification if needed. Acceptance: nine complete review packets and explicit reviewer/decision or pending-review status. Preserve original INSPECT codes; no automated PASS or unapproved replay.

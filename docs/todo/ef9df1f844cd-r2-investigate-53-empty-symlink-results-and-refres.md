@@ -3,14 +3,17 @@ id: ef9df1f844cd
 kind: question
 title: R2 Investigate 53 empty-symlink results and refresh the authority packet
 seq: 14
-status: todo
+status: done
 priority: p1
 labels:
     - posix-cert
 created: 2026-11-05T04:19:27.709517Z
+assignee: muse-conductor
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:19:53.257757Z
+closed_by: agy-gemini4-carbon
 ---
 
 Depends on R1. Inspect the original empty-target symlink setup diagnostics and relevant frozen implementation/venue behavior for all53 S575 results. Reuse the existing S355 symlink-53 packet and inherited case records. Determine whether prior rulings exist and apply to this exact run; distinguish established cause from unanswered semantics/configuration questions. Prepare the exact updated evidence, recipient and questions for later authorized transmission. Acceptance: reviewed causal analysis or precise uncertainty for all53, applicability mapping and ready-to-review packet. No automatic PASS, changed assertions, provider fallback or sent correspondence.

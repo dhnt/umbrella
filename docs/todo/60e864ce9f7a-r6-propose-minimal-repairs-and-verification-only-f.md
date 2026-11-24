@@ -3,14 +3,17 @@ id: 60e864ce9f7a
 kind: task
 title: R6 Propose minimal repairs and verification only for confirmed defects
 seq: 18
-status: todo
+status: done
 priority: p1
 labels:
     - posix-cert
 created: 2026-11-05T04:19:28.165424Z
+assignee: muse-conductor
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:20:01.417547Z
+closed_by: agy-gemini4-carbon
 ---
 
 Conditional on a proven defect or supported setup gap from R2-R5. Do not assume the residuals are all external to the product, and do not implement redesign or repairs during this planning scope. Prepare the smallest causal patch proposal in the owning repository, failing control, focused regression/affected licensed verification plan, build/source/artifact impact and rollback. Reuse existing runners; no assertion weakening, skips, added providers or arbitrary timeouts. Acceptance: reviewable evidence-backed proposals for any confirmed defects, or explicit no-repair-needed reasoning. Further implementation and invalidated full runs require concrete authorization.

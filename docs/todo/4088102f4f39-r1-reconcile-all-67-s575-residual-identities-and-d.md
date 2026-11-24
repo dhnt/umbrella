@@ -3,14 +3,17 @@ id: 4088102f4f39
 kind: requirement
 title: R1 Reconcile all 67 S575 residual identities and decision ownership
 seq: 13
-status: todo
+status: done
 priority: p0
 labels:
     - posix-cert
 created: 2026-11-05T04:19:27.595746Z
+assignee: codex-gpt6-sol
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:19:50.372463Z
+closed_by: agy-gemini4-carbon
 ---
 
 Establish a per-TP ledger from the retained S575 journal:4 more FAIL,53 empty-symlink setup UNRESOLVED,1 man precondition UNRESOLVED,9 manual INSPECT. Compare named identities and diagnostics with S561; matching totals alone do not establish parity. Reconcile S355/S371/S377/S385 records and packet/case ownership without duplicate inquiries. Record cause or precise remaining uncertainty, exact evidence, scope, decision owner and next action. Acceptance: all67 identities accounted for, source/artifact/venue identities linked, discrepancy list and reviewed ownership/scope matrix; no assumed product/environment classification.

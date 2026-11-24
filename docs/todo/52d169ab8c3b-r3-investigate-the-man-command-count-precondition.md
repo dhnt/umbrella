@@ -3,14 +3,17 @@ id: 52d169ab8c3b
 kind: question
 title: R3 Investigate the man command-count precondition and prepare resolution
 seq: 15
-status: todo
+status: done
 priority: p1
 labels:
     - posix-cert
 created: 2026-11-05T04:19:27.827032Z
+assignee: agy-gemini3.8-flash
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:19:55.815189Z
+closed_by: agy-gemini4-carbon
 ---
 
 Depends on R1. Verify the exact current man:4 prerequisite observation:109 available names versus a greater-than109 test before man is invoked. Inspect source, configuration, declared scope and original inventory; reuse the S355 question. Do not invent names or introduce external utilities to satisfy a count. Prepare the root-cause analysis and supported resolution/authority question with evidence. Acceptance: proven prerequisite/control-flow evidence, explicit scope/provider impact and reviewed recommendation or exact authority question; any repair remains a proposal.

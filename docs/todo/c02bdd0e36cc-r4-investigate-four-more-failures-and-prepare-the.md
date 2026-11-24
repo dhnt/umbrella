@@ -3,14 +3,17 @@ id: c02bdd0e36cc
 kind: question
 title: R4 Investigate four more failures and prepare the scope recommendation
 seq: 16
-status: todo
+status: done
 priority: p1
 labels:
     - posix-cert
 created: 2026-11-05T04:19:27.94053Z
+assignee: codex-gpt6-astra
 sprint: 675
 sprint_id: 9b07aedb-77af-52d5-8af3-8035a213774c
 sprint_title: Investigate S575 POSIX residuals and prepare certification
+closed: 2026-11-24T11:19:58.821166Z
+closed_by: agy-gemini4-carbon
 ---
 
 Depends on R1. Investigate actual S575 more TPs130/132/133/134, including retained LANG/LC_ALL/LC_COLLATE/LC_CTYPE helper diagnostics, against the exact frozen source and original venue. Compare historical S355 final-EOF/editor questions rather than assuming they explain these failures. Classify proven cause or uncertainty and required/optional certification scope. Acceptance: four individually evidenced findings and reviewed minimal repair or authority/scope recommendation, with the existing packet refreshed. Preserve all four raw FAILs; no silent optional exclusion or implementation changes.
