@@ -192,13 +192,32 @@ steering.
 
 ## Execution
 
-### Step 0: pin baseline
+### Step 0: pin baseline and gate venue (done 2026-11-24)
 
-Claim bashsharp, outpost, ycode. `bashy mod sync` for the stale yoke pins
-(`4bafb600` → `dcccc0fa`); the bashy ↔ ycode cycle by hand. Build and unit
-tests per module on the gate host. Push each consumer, then one umbrella
-commit `sync: bump ... pins` with a pathspec. Announce on `bashy mb`. Done when
-`bashy mod drift` shows no stale pin.
+Every module is on its default-branch head and every sibling pin names that
+head: bashsharp `fe4d68ad`, outpost `5f566a72`, ycode `8ad8cd19`, bashy
+`6d88b2ac`, yoke `dcccc0fa`; umbrella gitlinks match. `bashy mod drift`
+reports no stale pin. bashy and ycode require each other, so that one edge
+always trails by exactly one pin-only commit; it is at that minimum.
+
+Failures met on the way, each root-caused before anything was changed. All
+were venue causes; no product or pin change was needed:
+
+| Symptom on the gate host | Root cause | Fix |
+|---|---|---|
+| 44 tests in `bashsharp/cli` fail with "no required module provides package" | they build the sibling `bash`, `bashy` and `coreutils` binaries, which resolve only in the umbrella workspace; they were run in a lone clone with `GOWORK=off` | run bashsharp's suite from an umbrella checkout with submodules |
+| `TestSourceRoute` fails with "compile: version go1.27.4 does not match go tool version go1.27.2" | the host's base Go was 1.27.2; it auto-switches for itself but hands child `go` processes a mismatched root | base Go is now 1.27.4, equal to every `go.mod` toolchain line |
+| outpost `TestSSHProxyDirectFirstNeitherFailsFastNoPrompt` fails | the test asserts headless behaviour; the remote session had a controlling terminal | commands run under `setsid` |
+| Page, Notepad, Form and Session tests fail with "unknown revision examples/desk/kit/v0.1.0" | the desk kit and chart versions are served only by bashy's local Go module proxy; the lane's proxy was empty and its bashy predated `mod proxy` | a current bashy runner, kit and chart published, `GOPROXY` naming the proxy |
+
+With those in place: bashsharp (6 packages) and outpost `cmd/outpost` pass at
+the heads above; ycode builds and passes its 83 short-test packages; bashy
+builds and its pin and import tests pass; the kit, Page, Notepad, Form and the
+Session server pass.
+
+The venue is now one script, `script/gate-lane.sh`: `setup` installs it on a
+Linux gate lane, `check` is the preflight (exit 0 only when the venue is
+right), `run CMD` runs a command in it. Stories run their tests through it.
 
 ### Step 1: board hygiene (done 2026-11-24)
 
