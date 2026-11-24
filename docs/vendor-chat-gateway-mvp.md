@@ -206,25 +206,27 @@ paired outpost.
    key (decision 2); the hosted route does not change that fallback.
 
 **Per-call identity and secrets token.** For each hosted call the master
-mints a versioned, signed, short-TTL identity payload and a caller-scoped
-`secrets:read` token, and sends both with the call to the runner:
+mints a versioned identity and a caller-scoped `secrets:read` token, sent
+as one header (H1, `bashy docs/mcp-server.md` "Hosted runner", bashy
+`5d160655`):
 
-```json
-{"version": 1, "caller": "<opaque profile id>", "task_id": "…",
- "idempotency_key": "…", "secrets_token": "<short-lived secrets:read token>"}
+```
+X-Bashy-Hosted-Identity: v1.<base64url payload>.<HMAC-SHA256>
 ```
 
-- `caller` is the opaque profile id of the registered caller; the runner
-  treats it as the principal for the call.
-- `task_id` and `idempotency_key` are the master task's ids, so a retried
-  or re-dispatched call with the same key never starts new work.
-- `secrets_token` is a short-lived token scoped to `secrets:read` for that
-  caller only. The runner uses it to pull the caller's vault secrets itself
-  (for example under `bashy secret exec`); no credential passes through the
-  gateway, and nothing persists on the runner after the call.
-- The payload is signed by the master and verified by the runner per
-  request, in the same fail-closed manner as the `--outpost` identity:
-  an unsigned, expired or replayed payload is refused and nothing runs.
+The payload fields are `schema`, `caller`, `task_id`, `idempotency_key`,
+`secrets_token`, `issued_at` and `expires_at`; the TTL is at most 5 minutes.
+`caller` is the opaque profile id of the registered caller and is the
+principal for the call. `task_id`/`idempotency_key` are the master task's
+ids, so a retry with the same key never starts new work. `secrets_token`
+is scoped to `secrets:read` for that caller only; the runner pulls the
+caller's vault secrets itself (for example under `bashy secret exec`), no
+credential passes through the gateway, and nothing persists after the call.
+The signature is HMAC-SHA256 over the payload with a **shared symmetric
+runner key** (not public-key material), provisioned at registration and
+held `0600` on the runner. The runner verifies per request and fails
+closed: an unsigned, expired or replayed identity is refused and nothing
+runs.
 
 **Gated calls settle by the caller on the master.** The effect policy is
 unchanged: `read` runs, writes are audited, and
@@ -238,21 +240,25 @@ remote or stale-digest decision still fails closed. A denial, or an
 approval nobody answers within the bounded wait, ends the task as
 `cancelled` and the gated call never executes.
 
-**Audit.** Hosted calls are audited as `mcp-hosted`, with the caller as the
-principal in the audit line, alongside the existing `mcp-<tool>` audit for
-master-native desktop tools.
+**Approved re-dispatch.** After the caller approves on the master, the
+master re-dispatches the call with a fresh identity carrying a **new
+idempotency key** and an approval block `{approval_id, digest, effects}`.
+The runner allows exactly those `effects` for that call and no others; a
+digest mismatch answers `gated` again and nothing executes (runner side:
+H1b `94c3aa2293c4`).
+
+**Audit.** The master logs `mcp-hosted`; the runner logs `mcp:<tool>` with
+the caller as principal.
 
 **Runner registration.** A hosted runner is registered with the master
 before it may receive calls. At registration the master provisions the
-runner's verification key — the public key material the runner uses to
-verify master-signed per-call identities — and the runner holds its side
-of that trust as a `0600` key file re-read per request, loopback only,
-failing closed on any verification error (the same posture as
-`bashy mcp serve --outpost`). An unregistered runner, or one whose
-verification key does not match the master's signer, receives no hosted
-calls. Runner provisioning and key rotation are master-side operations
-tracked by the cloudbox ticket referenced above; this document specifies
-only the public wire: signed payload in, `route: hosted` on every reply.
+shared symmetric runner key (see above); the runner holds it as a `0600`
+key file re-read per request, loopback only, failing closed on any
+verification error. An unregistered runner, or one whose key does not
+match, receives no hosted calls. Provisioning and key rotation are
+master-side operations tracked by the cloudbox ticket referenced above;
+this document specifies only the public wire: the identity header in,
+`route: hosted` on every reply.
 
 **Connected accounts.** A hosted user connects a Google account through a
 portal consent step on the master. The step completes the user's own
