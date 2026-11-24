@@ -36,3 +36,9 @@ Deliverables and isolation:
      * Add one line in `docs/INDEX.md` and an abstract in `docs/README.md` per `CLAUDE.md`.
      * Append a scrubbed `## S675 R7 Summary` section to this story file referencing `docs/sprint-675-posix-readiness.md` and the private-kit `s675-r7` commit SHA.
 4. No external correspondence, submission, fees, certification claim, code edit, or tag/release. Commit in both repositories with `BASHY_AGENT` set to your assigned agent identity and trailers `Sprint: #675`, `Story: #19`, `Story-ID: 2f848bba27c7`, `Agent: <assigned-agent>`. Submit via `bashy sprint submit 675 2f848bba27c7 -m "<summary, umbrella SHA, private kit s675-r7 SHA>"`.
+
+## S675 R7 Summary
+
+The scrubbed public preparation matrix is [docs/sprint-675-posix-readiness.md](../sprint-675-posix-readiness.md). The private-kit `s675-r7` dossier is committed at `40e1329` and holds exact candidate, build, harness, fixture, artifact and raw-evidence references. R1's 67-row ledger and R2-R6 packets were reconciled. The separately authorized R8 repair and S675 full engineering run passed the 9,337-result identity/raw-code comparison against S575 with zero changes or regressions; both runs retain 4 FAIL, 54 UNRESOLVED and 9 raw code-102 INSPECT results. The delegated supervisor recorded nine applicant-side S675 manual ACCEPT decisions after independent review, including `stty:32` for the fixed candidate only. These are not external rulings.
+
+External dispositions for 53 empty-target symlink results, `man:4` and four `more` FAILs remain pending. The operator/registrant owns license and product-claim confirmation, the formal uninterrupted single-journal run, submission and fee authorization. R7 authorizes no external send, source edit, tag, release or certification claim.
