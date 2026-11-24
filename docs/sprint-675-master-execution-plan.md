@@ -169,3 +169,34 @@ decisions and approves anything beyond the card's scope.
 All three were answered on 2026-11-24 and are recorded under the Phase 0
 result: go, reviewer as proposed, probes allowed. The archive location was
 resolved during the review (finding 1).
+
+## Closure (2026-11-24)
+
+The sprint ended the same day with 8 of 8 stories closed. Its scope was
+widened by the operator during the sprint: one confirmed product defect was
+repaired and released under a new baseline marker.
+
+- **Defect and repair.** Coreutils `stty` classified delay modes by prefix,
+  so `cread`, `-cread` and `crt` were rejected before the terminal was asked.
+  Story R8 matches the 17 delay-mode names exactly (one file, 11 lines).
+- **No regression.** One unchanged full Profile D run on the repaired
+  candidate (117 targets, 9,337 execution TPs, Go 1.27.4) was compared with
+  the S575 baseline by identity and raw code, by the manager and again
+  independently by the supervisor: same identity set, zero code changes,
+  identical non-pass set (4 FAIL, 54 UNRESOLVED, 9 INSPECT). The repair
+  changes no raw verdict; it moves `stty` test 32 from a product defect to a
+  terminal-driver limitation.
+- **Marker.** Annotated tag `posix-baseline/s675-2026-11-24` on Bash
+  `5c52281f`, Coreutils `f9833f72`, Bash# `08fabb33` (front door pinned to
+  those two; not itself a Profile D subject) and the umbrella `33d0c714`.
+  Tags only; no release, no certification claim.
+- **Manual review.** The nine INSPECT results carry applicant-side review
+  dispositions made on the new journals by the delegated supervisor: all
+  nine accepted, `stty` 32 for the repaired candidate or later only. Raw
+  codes are unchanged.
+- **Still open, all with the maintainer:** 58 authority rulings, licence
+  confirmation, the formal single-journal run, registration and fee. See
+  [sprint-675-posix-readiness.md](sprint-675-posix-readiness.md).
+- **Evidence.** The new sealed archive (SHA256 `d324b62f…9bf6`) is in the
+  maintainer's private evidence store beside the S575 archive; its index is
+  in the private harness kit.
