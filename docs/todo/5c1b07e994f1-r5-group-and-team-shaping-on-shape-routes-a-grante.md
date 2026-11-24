@@ -41,3 +41,14 @@ Acceptance (unit tests on the gate host, fakes):
 5. No step asks A or C for O's OS password.
 
 Out: a scope field on the cloudbox grant rule itself (cleaner long term, a private cloudbox ticket; follow-up only); approvers other than the owner; building a candidate with C's own host resources.
+
+## Code inspected 2026-11-24 (before planning; facts at origin heads)
+
+- bashy internal/agentos/mcp_site.go: allowShape (146-154) admits owner only; siteCaller (60) keeps Principal and Tier and drops the stamp's Circle and Groups (caller 71-116). s.shape passes the caller as --user (542) into executeShapeCLI (shape_local.go:55, Caller at 93).
+- yoke pkg/shape: web-app activation is PER PRINCIPAL (program.go:38-43 ActivationPrincipal; state per app+principal, state/store.go:40; candidates and locks per principal, service.go:160-176). A member's wish today would make the member's own version, not a revision on O's line. New: a scoped member's candidate activates on the owner's line, with Principal = the member (author).
+- Conflict: Approve already refuses with ErrConflict when active != BaseRev (service.go:574-575); it does not return both revisions. Small addition: name both revisions in the refusal.
+- Spend/allowance for shaping: none in shape, webconsole or agentos. MVP records who (Candidate.Principal/Actor, tracking.go:174); separate spend accounting is out.
+- Request queue: fileRequest (webconsole/shaped_candidate.go:372) writes to the WISHER's own candidate dir, triggered only by a Protected page (727); listed only for that principal (669-697). New: an out-of-scope wish files a request on the owner's queue.
+- shaped.json: appserver.Manifest (appserver/manifest.go:51-65) uses DisallowUnknownFields (175-184); a scopes key must be added to the struct (yoke release, then consumer pins). No features/levels/audiences/scopes exist today.
+- Audience grammar to reuse: website template audience.go:15-52 (Circles, Groups, Emails); the template verifies stamps itself (identity.go:49-97, no coopauth).
+- Member browser route: requests through outpost carry the member stamp; the site MCP is proxied at <mount>/mcp (outpost internal/agent/site_mcp.go:34-51). There is no member shaping UI today: the template's shape link is owner-only (main.go:195,203,236), and console pairing (yoke webconsole/pair_cmd.go) is an owner-device LAN ticket with operator authority, not a member route.

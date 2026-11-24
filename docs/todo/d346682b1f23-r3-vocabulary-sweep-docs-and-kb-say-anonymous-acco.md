@@ -19,3 +19,9 @@ Spec: docs/access-tiers.md. Update: docs/sprint-691-master-execution-plan.md tie
 ## Rescoped 2026-11-24 (KISS/MVP review, operator-approved plan)
 
 Absorbs R4 (665cf4339efd): the same commit also sets one dated Status line on plan docs 615, 638, 641, 691, 697 to match story frontmatter (615 done, S21 moved to 706; 638 superseded by 669, closed won't do 2026-11-24; 641 done; 691 ended 2026-11-24 8/8; 697 A-stories done).
+
+## Code inspected 2026-11-24 (before planning; facts at origin heads)
+
+- Counts of signed-in: docs/shaping-enable-a-website.md 2 (+3 signed_in, 1 'four visitor tiers'); docs/sprint-615 plan 8; docs/sprint-691 plan 0; bashy kb/defaults/pages/shaping-enable-an-existing-website.md 3; set-up-outpost-...-private.md 1; bashy docs/ui-cli-parity.md 3; outpost/docs/cooperative-web-apps.md 4 (278, 281, 284, 305).
+- Path fix: run-a-class-or-meeting-on-one-page.md is at bashy/docs/kb/pages/, not kb/defaults/pages.
+- The umbrella kb page already exists: docs/kb/pages/access-tiers-anonymous-account-owner.md (indexed in docs/kb/index.md). 'four visitor tiers' also appears in docs/README.md and docs/INDEX.md.

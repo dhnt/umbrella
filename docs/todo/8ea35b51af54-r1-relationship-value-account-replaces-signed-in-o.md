@@ -19,3 +19,11 @@ Spec: docs/access-tiers.md (operator decisions 2026-11-24: 'user' is the OS user
 ## Rescoped 2026-11-24 (KISS/MVP review, operator-approved plan)
 
 No cloudbox ticket: the outpost derives the stamp itself from its held grant copies (outpost internal/agent/grants.go Relationship; apps.go), so cloudbox never carries the word. The cross-repo shared conformance fixture is dropped; per-repo tests including the alias path suffice. Two ordered steps: R1a consumers accept account and keep signed-in as a logged alias (yoke pkg/coopauth, bashy internal/agentos/mcp_site.go, website template identity/audience with the signed_in audience aliasing account, desk kit identity); consumer pins bump; then R1b the outpost produces account (RelSignedIn -> RelAccount) plus the wire doc and the OS-elevation note. The alias is removed no earlier than one release after R1b ships.
+
+## Code inspected 2026-11-24 (before planning; facts at origin heads)
+
+- Producer: outpost grants.go:196 (RelSignedIn), :218/:248, apps.go:665 and wire at :703/:724; HMAC covers the kind string (coopauth.go:281, apps.go:262-264) but whatever is sent is signed, so only the consumers' allow-lists matter.
+- Consumers: yoke coopauth.go:261 (allow-list); bashy mcp_site.go:38/108/111; the website template and the desk kit do NOT use coopauth (template identity.go:18/85-93, audience.go:19/121 signed_in key; kit identity.go:91-93) so each changes directly; shaping.js:119 tierText; site.json:20 and website.bsh:47/195 (also the adapterembed copy) for the signed_in audience key (a config spelling, aliased separately).
+- Pins: outpost yoke v0.0.0-20261124123053-25ec97b56fde; bashy yoke v0.0.0-20261124150948-f6139e6f1237; template has no yoke dep; desk notepad/page pin kit v0.3.0 (a new kit tag is needed).
+- Old consumers drop an unknown kind to anonymous (coopauth.go:261; template identity.go:90; kit identity.go:91), so R1b ships only after every consumer carries the alias.
+- Tests to update: outpost relationship_test.go:31/39/135; coopauth_test.go:121; mcp_site_test.go:224/227; template main_test.go:26/66/115/180; kit revision_test.go:262/288; notepad revision_test.go:76/129.
