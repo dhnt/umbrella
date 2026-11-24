@@ -79,7 +79,10 @@ list (R6) are off this path and run in parallel.
 | 12-11 | release-train candidate with these, after the operator says go | train item |
 | 12-14 to 12-18 | real A/O/C test on real hosts, operator-held | live |
 
-App access uses tokens, never an OS password (operator rule, 2026-11-24).
+App access uses tokens, never an OS password (operator rule, 2026-11-24): the
+owner never shares the host's OS password with members or contractors. A and C
+come in with their own cloudbox login or a token, and shaping is gated by the
+relationship stamp and the grant, never by OS elevation (R5 acceptance 5).
 Risk: if an MCP client on C's machine cannot reach O's site MCP as a member with a token
 (R9 step 0), C uses the browser path A uses and the gap is filed with its cause.
 
