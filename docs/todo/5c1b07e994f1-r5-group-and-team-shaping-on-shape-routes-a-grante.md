@@ -19,3 +19,21 @@ Spec: docs/access-tiers.md (shaping workflows 2 and 3 are one workflow; team sha
 ## Rescoped 2026-11-24 (KISS/MVP review, operator-approved plan)
 
 Step 0 = the R8 baseline (d8b7f10afa31): targeted unit tests yoke pkg/shape/..., pkg/src/... and bashy internal/agentos shape tests on the gate host, one evidence record. Acceptance fixture trimmed to five callers against one app: owner, granted member, ungranted member, account, anonymous. A member who owns a host and the owner on a second device take the granted-member path; assert that in one line, no extra fixtures. Tests grant through shaped.json feature audiences directly, so Sprint 703 S14 (ef2ce499a64a) gates only CLI grants, not this story's unit work. Reuse the Sprint 684 kit revision store for author, conflict refusal and both-revisions return. Operator to confirm the three defaults before assignment.
+
+## Minimum acceptance case (operator, 2026-11-24): small business with a contractor
+
+Three people, one app, one line on O's host. O is the primary owner (the host owner). A and C are O's members in two circles and one group.
+
+| Who | Level | Relationship to O | Circle / group | How they shape |
+|---|---|---|---|---|
+| O, office manager/admin | owner (O's outpost hosts the app) | owner | n/a | shapes locally; the only approver |
+| A, business owner | account (no outpost) | member | company / support | browser or site MCP on O's host, the member path (workflow 2) |
+| C, contractor | owner (C's own outpost) | member | contractor / support | builds and verifies a candidate on C's host, pushes it to O, pulls O's line back (workflow 3) |
+
+Grant: one shaped.json feature audience {groups:[support]} grants shape to A and C; approvers = O. Negatives in the same fixture: a member of O outside group support (wish demotes to O's request queue), an account stranger and an anonymous visitor (configuration only).
+
+Steps the test proves:
+1. A wishes on O's host; the candidate runs on O's host with O's LLM allowance; spend is recorded against O with A as spender; O approves; the version has author A.
+2. C pulls O's current line, shapes and verifies on C's host, then pushes the candidate to O; O sees it as incoming, it is rebased onto O's current line and re-verified on O's host, O approves; author C.
+3. A and C change the same feature concurrently: the second is refused with both revisions returned, never merged silently.
+4. Every viewer (A, C, O) sees the approved version without a manual redeploy, as fast as verify and approve allow.
