@@ -29,3 +29,41 @@ Deliverables and isolation:
 3. Compare against `docs/S355-D-MORE-OD-AUTHORITY-QUESTIONS-20261002.md` and Sprint 377/385 historical final-EOF `v`-command context without assuming historical findings explain S575's journal output: separate what S575's retained journal directly proves from any inner-transcript gap. Check `more`'s required vs optional `[UP]` scope at the source (`docs/SPRINT-341-BASE-SCOPE.md` 14 optional exclusions, POSIX.1-2016 `more` `[UP]` marking, and kit scope configuration), preserve all four raw `FAIL` codes (no silent exclusion), and prepare the refreshed scope/authority recommendation (notifying the manager on `mb` if and only if evidence establishes a confirmed product/setup defect for R6). Do not copy raw suite source.
 4. In your `umbrella` weave workspace, append a scrubbed `## S675 R4 Summary` section to this story file recording the four individual TP findings, scope classification, disposition/blocker status (raw FAILs preserved; pending authority/scope decision, not PASS), and private-kit `s675-r4` commit SHA. Zero journal excerpts, correspondence text, credentials, hostnames, OS logins, emails, or home-directory paths (`script/scrub-gate.sh` is fail-closed; use host roles only).
 5. Investigation only: no production code edits, no builds/suites/VMs/containers on the dev box (small probes only on a claimed gate-host lane if needed, released after), no licensed runs, no external correspondence. Commit in both repositories with `BASHY_AGENT` set to your assigned agent identity and trailers `Sprint: #675`, `Story: #16`, `Story-ID: c02bdd0e36cc`, `Agent: <assigned-agent>`. Submit via `bashy sprint submit 675 c02bdd0e36cc -m "<summary, umbrella SHA, private kit s675-r4 SHA>"`.
+
+
+## S675 R4 Summary
+
+Investigation delivered against the verified S575 baseline; raw verdicts and
+all 9,337 execution results are preserved. Four individual findings:
+
+| TP | Finding | Disposition |
+| --- | --- | --- |
+| more:130 | LANG collation and character-class helper failures occur in the non-English phase; the inner interaction cause is unproven. | Raw 1 FAIL retained; optional UP, pending authority/scope decision, not PASS. |
+| more:132 | LC_ALL collation and character-class helper failures occur in the second helper execution; no precedence defect or pager exit status is established. | Raw 1 FAIL retained; optional UP, pending authority/scope decision, not PASS. |
+| more:133 | LC_COLLATE equivalence-class helper fails in a non-English execution; the retained evidence cannot distinguish its second and third executions or prove a matcher defect. | Raw 1 FAIL retained; optional UP, pending authority/scope decision, not PASS. |
+| more:134 | LC_CTYPE character-class helper fails in a non-English execution; the retained evidence cannot distinguish its second and third executions or prove a matcher defect. | Raw 1 FAIL retained; optional UP, pending authority/scope decision, not PASS. |
+
+The private analysis distinguishes the older S355 baseline-phase finding
+from S575, and retains S377/S385 final-EOF/editor evidence as context only.
+S575's recorded editor route does not reproduce the historical shim-shadowing
+hazard. No confirmed product/setup defect supports an R6 repair proposal.
+No implementation changes, probes, builds, suites, licensed runs or external
+correspondence occurred.
+
+Optional UP scope is supported by the 2016 standard, the kit's 14 optional
+exclusions and the run configuration. Official per-TP configuration/report
+handling remains an authority blocker; no silent optional exclusion or waiver
+is applied. The existing private packet and batch index are refreshed.
+Manager review and operator review of R1 remain acceptance prerequisites.
+
+Source comparison: tested Bash `7855c2f0` versus current `5c52281f`;
+Coreutils `c6569352` versus `e0184192`; harness `6966bc6` versus reviewed
+`103c5d5` and R4 base `2f59b6f`. Relevant utility and harness source is
+unchanged. Both required evidence checksums, all 196 retained file comparisons,
+four S561 diagnostic comparisons, original input identity and private
+`doc-contract-test` passed. Public scrub and whitespace gates passed.
+
+Private kit branch `s675-r4`, commit
+`b2c2aa38a3baf9cb495457e2cf840e532f26426b`:
+`docs/S675-R4-MORE-FOUR-FAIL-ANALYSIS.md`, with refreshes to the existing
+S355 more/od packet and authority batch index. Committed locally, not pushed.
