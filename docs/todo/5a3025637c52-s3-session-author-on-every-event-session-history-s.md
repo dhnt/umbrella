@@ -3,12 +3,13 @@ id: 5a3025637c52
 kind: feature
 title: 'S3 Session: author on every event, session history, session undo'
 seq: 687
-status: todo
+status: assigned
 priority: p1
 labels:
     - group-shaping
 created: 2026-11-24T07:30:49.142471Z
-assignee: claude-opus5.5
+weave: 217
+assignee: codex-gpt6.2-sol
 sprint: 684
 sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
 sprint_title: 'Group shaping rod: one shared-item contract for every bashy app, proven on Klatch and Notepad'
