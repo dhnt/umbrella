@@ -3,11 +3,13 @@ id: 5a3025637c52
 kind: feature
 title: 'S3 Session: author on every event, session history, session undo'
 seq: 687
-status: todo
+status: assigned
 priority: p1
 labels:
     - group-shaping
 created: 2026-11-24T07:30:49.142471Z
+weave: 194
+assignee: claude-opus5.5
 sprint: 684
 sprint_id: 23044574-ddc0-51fe-a579-805a07e99ee5
 sprint_title: 'Group shaping rod: one shared-item contract for every bashy app, proven on Klatch and Notepad'
@@ -24,3 +26,5 @@ Run builds and unit tests only in the assigned gate-host Linux lane. The manager
 For a formerly green test failure, stop and report names, commit and venue for investigation. Compare with last green, bisect and record product, test or venue cause on the story before a repair assignment. Keep every existing test enabled. Fetch and rebase before submitting. Preserve the candidate and redo against fresh heads if the rebase is nontrivial. Re-run the story suite on the submitted SHA. Supply branch, commit, commands, counts and exits, baseline and candidate evidence. Include Sprint, Story, Story-ID and Agent trailers. The manager owns merges, tags, proxy publication, pin updates and pushes. Use host roles in all public evidence.
 
 The manager reserved gate lane 3 for this story.
+
+Supervisor observed two baseline Session suite hangs over 35 minutes at bashy 6d88b2ac, during session.bsh demo invoking sprint add, following two errors and one failure. Investigate on the gate host with bounded commands before feature work. Report failing and hanging test names, last-green comparison, bisection and classification for the manager to record here before a fix.
