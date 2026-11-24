@@ -15,6 +15,8 @@
 #   - desk apps require the shared kit/chart modules at versions served only
 #     by bashy's local Go module proxy, so the proxy must be published and
 #     GOPROXY must name it; publishing needs a bashy that has `mod proxy`;
+#   - tests that change HOME or XDG_CACHE_HOME still need the prepared Go
+#     caches so child builds can finish within the existing deadlines;
 #   - tests that assert headless behaviour fail when the remote session has
 #     a controlling terminal, so commands run under setsid.
 #
@@ -32,6 +34,8 @@ GATE_PROXY=${BASHY_GOMOD_PROXY:-${BASHY_HOME:-$HOME/.bashy}/gomod-proxy}
 gate_env() {
 	export PATH="$GATE_BIN:$GATE_GO_ROOT/bin:${PATH}"
 	export GOTOOLCHAIN=local
+	export GOCACHE="${GOCACHE:-$HOME/.cache/go-build}"
+	export GOMODCACHE="${GOMODCACHE:-$HOME/go/pkg/mod}"
 	export BASHY_HINTS=off
 	export BASHY_GOMOD_PROXY="$GATE_PROXY"
 	export GOPROXY="file://$GATE_PROXY,https://proxy.golang.org,direct"
@@ -56,6 +60,7 @@ gate_setup() {
 		mv "$GATE_GO_ROOT.tmp" "$GATE_GO_ROOT"
 	fi
 	gate_env
+	mkdir -p "$GOCACHE" "$GOMODCACHE"
 	(cd "$src" && GOWORK=off go build -o "$GATE_BIN/bashy.new" ./cmd/bashy && mv "$GATE_BIN/bashy.new" "$GATE_BIN/bashy")
 	git -C "$src" rev-parse HEAD >"$GATE_BIN/bashy.commit"
 	(
@@ -78,9 +83,12 @@ gate_setup() {
 
 gate_check() {
 	gate_env
-	local bad=0
+	local bad=0 cache
 	fail() { echo "gate-lane: FAIL $*" >&2; bad=1; }
 	[ "$(cd / && go env GOVERSION 2>/dev/null)" = "go$GATE_GO_VERSION" ] || fail "base Go is $(cd / && go env GOVERSION 2>/dev/null), want go$GATE_GO_VERSION"
+	for cache in "$GOCACHE" "$GOMODCACHE"; do
+		[[ $cache = /* && -d $cache && -w $cache && -x $cache ]] || fail "Go cache is not an absolute writable directory: $cache"
+	done
 	[ "$(command -v bashy)" = "$GATE_BIN/bashy" ] || fail "bashy on PATH is $(command -v bashy), want $GATE_BIN/bashy"
 	bashy mod proxy status --dir "$GATE_PROXY" >/dev/null 2>&1 || fail "bashy has no working 'mod proxy'"
 	for m in kit chart; do
