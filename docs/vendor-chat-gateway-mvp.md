@@ -178,7 +178,7 @@ digest-bound approval there.
 
 ## Hosted route (Sprint 691 H3)
 
-> **Status: draft — pending review by the cloudbox owner.** The master-side
+> **Status: reviewed and approved by the cloudbox owner (2026-11-24).** The master-side
 > implementation is tracked as cloudbox todo `eed85934`, referenced here by
 > id only (never quoted).
 
