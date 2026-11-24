@@ -165,3 +165,18 @@ member authorization vocabulary (669 M3); a local-install journey (tier 3 has
 `install-agent --mcp`); a dhnt-owned Google OAuth client (bring-your-own-project
 stays); persistent hosted shells; GitHub writes through the trove (639 S4b); any
 cloudbox code in this repo.
+
+## H5 results
+
+Measured 2026-11-24 on the primary Linux build host (direct loopback against the containerized H4 pilot runner with pre-warmed adapters, `UV_PYTHON_INSTALL_DIR`, and fake `gws`, `gh` and vault endpoints; existing Droplet untouched):
+
+- **Pre-warming finding:** `UV_PYTHON_INSTALL_DIR` must be pre-warmed in the image and preserved in `mcpHostedCall.env` (alongside `BASHY_ADAPTER_CACHE` and `BASHY_BIN_CACHE`); without it, `google`/`trove` calls re-download CPython 3.15 into scratch (`~4.0 s` `gmail`, `~7.3 s` `trove`). With pre-warming and Podman `--pids-limit 8192` (default `2048` hit `EAGAIN` at 32-way `trove` concurrency), all completed calls left **0 scratch entries**.
+- **Cold vs warm start:** one-shot container `1,126 ms`, daemon startup to HTTP `401` ready `1,669 ms`; sequential cold/warm E2E (`initialize` + `notifications/initialized` + `tools/call`): `echo` `74.8 / 67.9 ms` (`103 ms` CPU), `gh pr list` `147.5 / 149.7 ms` (`239 ms` CPU), `google gmail-list` `490.5 / 463.7 ms` (`591 ms` CPU), `trove ls /drive` `5,238.1 / 5,221.8 ms` (`7,869 ms` CPU from `~25× bashy jq` + `secret` + `2× google` subprocesses).
+- **Load & burst (32 logical CPUs / 24 GiB cap):**
+  - `run_tool echo` at `100 calls/s` × `60 s`: `6,000/6,000` OK (`0%` errors, `99.79 req/s`), E2E `p50/p95/p99 = 179.3 / 234.5 / 289.6 ms`, `213.2 ms` CPU/call, `757.4 MiB` peak pod mem, `0` scratch. `1,000`-call burst drained in `7.73 s` (`p50/p95/p99 = 956.1 / 1,173.4 / 1,249.4 ms`, `1,607.5 MiB` peak pod mem).
+  - 3-tool mix without `trove` (`echo,gh,gmail`), `1,000`-call burst (`conc=64`): `1,000/1,000` OK (`0%` errors), drained in `19.69 s` (`50.8 req/s`, `p50/p95/p99 = 904.7 / 2,580.3 / 2,814.3 ms`, `585.9 ms` CPU/call, `6.48 GiB` peak pod mem).
+  - Full 4-tool MVP mix (`echo,gmail,trove,gh`), `1,000`-call burst (`conc=32`): `1,000/1,000` OK (`0%` errors), drained in `150.77 s` (`6.63 req/s`, `p50/p95/p99 = 831.6 / 16,889.8 / 17,187.4 ms`, `4,081.5 ms` CPU/call, `7.92 GiB` peak pod mem). At `100 calls/s` × `60 s` open-loop (`conc=32, qcap=64`), `501/6,000` admitted calls succeeded (`0` runner errors/timeouts) and `5,499` shed with `503` queue-full (`5.87 req/s` sustained).
+  - A single `2 vCPU / 512 MiB` pod handled `10 req/s` `echo` (`121.7 MiB` peak) but OOM-killed under 20 req/s 4-tool load.
+- **Secondary host check:** Skipped — baseline inventory shows `5.2 GiB` free on its fixed disk (below the `50 GiB` requirement) and SSH requires interactive elevation; local failover capacity is `0 req/s` until storage is expanded and tested.
+- **Recommendation (warm floor & off-site):** Keep a **2–3 warm pod floor** (`2–4 vCPU, 2 GiB RAM, --pids-limit 8192`, concurrency cap `4–8`/pod) on the primary host. Defer paying for an always-on off-site cluster while light pilot traffic stays within the primary host's measured envelope (`100 req/s` `echo`, `~51 req/s` `echo/gh/gmail`, `~6.6 req/s` `trove`-heavy), **but add an off-site standby runner before external SLA launch** (no local failover today) or if `trove`-heavy load exceeds `~6 req/s` before reducing `trove.bsh` subprocess forks.
+- **Verify:** `GOWORK=off go test -count=1 ./internal/agentos -run TestMCPHosted && GOWORK=off go -C examples/hosted-runner test -count=1 ./...` (plus `hosted-runner.bsh` + `cmd/signer --load` on the primary Linux build host).
