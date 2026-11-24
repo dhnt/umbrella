@@ -1,13 +1,43 @@
-# Sprint 683: owner/producer shaping of the example apps (plan)
+# Sprint 683: owner publishing for a shapeable page and its components (plan)
 
 Rescoped 2026-11-24 at the operator's review. The card and its stories are
 authoritative; this page is the map. Planning only until assigned.
 
 **Held (operator, 2026-11-24)** until Sprint 701 decides go or no-go on the
-UI SDK and Sprint 705 S3 specifies the malleable UI for agents. Then re-review
-O1 and O2 against that UI: the form, viewer and brainstorm rows may be rebuilt
-starters, and web offer/adopt (open decision 1) belongs to that design. O0 and
-703 D4 do not depend on the UI and may proceed in 703.
+UI SDK and Sprint 705 S3 settles the model below. Then re-review O1 and O2
+against it. O0 and 703 D4 do not depend on the UI and may proceed in 703.
+
+## Direction: one shapeable page, equally shapeable components
+
+Operator, 2026-11-24: the target for any website is one shapeable page whose
+embedded components are each equally shapeable. `bashy/examples/desk/page`
+already composes live blocks (`poll form book note board chart timer here
+hands embed`) over HTTP from engines it does not merge, and renders most of
+them itself. Shaping the page therefore covers layout, block rendering and new
+block kinds in one place, with one release to offer.
+
+What shaping the page does not cover, and S3 must settle:
+
+1. **Component behavior.** Form field kinds, conditional questions,
+   validation and brainstorm phases live in the component; the component is
+   shaped for those.
+2. **iframe embeds.** Page shaping never reaches inside a framed app;
+   whiteboard, table, klatch and demo-queue refuse framing (link-out cards).
+3. **Version coupling.** A released or offered page must pin the component
+   versions and API contracts it was verified with (`contract.bsh` exists;
+   pinning does not).
+4. **Three overlapping surfaces.** `desk/page` (live group page),
+   `shaping/site` (public content module) and `shaping/website` (layer over
+   a static site) converge or get explicit roles.
+
+Proposed model: components are headless services (data, API, agent CLI) with
+their own shaped UI blocks; the page is the shaped composition shell; block
+kinds are the extension point; Sprint 701's UI SDK supplies the block
+components. The same input is on the Sprint 705 card for S3.
+
+When the hold lifts, the O1 rows become one page carrying form/poll, viewer
+book and brainstorm blocks (plus the website face), and the owner release
+pins the component versions it was verified with.
 
 ## Finding: the owner side is platform, not per-app work
 
