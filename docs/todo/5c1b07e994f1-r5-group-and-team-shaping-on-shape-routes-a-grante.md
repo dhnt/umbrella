@@ -14,26 +14,21 @@ sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
 ---
 
-Spec: docs/access-tiers.md (shaping workflows 2 and 3 are one workflow; team shaping = contributing owners as members of the primary owner). Closes what Sprint 691 framed (member-level use of invited apps) and deferred. Absorbs the designs of Sprint 640 T1 (owner/member authority on shape routes, owner-visible request queue) and T8 (candidates per requester, rebase and re-verify before approval, approvers = owner plus named maintainers, conflicts surfaced never merged silently), both retired by supersession; and Sprint 689 D2's rebase rule. Venue = the owner's host; spend = the owner's allowance, recorded with who spent it; revision author = the member. allowShape in bashy internal/agentos/mcp_site.go and the website template admits member when the app's feature grants it (641 shapeable audience grammar, the one grant model); a wish beyond the grant demotes to the owner's request queue, never a dead end. Defaults adopted (operator may overrule at review): grant per feature by audience, no per-member role table; approvers owner + named maintainers; no driver lease. No team scope, no second role model. Depends on R1 and on cloudbox grants and admission as they exist. Acceptance: one fixture with owner, granted member, granted member who owns a host, ungranted member, account, anonymous against one app; granted candidates land on the owner's line with author and spend recorded after approval; the ungranted wish becomes a request; a conflicting candidate is refused with both revisions; the owner on a second device shapes the app on its host through the gateway or the site MCP with the same path and evidence as a granted member. Unit tests on the gate host; integration as a Sprint 699-style story later.
+Spec: docs/access-tiers.md (workflow 2; team shaping = members shaping the primary owner's app). Absorbs Sprint 640 T1/T8 and Sprint 689 D2's rule; Sprint 706 R8's baseline is step 0.
 
-## Rescoped 2026-11-24 (KISS/MVP review, operator-approved plan)
+## MVP (operator, 2026-11-24: KISS; cloudbox sees only owner and members)
 
-Step 0 = the R8 baseline (d8b7f10afa31): targeted unit tests yoke pkg/shape/..., pkg/src/... and bashy internal/agentos shape tests on the gate host, one evidence record. Acceptance fixture trimmed to five callers against one app: owner, granted member, ungranted member, account, anonymous. A member who owns a host and the owner on a second device take the granted-member path; assert that in one line, no extra fixtures. Tests grant through shaped.json feature audiences directly, so Sprint 703 S14 (ef2ce499a64a) gates only CLI grants, not this story's unit work. Reuse the Sprint 684 kit revision store for author, conflict refusal and both-revisions return. Operator to confirm the three defaults before assignment.
+To cloudbox and the outpost there are only the host owner and the host owner's members; real-world roles (business owner, office admin, contractor) make no difference.
 
-## Minimum acceptance case (operator, 2026-11-24): small business with a contractor
+Case: O owns the host and the member list. A (circle company, group support; no outpost) and C (circle contractor, group support; has an outpost) are O's members. One shaped.json feature audience {groups:[support]} grants shape. O approves.
 
-One app, one line on O's host, judged from O's member list (the outpost resolves relationships against its host owner's list; names on A's or C's own lists do not matter). O is the primary owner and owns circles company and contractor and group support; A is in company / support, C in contractor / support.
+Change: allowShape in bashy internal/agentos/mcp_site.go and the website template admit a member when the app's feature audience grants shape (the 641 audience grammar; no role table, no lease). Every wish runs on O's host with O's LLM allowance.
 
-| Who | Level | Relationship to O | Circle / group | How they shape |
-|---|---|---|---|---|
-| O, office manager/admin | owner (O's outpost hosts the app) | owner | owns the member list (circles company, contractor; group support) | shapes locally; the only approver |
-| A, business owner | account (no outpost) | member | company / support | browser or site MCP on O's host, the member path (workflow 2) |
-| C, contractor | owner (C's own outpost) | member | contractor / support | builds and verifies a candidate on C's host, pushes it to O, pulls O's line back (workflow 3) |
+Acceptance (unit tests on the gate host, fakes):
+0. Baseline: yoke pkg/shape/..., pkg/src/... and bashy agentos shape tests green on current heads, recorded once (ex-R8).
+1. A and C each wish through the site MCP or the browser on O's host; O approves; the version records the member as author and O's allowance as the spend, with the member as spender.
+2. A member outside group support: the wish demotes to O's request queue. An account stranger and an anonymous visitor: configuration only.
+3. Two members change the same feature: the second is refused with both revisions returned.
+4. The approved version is what everyone gets on the next page load; no redeploy.
 
-Grant: one shaped.json feature audience {groups:[support]} grants shape to A and C; approvers = O. Negatives in the same fixture: a member of O outside group support (wish demotes to O's request queue), an account stranger and an anonymous visitor (configuration only).
-
-Steps the test proves:
-1. A wishes on O's host; the candidate runs on O's host with O's LLM allowance; spend is recorded against O with A as spender; O approves; the version has author A.
-2. C pulls O's current line, shapes and verifies on C's host, then pushes the candidate to O; O sees it as incoming, it is rebased onto O's current line and re-verified on O's host, O approves; author C.
-3. A and C change the same feature concurrently: the second is refused with both revisions returned, never merged silently.
-4. Every viewer (A, C, O) sees the approved version without a manual redeploy, as fast as verify and approve allow.
+Not in the MVP (follow-ups, file only when asked): C building and verifying on C's own host and pushing to O (shape push/pull needs a member-authenticated remote on O's outpost); live push of a new version to open pages; named maintainers other than the owner.
