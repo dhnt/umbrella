@@ -13,4 +13,8 @@ sprint_id: 7dd246c4-2465-51e2-ad46-eee5805e276f
 sprint_title: Renovate dhnt.io through software shaping and test the everyday-user promise
 ---
 
-Document the budget holder, recent examples, baseline, protected rules, delivery costs and a real price decision for a fixed-scope pilot. Propose a buyer CTA next to the visitor demo. When separately authorized to approach a prospect, distinguish a paid commitment, a qualified inquiry, a decline and an untested offer. Report the reason and the decision about pursuing this segment. The current filing authorizes documentation only.
+Start offer design alongside R1. Select an intake operations budget holder and ask about the last three submissions requiring follow-up during authorized discovery. Identify which difficulties vary by customer and which could be addressed by a common default. Use aggregate counts for submissions started, first-pass completions, follow-ups and staff minutes.
+
+Draft a fixed-fee offer for one form covering setup, protected rules, checks, measurement and a results review. Define a comparison window, a worthwhile improvement for the owner, the quoted price and expected delivery cost including review, hosting and maintenance. Use R3/R4 observations to substantiate claims.
+
+Record the buyer’s actual decision and reason. Distinguish inquiry, accepted quote, payment, decline and an untested offer. Recommend pursuing, revising or dropping the offer based on that evidence. Filing documents the pilot. Customer outreach and a commercial quote require separate authorization.

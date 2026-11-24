@@ -13,4 +13,6 @@ sprint_id: 7dd246c4-2465-51e2-ad46-eee5805e276f
 sprint_title: Renovate dhnt.io through software shaping and test the everyday-user promise
 ---
 
-After R1, use the current dhnt/site source and existing owner shaping path in staging. Record the wish, base revision, candidate, checks, before/after, approval and undo rehearsal. Preserve existing human and machine-readable entry points. Record blockers at the failed step. Production publication is a release-train decision.
+Use the R1 copy and draft R5 offer in an owner wish against the current dhnt/site staging revision. Ask to place the form demo and paid-pilot inquiry where a first-time visitor can find both. The inquiry should request the workflow and difficulty and let the buyer proceed without sharing customer records.
+
+Record the exact wish, base and candidate revisions, before/after preview, checks, approval and undo rehearsal. Follow both calls to action on staging and record their destinations. Inspect the rendered and no-JavaScript pages, Shape link, About and install paths, and Markdown/JSON representations. If manual editing is necessary, identify the failed shaping step. Publication follows the coordinated release train.

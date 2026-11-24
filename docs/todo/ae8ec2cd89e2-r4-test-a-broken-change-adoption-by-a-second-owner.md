@@ -13,4 +13,6 @@ sprint_id: 7dd246c4-2465-51e2-ad46-eee5805e276f
 sprint_title: Renovate dhnt.io through software shaping and test the everyday-user promise
 ---
 
-Use the same form and synthetic answers. Exercise the refusal, offer/adoption, and upgrade cases in the brief. Report observed results, human effort, and which public claims the evidence supports. Reuse existing promotion and update paths. Keep gaps as findings for triage.
+Use the R3 form and synthetic answers. Present a candidate that loses an answer. Record which owner rule detects it, whether activation is refused, and whether the participant understands why. Offer a good variation to a second owner through the existing promotion path. Record their review and adoption decision.
+
+Recheck against one identified upstream update, keeping the original revision available. Record both revisions, outcome, operator minutes, manual repairs and ongoing maintenance implications. Give R5 the evidence for estimating delivery cost and deciding which claims a buyer can rely on. Record gaps for triage.

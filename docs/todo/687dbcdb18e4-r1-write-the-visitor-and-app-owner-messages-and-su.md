@@ -13,4 +13,6 @@ sprint_id: 7dd246c4-2465-51e2-ad46-eee5805e276f
 sprint_title: Renovate dhnt.io through software shaping and test the everyday-user promise
 ---
 
-Review the proposed copy and primary sources in docs/dhnt-site-renovation-pilot.md. Map each public promise to code, observed behavior, research precedent or an explicitly unproven hypothesis. Deliver homepage and builder copy with the intended audience and entry point.
+Prepare two homepage paths. “Try the form” serves the visitor. “Request a paid pilot” serves the operations owner who pays staff to chase incomplete applications. Keep the bashy installation path available for builders.
+
+Deliver the headline, both calls to action, the owner’s one-form offer, and an example showing what can vary and what the owner requires. Map each public promise to code, an observed journey, a primary research source or an explicitly untested hypothesis. Use docs/dhnt-site-renovation-pilot.md for sources and draft copy. Prepare the offer with R5 before R2 uses it.
