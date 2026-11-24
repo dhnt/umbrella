@@ -1,13 +1,45 @@
 # Sprint 675: review and master execution plan
 
 Sprint UUID: `9b07aedb-77af-52d5-8af3-8035a213774c`.
-Reviewed 2026-11-24 with the operator. State at review: backlog, 0/7 stories
-closed, conductor unclaimed, no weave or claim on it. This document records
+Reviewed 2026-11-24 with the operator, who then gave the go: Phase 0 is done
+(result below) and the sprint is managed by `agy-gemini4-carbon`, with
+`claude-fable5.2` as supervisor and advisor. State at review: backlog, 0/7
+stories closed, conductor unclaimed, no weave or claim on it. This document records
 the review and the execution order; the scope and rules stay in the spec,
 [plan-posix-certification-after-separation.md](plan-posix-certification-after-separation.md).
 The sprint card and its stories remain authoritative.
 
-Nothing has started. Starting needs the operator decisions listed at the end.
+## Phase 0 result (2026-11-24)
+
+Operator direction: work on the current `main`/`master` head of every module,
+not on an old commit; verify that nothing but documentation and build
+metadata changed since the Profile D run.
+
+- **All 18 umbrella modules are clean, on their default branch, at their
+  origin head, and the umbrella gitlinks name those heads.** `bashy mod
+  drift` reports every consumer pin in sync except the standing
+  bashy/ycode cycle edge, which always trails by one step.
+- **No interpreter or utility source changed since the run.** Compared with
+  the tested commits:
+
+  | Module | Tested | Head | Difference outside documentation |
+  | --- | --- | --- | --- |
+  | Bash | `7855c2f0` | `5c52281f` | toolchain line go1.27.2 to go1.27.4 in the `go.mod` files; the version constant in `tools/productgo`; the generated forwarding `Makefile`. No `.go` file under `interp`, `expand`, `syntax` or `cmd` changed. |
+  | Coreutils | `c6569352` | `e0184192` | `go.mod`/`go.sum` only: toolchain go1.27.4 and the Bash requirement moved to `5c52281f`. The Bash library packages are byte-identical between the previously linked version and that head (only `tools/`, `cmd/`, scripts and build files differ). |
+  | Shared CLI | `4141cc07` | `fe4d68ad` | Head adds a new `cmd/bsh` and a vendored width library. Bash at head still requires `4141cc07`, so none of this is in the tested shell. |
+
+  So source reading at heads is valid for every finding. The one
+  build-affecting difference is the Go toolchain (finding 4). When a finding
+  depends on an exact line, cite the tested commit as well as the head.
+- **Evidence verified.** Sealed archive SHA256 `63cd77b9…05fe1` and artifact
+  manifest SHA256 `6dde18df…1138` both match the baseline record; the archive
+  lists 196 regular files.
+- **Private harness checkout** is clean at its origin head, which contains
+  the measured harness commit `6966bc6` plus the evidence index.
+- **Operator decisions:** go; reviewer as proposed (a different-vendor agent
+  reviews R5 and R7, the operator owns the nine INSPECT decisions); workers
+  may run their own small probes against binaries on the gate host (never the
+  licensed tests, never on the dev box).
 
 ## What the sprint is
 
@@ -65,12 +97,11 @@ is conditional on a proven defect. R7 `2f848bba27c7` consolidates.
    `6966bc6` is on the kit's origin default branch; the workstation's local
    checkout was 12 commits behind and was fast-forwarded during this review.
    Read the harness at `6966bc6`.
-3. **Investigate the frozen source, not heads.** The marker resolves on the
-   Bash repository (`7855c2f0`) and Coreutils (`c6569352`). Coreutils is five
-   commits past the marker (by subject: sibling pins, todo records and the
-   Go 1.27.4 toolchain selection); the umbrella is several hundred commits
-   past its approval snapshot. The "current heads" rule applies to this
-   sprint's own documentation commits; every finding cites the tagged source.
+3. **Heads versus the tested source.** The marker resolves on the Bash
+   repository (`7855c2f0`) and Coreutils (`c6569352`); both have moved since.
+   The review first proposed reading the tagged source. The operator directed
+   work at current heads instead, and Phase 0 verified that this is sound:
+   see the table above.
 4. **The toolchain moved.** The baseline was built with Go 1.27.2; the
    workspace now selects go1.27.4. Any R6 repair proposal names the artifact
    identity its verification would produce and does not reuse the 1.27.2
@@ -94,14 +125,14 @@ is conditional on a proven defect. R7 `2f848bba27c7` consolidates.
 
 | Phase | Story | Work | Owner | Gate to proceed |
 | --- | --- | --- | --- | --- |
-| 0 | - | Take the sprint; re-verify the archive and artifact-manifest checksums; read-only worktrees of Bash and Coreutils at the marker; harness at `6966bc6` | conductor | Checksums match the baseline record |
-| 1 | R1 | 67-row ledger from the journals; compare identities and diagnostics by name with S561; map each row to its existing packet and decision owner | conductor | Operator reviews the ledger and ownership matrix |
+| 0 | - | Done 2026-11-24: sprint taken; archive and artifact-manifest checksums re-verified; every module clean at its default-branch head; code delta since the run established | supervisor | Passed |
+| 1 | R1 | 67-row ledger from the journals; compare identities and diagnostics by name with S561; map each row to its existing packet and decision owner | manager | Operator reviews the ledger and ownership matrix |
 | 2 | R2 | Analyse the 53 symlink results; refresh the existing packet | worker | Cause or exact uncertainty recorded per identity |
-| 2 | R3 | Trace the `man:4` control flow (109 available names against a greater-than-109 test); write the authority question | conductor | Same |
+| 2 | R3 | Trace the `man:4` control flow (109 available names against a greater-than-109 test); write the authority question | worker | Same |
 | 2 | R4 | Analyse the four `more` results from the retained locale diagnostics; scope recommendation | worker | Same |
 | 2 | R5 | Nine INSPECT review packets, checking that each S377 decision applies to this journal | worker | Same, plus independent review |
 | 3 | R6 | Repair proposals only where Phase 2 proves a defect; otherwise recorded no-repair reasoning | finder | Operator approves any implementation separately |
-| 4 | R7 | Readiness matrix; check the current program, profile, kit terms and submission requirements against official sources; blockers, owners, handoff | conductor | Independent review, then end the sprint |
+| 4 | R7 | Readiness matrix; check the current program, profile, kit terms and submission requirements against official sources; blockers, owners, handoff | manager | Independent review, then end the sprint |
 
 The four Phase 2 stories are independent and run in parallel. Workers are
 assigned across vendors, and the reviewer of a packet is from a different
@@ -124,15 +155,17 @@ vendor than its author.
   their diagnostics differ from S561; or a finding needs code, a licensed
   run or an external send.
 
-## Open operator decisions
+## Management
 
-1. **Go:** take the sprint and run Phase 0.
-2. **Reviewer:** proposed - a different-vendor agent reviews R5 and R7, and
-   the operator remains the decision owner for the nine INSPECT items, as in
-   S377.
-3. **Probes:** whether workers may run their own small probes against the
-   frozen binaries on the gate host (for example empty-target symlink
-   behaviour). These are not licensed tests. Without them R2 and R4 rest on
-   journal and source reading alone.
+`agy-gemini4-carbon` manages the sprint and its delivery: staffing, story
+dispatch, review, acceptance and closure. `claude-fable5.2` supervises,
+advises when asked or when a stop condition is met, reports milestones to
+the operator and records the manager's performance for a later band
+decision. The operator reviews the R1 ledger, owns the nine INSPECT
+decisions and approves anything beyond the card's scope.
 
-Resolved during the review: the archive location (finding 1).
+## Operator decisions
+
+All three were answered on 2026-11-24 and are recorded under the Phase 0
+result: go, reviewer as proposed, probes allowed. The archive location was
+resolved during the review (finding 1).
