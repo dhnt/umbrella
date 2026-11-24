@@ -179,9 +179,8 @@ digest-bound approval there.
 ## Hosted route (Sprint 691 H3)
 
 > **Status: draft — pending review by the cloudbox owner.** The master-side
-> implementation is tracked as a cloudbox ticket filed by the operator and
-> referenced here by id only (never quoted). Ticket id: _pending — to be
-> recorded on story `770e8b83683e` before this section leaves draft._
+> implementation is tracked as cloudbox todo `eed85934`, referenced here by
+> id only (never quoted).
 
 The gateway's route set is `sync | pull | hosted`. Every reply reports
 `route: sync|pull|hosted`. The hosted route runs the call on a
