@@ -3,9 +3,10 @@
 Rescoped 2026-11-24 at the operator's review. The card and its stories are
 authoritative; this page is the map. Planning only until assigned.
 
-**Held (operator, 2026-11-24)** until Sprint 701 decides go or no-go on the
-UI SDK and Sprint 705 S3 settles the model below. Then re-review O1 and O2
-against it. O0 moved to Sprint 703 (2026-11-24) to proceed with D4; neither depends on the UI.
+**Held (operator, 2026-11-24)** until Sprint 705 S3 settles the model below.
+Then re-review O1 and O2 against it. Sprint 701 decided no-go on the UI SDK
+(operator, 2026-11-24; bashy avoids Vercel products and dependencies), so 683
+no longer waits on it. O0 moved to Sprint 703 (2026-11-24) to proceed with D4; neither depends on the UI.
 
 ## Direction: one shapeable page, equally shapeable components
 
@@ -32,8 +33,10 @@ What shaping the page does not cover, and S3 must settle:
 
 Proposed model: components are headless services (data, API, agent CLI) with
 their own shaped UI blocks; the page is the shaped composition shell; block
-kinds are the extension point; Sprint 701's UI SDK supplies the block
-components. The same input is on the Sprint 705 card for S3.
+kinds are the extension point and stay server-rendered (Go `html/template`,
+no build step); client-side behaviour is optional and added per control. No
+outside UI framework or SDK supplies the blocks (Sprint 701 no-go). The same
+input is on the Sprint 705 card for S3.
 
 When the hold lifts, the O1 rows become one page carrying form/poll, viewer
 book and brainstorm blocks (plus the website face), and the owner release
