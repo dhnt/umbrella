@@ -30,3 +30,58 @@ Deliverables and isolation:
    - Private kit files (`docs/S675-R6-*`): record derived facts, product source citations, line numbers, and SHA256s ONLY — NEVER copy licensed suite source lines, embedded suite command/name lists, or verbatim journal blocks, and NEVER include personal names or personal email addresses.
    - Public `umbrella` files and commit messages: append a scrubbed `## S675 R6 Summary` section to this story file recording per-family repair vs no-repair conclusions, verification/toolchain impact notes, and the private-kit `s675-r6` commit SHA — NEVER include Open Group ticket numbers, licensed suite script file names or `/tset/` paths, journal excerpts, correspondence text, credentials, hostnames, OS logins, emails, or home-directory paths (`script/scrub-gate.sh` is fail-closed, and human review checks these before push; use host roles only).
 4. Commit in both repositories with `BASHY_AGENT` set to your assigned agent identity and trailers `Sprint: #675`, `Story: #18`, `Story-ID: 60e864ce9f7a`, `Agent: <assigned-agent>`. Submit via `bashy sprint submit 675 60e864ce9f7a -m "<summary, umbrella SHA, private kit s675-r6 SHA>"`.
+
+## S675 R6 Summary
+
+One confirmed product defect with a minimal causal repair proposal; explicit
+no-repair-needed reasoning for every other family. Planning only: no
+production code edits, no builds, no licensed runs, no external transmission,
+and all 67 raw S575 verdicts stand unchanged.
+
+Repair proposed (1): the Coreutils `stty` applet rejects the accepted
+`cread`/`crt` operands before any terminal ioctl. The delay-mode predicate
+matches name prefixes instead of exact delay names, so `cread` and `crt` are
+misclassified as output-delay modes and the applet exits 1 with an
+unsupported-on-platform message. Proven by the R5 suite-free PTY/`termios`
+probe (refusal in applet user space with driver state unchanged, while sibling
+requests on the same terminal succeed) plus source inspection at both the
+tested and current-head commits. Proposal in the owning Coreutils repository:
+one predicate, one file, exact delay-name matching; no new provider, no
+weakened assertion, no skip.
+
+No repair needed (4): the 53 empty-symlink setup results (host kernel rejects
+the suite-authored empty target before any utility assertion; external
+authority question open); the single `man` command-count precondition
+(strict threshold unmet at the truthful count because optional development
+environments report undefined; authority question open); the four `more`
+locale-helper results (helper status with no retained inner trace proves no
+product fault; optional-target scope and official treatment are
+authority/operator questions); the eight remaining manual-inspection rows
+(six `stty` driver-capability cases with probe-measured analogues, one `df`
+portable-form row that recomputes correctly, one `locale` charmap-wording
+judgment). Speculative workarounds, weakened assertions, skips, or added
+providers are prohibited for all four: each would falsify the system under
+test or hide evidence the authority and operator need.
+
+Failing control (first gate for the patch): suite-free unit control through
+the refusing path covering `cread`, `-cread`, and `crt`; must fail unpatched
+and pass patched. Unknown-mode rejection is asserted through the operand
+prevalidator or the applet runner, never through the mode validator (which
+returns nil for unknown names by design), keeping the repair to the single
+predicate.
+
+Verification/toolchain impact: patched build under Go 1.27.4 on a gate host
+(never the dev box); Go 1.27.2 baseline artifact evidence is never reused for
+changed inputs, with fresh artifact identity and closure-digest comparison.
+Full Coreutils unit suite, plus Bash/Bashy POSIX gates and Bash# regression
+gates if a consumer pin bumps. Same-form disposable-VM PTY probe, then a
+targeted licensed rerun of the affected target set only, then the
+uninterrupted full-run rule for any claim. Honest expectation: the affected
+row reaches the driver and exits 0 but remains raw INSPECT, then honestly
+eligible for the driver-non-support allowance; the operator owns all manual
+decisions. Rollback: revert the single patch, restore the pre-repair pin,
+keep pre-repair artifact identity as evidence of record.
+
+Private-kit `s675-r6` commit: `53155243ec972d91d1de7fe0ac670ec132d7ea30`
+(prior `515ab40`; this story's review fix for the unknown-mode control
+routing is the new commit).
