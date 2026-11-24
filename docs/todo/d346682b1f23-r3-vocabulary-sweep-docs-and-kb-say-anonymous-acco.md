@@ -3,12 +3,14 @@ id: d346682b1f23
 kind: doc
 title: 'R3 Vocabulary sweep: docs and kb say anonymous / account / member / owner; ''user'' only for the OS user'
 seq: 710
-status: todo
+status: assigned
 priority: p2
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T18:25:08.574569Z
+weave: 244
+assignee: agy-gemini4-hydrogen
 sprint: 706
 sprint_id: 626dbf6e-b665-5fbc-818b-54aa5c972a8c
 sprint_title: 'Access tiers: anonymous, account, owner across cloudbox and bashy'
