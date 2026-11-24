@@ -3,17 +3,18 @@ id: dd7214790c33
 kind: task
 title: 'H4 pilot runner on the primary Linux build host: image, hosted entry, tunnel to the master, hosted-runner skill-script'
 seq: 666
-status: assigned
+status: done
 priority: p1
 labels:
     - bashy-hosting
     - infra
 created: 2026-11-23T13:18:04.529734Z
-weave: 239
 assignee: agy-gemini4-hydrogen
 sprint: 691
 sprint_id: 2c1803fe-634b-51fb-818c-9ac8e2a5428c
 sprint_title: Hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+closed: 2026-11-24T15:40:44.910045Z
+closed_by: claude-opus5.5
 ---
 
 Start brief 2026-11-24 (conductor). Staffing: agy (Gemini only). Merged inputs: bashy main carries H1 `mcp serve --hosted` (5d160655), H1b approvals (c2443b89), H2 vault projection (d69d9e95), H6/H6b trove (29cd8db6, 60597c1b); yoke d069a0f5.
