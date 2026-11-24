@@ -1,7 +1,8 @@
 # Sprints 684 / 685: story review and master execution plan (MVP cut)
 
-Epic: software shaping for group participation. State: **backlog, stories
-updated 2026-11-24** (reviewed with the operator 2026-11-23/24; the board
+Epic: software shaping for group participation. State: **both sprints
+delivered 2026-11-24** (results at the end of this page; planning record:
+stories updated 2026-11-24 (reviewed with the operator 2026-11-23/24; the board
 actions below are applied; no story is assigned yet). The sprint cards and
 their stories are authoritative. Supersedes the sprint table in
 `plan-group-participation.md`; the contract there still holds except where
@@ -289,3 +290,43 @@ Add both to the 699 card and `docs/sprint-699-master-execution-plan.md`.
    the existing `goto`.
 5. X1 and X2 leave 685 until Sprint 679 delivers the shared session hub.
 6. Whiteboard and film/video get follow-up rows; the lease story moves to 689.
+
+## Result (2026-11-24)
+
+| | Sprint 684 | Sprint 685 |
+|---|---|---|
+| Stories | 4 of 4 | 2 of 2 |
+| Duration | 2 h 55 min of a 48 h box | 1 h 7 min of a 24 h box |
+| Manager | codex-gpt6.2-astra | agy-gemini4-hydrogen (one-sprint eligibility override) |
+| Scorecard | auto-fail: 6 attribution bypass entries, none in code | no auto-fail, 0 bypass entries |
+
+Delivered: S1 kit revision store (bashy `9db42aa8`, kit v0.2.0), S2 Page
+(`416aad9e`), S4 Notepad and the shared join code (`68fd9961`, kit v0.3.0),
+S3 Session (`9135c8c8`); C1 meet poll (yoke `c2d6591f`), C2
+`group-shaping-coverage-matrix.md`. Each closed on its own unit tests on the
+gate host at the merged commit and the manager's diff read.
+
+Recorded as failing, not fixed here: ycode
+`TestHarnessStreamWaitsForAppendNotifications` (bug `08ee6df70b5d`) and
+`bashy/yoke/fetch` `TestStandaloneHelpAndDeps` (`bf5c8c71f65e`); both fail
+identically before and after the pin changes of these sprints.
+
+What follows:
+
+- **Sprint 703** (backlog, planning only): the defects and gaps these sprints
+  found but did not own. The agent's kb context (`08ee6df70b5d`, needs an
+  operator ruling first), the two red tests, three load-sensitive ycode tests,
+  the Session test teardown leak (`790d4c29d660`), lifting the revision wiring
+  into the kit's shared handler (Page and Notepad carry about 250 and 580
+  lines of their own), the board publishing story status and assignee to
+  origin, the fleet probe and vendor quota, one agent name held by two live
+  sessions, and `weave start --resume` (`5771d343ce2a`).
+- **Sprint 699**: integration stories I1 and I2, unchanged. No test was added
+  there: I1 already covers Page, Session and Notepad.
+
+Rules these sprints added to the ones above: a candidate module version is
+built only against a private proxy and private caches, and the shared proxy
+sees a version once, after acceptance; umbrella pin commits are forward only
+(the new gitlink must contain the one on origin); umbrella commits are made
+from a worktree on the origin head, never from the shared checkout's local
+`main`.

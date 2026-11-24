@@ -8,6 +8,9 @@ priority: p2
 labels:
     - bashy
 created: 2026-11-24T12:40:38.525783Z
+sprint: 703
+sprint_id: 21bfcc03-ecb2-50e9-84ae-d33c01f54b40
+sprint_title: 'Group shaping follow-ups: agent kb context, test hygiene, kit handler lift, board and fleet gaps'
 ---
 
 Seen by the Sprint 685 manager during the yoke c2d6591f pin sync (2026-11-24) on a gate-host lane through the venue wrapper: bashy/yoke/fetch TestStandaloneHelpAndDeps fails at bashy 3bd53882 and identically at the pre-sync commit 033fbe8f, so the pin change did not cause it. Recorded as pre-existing, not as passing. Not yet investigated: first step is root cause (failing assertion, venue vs last green, bisect), then fix where the cause lives. Evidence: Sprint 685 thread, close-out note of 2026-11-24 12:37Z.

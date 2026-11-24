@@ -8,6 +8,9 @@ priority: p1
 labels:
     - ycode
 created: 2026-11-24T10:52:07.697277Z
+sprint: 703
+sprint_id: 21bfcc03-ecb2-50e9-84ae-d33c01f54b40
+sprint_title: 'Group shaping follow-ups: agent kb context, test hygiene, kit handler lift, board and fleet gaps'
 ---
 
 Run 220 at ycode 8ad8cd19: TestHarnessStreamWaitsForAppendNotifications fails 5/5 with the gate runner at 9db42aa8 and passes 3/3 with the older Step 0 runner. The kb command now uses a Go adapter. The command environment in examples/agent.yaml omits its cache location and the Go build cache. The adapter cannot find its binary or compile it in that environment, returns empty knowledge through the fallback, and adds 1.19–1.26 seconds before provider start. Required repair: pass only the necessary cache location variables, retain the one-second test deadline, prove real kb context reaches the command caller, and pass all 83 ycode short-test packages on the gate. Supervisor approval recorded on Sprint 684 at 10:51. Keep the fix in ycode.

@@ -155,9 +155,10 @@ outposts shape one item and steer each other's agents.
 
 | Order | Sprint | Outcome |
 |---|---|---|
-| 1 | 684 | The rod, cut to the MVP on 2026-11-24: revisions for a shared item on shaping's own model (history, undo, restore, save against `base_rev`) in the desk kit, delivered on Page and Session first, then Notepad. One group model, the one Klatch already uses: the roster is the app's audience on the host, roles are owner and member, guests join by name at the owner's discretion. |
-| 2 | 685 | The `meet poll` ballot fix and the coverage matrix (one row per app, follow-ups filed for what is not small). Cross-outpost steering (X1, X2) left the sprint and waits for Sprint 679. |
+| 1 | 684 | Delivered 2026-11-24. The rod, cut to the MVP on 2026-11-24: revisions for a shared item on shaping's own model (history, undo, restore, save against `base_rev`) in the desk kit, delivered on Page and Session first, then Notepad. One group model, the one Klatch already uses: the roster is the app's audience on the host, roles are owner and member, guests join by name at the owner's discretion. |
+| 2 | 685 | Delivered 2026-11-24. The `meet poll` ballot fix and the coverage matrix (one row per app, follow-ups filed for what is not small). Cross-outpost steering (X1, X2) left the sprint and waits for Sprint 679. |
 | 3 | 699 | Integration, as part of the release train: the group-shape skill-script on Page, Session and Notepad (I1) and the Klatch owner/member workflow (I2). |
+| 4 | 703 | Follow-ups found by 684 and 685 (backlog): the agent's kb context, the remaining red tests, the kit handler lift, and the board and fleet gaps. |
 
 Execution plan, story review and the settled decisions:
 [sprint-684-685-master-execution-plan.md](sprint-684-685-master-execution-plan.md).
