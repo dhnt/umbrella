@@ -1,15 +1,18 @@
 ---
 id: b15e7074d8ba
 kind: feature
-title: 'R9 Member pull/push through the owner''s site MCP: shape_pull and shape_push for a granted member'
+title: 'M2 Site MCP shape_pull and shape_push: a scoped member pulls the owner''s line and pushes a patch'
 seq: 723
-status: blocked
+status: todo
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T20:46:03.189825Z
 due: 2026-12-09T00:00:00Z
+sprint: 709
+sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
+sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
 ---
 
 Part of the A/O/C case on R5 (5c1b07e994f1): C, a member with an outpost, pulls O's line, changes it on C's own machine with C's own tools, and pushes the change back; O approves. KISS: no new transport and no cloudbox change. Two tools are added to the site MCP that O's host already serves through O's outpost (bashy internal/agentos/mcp_site.go), gated by the same member grant as R5:
@@ -31,3 +34,11 @@ Needs a member token issued by cloudbox (none exists; see Code inspected). For t
 ## Moved to the backlog at the close of Sprint 706 (2026-11-24)
 
 Still blocked: no member token exists (cloudbox would issue it; no ticket filed yet). For the A/O/C test C shapes in the browser through the panel wish box (R5c). Re-plan when a cloudbox member-token ticket exists.
+
+## Unblocked and replanned 2026-11-24 as Sprint 709 M2 (operator: must be supported)
+
+No cloudbox ticket is needed. Access is the owner's (share per app + the Sprint 706 scopes); cloudbox only proves identity, and its satellite app route already accepts a member's exchanged host:proxy bearer and forwards X-Periscope-User like the browser (see M1 9a05b486f0b3). This story is the shaping half:
+- shape_pull (site MCP, shape scope): returns the app's active source on the OWNER's line (a tar or a file list with contents, size-capped) and its revision id. Use go-git CloneAt / tree walk (yoke pkg/shape helpers.go CloneAt ~120); no new export format beyond what the MCP result needs.
+- shape_push (site MCP, shape scope): takes a unified diff and the base revision. Refused with ErrConflict naming base and active when base != the owner's active revision (the R5a rule). Otherwise the patch is applied to CloneAt(base) in a candidate workspace and committed as a candidate (extend Import, service.go ~435, to accept a patch; CopyWorkspace stays directory-only), Principal = the member, ActivationPrincipal = the owner, then verified on the owner's host. shape_approve stays the owner's.
+- A member without the shape scope, an account and an anonymous caller are refused both tools; nothing is written for them.
+Acceptance: yoke unit tests (patch import, stale base refusal, scope refusal) and bashy site MCP tests with the existing stubs; gate host only. E2E is M3.

@@ -230,6 +230,10 @@ Sprint 683 (backlog, held until Sprints 701 and 705 S3 settle the agent UI; repo
 
 Sprint 706 (backlog, planning only, reviewed with the operator 2026-11-24): the access-tier gaps as stories R1-R8 (stamp value `account` with alias and conformance fixture; the account tier live through a satellite, blocked on the cloudbox admission ticket; vocabulary sweep; stale plan headers; group and team shaping on shape routes with the owner's LLM, absorbing Sprint 640 T1/T8; the public personalization wish list from 615 S21; the consented access request from 665/669; the shaping evidence baseline from 689 D6), the R5 defaults awaiting operator confirmation, dependencies, venues, and the record of the six sprints closed with it.
 
+### sprint-709-master-execution-plan.md
+
+Sprint 709 lets a member with the shape scope work on the owner's app from their own machine: `bashy mcp connect` bridges the member's local MCP client to the owner's site MCP with the member's cloudbox account token exchanged on the satellite (identity only; the share and the scopes stay the owner's, per app, and no OS password is used), the site MCP gains `shape_pull` and `shape_push` (a patch on a base revision, refused when stale, verified on the owner's host, approved by the owner), and the A/O/C sandbox e2e covers the path.
+
 ### handoff-sprint-706-703.md
 
 Vendor-neutral handoff (2026-11-24) for the next conductor of Sprint 706 (access tiers) or Sprint 703 (group shaping follow-ups): where to start, both cards in one screen with story ids, priorities and dependencies, the operator decisions still to confirm (R5 defaults), the open cloudbox tickets named by id, the six sprints closed that day and where their pieces went, and the mechanics (provenance trailers, the backlog-sprint closing recipe, verb gotchas, the gate venue). Nothing in it depends on any agent's private memory.

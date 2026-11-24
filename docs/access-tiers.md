@@ -154,7 +154,8 @@ it remotely through the gateway or the site MCP, the same path as a member.
 | Workflow 2 for content on Page, Session, Notepad | done (Sprints 684, 685) |
 | Workflow 2 and 3 on shape routes (a granted member shapes with the owner's LLM on the owner's host) | gap: `allowShape` is owner-only; Sprint 706 R5 |
 | The `account` relationship through a satellite | shelved (privacy review first); R2 `7c1ad004f53d` |
-| The path from `account` to `member` inside the product | gap; Sprint 706 R7 |
+| The path from `account` to `member` inside the product | shelved with R2; Sprint 706 R7 |
+| A member pulls and pushes from their own machine (their own tools) | Sprint 709: the member's account token, exchanged on the satellite, proves identity only; the share and scopes stay per app |
 | The stamp word `account` | Sprint 706 R1 |
 
 ## Retired by this model (2026-11-24)
