@@ -1,0 +1,16 @@
+---
+id: 5568fef88494
+kind: doc
+title: 'O2 kb runbook: Publish a shaped version to members'
+seq: 716
+status: todo
+priority: p2
+labels:
+    - shaping
+created: 2026-11-24T19:03:06.838812Z
+sprint: 683
+sprint_id: a2c119a7-7ca5-571e-8e50-7a19ae1e583f
+sprint_title: Shaping-enable the example apps for owners/producers (follow-up)
+---
+
+Owner companion to the kb runbook enable-an-app-for-consumer-shaping: release, offer --to/--all, adopt --preview/adopt, undo, submit, with common failures and root causes from O1. Every command one that ran in O1; generic names only. Link it from the consumer runbook and docs/shaping-enable-a-website.md. Verified: bashy kb search 'publish a shaped version' finds it. Depends on O1.
