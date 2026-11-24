@@ -24,3 +24,5 @@
 {"op":"add","slug":"make-your-site-agent-ready","id":"01a20a14-3ee2-70c3-ba16-c6d28ff2e576","tool":"muse-wonder-g","episode":"ep-36f3e96fc1309011","parent_episode":"ep-6299da9220c705e0","at":"2026-11-23T20:23:48.707627Z"}
 {"op":"add","slug":"access-tiers-anonymous-account-owner","id":"01a20ecf-5e6e-7bfa-a9bc-3cd6052dd25d","tool":"claude-fable5.1","at":"2026-11-24T18:26:40.879838Z"}
 {"op":"validate","slug":"access-tiers-anonymous-account-owner","id":"01a20ecf-5e6e-7bfa-a9bc-3cd6052dd25d","tool":"agy-gemini4-hydrogen-j","episode":"ep-944c65a4c54c7ebc","parent_episode":"ep-ea6b8631d2fd2451","at":"2026-11-24T21:33:21.183354Z"}
+{"op":"update","slug":"access-tiers-anonymous-account-owner","id":"01a20ecf-5e6e-7bfa-a9bc-3cd6052dd25d","tool":"claude","at":"2026-11-24T23:36:24.303663Z"}
+{"op":"add","slug":"conducting-a-sprint-with-weave-workers-merge-mechanics-that-bite","id":"01a20fea-ee67-7ef8-8d1f-91cea6a8ef7d","tool":"claude","at":"2026-11-24T23:36:24.424893Z"}
