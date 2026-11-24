@@ -1,7 +1,7 @@
 # Sprint 615: a shaping-enabled simple site (showcase MVP)
 
 Sprint UUID: `899fe465-c505-558d-a1f3-44a74a977e92`. Epic: software-shaping.
-Status: **planning only**. Filed 2026-11-10; rescoped 2026-11-18 (operator),
+Status: **done** (updated 2026-11-24: 15/17 stories done, 2 wontfix; S21 moved to Sprint 706 as R6). Filed 2026-11-10; rescoped 2026-11-18 (operator),
 cut to the MVP the same day. The follow-up is Sprint 665
 (`482ac62d-1c0e-5e38-9236-c7c5893f895c`). The sprint cards and their stories
 are authoritative.
@@ -19,10 +19,10 @@ operator's own public résumé site as the test:
 The sprint proves the feature end to end and writes down the steps that
 worked. Everything else goes to Sprint 665.
 
-| Visitor | Gets | Site learns |
+| Relationship | Gets | Site learns |
 |---|---|---|
 | anonymous | the site exactly as today, plus a plain "Shape / sign in for more" link | nothing |
-| signed-in, not a member | public data plus one generated view (a recruiter summary) | "authenticated" plus a per-site pseudonym, **never the email** |
+| account (not a member) | public data plus one generated view (a recruiter summary) | "authenticated" plus a per-site pseudonym, **never the email** |
 | member of a circle (e.g. `recruiter`) | additionally the private fields granted to that circle (contact details, certificates) | email and circle, already known through the mutual membership |
 | owner | everything, and shapes the site with `bashy shape` on the host | everything |
 
@@ -34,13 +34,14 @@ Sprint 665.
 ## What the code showed (2026-11-18)
 
 - **Circles** are owner-defined slugs. `guest` is the default **member**
-  circle, so the non-member tier is named `signed-in`, never `guest`.
+  circle, so the non-member relationship is named `account`, never `guest`
+  (initially `signed-in`, kept as a one-release wire alias during Sprint 706 R1).
 - **Cloudbox public** (`require_login: false`) admits anonymous visitors,
   serves the app at `/matrix/h/<host>/app/<app>/`, and shows an offline page
   when the host is stopped (`hostOfflineHandler`).
-- **The privacy gap:** for a signed-in caller, the edge forwards the email
+- **The privacy gap:** for an `account` caller, the edge forwards the email
   (`X-Periscope-User`) and audits it for the owner, even for a non-member.
-- **Outpost** stamps email and `admin|user` only, with no circle.
+- **Outpost** stamps email and `admin|user` (OS elevation) only, with no circle.
   `yoke/pkg/coopauth.Identity` has no circle.
 - **Reusable pieces:**
   - `yoke/pkg/llmgw/openai` is an OpenAI-compatible client;
@@ -64,7 +65,7 @@ Sprint 665.
    - identity comes through `coopauth`, and an unsigned request is anonymous.
 3. **Audience.**
    - Private fields live in a private companion repo, with `audience:` in the
-     cloudbox rule grammar plus `signed_in: true`.
+     cloudbox rule grammar plus `account: true` (today `signed_in: true`).
    - **Fail closed:** no audience means owner-only. Never in the Pages build.
 4. **Free AI.** One OpenAI-compatible route: base URL, model and the key's
    secret name in `site.json` (owner BYOK). It has a simple daily cap. The
@@ -79,9 +80,9 @@ Sprint 665.
 | # | Story | Vendor |
 |---|---|---|
 | S10 `0eaeb7a534e6` | Outpost carries the relationship to trust-identity apps:<br>• a member gets circle and groups;<br>• the owner gets the owner flag;<br>• a non-member gets authenticated plus a pseudonym, never an email;<br>• `coopauth.Identity` carries these fields. | codex |
-| S11 `a455574ee679` | Cloudbox-public privacy: a signed-in non-member is forwarded as authenticated plus a per-site pseudonym (computed, not stored), and the audit row is pseudonymized too. Members and the owner are unchanged. Hosted change, public wire contract only. Shares the held release with Sprint 664. | claude |
+| S11 `a455574ee679` | Cloudbox-public privacy: an `account` non-member is forwarded as authenticated plus a per-site pseudonym (computed, not stored), and the audit row is pseudonymized too. Members and the owner are unchanged. Hosted change, public wire contract only. Shares the held release with Sprint 664. | claude |
 | S8 `8ce4637753f4` | `website.bsh assess / enable / register` for a Next.js static export. | codex |
-| S9 `947daaceea4b` | Site-server scaffold:<br>• `api/me`, `api/fields`, `api/view`;<br>• fail-closed audience;<br>• matrix tests for owner, recruiter, other circle, signed-in, anonymous and forged headers. | claude |
+| S9 `947daaceea4b` | Site-server scaffold:<br>• `api/me`, `api/fields`, `api/view`;<br>• fail-closed audience;<br>• matrix tests for owner, recruiter, other circle, account, anonymous and forged headers. | claude |
 | S12 `393725804606` | AI view route: one OpenAI-compatible route, owner BYOK, daily cap, data-minimization test. | codex |
 | S2 `72f0077803c0` | Private companion repo template:<br>• a Codespaces devcontainer that runs `shaping-host up`;<br>• `private-fields/` with `audience:`;<br>• `site.json`. | glm |
 | S1 `bddd4f6e0183` | `shaping-host.bsh check / up / status` on a Codespace. | codex |
@@ -100,8 +101,8 @@ Order:
 
 1. **Anonymous.** The Pages site is unchanged apart from the link. No private
    field appears in the build artifact (grep it).
-2. **Tiers on the engine face:**
-   - a signed-in non-member gets `signed-in` (public data plus the view). The
+2. **The four relationships on the engine face:**
+   - an `account` non-member gets `account` (public data plus the view). The
      site server and its logs show a pseudonym, never an email;
    - a `recruiter` member gets contact details and certificates;
    - a member of another circle gets neither;
@@ -137,10 +138,10 @@ beyond the site's own Pages deploy.
 
 ## Future design note: identity assurance levels (plan only)
 
-The visitor tiers use one axis, the relationship (anonymous, signed-in,
-member of a circle, owner). A second axis is **how well the visitor is
+The four relationships use one axis (anonymous, account,
+member of a circle, owner). A second axis is **how well the caller is
 identified**, borrowed from marketplaces such as freelancer sites that badge
-their users:
+their participants:
 
 | Level | Meaning |
 |---|---|

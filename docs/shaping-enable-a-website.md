@@ -3,7 +3,7 @@
 Your site stays where it is (GitHub Pages, any static host). A small
 shaping layer — its own shaped app, kept in a **private companion repo** —
 fronts it through outpost as a cloudbox-public app, injects a panel into
-every page, and serves visitors by tier. This guide is for the site OWNER.
+every page, and serves callers by relationship. This guide is for the site OWNER.
 
 Sources of truth: `bashy/examples/shaping/website/` (`README.md`,
 `website.bsh`, `template/`) for the layer, `bashy/examples/shaping-host/shaping-host.bsh`
@@ -15,21 +15,22 @@ its consumers (the `shaped.json` manifest, `bashy app add --type shaped`,
 CLI address handoff, member wish → undo), follow the bashy KB runbook
 `enable-an-app-for-consumer-shaping` (`bashy kb search "enable an app for shaping"`).
 
-## What you get: four visitor tiers
+## What you get: the four relationships
 
-| Visitor | Gets | Your site learns |
+| Relationship | Gets | Your site learns |
 |---|---|---|
 | anonymous | the page as today, and a sign-in hint | nothing |
-| signed-in, not a member | views open to `signed_in` (e.g. a recruiter summary) | a per-site pseudonym, never the email |
+| account (not a member) | views open to `account` (today `signed_in`; e.g. a recruiter summary) | a per-site pseudonym, never the email |
 | member of a circle | also the fields whose audience admits that circle | email and circle |
 | owner | everything; shapes the layer with `bashy shape` | everything |
 
 Identity is outpost's signed relationship stamp (`X-Outpost-Relationship`,
 `-Circle`, `-Groups`, `-Visitor`, `-Relationship-Sig`; see the
 cooperative-web-apps relationship section). Unsigned, stale, or forged
-headers are anonymous. Outpost never forwards a non-member's address: a
-signed-in caller who is neither the owner nor a member reaches the app
-as a stable per-site pseudonym, unlinkable across sites.
+headers are anonymous. Outpost never forwards a non-member's address: an
+`account` caller (wire alias `signed-in` during Sprint 706 R1) who is neither
+the owner nor a member reaches the app as a stable per-site pseudonym,
+unlinkable across sites.
 
 ## What you need
 
@@ -84,8 +85,8 @@ public and unchanged except for the one link in step 6.
   sent). GitHub Models was tried first and did not serve completions
   during the first live run (every path answered a plain "OK").
 - `fields/*.md`: one private fact per file. Audience is the front matter
-  — `circles:`, `groups:`, `emails:`, `signed_in:` — using the cloudbox
-  rule grammar plus `signed_in` (circles AND (group OR email); a group
+  — `circles:`, `groups:`, `emails:`, `account:` (today `signed_in:`) — using the cloudbox
+  rule grammar plus `account` (circles AND (group OR email); a group
   never widens across circles). A field with no audience is owner-only:
   audience fails closed.
 

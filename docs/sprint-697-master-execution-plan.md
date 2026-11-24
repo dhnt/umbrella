@@ -1,6 +1,6 @@
 # Sprint 697: agent-ready sites, the page is the repo root
 
-Epic: software-shaping. State: **backlog, planning only** (filed 2026-11-23,
+Epic: software-shaping. Status: **done** (updated 2026-11-24: A-stories done). State was **backlog, planning only** (filed 2026-11-23,
 reviewed with the operator the same day; multi-pronged announcement and the
 same-origin MCP endpoint agreed; stories reviewed against this plan the same
 evening, findings below). Design of record: `agent-ready-sites.md`. The

@@ -1,7 +1,7 @@
 # Sprint 641: MVP phase A — voice input + dhnt.io cosmetic
 
 Sprint UUID: `d8aa925c-ba20-5705-ba28-33bc35700909`. Epic: software-shaping.
-Status: **doing — reconcile and close**, rewritten 2026-11-15 after the operator
+Status: **done** (updated 2026-11-24: all stories done); rewritten 2026-11-15 after the operator
 lifted the hold on the hosted surface. Design of record:
 **`docs/dhnt-journey-design.md`**. Boundary table: `docs/sprint-641-feature-matrix.md`.
 

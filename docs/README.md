@@ -152,7 +152,7 @@ Sprint 691, planning only, rescoped 2026-11-23 from a capacity spike: the middle
 
 ## shaping-enable-a-website.md
 
-Owner guide for shaping-enabling a static site: the four visitor tiers and what the site learns from each, what the owner needs (a static site, a GitHub account, a cloudbox account, a satellite, one OpenAI-compatible route), and the standard steps — `website.bsh assess`, `enable` into a private companion repo, editing `site.json` and `fields/*.md` with fail-closed audience front matter, hosting on a Codespace with three secrets or on the owner's own machine with `shaping-host up` plus `website serve`, registering for owner shaping with `bashy shape`, and adding the one engine-face link to the static site — then verify and graduate to an always-on host. To be amended with what actually happened after the live run.
+Owner guide for shaping-enabling a static site: the four relationships and what the site learns from each, what the owner needs (a static site, a GitHub account, a cloudbox account, a satellite, one OpenAI-compatible route), and the standard steps — `website.bsh assess`, `enable` into a private companion repo, editing `site.json` and `fields/*.md` with fail-closed audience front matter, hosting on a Codespace with three secrets or on the owner's own machine with `shaping-host up` plus `website serve`, registering for owner shaping with `bashy shape`, and adding the one engine-face link to the static site — then verify and graduate to an always-on host. To be amended with what actually happened after the live run.
 
 ### sprint-667-master-execution-plan.md
 

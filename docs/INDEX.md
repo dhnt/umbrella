@@ -98,7 +98,7 @@
 - `docs/muse-connector-submission-pack.md` — Sprint 646 Muse Connector Platform submission pack: tools classed Read/Write/Sensitive-write from bashy effects, reviewer test account plan, and data terms
 - `docs/software-shaping-paradigm-comparison.md` — Software shaping compared with CI/CD, vibe coding, spec-driven development, malleable software and other paradigms; 2025–2026 evidence, risks, levers, and the N:N and decide-after-seeing principles
 - `docs/release-failure-ledger.md` — Release failure ledger: every test failure met while releasing, with last-green/first-red commits for bisecting, cause, class (product, test, metadata, venue) and fix commit
-- `shaping-enable-a-website.md` — Owner guide: shaping-enable a static site through a private companion repo (assess, enable, edit, host, register, link), four visitor tiers, verify and graduate
+- `shaping-enable-a-website.md` — Owner guide: shaping-enable a static site through a private companion repo (assess, enable, edit, host, register, link), the four relationships, verify and graduate
 - `sprint-667-master-execution-plan.md` — Sprint 667 provable relays: signed statements and relay-by-reference across outposts and satellites; planning only
 - `docs/plan-one-agent-genie-hub.md` — Sprint 679 `bashy genie` ("One Agent"): unified agentic TUI and co-served HTTP/REST/A2A/MCP/ACP hub with direct `--agent` delegation and ephemeral `--cligw` LLM proxy; planning only
 - `plan-s678-make-dag-bridge.md` — Sprint 678 make → dag bridge: generated teaching Makefile forwarder (`bashy dag --makefile`) + no-makefile fallthrough; pilot in yoke

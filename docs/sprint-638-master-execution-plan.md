@@ -1,7 +1,7 @@
 # Sprint 638: website shaping, the Shape badge, the engine-hosted site and shaping levels
 
 Sprint UUID: `88e86a75-5c83-5528-8a5c-44cc29c43030`. Epic: software-shaping.
-Status: **planning only**, filed 2026-11-14; no implementation started.
+Status: **closed won't do** (updated 2026-11-24: superseded by Sprint 669, itself closed won't do 2026-11-24; all 9 stories wontfix). Filed 2026-11-14.
 Design of record: `website-shaping-integration.md`. The sprint card and its
 stories are authoritative.
 

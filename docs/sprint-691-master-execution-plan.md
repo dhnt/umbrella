@@ -1,7 +1,7 @@
-# Sprint 691: hosted bashy and the trove virtual drive for cloudbox users without a live outpost
+# Sprint 691: hosted bashy and the trove virtual drive for cloudbox accounts without a live outpost
 
-Sprint UUID: `2c1803fe-634b-51fb-818c-9ac8e2a5428c`. Epic: bashy-hosting.
-Status: **active** since 2026-11-24 (conductor claude-opus5.5), rescoped 2026-11-23 from a
+Sprint UUID: `2c1803fe-634b-51fb-818b-54aa5c972a8c`. Epic: bashy-hosting.
+Status: **done** (ended 2026-11-24, 8/8 goal items done; conductor claude-opus5.5), rescoped 2026-11-23 from a
 one-story capacity spike and to its MVP on 2026-11-24. The sprint card and its stories are
 authoritative; this document records the framing, the review and the decisions.
 
@@ -11,11 +11,11 @@ Three tiers of "bashy for a person":
 
 | Tier | Who | What runs bashy | State |
 |---|---|---|---|
-| Public shaping | any visitor of a shaping-enabled site; no cloudbox account needed | the site's own hosted shaping (Sprint 641 phase A, pooled route) | exists |
-| **This sprint** | **cloudbox-registered users with no paired outpost, or whose outpost is offline** | a dhnt-provisioned, on-demand bashy instance acting as that user | gap |
-| Full shaping | users with a live paired outpost | their own outpost (`bashy mcp serve --outpost` behind the Sprint 646 gateway) | exists |
+| **anonymous** | no cloudbox login; visitor of a shaping-enabled site | configures declared features only, nothing kept server-side (in-browser taste only) | exists |
+| **account** (**this sprint**) | **logged-in cloudbox account with no live paired outpost, or whose outpost is offline** | a dhnt-provisioned, on-demand bashy instance acting as that account | gap |
+| **owner** | account with a live paired outpost | their own outpost (`bashy mcp serve --outpost` behind the Sprint 646 gateway) | exists |
 
-The middle tier, kept to its MVP: offer bashy's features to **all cloudbox users** from
+The middle tier, kept to its MVP: offer bashy's features to **all cloudbox accounts** from
 whatever agentic tool they already use (Muse, claude.ai, Codex, …), including features
 that tool lacks natively (Gmail and Drive, GitHub, cloud CLIs), and the member-level use
 of shaping-enabled sites and apps they were invited to. A live paired outpost always
@@ -41,7 +41,7 @@ wins the route; the hosted runner is the fallback. Personal data is reached thro
   filed as an optional story.
 - Credentials on an outpost live on its disk: Google under the bashy config directory
   per account, gh and aws in their own stores, the account inventory as metadata only.
-  The cloudbox vault behind `bashy secret` (per user, encrypted, `secrets:read|write`
+  The cloudbox vault behind `bashy secret` (per account, encrypted, `secrets:read|write`
   scopes, names `<provider>/<account>/<purpose>`, `secret exec` for one command)
   already exists and is the hosted replacement for that disk.
 - The trove (Sprint 639) is designed and unbuilt: mounts over `dir:`, `dir:@host`,
@@ -50,21 +50,21 @@ wins the route; the hosted runner is the fallback. Personal data is reached thro
 - Member-level shaping policy (638 S6) was retired into Sprint 669 M3 (backlog);
   per-principal activation for web apps exists.
 
-## Where a hosted user's state lives
+## Where a hosted account's state lives
 
 | On an outpost | Hosted (this sprint) |
 |---|---|
 | Google credentials file per account under the bashy config directory | vault `google/<account>/credentials`, projected into the call's scratch as that file for the call only |
 | gh store, `GH_TOKEN`, `AWS_PROFILE` files | vault `github/<account>/token`, `aws/<account>/*`, exported as environment by `bashy secret exec` for the call only |
 | the account inventory | derived from the vault names (`google/*`, `github/*`, `aws/*`); no second inventory |
-| `gws auth login` with a browser loopback callback on the host | a connected-accounts consent step through the master (the user's own bring-your-own-project OAuth client with a web redirect to the master; refresh token written to the user's vault). Users with a laptop run `bashy google auth-login` there and push it with `bashy google auth-export --to-vault` |
+| `gws auth login` with a browser loopback callback on the host | a connected-accounts consent step through the master (the caller's own bring-your-own-project OAuth client with a web redirect to the master; refresh token written to the account's vault). Account holders with a laptop run `bashy google auth-login` there and push it with `bashy google auth-export --to-vault` |
 
 Nothing persists on the runner; a runner disk holds no credential.
 
 ## The trove as the virtual drive
 
 One small JSON of mount points, no storage of its own, tokens in the vault, the layout
-in the vault too (`trove/layout`) so a hosted call and every outpost of the user read
+in the vault too (`trove/layout`) so a hosted call and every outpost of the account read
 the same drive. Keys are virtual paths; values reuse the lens locator grammar;
 `account` names the vault entry holding the token:
 
@@ -79,7 +79,7 @@ the same drive. Keys are virtual paths; values reuse the lens locator grammar;
 
 Common API: `trove mount add|ls|rm`, `trove ls|find|stat|cat|put|add PATH --json`,
 rows in `bashy-node-v1` plus trove attributes. A `dir:@host` mount resolves through
-the user's outpost and answers exit 3 "host offline" from a hosted call when that
+the caller's outpost and answers exit 3 "host offline" from a hosted call when that
 outpost is down; `drive:` and `gh:` work from anywhere with the vault token. This is
 639 S1 slimmed (path-keyed, layout in the vault, no grants yet) plus the `drive:` half
 of 639 S4; the rest of 639 (presenters, contribute provenance, circle rules, explorer,
@@ -94,12 +94,12 @@ skill-scripts; nothing from the hosted control plane is quoted here.
 |---|---|---|---|---|
 | H1 | `bashy mcp serve --hosted`: HTTP only; each request carries a master-signed, versioned, short-TTL per-call identity (caller, task id, idempotency key, secrets token) verified as `--outpost` does from a 0600 runner key re-read per request; fresh home and scratch per call, removed after; timeout; output cap; shell session tools absent; the caller is the principal in audit; effect policy unchanged (gated calls answer `gated`); fail closed | core (bashy + yoke/mcp), medium | codex | tests: valid, expired, replayed and unsigned identity; scratch gone after the call; session tools absent from `tools/list`; principal in the audit line; `run_tool echo` round-trips; a `destroy` verb answers gated |
 | H2 | Vault-backed credentials for hosted calls: the verb runs under `bashy secret exec --no-cache` with the per-call `secrets:read` token; one file-typed mapping for Google (`google/<account>/credentials` → the per-account credentials file in scratch, 0600, removed with it); `bashy google auth-status` reads vault presence; new `bashy google auth-export --to-vault`; the account list derives from vault names; naming table in the `bashy secret` doc | yoke (`pkg/secrets`) + `examples/google`, small | codex | fake-vault test: environment present during the call and gone after; the Google file lands 0600 in scratch and is gone after; `auth-export --to-vault` round-trips; a missing secret yields one error naming the vault path to set; the secret-on-argv guard holds |
-| H3 | Public wire and routing: `route: hosted` beside `sync` and `pull`; rule = live paired outpost → `sync`; registered caller with no host or host offline → `hosted`; owner-host-bound verbs → `pull` as today; per-call identity payload and `secrets:read` token minting; hosted gated calls settle by the caller on the master; audit `mcp-hosted`; runner registration; connected accounts (consent step writing the user's Google refresh token to their vault). Master side = a cloudbox ticket referenced by id | docs + private dependency | muse (doc); ticket by the operator | hosted section in `docs/vendor-chat-gateway-mvp.md` reviewed by the cloudbox owner; ticket id on the story |
+| H3 | Public wire and routing: `route: hosted` beside `sync` and `pull`; rule = live paired outpost → `sync`; registered caller with no host or host offline → `hosted`; owner-host-bound verbs → `pull` as today; per-call identity payload and `secrets:read` token minting; hosted gated calls settle by the caller on the master; audit `mcp-hosted`; runner registration; connected accounts (consent step writing the caller's Google refresh token to their vault). Master side = a cloudbox ticket referenced by id | docs + private dependency | muse (doc); ticket by the operator | hosted section in `docs/vendor-chat-gateway-mvp.md` reviewed by the cloudbox owner; ticket id on the story |
 | H4 | Pilot runner on the primary Linux build host: image from the base Containerfile plus release bashy and the `google` example; entry `bashy mcp serve --transport http --hosted` on loopback; one handler per call; tunnel to the master; `examples/hosted-runner/` skill-script (`build|start|stop|status`, `--json`); host taken with `bashy claim` | infra + skill-script | agy | image builds on the build host, never the dev box; a gateway call returns `route: hosted`; allocation per the research |
 | H5 | Load test (the original story, kept): on the H4 pilot with the MVP tool mix (`run_tool echo`, `google gmail-list` against a fake gws, `trove ls /drive` fake, `gh pr list` fake); p50/p95/p99, burst drain, CPU per call, peak RSS, scratch; warm floor, secondary host, off-site decision | spike | agy | as written on the story; decision on the card |
 | H6 | MVP trove, the virtual drive: `bashy/examples/trove/trove.bsh` with `register.sh`, embedded skill and hermetic tests; layout `bashy-trove-v1` path-keyed, read from and written to the vault entry `trove/layout` (local file override for tests and offline outposts); `mount add|ls|rm`; `ls|find|stat|cat PATH --json` over `bashy lens -t listing` for `dir:`, `dir:@host`, `git:`; `put SRC PATH` and `add URL PATH` to writable `dir:` mounts; exit 0/3/1, host offline = 3 by name | example | claude | rows pass the `bashy-node-v1` validation; `trove cat` of a peer-host file equals `lens` output; unknown path not-found; no live account in tests; inside a hosted call `trove ls` and `trove put` leave no state on the runner |
 | H6b | `drive:` (read and write via `bashy google drive-*`, account → vault credential projected by H2) and `gh:` (read-only via `bashy gh api`) mounts for the trove; hermetic fakes | example | glm | `trove ls /drive` and `/repo` list and `cat`; `trove put` lands in Drive; tests need no live account; one live smoke on the operator's own account recorded by role |
-| T1 | Test case: a registered user with no outpost asks their agent for their latest Gmail threads and saves a note into `/drive/notes`: `route: hosted`, zero spend, no send; then the same prompts with a paired test outpost online (`route: sync`) and stopped (`route: hosted`); a `/home` mount on that outpost answers "host offline" when stopped; one member action on a shared shaping-enabled app through `run` shows the existing path untouched | test case, skill-script | claude | one Bash# script composing `run` calls; people and hosts by role; ids recorded |
+| T1 | Test case: a registered account with no outpost asks their agent for their latest Gmail threads and saves a note into `/drive/notes`: `route: hosted`, zero spend, no send; then the same prompts with a paired test outpost online (`route: sync`) and stopped (`route: hosted`); a `/home` mount on that outpost answers "host offline" when stopped; one member action on a shared shaping-enabled app through `run` shows the existing path untouched | test case, skill-script | claude | one Bash# script composing `run` calls; people and hosts by role; ids recorded |
 | O1 | Optional, p2: atlas entries for the Tier-6 cloud CLIs (effects `cred`, `net`, `remote`; `spend` on billable providers) so they become typed, effect-gated MCP tools | core (yoke/atlas), small | agy | `bashy mcp tools --tools aws --json` lists it with effects; denied without `--allow cred` |
 
 ## MVP rescope and execution plan (operator, 2026-11-24)
@@ -150,10 +150,10 @@ live `route: hosted` call handed to Sprint 699; no private plane internals in th
 
 ## Decisions (operator, 2026-11-23)
 
-Hosted-first, for cloudbox-registered users with no live outpost; a live paired
+Hosted-first, for cloudbox-registered accounts with no live outpost; a live paired
 outpost always wins the route. No credential passes through the gateway; the runner
 pulls the caller's secrets itself with a short-lived caller-scoped token. The trove is
-the virtual drive of every cloudbox user: path-keyed mount points, layout in the
+the virtual drive of every cloudbox account: path-keyed mount points, layout in the
 vault, no storage of its own. Effects policy unchanged; with no owning host the caller
 settles approvals on the master. Member shaping of an invited production app waits for
 Sprint 669 M3 and is not pulled in.
