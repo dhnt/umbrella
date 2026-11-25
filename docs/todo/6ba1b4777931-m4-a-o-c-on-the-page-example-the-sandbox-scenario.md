@@ -66,3 +66,7 @@ Deliver Step 1 (pin propagation) as soon as it is green: commit it, record the g
 ## Outpost added to the round (2026-11-24 ~23:10 PST, agreed with the 699 RM)
 
 Order: bashsharp, outpost -> yoke ff326a9d, ycode, bashy (also repins outpost). Outpost baseline: go test -short on outpost main 6b4a08dd in the same lane/venue, excluding internal/agent/shell, taken before the candidate; compare by name. ROUND READY / DONE carries the umbrella gitlinks for outpost, bashsharp, ycode, bashy and a full-workspace `bashy mod drift` with no stale rows.
+
+## Retarget to yoke c78fb76d (699 RM, 2026-11-24 ~23:30 PST; operator included 708's comment-only commit)
+
+When yoke main is fast-forwarded to c78fb76d (708 bug 3230 comment, 15 lines in pkg/browser/internal/cdpactions/actions.go, child of ff326a9d): redo go get/tidy to c78fb76d in bashsharp, outpost, ycode and bashy (cycle re-closed), set bashy src_mount.go srcModulePins["yoke"] to c78fb76d's full sha, re-run the build for all four repos plus `go test ./pkg/browser/...` in yoke and bashy; record the existing short-test evidence as reuse (comment-only delta). ROUND READY then names c78fb76d.
