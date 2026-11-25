@@ -98,7 +98,8 @@ other ladder rungs) is **deferred**. Sprint 722 does two things, in order:
   agy-gemini3.8-flash, muse-spark1.2, opencode-glm-5.3-flash), n=3 each.
 
 **Design fixes from the codex-gpt6-astra review** (full text: the Sprint 721
-viewer book, page 5):
+viewer book, page 5; archived in the private docs repository under
+`docs/research/s721-equivalence/`):
 
 - Fix the primary outcome and accounting before any run: success, calls,
   underlying operations, tokens, latency and failures.
@@ -116,7 +117,8 @@ viewer book, page 5):
 - The contract prototype and its grader: agent-bench branch
   `salvage/s721-p2b-wip` (a6a90e23), with `packs/shapeware/t4-lifecycle`
   (`CONTRACT.md`, grade.py, references) and `grader_lib.py`.
-- The equivalence research report (Sprint 721 viewer book, page 3).
+- The equivalence research report (Sprint 721 viewer book, page 3; archived
+  in the private docs repository under `docs/research/s721-equivalence/`).
 - The `form` shapeware layout on bashy main.
 
 **Moved here from 721:** bashy todo fd7a7738 (viewer defects), which feeds
