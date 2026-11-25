@@ -308,6 +308,15 @@ Handoff at the end of the 2026-11-25 Sprint 712 exploration session. It covers:
 - the next task: defining the shapeware spec layout and structure, meaning the skill-folder layout, frontmatter metadata keys, the feature-list and known-issue schemas, the checks/ contract, UI assets and the trusted-core reference
 - which decisions are settled, the existing conventions to inspect and reuse, the rules for the next session, and the open questions that bear on the spec
 
+## sprint-712-master-plan.md
+
+The operator-approved master execution plan for Sprint 712 (2026-11-25). It covers:
+- a review of where the sprint stands against its story acceptance, and five review findings
+- Phase 0: start, and recording the operator rulings D15–D17 (a shapeware folder is a superset of an Agent Skill folder; missing parts take defaults; `SKILL.md` declares `type: shapeware` and carries a standard "how to run" block for any agent)
+- Phase 1: the shapeware spec v0, meaning the layout, metadata keys, the defaults table, the feature and known-issue schemas, the checks contract, UI assets, the trusted core, and versions and upgrades
+- Phase 2: the recommendation doc that completes the story; Phase 3: operator review and close; Phase 4: proposed follow-ons
+- non-goals and verification
+
 ## sprint-719-evidence.md
 
 The one shared evidence record for the bashy v1.0.0-rc.41 candidate (bashy 0665ffb3). It lists each gate leg with its run, commit, result and digests (build, `bashy dag test`, sealed Bash gate, Linux and native-Windows dispatch e2e, shaping smoke, dist, local release receipt), proves why the sealed Bash gate evidence from an earlier commit still applies, and records the findings with their root causes (desk modules, advisories, the quic-go build break, venue reds, the macOS QA host clock wrap). Hosts are named by role.
