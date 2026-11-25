@@ -1,8 +1,10 @@
 # Shaping offers: who an offer reaches, and a page released with its components
 
-Design record, 2026-11-24. **Proposed; operator review pending.** No code
-changes until the review; implementation becomes Sprint 683 stories after it.
-Input to Sprint 705 S3 (the page-plus-components model). Answers Sprint 683
+Design record, 2026-11-24. **Future input, not stories (operator ruling
+2026-11-24, KISS/MVP, rod not fish).** Offer audiences and page pins are fish:
+filed only when a real need appears, because shaping exists so owners add
+features when they need them. Sprint 683 keeps D4, O1 (one generic
+skill-script using `offer --to MEMBER`) and O2. Input to Sprint 705 S3 (the page-plus-components model). Answers Sprint 683
 open decisions 3 and 4 (`docs/sprint-683-master-execution-plan.md`) and covers
 bug `33807374`.
 
@@ -157,23 +159,10 @@ owners. Suites as version units. Pinning across hosts. Auto-adopting
 components. Any cloudbox change: none is needed, because the stamp already
 carries circle, groups and email.
 
-## Stories after the review (all Sprint 683)
+## If a need appears
 
-| Story | Scope | Depends on |
-|---|---|---|
-| D4 `90f03f54` | reproduce, record the root cause (hypothesis above), fix in its own commit | none |
-| `33807374` | reproduce, then the members-only `isVisible` (part of O3, or first if O3 waits) | none |
-| O3 offer audience | `Offering.Audience`, `--circle/--group/--email`, `--all` = members, pulled notices, site MCP and CLI parity; yoke `pkg/src` and bashy | D4 |
-| O4 page release pins | `--with`, tag trailers, verify against the pins, adopt refusal; yoke `pkg/src` and the bashy page | D4, O3 |
-| O1 (existing) | the e2e then shares the page suite with a circle and offers to that circle | O3, O4, Sprint 710 H6 |
-
-Each story closes on its own unit tests on the gate host. No release.
-
-## Decisions for the operator
-
-1. Offer audience by grant-rule audience (alternative 2), with `--all` meaning
-   every member?
-2. Page release pins components on the same host (alternative 2), with suite
-   pairing by convention?
-3. An owner's `shape release` is app-wide (shared) by default, once D4's root
-   cause confirms the hypothesis?
+Order to file then: D4 `90f03f54` first (its root cause is needed either way,
+and it is already in Sprint 683, led by the hypothesis above); then the offer
+audience (yoke `pkg/src` plus bashy CLI and site MCP), which absorbs the
+members-only visibility of `33807374`; then page pins, after the audience.
+Each would close on its own unit tests on the gate host, with no release.

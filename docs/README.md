@@ -228,8 +228,8 @@ against the verified member stamp, so offers are members-only by construction.
 see `--all` offers. A page release pins the shared releases of the components
 it embeds on the same host and is verified against them; a suite stays the
 access unit, not the version unit. Records the D4 root-cause hypothesis:
-releases are principal-private by default. Operator review comes before any
-story.
+releases are principal-private by default. Future input, not stories (operator,
+2026-11-24: filed only when a real need appears).
 
 ### access-tiers.md
 
