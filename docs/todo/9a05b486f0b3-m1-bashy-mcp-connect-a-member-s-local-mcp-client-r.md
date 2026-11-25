@@ -3,17 +3,18 @@ id: 9a05b486f0b3
 kind: feature
 title: 'M1 bashy mcp connect: a member''s local MCP client reaches the owner''s site MCP with a satellite-exchanged token'
 seq: 729
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-24T22:59:39.881619Z
-weave: 252
-assignee: agy-gemini4-carbon
+assignee: codex-gpt6.2-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+closed: 2026-11-25T00:06:50.277734Z
+closed_by: claude-opus5.5
 ---
 
 A member (C) connects their own MCP client to the owner's (O's) site MCP from C's machine, as C, with no OS password. Permission is unchanged and stays per app: the satellite admits C only where O's share covers C (HostShares.CanReach per host and app), O's outpost stamps C's circle/groups from O's member list, and the Sprint 706 scopes decide what C may do. The token only proves identity, exactly like C's browser login.

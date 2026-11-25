@@ -31,3 +31,20 @@ password anywhere, and no cloudbox change.
 M1 and M2 run in parallel; M3 after both. Every story carries a dated "Code
 inspected" note. Unit tests on the gate host; the sandbox e2e is the
 acceptance; then the operator runs the real test. No release.
+
+## Outcome (2026-11-24)
+
+Closed on the M3 acceptance: the A/O/C sandbox e2e (fake accounts, stub agent, official image) passed 62/62 checks twice on the gate host (44 existing + 18 new). No release.
+
+| Story | Merged | Evidence |
+|---|---|---|
+| M1 `bashy mcp connect` | yoke `ac3d3841`, bashy `30fe0121` | gate-host unit run: yoke fleet 1049, dks 4 focused, bashy agentos 136 tests/subtests |
+| M2 `shape_pull` / `shape_push` | yoke `4ee516f5`, bashy `1b3d428e` | gate-host unit run: yoke shape 66, bashy site MCP 12, template suite, vet |
+| M3 sandbox e2e | bashy `62c8bc99` | two official-image runs, 62/62 each |
+
+Notes:
+- The satellite exchange admits a non-owner only when the owner's satellite admits them and they have signed in to that satellite once in the browser; the account token must already hold `satellites:delegate` and `host:proxy`. `bashy mcp connect` names each refusal. The cloudbox fake now models these rules.
+- M1's first run timed out at the agy 40-minute print limit; its rebased work was finished by a fresh run.
+- Open for the operator: `bashy mcp connect` presents the member's account token to the satellite named in the URL (the exchange needs it). Suggested follow-up: a dedicated token holding only `satellites:delegate` + `host:proxy`, and a check that the satellite is one the account is a member of.
+
+Next: the operator runs the real-host test; bugs start a new plan.
