@@ -28,3 +28,11 @@ Candidate commits (all merged): cloudbox dev 3615810 (H2 re-invite, H3 satellite
 - Keep the 'family: satellite host rows' check from user-complex green as written.
 - You do NOT run the e2e. Never ssh, scp or remote-exec to any host, and never start background tasks. Verify locally with python -m py_compile and any pure-Python unit checks only. Stage one runnable gate command (script + exact args + the commit pins it needs) and put it in your submit message. The conductor runs it twice on the Linux test host.
 - Commit to cloudbox dev via your workspace branch, one commit with Sprint/Story/Story-ID/Agent trailers. Story-ID is this umbrella story; the cloudbox hook may warn that the story is in another store, which is fine. No deploy. No host names, IPs or logins in anything committed to public repos.
+
+## Gate run 1 (2026-11-25, Linux test host): FAIL at fixture setup; root cause recorded
+
+Candidate: cloudbox b2bc5e0 (dev a9c0d79 + H6a a7299b5), outpost 6b4a08d, yoke 39aef5bc, bashy b1d1f9bd (one docs-only commit past 98551856), E2E_LOCAL=1, scenario owner-sharing. It failed before any owner-sharing check ran: `fixture: slice owner-sharing comes up (member invite ...: gotoolchain: fetch release index ... network is unreachable)`.
+
+Root cause: a test-harness defect, not owner sharing. Since bashy 62ee3c74 (2026-11-21), `bashy member` is a yoke adapter (internal/agentos/adapter_dispatch.go:156) that is built on first use, and the build downloads a Go toolchain. The e2e-multisat containers run with --network none, and the stage ships neither Go nor prebuilt adapters. Reproduced outside the harness in an offline container with bashy c450753f, 3535205f, 98551856 and b1d1f9bd: same failure. The last green `members` run on this harness (2026-11-20) predates the adapter change. Classified: test (venue/harness).
+
+Fix (test-only, cloudbox script/; allowed under the 699 train-1 cutoff): build the yoke adapters into the e2e stage at build time and point the containers at them (BASHY_ADAPTER_CACHE or the equivalent bashy mechanism), so the sandbox stays offline. Then rerun owner-sharing twice and user-complex once.
