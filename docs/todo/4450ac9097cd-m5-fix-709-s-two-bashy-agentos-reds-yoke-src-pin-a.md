@@ -3,14 +3,17 @@ id: 4450ac9097cd
 kind: bug
 title: 'M5 fix 709''s two bashy agentos reds: yoke src pin and the mcp skill golden'
 seq: 738
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-25T05:27:42.730557Z
+assignee: codex-gpt6-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+closed: 2026-11-25T05:34:22.770087Z
+closed_by: claude-opus5.5
 ---
 
 Reported by the Sprint 710 conductor in umbrella todo 60d43cb7 (red at bashy c450753f and after the 710 bump at 3535205f). Two of its three reds are 709's; the third (TestCommonOptionsVocabularyReport, from 697's fetch --user-agent) stays on 60d43cb7.
