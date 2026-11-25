@@ -18,6 +18,9 @@ the A/O/C scope conductor.
 - One deploy per train. No bashy release in this train.
 - Every issue in this sprint is resolved, or it goes to the operator for
   approval with an explanation.
+- No HUAT (operator, 2026-11-24): no human user acceptance tests. Every live
+  check is agent-run, with sandbox or test accounts. The operator's GO is a
+  release decision, not a test.
 
 ## Feature list: train 1 (hosted plane, dev beyond v0.18.82)
 
@@ -90,7 +93,9 @@ already live in v0.18.82.
 5. Clean repos: no uncommitted or unpushed work in any checkout used for
    the train. Local branches and worktrees with unintegrated patches are
    merged, pushed, or explicitly kept by their owner. Nothing with unique
-   commits is deleted. Open at the cutoff: umbrella
+   commits is deleted. Kept by their owner (708) as evidence: umbrella
+   `sprint-704-yoke-pin-2615421d`, yoke `s704-p0b-candidate` and
+   `s704-p0c-candidate`. Still open at the cutoff: umbrella
    `sprint-704-yoke-pin-2615421d`; yoke `s704-p0b-candidate` and
    `s704-p0c-candidate`; hosted worktree `s652/6210caba`; hosted
    `s710-h6-cand` (710, in flight); one untracked hosted todo from the
