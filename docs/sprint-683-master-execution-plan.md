@@ -85,16 +85,19 @@ then **brainstorm**.
 | Story | Prio | Depends on |
 |---|---|---|
 | O0 `b23982703c71` confirm the console builds the desk-family apps from the module proxy; close `d35e0de8`. **Moved to Sprint 703** | p0 | 703 F11 `d246ca4e` (gate host bashy current) |
-| O1 owner publish e2e skill-script on one page: form/poll, then viewer book, then brainstorm blocks | p1 | 703 O0 `b23982703c71`; 703 D4 `90f03f54`; the 706 R5 `5c1b07e994f1` step-0 shaping baseline (R8 `d8b7f10afa31` was folded into it, wontfix); pinned page release (open decision 3) |
+| O1 owner publish e2e skill-script on one page shared as a suite with a circle: form/poll, then viewer book, then brainstorm blocks | p1 | 703 O0 `b23982703c71`; 703 D4 `90f03f54`; the 706 R5 `5c1b07e994f1` step-0 shaping baseline (R8 `d8b7f10afa31` was folded into it, wontfix); 710 H6 `14bb7d2b5eab` (H1 `ef2ce499a64a` / H5 `f095ebc76350` by share path); pinned page release (open decision 3); offer audience (open decision 4) |
 | O2 kb runbook "Publish a shaped version to members" | p2 | O1 |
 
 O1 flow, on one `desk/page` carrying form/poll, viewer book and brainstorm
-blocks (plus the website face), one block at a time in that order: the owner
-wishes a change to the block (a `genie.examples` line), verifies, approves;
+blocks (plus the website face), shared as a suite with an owner-named circle
+(Sprint 710), one block at a time in that order: the owner wishes a change to
+the block (a `genie.examples` line), verifies, approves;
 `release` names a page release that pins the component versions it was
-verified with; `offer --to MEMBER`; the member `adopt --preview`, then
-`adopt`; the change is visible to that member only; the member `undo`es; the
-owner `submit`s the approved revision. The worker writes and dry-runs the
+verified with; `offer` to the circle's members (form per open decision 4);
+a member in the circle `adopt --preview`s, then `adopt`s; the change is
+visible to that member only; a member outside the circle sees no offer; a
+logged-in non-member and an anonymous visitor get only the public face; the
+member `undo`es; the owner `submit`s the approved revision. The worker writes and dry-runs the
 script; the conductor runs it live. A model-backed live run is one paid run
 and needs the operator's go.
 
@@ -109,6 +112,33 @@ and needs the operator's go.
   wontfix); O1 is its live counterpart on a real page. R5's own scope (a
   member shapes the owner's app) and 706 R6 (public wish list) are not
   repeated here.
+
+## Relation to Sprint 710 (owner sharing)
+
+Sprint 710 (2026-11-24) settles who reaches an owner's apps: a satellite
+admits members, only through the owner's invite; anyone else, anonymous or a
+logged-in non-member, gets only what the owner publishes publicly, as
+anonymous. Owners share apps, singly or as a suite, by grant rules naming
+owner-named circles, groups or emails; master shares project to satellites
+(H5). What this means for 683:
+
+1. **Offers and shares use different audiences.** `shape offer --to|--all`
+   (`yoke/pkg/src/offer.go`) targets host-local principals: `--to` names
+   them, `--all` is every principal the app's repo has seen. It knows no
+   circles, groups or suites, so an offer can reach someone without access,
+   or miss a circle the page is shared with. Open decision 4.
+2. **`offer --all` is visible to anonymous.** `isVisible` returns
+   `offer.All` for an empty principal. Adopting still needs a principal;
+   offers should be member-only. Filed as 703 bug `33807374`.
+3. **The page and its components are a suite.** The page plus the form,
+   viewer and brainstorm components it embeds is the unit 710 shares; the
+   pinned page release (open decision 3) is the matching unit for versions.
+4. **The website face is the public publish.** It is served to everyone who
+   is not a member as anonymous, and never shows a member's adopted version.
+
+O1 therefore shares the page as a suite with a circle and offers to that
+circle, and waits for 710 H6 (suite-to-circle sharing proven on a real
+satellite); H1 if the script shares from the CLI, H5 if from the master.
 
 ## Not doing
 
@@ -128,4 +158,10 @@ owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
    release for one app only (`--repair`, `--contract` for approved contract
    removals); nothing releases a page and its components as one pinned set.
    O1 is a test and cannot be its owner. Options: a 705 S3 outcome, a new
-   683 story, or O1 releases the page alone and pinning waits.
+   683 story, or O1 releases the page alone and pinning waits. With
+   Sprint 710 the page and its components are a suite; tie the pinned
+   release to the suite or record why not.
+4. Offer audience: should `shape offer` take `--circle`/`--group` (or a
+   suite) and resolve them through the same grant rules as sharing, or keep
+   `--to` principals and check each offer against the share? Product
+   decision; input for 705 S3.
