@@ -110,3 +110,102 @@ Secondary items to assess briefly: known-issue debt budgets/SLAs, accessibility 
 - It includes the lifecycle map, the three concrete schemas/examples, all three case simulations, and a comparison with the current build/release process.
 - It proposes follow-on sprint(s)/stories with priorities and decision owners; it identifies what explicitly remains conventionally frozen.
 - No product code, release train, or live-user behavior changes under this story.
+
+## Draft deliverable 2026-11-25: the `shapeware` skill (v0, for review)
+
+The glue is a skill, not new machinery: the rules an agent follows at each SDLC event, composing standard languages and existing bashy verbs. It came out of the exploration below:
+- the hello-world walkthrough
+- the two-sense run
+- the operator rulings: no reinventing the wheel; restricted HTML and the converter, not either/or
+
+Verbatim draft:
+
+````markdown
+---
+name: shapeware
+description: The classic SDLC adapted for agents. Rules for building, releasing, using and fixing shapeware (software that ships as Bash# source with its specs, skill and known issues, and is finished or fixed in the field by agents). Use when you add a feature, fix a bug, release, deploy, or hit a failure or a missing feature while using a shapeware app.
+---
+# shapeware: the SDLC for the agent era
+
+DRAFT for review (Sprint 712 exploration, 2026-11-25). No new tools: every
+step uses standard languages and existing bashy verbs.
+
+## What a shapeware artifact is
+
+One `.bsh` body (or an existing app plus a companion `.bsh`) holding faces,
+each written in a language every agent and human already knows:
+
+| Face | Language | Holds |
+|---|---|---|
+| script | Bash# | what machines run |
+| skill | Markdown (`~~~skill`) | how an agent uses it, plus **Known issues** |
+| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples |
+| ui | HTML/CSS (restricted semantic profile), JSON/YAML for data, TS for logic | what a human sees and hears (`@media speech` for audio) |
+
+Do not invent formats. If a standard language covers it, use it.
+
+## Statuses
+
+- Feature: `tbd` (specified, not built) · `verified` (acceptance passes).
+- Known issue: `open` · `workaround` (bounded workaround documented) ·
+  `fixed` (acceptance example added and passing) · `expired` (past its review
+  date: reopen and escalate).
+- Release class: `verified`, `verified with known issues`, `verified with tbd`.
+  Computed from the two lists above, never declared by hand.
+
+## Rules by event
+
+### 1. New feature (planned)
+1. Spec first: add a `~~~feature` entry with `status: tbd`, intent, and
+   acceptance examples a machine can check.
+2. Implement. Run acceptance. Only a passing run sets `status: verified`.
+
+### 2. Missing feature found in use (a `tbd` the user asks for)
+1. Read the feature entry; implement it as a **shaped candidate**
+   (`bashy shape wish` → verify → preview → approve). Never edit the
+   deployed source directly.
+2. Acceptance must pass before approve. Offer the variant upstream.
+
+### 3. Failure found in use (field UAT)
+1. Stop. Do not retry until green.
+2. Root cause within a budget (time/tokens set by the owner): name the
+   failure, check the venue, bisect, classify (product / test / environment).
+3. Fixed within budget → go to 4. Not fixed → record a **known issue** in the
+   skill face: symptom, cause found so far (proven or suspected), safe
+   workaround with its bounds, forbidden workarounds, review/expiry date.
+   Status `workaround`. Report upstream with the evidence.
+4. A known issue's workaround is never "fixed".
+
+### 4. Bug fix
+1. Add an acceptance example that reproduces the bug; it must fail.
+2. Fix; the example passes; set the known issue to `fixed` and remove the
+   workaround text.
+
+### 5. UAT
+Acceptance during real use is done by the user's agent, not a human test
+gate. The release gate is the automated acceptance run (fakes where needed).
+A field failure follows rule 3. A field success needs no record.
+
+### 6. Release
+1. Run all acceptance: every `verified` feature must pass; `tbd` is reported,
+   not failed.
+2. Compute the release class; generate the notes from the feature list and
+   the known issues.
+3. Tag. One release, one tag.
+
+### 7. Deploy and undo
+Deploy through the existing registration (`bashy commands add`, `bashy skill
+add`, `bashy app add --type shaped`). Undo is the previous tag or `bashy
+shape` undo, never a hand edit.
+
+### 8. Upstream
+A field variant becomes product when its acceptance passes and the owner
+approves. Its known issues and tbd entries travel with it.
+
+## Forbidden
+- Editing deployed source in place.
+- Retrying until green; masking a failure with a workaround that is not
+  recorded.
+- Marking anything `verified` or `fixed` without a passing acceptance run.
+- New formats where a standard language exists.
+````
