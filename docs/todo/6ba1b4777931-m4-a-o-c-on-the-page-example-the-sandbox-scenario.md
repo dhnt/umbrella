@@ -3,17 +3,16 @@ id: 6ba1b4777931
 kind: test
 title: 'M4 A/O/C on the Page example: the sandbox scenario runs against examples/desk/page (MVP)'
 seq: 735
-status: assigned
+status: todo
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-25T04:28:08.884379Z
-weave: 264
 assignee: codex-gpt6.2-astra
-sprint: 709
-sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
-sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+sprint: 714
+sprint_id: 3e487908-1ba5-5dc0-85ae-41a6833869d5
+sprint_title: 'A/O/C on Page: bashy go in a fresh HOME, then the Page leg (709 follow-up)'
 ---
 
 Operator 2026-11-24: deliver today a minimal A/O/C with Page support in examples. KISS/MVP: the same A/O/C flow pointed at Page; fix only what breaks; no new features.

@@ -54,3 +54,17 @@ Member prerequisites (for users of `bashy mcp connect`):
 - The share must reach the satellite gate. Shares made on the master console are not projected to satellites until Sprint 710 H5 (`f095ebc7`) merges and ships with the release train; until then the owner shares the app on the satellite itself.
 
 No human acceptance test (operator rule 2026-11-24): the sandbox A/O/C e2e (website + Page legs) is the acceptance; owners fix what it misses by shaping.
+
+## Reopened and closed again (2026-11-25)
+
+Reopened 11-24 20:10 PST for operator follow-ups; closed 11-25 with 6 of 7 stories.
+
+| Story | Merged |
+|---|---|
+| e16cbb29 `mcp connect` sends only a 1h attenuated child token to the satellite | yoke 54ed5dea, bashy c450753f |
+| M5 4450ac9097cd 709's two agentos reds (src pin, mcp golden) | bashy 98551856 |
+| member setup doc for `bashy mcp connect` | bashy b1d1f9bd |
+| M6 b659aecc1daa verifier checks share binmgr's tool cache (BASHY_BIN_CACHE) | yoke ff326a9d |
+| pin round for yoke c78fb76d (M6 + 708's comment), agreed with the 699 release manager | bashsharp c86810bc, outpost 37193456, ycode ceb3b2de, bashy b8cce989, umbrella 02521dda5; drift 0 stale |
+
+Moved to Sprint 714 (backlog, operator 2026-11-25: defer, design the right solution later): M4 6ba1b4777931 A/O/C on the Page example (test-only leg at bashy branch s709-m4-page-leg 29927c1e; website leg green, Page green up to C's push) and D1, the pre-existing defect that blocks it: `bashy go` fails in a fresh HOME because the embedded toolchain/go adapter has no sources to build its launcher.
