@@ -3,7 +3,7 @@ id: ef2ce499a64a
 kind: bug
 title: 'S14 outpost bug: apps share|unshare|shares still send the pre-S619 {app, circle|email} body; move to the grant-rule form {app, circles[], groups[], emails[]}'
 seq: 305
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
@@ -12,11 +12,12 @@ labels:
     - outpost
     - parity
 created: 2026-11-15T00:02:48.835468Z
-weave: 257
 assignee: codex-gpt6.2-sol
 sprint: 710
 sprint_id: 063b46d6-77e0-5d5b-8dc0-2fd08f8234a2
 sprint_title: 'Owner sharing: apps and suites to circles and members, public apps, invites that arrive'
+closed: 2026-11-25T05:53:55.542665Z
+closed_by: claude-opus5.5
 ---
 
 Planned vendor: codex. PUBLIC outpost change, small, separate commit; trove share (S6) shells to this verb so it inherits the bug. Root cause (recorded before the fix): Sprint 619 changed the host-share wire to a strictly decoded grant rule {app, circles[], groups[], emails[]} (400 invalid_request otherwise; S630 S22 fixed the cloudbox console but not outpost); outpost/internal/agent/portal/shares.go CreateHostCircleShare and AppShare still use {app, circle} / Email, and unshare matches on share.Email so rule rows are never found. Fix: rule-form body with repeatable --circle/--group/--email (one rule per call, as bashy suite share does via yoke/pkg/fleet/grant_rule.go), shares lists rule rows, unshare by id; test against yoke/pkg/fleet/cloudboxfake addHostShare. Reproduce first against the fake (expect 400) and record. Accept: fake-server test red then green; outpost apps share APP --circle family creates a rule row and who lists the circle's members; unshare removes it; --json parity. Spec: docs/sprint-639-master-execution-plan.md; design: docs/trove-content-app-design.md
