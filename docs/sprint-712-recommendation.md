@@ -1,6 +1,6 @@
 # Sprint 712 recommendation: the agentic build/release paradigm (shapeware)
 
-Status: **for operator review** (Sprint 712, story b35b89620f88, 2026-11-25). Plan only: no product code, release train or live-user behaviour changed under this story.
+Status: **operator-approved 2026-11-25**, then amended the same day with the cross-vendor review (D20) and the lifecycle (D21); the spec is now v0.1 (Sprint 712, story b35b89620f88). Plan only: no product code, release train or live-user behaviour changed under this story.
 
 This is the story's deliverable. It answers the question with definitions, a lifecycle map, three schemas, three tabletop cases, a comparison with the current process, risks and dissent, what stays frozen, a recommendation and a follow-on split. It reuses the existing records rather than repeating them:
 - `docs/sprint-712-shapeware-exploration-2026-11-25.md`: the discussion, experiments and decisions D1–D19
@@ -116,7 +116,7 @@ The unaware agent's run 2 report contained every field without being given this 
 - Waiting is one documented step.
 - **Target:** 1 call to show the form and 1 to read it, measured on the same task.
 
-The pilot delivers a feature (a `tbd` UI improvement from `shaped.json`'s wishes) through specs and checks with no new binary.
+The pilot delivers a feature through specs and checks with no new binary: one of `shaped.json`'s wishes becomes a `tbd` entry in `features.yaml` (a wish alone is never a feature), and an agent builds it in a work copy graded by the installed checks.
 
 ## 6. Comparison with the current build/release process
 
@@ -168,7 +168,7 @@ The dissent is answered by scoping, not by dismissal. The pilot is narrow, criti
 
 1. **Adopt `docs/shapeware-spec-v0.md`** (operator-reviewed, D19) as the v0 draft standard.
 2. **Go: the narrow pilot on `form`** (P1 below). Success means one call to show a form and one to read the answer, measured against the 11-25 baseline. The unaware-agent test should pass on the first try, and checks should pass on the gate host.
-3. **No-go for scale** (third-party shapeware, the KI feed, the field network) until signing and provenance exist and the low-end pack gates the standard run block.
+3. **No-go for scale** (third-party shapeware, the KI feed, the field network) until all of these hold: signing and provenance; verifier immutability (protected checks, lifecycle, effect cap, critical flags and core pins, enforced by the tools and not only by `candidate.bsh`); a sandbox for the agent's own tools when it acts on known issues or form inputs; and the low-end pack gating the standard run block. Signing proves where a bundle came from, not that field-shaped code is safe (vendor review n3).
 4. **Metrics to track:**
    - calls and probes to the first success
    - unaware-agent pass rate (by model and band)
@@ -182,10 +182,11 @@ Each sprint is reviewed with the operator before it starts. Owners are proposals
 
 | Pri | Follow-on | Contents | Owner (proposed) | Venue | Decision owner |
 |---|---|---|---|---|---|
-| P1 | **Sprint: shapeware pilot on `form`** | Fix 64ef2626 and its three addendum defects (root cause first). Lay out `form` per spec v0: `SKILL.md` type line and run block, KIs, `features.yaml` with one tbd wish, `checks/`, trusted core pinned in `shaped.json`. Add create-and-open to one command. Document the bluemonday allowlist (Q2) and settle the `bashy-ui-v1` envelope (Q4). Measure against the baseline (9643d77f e) | an agy worker; the conductor reviews and gates | dev box for unit work; gate host for any browser acceptance | operator |
+| P1 | **Sprint 721: shapeware pilot on `form`** | **Gates first:** yoke cb1a95c4 (`metadata.type`) and bashy 117bbf2c (`bashy dag` on a fresh HOME). Then fix 64ef2626 and its addendum defects, including the shared-address store bleed (root cause first). Lay out `form` per spec v0.1: type line and run block, KIs, `dag.md` lifecycle, `features.yaml` with one wish turned into a `tbd` feature, `checks/acceptance.bsh` and `candidate.bsh`, core digest in `shaped.json`, `min-band: L2`. Add create-and-open in one command. Not in the pilot: the `bashy-ui-v1` envelope and the allowlist (vendor review m5). **Acceptance** (m12, n2): three arms on the same tasks (today's form, a bug-fixed plain form, the shapeware form, with a seeded known issue and a field-built tbd); 3 cold runs per arm (two vendors and one small local model, the last on the gate host); forbidden-action tests (edit in place, critical build, retry until green, tampered checks); owner approval and rollback; report latency, calls and failures. Shapeware must beat the bug-fixed plain form on the known-issue and tbd tasks | an agy worker; the conductor reviews and gates | dev box for unit work; gate host for browser acceptance and the small model | operator |
 | P1 | Story: known-issue status in `bashy todo` (Q6) | a status for known/workaround/expires; move #3230 into it as KI-1 (§5 i) | bashy worker | unit tests | operator |
 | P1 | Todo yoke cb1a95c4 (filed) | the skill parser reads `metadata.type` | yoke worker | unit tests | — (approved) |
 | P2 | **Sprint: low-end evaluation pack** (Q11, Q13) | agent-bench task pack: hello unaware-agent task (run, KI, build tbd, report), the form task, scoring (success, calls, forbidden moves, correct escalation); runs with small local models (`bashy ollama`); sets band floors | worker | gate host only | operator |
+| P2 | **Per-category pilots after `form`** (operator) | one shapeware pilot per bashy command category once the form pilot reports: a toolchain verb (e.g. `uv` or `go`), an optional/external bin-managed tool, and a whole repo (D18). Each is planned as its own story with the form pilot's acceptance | to be planned | gate host | operator |
 | P2 | Story: publish the shapeware skill (Q1, Q9) | the trademark sanity check, then the spec, the agent card, and the lint and release-class skill-scripts as a shapeware folder in the `shapeware` org (dogfood D18) | conductor | — | operator |
 | P3 | Backlog | signed KI feed and field network (Q6b, Q7); cost model (Q8); MCP elicitation (Q5); repo-enable generator; sub-shapeware composition; `band-ladder.md` to L1–L5; quote bashy's `SKILL.md` description (strict YAML); skill-format name warnings in `bashy skill add` | — | — | operator |
 

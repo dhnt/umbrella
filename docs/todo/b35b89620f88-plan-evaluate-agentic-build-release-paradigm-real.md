@@ -330,6 +330,24 @@ The operator also asked for every step it took to launch the review form, as the
 
 `docs/sprint-712-recommendation.md` is the story deliverable. Its §12 maps each acceptance item to a section. In short: go for a narrow pilot on `form`, no-go for scale until signing and provenance exist; spec v0 adopted as the draft standard; a P1–P3 follow-on split with proposed owners. It waits for operator review; the story closes after that.
 
+## Vendor review and lifecycle (2026-11-25, D20 and D21)
+
+- **Vendor review:** codex, agy and GLM "approve with changes"; muse "rework before go". The operator accepted all 28 merged findings through bashy forms. The spec is now **v0.1** (`docs/shapeware-spec-v0.md`; §17 maps each finding to its change).
+- **Lifecycle (operator):** every release defines `source`, `build`, `test`, `install` and `run` as exact steps in `dag.md`, so agents never guess.
+- **Gate:** five runs by agents with no shapeware context.
+  - Runs 1, 2, 4 and 5 found text gaps, all fixed.
+  - Runs 2 through 5 built the tbd feature on a copy graded by the installed folder.
+  - Run 5's variant label matched the author's independent run exactly.
+- **Follow-ons planned in Sprint 721 (backlog):**
+  - bashy 64ef2626, 9643d77f, cc4a1a40 and 117bbf2c
+  - yoke cb1a95c4, 52bf65e9 and bda57930
+- **Filed elsewhere:**
+  - bashy c5ade313 (genie large-instruction launch)
+  - bashy ae527623 (per-category pilots, p2)
+  - umbrella 440c5e2b (publish the skill, p2)
+
+**Story closure:** every acceptance item maps to a section of `docs/sprint-712-recommendation.md` (§12). The operator approved the recommendation and chose "close now". No product code changed under this story.
+
 ## Full exploration record
 
 All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.

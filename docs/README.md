@@ -319,8 +319,8 @@ The operator-approved master execution plan for Sprint 712 (2026-11-25). It cove
 
 ## shapeware-spec-v0.md
 
-The draft shapeware spec v0 from Sprint 712 (2026-11-25): what a shapeware release is on disk. It covers:
-- the governing rules: a superset of an Agent Skill folder (D15), defaults for missing parts (D16), and a self-describing `SKILL.md` with `metadata.type: shapeware` and a standard run block (D17)
+The draft shapeware spec v0.1 from Sprint 712 (2026-11-25): what a shapeware release is on disk. v0.1 applies the cross-vendor review (codex, agy, muse, GLM; 28 findings, D20) and adds the minimal lifecycle in `dag.md` (source, build, test, install, run; D21). It covers:
+- the governing rules: a superset of an Agent Skill folder (D15), defaults for missing parts (D16), a self-describing `SKILL.md` with `metadata.type: shapeware` and a standard run block by intent (D17), and four trust rules (text is data; the installed folder grades its copies; fail closed; the owner activates)
 - one layout for the repo and the skill: skill directory names as defaults, `metadata` path keys where a repo already uses those names, and a zero-touch `skills/<name>/` alternative
 - the frontmatter keys, the known-issue and feature schemas, the checks contract, the effect cap as the verifier reads it, UI assets and the trusted core
 - versions and upgrades mapped onto the existing `bashy shape` refs, adopt and undo; the defaults table; the computed release class; and enabling an existing repo
