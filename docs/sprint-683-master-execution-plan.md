@@ -85,25 +85,30 @@ then **brainstorm**.
 | Story | Prio | Depends on |
 |---|---|---|
 | O0 `b23982703c71` confirm the console builds the desk-family apps from the module proxy; close `d35e0de8`. **Moved to Sprint 703** | p0 | 703 F11 `d246ca4e` (gate host bashy current) |
-| O1 owner publish e2e skill-script: form, then viewer, then brainstorm rows | p1 | O0; 703 D4 `90f03f54`; 706 R8 `d8b7f10afa31` |
+| O1 owner publish e2e skill-script on one page: form/poll, then viewer book, then brainstorm blocks | p1 | 703 O0 `b23982703c71`; 703 D4 `90f03f54`; the 706 R5 `5c1b07e994f1` step-0 shaping baseline (R8 `d8b7f10afa31` was folded into it, wontfix); pinned page release (open decision 3) |
 | O2 kb runbook "Publish a shaped version to members" | p2 | O1 |
 
-O1 flow per row: the owner wishes (a `genie.examples` line), verifies,
-approves; `release` names it; `offer --to MEMBER`; the member
-`adopt --preview`, then `adopt`; the change is visible to that member only;
-the member `undo`es; the owner `submit`s the approved revision. The worker
-writes and dry-runs the script; the conductor runs it live. A model-backed
-live run is one paid run and needs the operator's go.
+O1 flow, on one `desk/page` carrying form/poll, viewer book and brainstorm
+blocks (plus the website face), one block at a time in that order: the owner
+wishes a change to the block (a `genie.examples` line), verifies, approves;
+`release` names a page release that pins the component versions it was
+verified with; `offer --to MEMBER`; the member `adopt --preview`, then
+`adopt`; the change is visible to that member only; the member `undo`es; the
+owner `submit`s the approved revision. The worker writes and dry-runs the
+script; the conductor runs it live. A model-backed live run is one paid run
+and needs the operator's go.
 
 ## Relation to Sprints 703 and 706
 
 - 703 D4 (offer refuses a released version) blocks O1: root cause first.
-- 703 brainstorm-as-shaped gates the brainstorm row; 703 F9 (viewer CLI
-  discovery) affects the viewer row; 703 F4 (kit handler lift) touches the
+- 703 brainstorm-as-shaped gates the brainstorm block; 703 F9 (viewer CLI
+  discovery) affects the viewer block; 703 F4 (kit handler lift) touches the
   form/viewer kit, so land it before O1 freezes a candidate.
-- 706 R8 is the unit-level baseline of the same verbs; O1 is its live
-  counterpart on real apps. 706 R5 (a member shapes the owner's app) and
-  R6 (public wish list) are not repeated here.
+- The unit-level baseline of the same verbs is the step-0 evidence record of
+  706 R5 `5c1b07e994f1` (R8 `d8b7f10afa31` was folded into it and closed
+  wontfix); O1 is its live counterpart on a real page. R5's own scope (a
+  member shapes the owner's app) and 706 R6 (public wish list) are not
+  repeated here.
 
 ## Not doing
 
@@ -117,4 +122,10 @@ owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
 
 1. Offer and adopt in the web console (today CLI only): needed for members
    who never use the CLI?
-2. Raise 703 `cb9b4b80` (brainstorm as shaped) from p3, given use?
+2. Raise 703 `cb9b4b80` (brainstorm as shaped) from p3, given use? It
+   gates O1's brainstorm block.
+3. Who builds the pinned page release? Today `shape release APP REV` names a
+   release for one app only (`--repair`, `--contract` for approved contract
+   removals); nothing releases a page and its components as one pinned set.
+   O1 is a test and cannot be its owner. Options: a 705 S3 outcome, a new
+   683 story, or O1 releases the page alone and pinning waits.

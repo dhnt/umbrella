@@ -10,7 +10,7 @@ labels:
 created: 2026-11-24T19:03:06.838812Z
 sprint: 683
 sprint_id: a2c119a7-7ca5-571e-8e50-7a19ae1e583f
-sprint_title: Shaping-enable the example apps for owners/producers (follow-up)
+sprint_title: Owner publishing for a shapeable page and its shapeable components (any website)
 ---
 
-Owner companion to the kb runbook enable-an-app-for-consumer-shaping: release, offer --to/--all, adopt --preview/adopt, undo, submit, with common failures and root causes from O1. Every command one that ran in O1; generic names only. Link it from the consumer runbook and docs/shaping-enable-a-website.md. Verified: bashy kb search 'publish a shaped version' finds it. Depends on O1.
+Owner companion to the kb runbook enable-an-app-for-consumer-shaping: publish a shaped page and its components to members: release (pinned to the component versions it was verified with), offer --to/--all, adopt --preview/adopt, undo, submit, with common failures and root causes from O1. Every command one that ran in O1; generic names only. Link it from the consumer runbook and docs/shaping-enable-a-website.md. Verified: bashy kb search 'publish a shaped version' finds it. Depends on O1 121a44e332bc. Plan: docs/sprint-683-master-execution-plan.md.
