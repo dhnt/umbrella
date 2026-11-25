@@ -25,3 +25,25 @@ WORKER RULES: as on A2a 141bc34d (worktree off cloudbox origin/dev, one commit, 
 ## Constraint from the 710 conductor (2026-11-25): keep H3 at "/"
 
 710 H3 (hosted dev 89a5932, in train 1) already changed what a satellite serves at "/". In the public-paths loop of the route registration, on a satellite, GET/HEAD "/" no longer serves the public landing: a signed-in visitor gets 302 to /periscope/, and a signed-out visitor gets the SPA index (the minimal sign-in page) with Cache-Control private, no-cache. KEEP that behaviour and its tests (the satellite landing test and the version-mode test). Gate only the REMAINING public paths (agents.txt, skill.md, AGENTS.md, llms.txt, twins, .well-known/*, sitemap, feed, robots, humans and their HEAD twins) off the satellite role.
+
+## Worker verification
+
+Hosted candidate `dcc626c` is one commit after A2a `969c704`. On the Linux
+gate lane, the full hub server package passed with `go test -count=1` in the
+default build (92 top-level tests passed) and with `-tags cloudbox_satellite`
+(81 passed). The lane used Go 1.27.4 and Node v24.22.3 first on PATH, with
+WebCrypto available. The primary, standalone and satellite route-table
+checks passed.
+
+Compared with pre-A2 `d4a9b6b`, the satellite golden removes seven GET
+entries. Each served operator content: `/about`, `/about.md`, `/about.json`,
+`/index.md`, `/index.json`, `/robots.txt` and `/llms.txt`. It adds
+`HEAD /` to retain the H3 satellite landing. Those eight entries account
+for the change from 419 routes to 413. The middleware and all other route
+entries match, including `/health`, `/readyz` and `/.well-known/matrix/client`.
+
+The gate-built binary identified itself as a satellite on loopback. GET
+and HEAD each returned 404 for `/agents.txt` and `/skill.md`. Both methods
+returned 200 with `Cache-Control: private, no-cache` at the signed-out
+root. GET returned the SPA shell without the operator agent block. With
+a session cookie, both methods returned 302 to `/periscope/`.
