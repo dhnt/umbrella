@@ -42,3 +42,18 @@ Acceptance: the e2e (website + Page legs) green twice on the claimed gate host i
 ## Resume plan (operator 2026-11-24: "file and do the right thing")
 
 The Page leg's blocker is a generic verifier defect, fixed by M6 b659aecc1daa (checks reuse the host's binmgr tool cache). After M6 merges: rebase the preserved Page leg (bashy branch s709-m4-page-leg, 773dfa09) onto bashy main with yoke repinned to M6; in the sandbox, seed the owner's tool cache with the Go toolchain `bashy go` expects (offline, from the mounted Go SDK, at binmgr's layout <cache>/go/<version>/go), test harness only. Acceptance unchanged: website + Page legs green twice on the gate host. Still verification only: no Page-specific product code.
+
+## Run order for this assignment (conductor, 2026-11-24 ~22:55 PST; hard stop 11-25 10:30 PST)
+
+M6 is merged: yoke main ff326a9d. The conductor holds claim repo:pin-bump-yoke-ff326a9d (announced on mb); this run works under it.
+
+Step 1, pin propagation (agreed with the Sprint 699 release manager), each on its repo's current origin main:
+- bashsharp -> yoke ff326a9d (all yoke modules it requires).
+- ycode -> yoke ff326a9d + bashsharp (step 1 sha) + bashy (current origin main).
+- bashy -> ycode (step 2 sha) with the genie replace (go mod edit -replace github.com/qiangli/ycode/examples/genie@v0.0.0=github.com/qiangli/ycode/examples/genie@<pseudo of the new ycode>) + bashsharp (step 1 sha) + yoke ff326a9d; ALSO set bashy internal/agentos/src_mount.go srcModulePins["yoke"] to ff326a9d's full sha.
+- Build + short unit tests for all three on a claimed gate lane, GOWORK=off, -count=1; `bashy mod drift` with no stale rows and a minimal bashy<->ycode cycle.
+- Baseline reds (any OTHER failing test name blocks): bashsharp go test ./... 44 FAIL identical to 08fabb33 (standalone builds of sibling cmd/bashy, cmd/bash); ycode -short TestHarnessStreamWaitsForAppendNotifications (08ee6df70b5d), and TestTUIOverPTY/TestTUIClearOverPTY only when lanes run in parallel (rerun idle); bashy -short TestCommonOptionsVocabularyReport (60d43cb7), TestEmbeddedAdaptersMatchSourceTree (01b745b8), TestDeskSkillDocumentedVerbsValid (fcfcd423). Compare by name.
+
+Step 2, Page leg: rebase the preserved Page leg (bashy branch s709-m4-page-leg, 773dfa09) onto the step-1 bashy; in the sandbox seed the owner's tool cache with the Go toolchain `bashy go` uses (offline, from the mounted Go SDK, binmgr layout <cache>/go/<version>/go) - test harness only. Website + Page legs green twice on the gate host in the official image; raw logs kept.
+
+Deliver commits (bashsharp, ycode, bashy, umbrella pins) in the workspace; push nothing; the conductor reviews and pushes in order. Trailers Sprint/Story/Story-ID + `Agent: <assignee>`.

@@ -3,14 +3,17 @@ id: b659aecc1daa
 kind: bug
 title: M6 shape verifier checks reuse the host's tool cache (BASHY_BIN_CACHE) like GOMODCACHE/GOCACHE
 seq: 742
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-25T06:41:16.812481Z
+assignee: codex-gpt6-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+closed: 2026-11-25T06:50:11.496188Z
+closed_by: claude-opus5.5
 ---
 
 Found by M4 (6ba1b4777931). Operator 2026-11-24: "file and do the right thing".
