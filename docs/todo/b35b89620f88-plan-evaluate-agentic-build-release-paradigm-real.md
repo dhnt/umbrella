@@ -3,7 +3,7 @@ id: b35b89620f88
 kind: spike
 title: 'Plan: evaluate agentic build/release paradigm — real-use HUAT, runtime workarounds, spec-first delivery (plan only)'
 seq: 744
-status: todo
+status: done
 priority: p2
 labels:
     - software-shaping
@@ -11,9 +11,12 @@ labels:
     - agents
     - docs
 created: 2026-11-25T07:07:39.446469Z
+assignee: claude-opus5.5
 sprint: 712
 sprint_id: fccece26-9d9b-585e-b7cf-bcc320028d1e
 sprint_title: 'Explore the agentic build/release paradigm: real-use shaping, live workarounds, spec-first delivery'
+closed: 2026-11-25T16:09:12.007575Z
+closed_by: claude-opus5.5
 ---
 
 PLAN ONLY — no product code, release behavior, or live HUAT is in scope for this story. Its deliverable is a reviewed recommendation and a proposed follow-on sprint/story split.
