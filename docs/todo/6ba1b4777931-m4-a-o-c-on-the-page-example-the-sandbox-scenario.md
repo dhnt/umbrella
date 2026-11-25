@@ -62,3 +62,7 @@ Deliver commits (bashsharp, ycode, bashy, umbrella pins) in the workspace; push 
 ## Delivery split (699 release manager, 2026-11-24 ~23:00 PST)
 
 Deliver Step 1 (pin propagation) as soon as it is green: commit it, record the gate result, announce on mb "709 ROUND READY" with the bashsharp/ycode/bashy/umbrella SHAs and the gate log path, so the conductor pushes it without waiting for the Page leg. Then do Step 2 on top. M4's Page leg goes to main only if green twice by 11-25 10:30 PST.
+
+## Outpost added to the round (2026-11-24 ~23:10 PST, agreed with the 699 RM)
+
+Order: bashsharp, outpost -> yoke ff326a9d, ycode, bashy (also repins outpost). Outpost baseline: go test -short on outpost main 6b4a08dd in the same lane/venue, excluding internal/agent/shell, taken before the candidate; compare by name. ROUND READY / DONE carries the umbrella gitlinks for outpost, bashsharp, ycode, bashy and a full-workspace `bashy mod drift` with no stale rows.
