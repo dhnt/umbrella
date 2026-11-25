@@ -144,6 +144,27 @@ each written in a language every agent and human already knows:
 
 Do not invent formats. If a standard language covers it, use it.
 
+## Packaging: a release is a skill
+
+Shapeware is a skill with a contract. A release is a skill folder (the
+`SKILL.md` format bashy already treats as canonical), so it travels through
+existing skill channels; there is no new package format.
+
+| Face | In the skill folder |
+|---|---|
+| skill + known issues | `SKILL.md` |
+| script | `scripts/*.bsh` |
+| ui | assets beside `SKILL.md` (restricted HTML/CSS, JSON data) |
+| features + acceptance | the `~~~feature` list plus `checks/` |
+| release class, `min-band`, critical | frontmatter `metadata:` |
+
+What the skill folder does not give, and shapeware still requires:
+- **Trust:** signing, effect caps (`contract.bsh`) and provenance.
+- **The trusted core:** critical features ship as prebuilt, verified binaries
+  that the skill references and verifies, never replaces.
+- **The shaping lifecycle:** field changes go through candidate → verify →
+  approve → undo. A skill on disk is never edited in place.
+
 ## Statuses
 
 - Feature: `tbd` (specified, not built) · `verified` (acceptance passes).
