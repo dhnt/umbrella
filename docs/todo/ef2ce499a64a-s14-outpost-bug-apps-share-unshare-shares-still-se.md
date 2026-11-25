@@ -3,7 +3,7 @@ id: ef2ce499a64a
 kind: bug
 title: 'S14 outpost bug: apps share|unshare|shares still send the pre-S619 {app, circle|email} body; move to the grant-rule form {app, circles[], groups[], emails[]}'
 seq: 305
-status: todo
+status: assigned
 priority: p1
 labels:
     - shaping
@@ -12,6 +12,8 @@ labels:
     - outpost
     - parity
 created: 2026-11-15T00:02:48.835468Z
+weave: 257
+assignee: codex-gpt6.2-sol
 sprint: 710
 sprint_id: 063b46d6-77e0-5d5b-8dc0-2fd08f8234a2
 sprint_title: 'Owner sharing: apps and suites to circles and members, public apps, invites that arrive'
@@ -43,3 +45,9 @@ Sprint 710 (owner sharing) is H1. The console path works; this restores CLI pari
 - Commit trailers: Sprint: 710 / Story: <title> / Story-ID: <id> plus your Agent trailer. Public repos: no host names, logins, IPs or home paths.
 - Do not deploy, tag or release anything. Submit with `bashy sprint submit` naming the commits and the test command + result.
 - Outpost lands on outpost main (push); the conductor bumps the umbrella pin.
+
+## H1 reproduction before the fix
+
+On Outpost's origin baseline with the dependency-only update (7231191), the CLI regression `GOWORK=off go test -tags fb_archives -short ./cmd/outpost -run '^TestAppsShareGrantRule$' -count=1` failed against yoke's cloudboxfake with `cloudbox: bad_request (400): body: json: unknown field "circle"`. S619 changed POST to strict `{app, circles[], groups[], emails[]}`; the CLI still sent `circle` or `email` and decoded singular response fields. Its email-based revoke therefore could not find the new rows. Existing mock tests accepted the obsolete shape.
+
+Outpost delivery refs in weave #257 are on its local `agent/weave-issue-257` branch. Dependency pins: `7231191`. Grant-rule CLI fix: `95250d4`. The conductor takes those commits into Outpost main and updates the umbrella pin.
