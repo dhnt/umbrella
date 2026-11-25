@@ -8,9 +8,9 @@ priority: p1
 labels:
     - collaboration-followup
 created: 2026-11-11T09:56:30.912325Z
-sprint: 710
-sprint_id: 063b46d6-77e0-5d5b-8dc0-2fd08f8234a2
-sprint_title: 'Owner sharing: apps and suites to circles and members, public apps, invites that arrive'
+sprint: 715
+sprint_id: a012b004-c4f7-5815-b743-69b7f122150e
+sprint_title: 'Owner sharing e2e acceptance (Sprint 710 follow-up): re-invite mail env binding, H6 green twice'
 ---
 
 Sprint 614 S9 shipped suites and circle shares (cloudbox 07411af server + console, yoke d0ba2a11 bashy suite, outpost ee1c3344 apps share --circle) verified at unit level and against the fake master only. Run once on the Linux test host with the existing cloudbox e2e harness against a satellite built from those commits: owner creates a named circle, a suite of two apps on two hosts, shares the suite with the circle; member in circle gets 200 on both apps, member outside 403, no credential 401; moving the member out of the circle and removing an app from the suite flip to 403 without re-share; console and CLI show the same suites/grants. Evidence tied to candidate commits.
@@ -36,3 +36,13 @@ Candidate: cloudbox b2bc5e0 (dev a9c0d79 + H6a a7299b5), outpost 6b4a08d, yoke 3
 Root cause: a test-harness defect, not owner sharing. Since bashy 62ee3c74 (2026-11-21), `bashy member` is a yoke adapter (internal/agentos/adapter_dispatch.go:156) that is built on first use, and the build downloads a Go toolchain. The e2e-multisat containers run with --network none, and the stage ships neither Go nor prebuilt adapters. Reproduced outside the harness in an offline container with bashy c450753f, 3535205f, 98551856 and b1d1f9bd: same failure. The last green `members` run on this harness (2026-11-20) predates the adapter change. Classified: test (venue/harness).
 
 Fix (test-only, cloudbox script/; allowed under the 699 train-1 cutoff): build the yoke adapters into the e2e stage at build time and point the containers at them (BASHY_ADAPTER_CACHE or the equivalent bashy mechanism), so the sandbox stays offline. Then rerun owner-sharing twice and user-complex once.
+
+## Gate run os-2 (2026-11-25, Linux test host): FAIL 14/15; moved to Sprint 715
+
+Candidate: cloudbox d318b8b (dev a9c0d79 + H6a a7299b5 + offline-adapter stage fix 64fe617), bashy 237211fd, outpost 6b4a08d, yoke ff326a9d; E2E_LOCAL=1, owner-sharing; 749 s, rc=1. Evidence on the gate host: /root/s710-h6/evidence/os-2/ (FAILURE.md).
+
+These checks passed: custom-circle suite grant, 200/403/401, suite add/remove, revoke propagation at the satellite and the outpost within the pull bounds, direct master grant + CLI unshare, CLI = console listing, and the public app answering anonymous and signed-in non-member visitors the same way.
+
+Failed: "re-invite delivers a second invitation to the pending member and CLI reports it". The mail capture got 0 deliveries, and the CLI printed "invitation mail NOT sent: mailgun: Post https://api.mailgun.net/... network is unreachable". Root cause (confirmed in code; PRODUCT defect): MAILGUN_API_BASE is neither in conf.BoundEnvKeys nor named in hub/config.*.sh, so viper ignores an env-only value and mail falls back to api.mailgun.net. Filed as cloudbox bug e2903321 in Sprint 715. The conductor's H6a review wrongly took the mapstructure tag as proof that the env override works.
+
+Operator 2026-11-25: on failure, file each failure as a new bug in a new follow-up backlog sprint, move H6 and H6a there, and end 710 at 6/8. Follow-up: Sprint 715 (uuid a012b004-c4f7-5815-b743-69b7f122150e). H6a commits are preserved on cloudbox origin branch sprint-715/h6a-owner-sharing-e2e (64fe617); they are not merged to dev. Harness speed: todo e21df12acf97 (after the 699 freeze); runs must finish in minutes.
