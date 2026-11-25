@@ -237,3 +237,7 @@ approves. Its known issues and tbd entries travel with it.
 - Shipping a `critical` feature as `tbd`, or with an open or workaround known
   issue; building or shaping a critical feature in the field.
 ````
+
+## Full exploration record
+
+All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.

@@ -287,3 +287,15 @@ Design of record for the `page` desk app (planning-only sprint, software-shaping
 ## group-shaping-coverage-matrix.md
 
 Sprint 685 story C2. One row per registered app and CLI-only tool (page, session, notepad, form, brainstorm, chart, viewer, whiteboard, film, video, board, table, notes, site, clips, files, klatch): artifact, who may write, guest door, shaping hook, bashy entry point and revision adoption, each with file and line evidence from the code; the verdict column is filled by the Sprint 699 I1 run. Links the standalone follow-up todos for the gaps that are not small (whiteboard, film/video storyboards, brainstorm shaped registration, table Linux-only). Includes the steering inventory: a shared-session directive reaches a weave run on another host but not a bashy chat session, no inbound A2A server is wired, and cross-outpost steering (X1, X2) waits for Sprint 679.
+
+## sprint-712-shapeware-exploration-2026-11-25.md
+
+Full record of the 2026-11-25 Sprint 712 exploration session, kept so the operator can revisit and finalize it later. It covers:
+- the reverse-SDLC thesis (field shaping loop; fix then use; TBD features built on demand)
+- the shapeware model (faces in standard languages; delivery channels; statuses; the release spectrum from requirements to traditional; critical features)
+- UI as restricted semantic HTML/CSS alongside the converter path, and meshing with the web through companion files
+- the operator decisions D1–D11
+- four dev-box experiments with their findings: the UI fence, the hello-world SDLC walkthrough, the two-sense visual/audio rendering, and fence-language support
+- the todos filed and the open questions
+
+The appendices hold the experiment sources. The skill draft itself lives on story b35b89620f88.

@@ -129,3 +129,4 @@
 - `handoff-sprint-694.md` — Sprint 694 handoff: rc.40 published as -dev only (tier FAIL, Windows fix 802c5f40 on main); rc.41 recipe, legs to rerun, venues, traps, carry-over stories.
 - `plan-sprint-692-release-thin-bashy.md` — Sprint 692 plan of record (operator rescope 2026-11-22): release v1.0.0-rc.40 as the thin bashy core (bsh + dispatcher + internal verbs) with every other command an independently built shapeable binary; done-when, story table, fleet waves, rules
 - `group-shaping-coverage-matrix.md` — Sprint 685 C2: per-app group-shaping coverage matrix (17 apps and tools) and code-verified steering inventory; verdicts pending Sprint 699 I1.
+- `sprint-712-shapeware-exploration-2026-11-25.md` — Sprint 712 exploration record (not final): reverse-SDLC thesis, shapeware model, decisions D1–D11, experiments (UI fence, hello-world SDLC walkthrough, two-sense, fence languages), filed todos, open questions; sources in appendices
