@@ -1,5 +1,14 @@
 # Sprint 683: owner publishing of a shaped version (plan)
 
+**Parked (won't do), operator 2026-11-24.** A/O/C is the business
+workflow supported now (docs/access-tiers.md; Sprints 706 and 709). It serves
+one version on the owner's line, so it uses no offer, adopt or owner release,
+and rollback is the owner's undo and history. The 709 conductor and the
+author of docs/design-shape-offer-audience.md agreed. O1 and O2 are won't
+do; D4 `90f03f54c150` is a backlog bug. The A/O/C work on `desk/page` stays
+with the A/O/C sprint. Reopen from this plan only if publishing to
+per-person copies becomes a real need. The MVP below is kept as the record.
+
 Rescoped to the MVP at the operator's KISS review, 2026-11-24. The card and
 its stories are authoritative; this page is the map. Planning only until
 assigned.
