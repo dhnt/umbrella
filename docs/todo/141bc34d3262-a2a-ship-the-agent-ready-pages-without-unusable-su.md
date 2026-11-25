@@ -3,17 +3,18 @@ id: 141bc34d3262
 kind: feature
 title: 'A2a Ship the agent-ready pages without unusable surfaces: no /mcp and no ''bashy site attach'' advertising until both work'
 seq: 739
-status: assigned
+status: done
 priority: p0
 labels:
     - release
     - hosted-plane
 created: 2026-11-25T06:08:18.905704Z
-weave: 265
 assignee: codex-gpt6.2-astra
 sprint: 699
 sprint_id: f30c730a-f8ad-57ba-9122-6f1c2a1cd97a
 sprint_title: 'Release train 1: one hosted-plane deploy for Sprints 682/697 + live verification'
+closed: 2026-11-25T07:41:30.665091Z
+closed_by: claude-opus5.5
 ---
 
 Operator rule 2026-11-24: every released feature is complete and usable; ship the complete part, put the rest in a follow-up sprint. Operator APPROVED A2a on 2026-11-25 (699 decisions form).
