@@ -40,7 +40,9 @@ Windows binaries (run 4 cross-build): `bashy.exe` `69381b90ba931e9316388bb4d9e2b
 - **Venue reds** in run 2 and run 3, reproduced green alone: `test-startup-linux` under concurrent load; govulncheck OOM under the 7 GiB container cap; `pkg/llmbudget` meter lock 5 s timeout under load.
 - **macOS QA host** (story `eca66cccda36`, venue): uptime past the 49.7-day TCP timer wrap froze TIME_WAIT and refused outbound connects. Rebooted with operator approval; TIME_WAIT 47, outbound HTTPS 200.
 
-## Open
+## Release
 
-- Release publication (one `release.yml` run), three-lane tier verdict, promotion on the operator's go.
-- Hosted release-registration webhook returns 403 (pre-existing, private tracker); it runs after publication and does not undo it.
+- `v1.0.0-rc.41-dev`: one release.yml run, 45641994904, published 34 assets as a pre-release (target 0665ffb3).
+- Tier verdict `release/tier-verdicts/0665ffb3.json` (bashy d14a9c7c): PASS on Linux, Windows and macOS. QA refs `refs/qa/v1.0.0-rc.41/{linux,darwin,windows}` and umbrella tag `candidate/bashy-v1.0.0-rc.41` (cd977f0e3).
+- Promoted on the operator's go, 2026-11-25 09:33 PST: bare tag `v1.0.0-rc.41` -> 0665ffb3. promote.yml run 45665724813 created the Latest release with 28 assets (the 6 `-dev`-versioned Linux packages are not promoted, as with rc.37). Its `checksums.txt` is identical to the -dev release's (`f44bc45b…`).
+- Release registration failed in both runs: the script required a darwin/amd64 outpost, which is not built (story `a0f0c4aadb31`). Fixed after promotion in bashy 33eb4197 with a regression test. rc.41 is published but not registered, so outposts do not auto-update to it.

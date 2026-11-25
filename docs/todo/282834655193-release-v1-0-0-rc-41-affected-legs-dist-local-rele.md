@@ -3,7 +3,7 @@ id: "282834655193"
 kind: task
 title: 'Release v1.0.0-rc.41: affected legs, dist, local release gate receipt, -dev tag, one release.yml run, tier verdict, QA refs, promote on the operator''s go'
 seq: 624
-status: assigned
+status: done
 priority: p0
 labels:
     - release
@@ -12,6 +12,8 @@ assignee: claude-opus5.5
 sprint: 719
 sprint_id: 049a8467-4736-5eab-9ce8-52274347d7a0
 sprint_title: Release bashy v1.0.0-rc.41 (thin bashy; rc.40 never promoted)
+closed: 2026-11-25T17:42:18.844547Z
+closed_by: claude-opus5.5
 ---
 
 Owner: conductor claude-fable5.1 (no worker). Runs ONLY after the candidate gate 458628c0 is green on the frozen tip. Steps per bashy/docs/release-runbook.md and the bashy-release-promotion memory: (1) CHANGELOG.md entry for v1.0.0-rc.40 with the public-claim checks (docs/public-claims-evidence.md); (2) scripts/local-release-gate.sh in the official image on a claimed gate-host lane, GOWORK=off, strict license + all vulnerability profiles, NO override (D2) - a red finding blocks; (3) record the receipt as a Git note under refs/notes/bashy-local-gates, push it, note the immutable notes commit; (4) push tag v1.0.0-rc.40-dev at the frozen commit, dispatch release.yml ONCE with evidence_commit; (5) tier verdict: native tier smoke on the three QA lanes (Linux lane, Windows gate host, macOS QA host), commit release/tier-verdicts/<c8>.json with umbrella tag candidate/bashy-v1.0.0-rc.40; (6) refs/qa/v1.0.0-rc.40/{linux,darwin,windows}; (7) on the operator's typed go: bare tag v1.0.0-rc.40 + promote.yml with the pinned tier_verdict URL; checksums.txt identical to -dev. No retries on half-diagnosed failures: root cause first. Hosts by role only.
@@ -64,3 +66,5 @@ served by a scratch rc.41 outpost on loopback. The podman machines on the
 Windows lane and the macOS QA host were started for the run and stopped after.
 Scratch outposts were stopped on all three. Adapter cold builds on Windows
 pass with no adapter cache set, so the rc.40 product defect is fixed.
+
+**Promoted (2026-11-25 09:33 PST), on the operator's go:** bare tag `v1.0.0-rc.41` (annotated) points at 0665ffb3. promote.yml run 45665724813: QA-ref gate, eligibility with tier verdict d14a9c7c, signed manifest and Darwin provenance verification, and byte-identical release creation all passed. The release is Latest with 28 assets; the 6 `-dev`-versioned Linux packages are not promoted, by design (as with rc.37). The promoted `checksums.txt` sha256 f44bc45b… is identical to the -dev release's. Only "register stable product release" failed (story a0f0c4aadb31, fixed after promotion in bashy 33eb4197). CHANGELOG rc.41 Security entry added in the same commit.
