@@ -302,3 +302,7 @@ approves. Its known issues and tbd entries travel with it.
 ## Full exploration record
 
 All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.
+
+## Handoff
+
+Resume from `docs/handoff-sprint-712-shapeware-spec.md`. The next step is to define the shapeware spec layout and structure.

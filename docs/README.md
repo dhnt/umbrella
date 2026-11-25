@@ -299,3 +299,11 @@ Full record of the 2026-11-25 Sprint 712 exploration session, kept so the operat
 - the todos filed and the open questions
 
 The appendices hold the experiment sources. The skill draft itself lives on story b35b89620f88.
+
+## handoff-sprint-712-shapeware-spec.md
+
+Handoff at the end of the 2026-11-25 Sprint 712 exploration session. It covers:
+- what to read first (story b35b89620f88 with the shapeware skill draft, then the exploration record)
+- the current state (backlog sprint, pilot todo, four bug todos, the shapeware name and GitHub org; nothing left running)
+- the next task: defining the shapeware spec layout and structure, meaning the skill-folder layout, frontmatter metadata keys, the feature-list and known-issue schemas, the checks/ contract, UI assets and the trusted-core reference
+- which decisions are settled, the existing conventions to inspect and reuse, the rules for the next session, and the open questions that bear on the spec
