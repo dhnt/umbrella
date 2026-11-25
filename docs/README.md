@@ -317,6 +317,16 @@ The operator-approved master execution plan for Sprint 712 (2026-11-25). It cove
 - Phase 2: the recommendation doc that completes the story; Phase 3: operator review and close; Phase 4: proposed follow-ons
 - non-goals and verification
 
+## shapeware-spec-v0.md
+
+The draft shapeware spec v0 from Sprint 712 (2026-11-25): what a shapeware release is on disk. It covers:
+- the governing rules: a superset of an Agent Skill folder (D15), defaults for missing parts (D16), and a self-describing `SKILL.md` with `metadata.type: shapeware` and a standard run block (D17)
+- one layout for the repo and the skill: skill directory names as defaults, `metadata` path keys where a repo already uses those names, and a zero-touch `skills/<name>/` alternative
+- the frontmatter keys, the known-issue and feature schemas, the checks contract, the effect cap as the verifier reads it, UI assets and the trusted core
+- versions and upgrades mapped onto the existing `bashy shape` refs, adopt and undo; the defaults table; the computed release class; and enabling an existing repo
+- what code was inspected, the validation results (including two runs by agents with no shapeware context) and the findings for follow-on
+- the hello example and the lint and release-class skill-scripts, verbatim, in the appendices
+
 ## sprint-719-evidence.md
 
 The one shared evidence record for the bashy v1.0.0-rc.41 candidate (bashy 0665ffb3). It lists each gate leg with its run, commit, result and digests (build, `bashy dag test`, sealed Bash gate, Linux and native-Windows dispatch e2e, shaping smoke, dist, local release receipt), proves why the sealed Bash gate evidence from an earlier commit still applies, and records the findings with their root causes (desk modules, advisories, the quic-go build break, venue reds, the macOS QA host clock wrap). Hosts are named by role.
