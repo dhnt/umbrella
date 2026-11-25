@@ -82,11 +82,52 @@ Dependency direction (one way only):
    prototype is removed (no duplicate path).
 6. Contracts for `form` and `viewer` recorded from their reference builds.
 
+## Rescope (operator, 2026-11-25, at the Sprint 721 close)
+
+Sprint 721's broad measurement (show/read, known issue, TBD, drift and the
+other ladder rungs) is **deferred**. Sprint 722 does two things, in order:
+
+- **Phase A: build `dhnt/conform`** (stories 1–4 above, then story 6 for
+  `form`). The judge has to exist before the experiment.
+- **Phase B: one experiment, "the spec reproduces the app".** An agent gets
+  only the spec (`CONTRACT.md` plus SKILL.md and `features.yaml`, no source)
+  and writes the source. conform judges the result behaviourally: the CLI
+  contract by assertion name, plus the UI (DOM inventory and a few real
+  interactions). The reference is bashy's `examples/desk/form`. Agents are the
+  cheapest L3 binding per vendor (claude-sonnet5, codex-gpt6-luna,
+  agy-gemini3.8-flash, muse-spark1.2, opencode-glm-5.3-flash), n=3 each.
+
+**Design fixes from the codex-gpt6-astra review** (full text: the Sprint 721
+viewer book, page 5):
+
+- Fix the primary outcome and accounting before any run: success, calls,
+  underlying operations, tokens, latency and failures.
+- Identical conditions in every run; fresh isolated state; randomized order;
+  every attempt kept.
+- Hidden parameterized cases beyond the visible contract, including UI
+  interactions and direct API checks; mutants include UI failures.
+- The grader, the expected results and approvals stay outside the agent's
+  reach.
+- Narrow claims: report the exact models and runs; "observed across these
+  runs", not universal.
+
+**Inputs:**
+
+- The contract prototype and its grader: agent-bench branch
+  `salvage/s721-p2b-wip` (a6a90e23), with `packs/shapeware/t4-lifecycle`
+  (`CONTRACT.md`, grade.py, references) and `grader_lib.py`.
+- The equivalence research report (Sprint 721 viewer book, page 3).
+- The `form` shapeware layout on bashy main.
+
+**Moved here from 721:** bashy todo fd7a7738 (viewer defects), which feeds
+story 6's viewer contract.
+
 ## Dependencies
 
-- The Sprint 721 pilot measurement settles the contract format and scoring
-  first.
-- Spec section 19 stays "proposed" until that evidence exists.
+- The contract format starts from the Sprint 721 prototype
+  (`salvage/s721-p2b-wip`).
+- Phase B needs Phase A's runner, walker and the `form` contract.
+- Spec section 19 stays "proposed" until Phase B's evidence exists.
 
 ## Acceptance
 
