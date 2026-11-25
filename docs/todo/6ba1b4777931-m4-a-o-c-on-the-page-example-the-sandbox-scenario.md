@@ -70,3 +70,7 @@ Order: bashsharp, outpost -> yoke ff326a9d, ycode, bashy (also repins outpost). 
 ## Retarget to yoke c78fb76d (699 RM, 2026-11-24 ~23:30 PST; operator included 708's comment-only commit)
 
 When yoke main is fast-forwarded to c78fb76d (708 bug 3230 comment, 15 lines in pkg/browser/internal/cdpactions/actions.go, child of ff326a9d): redo go get/tidy to c78fb76d in bashsharp, outpost, ycode and bashy (cycle re-closed), set bashy src_mount.go srcModulePins["yoke"] to c78fb76d's full sha, re-run the build for all four repos plus `go test ./pkg/browser/...` in yoke and bashy; record the existing short-test evidence as reuse (comment-only delta). ROUND READY then names c78fb76d.
+
+## Round merged; Page leg push conditions (699 RM, 2026-11-24 ~23:55 PST)
+
+The pin round is on mains (yoke c78fb76d, bashsharp c86810bc, outpost 37193456, ycode ceb3b2de, bashy b8cce989, umbrella 02521dda5; drift 0 stale). The Page leg (bashy test-only, on top of b8cce989) pushes only if green twice by 11-25 10:30 PST AND after asking the 699 RM; the push must include the umbrella gitlink bump and the ycode->bashy re-close (ycode pinned to the new bashy), with `bashy mod drift` showing only the minimal cycle. Otherwise it waits for train 2.
