@@ -299,6 +299,15 @@ approves. Its known issues and tbd entries travel with it.
 - Building a feature in the field with an agent below its band floor.
 ````
 
+## Decisions D15–D17 (operator, 2026-11-25 plan session)
+
+The master execution plan (`docs/sprint-712-master-plan.md`) was approved with three operator rulings for the spec step:
+- **D15 superset:** a shapeware app folder is a superset of an Anthropic Agent Skill folder. Every shapeware release is a valid Agent Skill that any loader takes unchanged. Shapeware extras go only under frontmatter `metadata` (string values) and in extra files, using the standard `scripts/`, `assets/` and `references/` directories where they fit.
+- **D16 defaults:** missing parts take documented defaults. Only `SKILL.md` is required.
+- **D17 self-describing:** `SKILL.md` declares `type: shapeware` (`metadata.type` plus a body line) and carries a fixed standard "How to run this shapeware app" block, linking a bundled `references/shapeware.md`. Any agent can then run, check, show and build the app with no extra advertisement.
+
+The operator also asked how versions and upgrades work. The recommendation is in the master plan (spec §8): four independent versions, semver meaning, stable feature and known-issue ids, and an upgrade that rebases local variants through `bashy shape`.
+
 ## Full exploration record
 
 All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.
