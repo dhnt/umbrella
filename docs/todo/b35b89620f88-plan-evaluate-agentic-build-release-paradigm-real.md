@@ -139,7 +139,7 @@ each written in a language every agent and human already knows:
 |---|---|---|
 | script | Bash# | what machines run |
 | skill | Markdown (`~~~skill`) | how an agent uses it, plus **Known issues** |
-| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples |
+| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples, optional `critical: true` |
 | ui | HTML/CSS (restricted semantic profile), JSON/YAML for data, TS for logic | what a human sees and hears (`@media speech` for audio) |
 
 Do not invent formats. If a standard language covers it, use it.
@@ -150,8 +150,33 @@ Do not invent formats. If a standard language covers it, use it.
 - Known issue: `open` · `workaround` (bounded workaround documented) ·
   `fixed` (acceptance example added and passing) · `expired` (past its review
   date: reopen and escalate).
-- Release class: `verified`, `verified with known issues`, `verified with tbd`.
-  Computed from the two lists above, never declared by hand.
+- Release class: `requirements release` (all tbd), `verified with tbd`,
+  `verified with known issues`, `verified` (traditional). Computed from the
+  two lists above, never declared by hand.
+
+## Release spectrum
+
+A release can sit anywhere between pure requirements and a fully built app:
+
+    all tbd ---------------- mixed ---------------- all verified
+    requirements release     verified with tbd      traditional release
+    specs + skill + tests    some built, the rest   everything built and
+    agent builds on use      built on demand        checked up front
+
+Every point is a valid release. Iterate: each round of field use and
+upstreaming raises the verified share. Choose the point per feature, not per
+product: shipping as tbd costs little up front and more at first use; built
+features cost the reverse.
+
+## Critical features
+
+Mark a feature `critical: true` when a wrong or missing implementation could
+cause harm that is hard to undo: authentication, payments, sandboxing,
+destructive or irreversible actions, regulated data. A critical feature:
+- is never shipped as `tbd` and is never built or shaped in the field;
+- blocks the release while it has an `open` or `workaround` known issue;
+- belongs to the trusted core and is prebuilt and verified in every release,
+  at any point on the spectrum.
 
 ## Rules by event
 
@@ -188,7 +213,8 @@ A field failure follows rule 3. A field success needs no record.
 
 ### 6. Release
 1. Run all acceptance: every `verified` feature must pass; `tbd` is reported,
-   not failed.
+   not failed. Every `critical` feature must be `verified` with no open or
+   workaround known issue, or the release is blocked.
 2. Compute the release class; generate the notes from the feature list and
    the known issues.
 3. Tag. One release, one tag.
@@ -208,4 +234,6 @@ approves. Its known issues and tbd entries travel with it.
   recorded.
 - Marking anything `verified` or `fixed` without a passing acceptance run.
 - New formats where a standard language exists.
+- Shipping a `critical` feature as `tbd`, or with an open or workaround known
+  issue; building or shaping a critical feature in the field.
 ````
