@@ -9,10 +9,9 @@ labels:
     - communications
     - software-shaping
 created: 2026-11-12T16:17:25.784136Z
-sprint: 620
-sprint_id: 91b5eb56-f45a-5905-acd4-c67eddfb7e69
-sprint_title: 'Communications: two-way human/agent access (CLI + web UI, instant switch)'
 ---
+
+Deferred from Sprint 620 on 2026-11-25. This is an unscheduled communications proposal. The previous design below is retained for review if the channel is selected. Current shaping scope is in docs/comms-strategy.md.
 
 Implement two-way SMS in `bashy/examples/comms/sms/` via the official Twilio Messages REST API with polling inbound (no public webhook required), following `[[kb:extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]]` (relates `c512b342864d`). Planned worker: muse-spark1.3.
 

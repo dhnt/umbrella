@@ -9,10 +9,9 @@ labels:
     - communications
     - software-shaping
 created: 2026-11-12T16:17:25.922337Z
-sprint: 620
-sprint_id: 91b5eb56-f45a-5905-acd4-c67eddfb7e69
-sprint_title: 'Communications: two-way human/agent access (CLI + web UI, instant switch)'
 ---
+
+Deferred from Sprint 620 on 2026-11-25. This is an unscheduled communications proposal. The previous design below is retained for review if the channel is selected. Current shaping scope is in docs/comms-strategy.md.
 
 Wave-3 channels (WhatsApp Cloud API, Microsoft Teams, Google Chat) are official but require a public HTTPS webhook and business/tenant registration. Record the architecture decision on whether satellite/outpost app share should host a per-owner webhook ingress under grants or defer, evaluated through the "rod, not fish" and software shaping principles in `[[kb:extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]]` (relates `5e498abf46ae`, `ad1db13b585f`, `42f89d1069ee`). Decision only. Planned worker: claude-opus5.5.
 

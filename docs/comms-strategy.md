@@ -1,3 +1,42 @@
+# Sprint 620 — Software shaping through Cloudbox from bashy
+
+Revised 2026-11-25. Sprint 620 is in backlog. Its two open sprint stories cover a terminal shaping session and resuming that session. The November 12 communications design is preserved below as historical research.
+
+## The first shaping session
+
+An owner has already shared a shaping-enabled website through Cloudbox. From a bashy client, a member with the app’s shape grant asks to change a label on that site. The member gets a candidate ID, the proposed text diff and the verifier result. The owner can review that same candidate from the terminal, approve the exact change and inspect the active revision. A second authorized client can pick up the task by reference. Opening the isolated visual preview is optional. Initial Cloudbox sign-in and satellite admission are prerequisites where required.
+
+| Step | Existing interface to reuse | What sprint 620 must establish |
+|---|---|---|
+| Identify the caller and select the shared site | Cloudbox account identity, satellite admission and the owner’s per-app grant. Sprint 709 supplies the bashy MCP connection to the shared site. | Show how the terminal client selects the intended app and host. Check the grant on each operation, including after reconnect. |
+| Make and inspect a wish | Site MCP supports wish, verify and preview. Bashy exposes candidate status, diff and history. | Record the supported invocation for each step and how the client obtains a readable diff and verifier result remotely. Identify any missing mapping. A preview URL alone cannot satisfy text review. |
+| Decide and undo | The owner’s shaping service verifies and activates an approved candidate. The gateway separately binds gated actions to the approval digest. | Keep the active revision unchanged on rejection, failed verification or stale input. On approval record the new revision and show that undo restores the previous one. |
+| Resume | The Cloudbox gateway supports task status, reply and digest-bound approval. The shared app owns the candidate and revision. | Record the task reference, candidate and base revision when applicable. After reconnect, resolve the same work with fresh authorization. Retrying an acknowledged action must produce only one effect. |
+
+The shared website is the reference fixture. Sprint 646 owns the gateway and cross-client task protocol. Sprint 706 defines app relationships and grants. Sprint 709 verified the website member pull/push path in its sandbox. Sprint 714 owns the separate Page example. An account with no paired host can use hosted desktop properties within its allowance. An owner-hosted code candidate stays on the owner’s host, including when it is offline. See [the gateway contract](vendor-chat-gateway-mvp.md), [access tiers](access-tiers.md) and [the member workflow](sprint-709-master-execution-plan.md).
+
+## Story decisions
+
+| Existing story | Disposition | Reason |
+|---|---|---|
+| C1 · `1aae9e0e3ac5` · Communications PWA | Rescope to the bashy shaping session | The terminal needs a readable proposal and decision path. Building four communications pages would leave that need unanswered. |
+| C2 · `4bf3015237d1` · Clipboard and links | Rescope to authenticated task and candidate handoff | The useful part of switching clients is recovering the exact pending decision. The existing task ID provides a starting point. |
+| C3 · `46433a7796d3` · ntfy | Defer phone notifications | Polling the task covers recovery. Older plans referring to Sprint 620 alerts have no delivery commitment here. |
+| C4 · `8d4a91d1c1b5` · Email | Defer email send, poll and reply | A mailbox adapter can carry a reference later if there is demand. |
+| C5 · `73d6c801c709` · Klatch | Defer topic continuation | C2 first establishes what an authorized client can resume. |
+| C6 · `c5ca9e3369d5` · Chat listeners | Defer Discord, Slack and Telegram listeners | The existing gateway already supplies a text client interface for the pilot. |
+| C7 · `626893f39497` · SMS | Defer SMS transport | The shaping session has no dependency on a telephone number or carrier. |
+| C8 · `cd9d0870e0a2` · Webhook ingress | Defer the ingress decision | No selected operation requires a provider callback. |
+
+## Future acceptance evidence
+
+Using sandbox accounts, capture the candidate ID, base revision, text diff, verification result and active revision for C1. Show one scoped member proposing and an owner deciding. Also show an ungranted member’s request leaving the app unchanged, a refused member approval and a stale candidate requiring fresh verification. For C2, disconnect after submitting a wish, resume from a fresh authorized client, and observe the same decision and final revision. Repeat the resume after revocation and confirm that it discloses no protected content. Reuse earlier evidence for matching steps and identify gaps against the exact public interface. Sprint 620 is a plan at this review.
+
+---
+
+<details>
+<summary>Historical communications proposal from November 12, 2026</summary>
+
 # bashy communications strategy: humans and agents, two ways
 
 Status: strategy and plan only, reviewed 2026-11-12. No code. The sprint card
@@ -266,3 +305,5 @@ operator starts it.
 4. The user answers. The agent continues on the outpost.
 5. The user taps Copy on the agent's reply and pastes it into the WeChat thread.
 6. Later, at a Windows desktop, the user opens the same conversation in a browser, or an agent runs `bashy comms link open <ref>`. Same room, same context.
+
+</details>

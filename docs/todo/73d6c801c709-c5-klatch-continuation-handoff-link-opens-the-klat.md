@@ -9,10 +9,9 @@ labels:
     - communications
     - software-shaping
 created: 2026-11-12T16:17:25.518672Z
-sprint: 620
-sprint_id: 91b5eb56-f45a-5905-acd4-c67eddfb7e69
-sprint_title: 'Communications: two-way human/agent access (CLI + web UI, instant switch)'
 ---
+
+Deferred from Sprint 620 on 2026-11-25. This is an unscheduled communications proposal. The previous design below is retained for review if the channel is selected. Current shaping scope is in docs/comms-strategy.md.
 
 Wire handoff-link continuation into Klatch (`bashy/examples/comms/` + `bashy/examples/klatch/`) so opening a C2 handoff link resolves and joins the Klatch topic linked to the meet room, following `[[kb:extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]]`. Depends on S520.2 `e7f2d0be4fd1` (Klatch group <-> meet room) and benefits from S519.3 `ea31ee9674f6` push relay and S519.4 `f352e5847876` Android; do not duplicate them. Planned worker: claude-opus5.5.
 

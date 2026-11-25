@@ -9,10 +9,9 @@ labels:
     - communications
     - software-shaping
 created: 2026-11-12T16:17:25.389209Z
-sprint: 620
-sprint_id: 91b5eb56-f45a-5905-acd4-c67eddfb7e69
-sprint_title: 'Communications: two-way human/agent access (CLI + web UI, instant switch)'
 ---
+
+Deferred from Sprint 620 on 2026-11-25. This is an unscheduled communications proposal. The previous design below is retained for review if the channel is selected. Current shaping scope is in docs/comms-strategy.md.
 
 Implement two-way email in `bashy/examples/comms/email/` via the `himalaya` CLI (MIT/Apache-2.0) as a sha256-pinned download for macOS, Windows, and Linux, following `[[kb:extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]]` and `[[kb:gmail-setup-send-and-verify]]` (relates `6bdc6f81ca48`). Planned worker: opencode-glm-5.3.
 

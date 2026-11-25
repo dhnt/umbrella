@@ -9,10 +9,9 @@ labels:
     - communications
     - software-shaping
 created: 2026-11-12T16:17:25.647373Z
-sprint: 620
-sprint_id: 91b5eb56-f45a-5905-acd4-c67eddfb7e69
-sprint_title: 'Communications: two-way human/agent access (CLI + web UI, instant switch)'
 ---
+
+Deferred from Sprint 620 on 2026-11-25. This is an unscheduled communications proposal. The previous design below is retained for review if the channel is selected. Current shaping scope is in docs/comms-strategy.md.
 
 Build the shared channel-agnostic listener pipeline `bashy/examples/comms/lib/listen.bsh` and thin per-channel skill-scripts for Discord, Slack, and Telegram (`bashy/examples/comms/{discord,slack,telegram}/`), giving the existing `yoke/pkg/feed/adapters` (`Listen`/`Poll` and `Send`) a production caller into `bashy meet dm`, following `[[kb:extend-bashy-small-verbs-bash-skill-scripts-shaping-hooks-and-th]]`. Graduation candidate for `bashy feed listen`. Planned worker: agy-gemini3.8-flash.
 
