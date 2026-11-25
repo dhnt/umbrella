@@ -3,18 +3,19 @@ id: e16cbb29891a
 kind: bug
 title: 'mcp connect: never send the member''s account token to the satellite; use a per-session attenuated child token'
 seq: 733
-status: assigned
+status: done
 priority: p1
 labels:
     - shaping
     - access-tiers
     - security
 created: 2026-11-25T04:03:44.409966Z
-weave: 258
 assignee: codex-gpt6-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
+closed: 2026-11-25T04:33:24.91291Z
+closed_by: claude-opus5.5
 ---
 
 Follow-up to Sprint 709 M1 (9a05b486f0b3), operator request 2026-11-24 ("fix it").
