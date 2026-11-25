@@ -347,3 +347,17 @@ Plan for `dhnt/conform`, a public Go module holding the invariant suite behind s
 ## handoff-sprint-722-conform.md
 
 Warm handoff written at the Sprint 721 close for the conductor of Sprint 722. It gives the reading order (conform plan, spec section 19, the 721 thread, the 722 card), the operator's rules for 722, the inputs ready for Phase A (the contract prototype on an agent-bench salvage branch, the shapeware pack, the form reference in the v0.1 layout), what 721 delivered, the todos carried forward, and venue notes learned during the sprint.
+
+## conform-phase-b-protocol.md
+
+The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accounting cannot be tuned after seeing results. It defines:
+
+- the question and the narrow claim;
+- the five subject bindings, with n=3 each; no subject touches conform in Phase A;
+- the primary outcome: a per-run PASS when the conform verdict is PASS on all three layers (the visible CLI contract, hidden parameterized CLI cases, and the UI inventory plus interactions and JSON API checks);
+- the secondary measures, including the visible-hidden gap as an overfitting signal;
+- the accounting kept for every attempt, failures included;
+- identical isolated conditions and integrity: the grader and the hidden cases live outside the agent's reach, in the private docs repository;
+- the reference, mutant and null controls;
+- the rerun rules (venue failures only);
+- the batches and the viewer-book report.
