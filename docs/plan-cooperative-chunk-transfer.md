@@ -2,18 +2,14 @@
 
 Sprint: **657**. Sprint-ID: `0060bff8-31f3-58f8-815c-ce48e79d1e06`.
 
-## Status and handoff
+## Status
 
-Planning-only handoff, approved in conversation on 2026-11-17. The operator
-requested filing sprint work and a clean exit, not implementation. Keep the
-sprint in backlog; do not launch workers, acquire a conductor lease, publish a
-release, provision infrastructure, or start downloads as part of filing it.
+Sprint 657 closed as **won’t do** on 2026-11-25. For the primary use case,
+clients on a LAN can download artifacts directly from the satellite or the
+owner’s outpost acting as the artifact server. All seven stories closed as
+`wontfix`. The design below preserves the original proposal.
 
-No product code or dependency pins were changed during planning. The discovery
-and integration facts below were inspected in the existing source; the new
-transfer protocol and its acceptance tests have not been implemented or run.
-
-## Outcome
+## Proposed outcome
 
 Provide one embedded, pure-Go chunk-transfer engine for files, directories,
 and bashy releases. Fetch an authenticated manifest first, reuse local data,
