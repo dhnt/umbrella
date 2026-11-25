@@ -17,3 +17,7 @@ Seen 2026-11-24 by the Sprint 710 conductor on the gate host (Linux test host, W
 - TestSrcPinsMatchLinkedModules: bashy's recorded src pin for yoke disagrees with go.mod. It was already stale before 710's bump. Suspected origin: a yoke pin bump that did not update the src-pin record (check 709's c450753f and earlier).
 The fourth red in the same run, TestEmbeddedAdaptersMatchSourceTree, is tracked separately as todo 01b745b8.
 Bisect each against the last green gate evidence before changing goldens.
+
+## Triage by the Sprint 709 conductor (2026-11-24)
+
+TestSrcPinsMatchLinkedModules and TestSkillHelpGoldens/mcp are 709's (M1 moved bashy's yoke pin and the `bashy mcp` usage without updating src_mount.go and testdata/skillhelp/mcp.skill); root cause and fix are tracked as 709 M5. TestCommonOptionsVocabularyReport (697 fetch --user-agent) stays here.
