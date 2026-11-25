@@ -27,3 +27,5 @@ Bound: at most 3 rounds per example; then stop, record the open guesses as spec 
 Raise the band later: L3 is the campaign's floor. D13's target (USING an app works for low-end local models, L1) is checked by the P2 low-end pack, not by this campaign.
 Output: every point where a converting model guessed or got stuck becomes a spec issue. The spec moves from the v1.0 draft to v1.0. Absorbs bashy ae527623 (per-category pilots).
 Plan as its own sprint, reviewed with the operator before it starts (it is a mass change: a written plan with scope, owners, budget and rollback first).
+
+QA seal (operator, D23; spec §18 proposed for v0.2): each converted example ends with its agent-usability seal. qa.json is written by the QA runner, and SKILL.md carries metadata.agent-requirements, e.g. "L3+; verified <date> with <vendors>". The campaign's matrix IS the QA standard, so every converted example ships sealed.

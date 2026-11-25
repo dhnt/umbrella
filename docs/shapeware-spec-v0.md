@@ -393,6 +393,35 @@ All four keep the core of the design and the no-go for scale. The operator accep
 | g6 | GLM | Digest checked against the installed `shaped.json`; signing in the scale gate (§9) |
 | D21 | operator | Minimal lifecycle in `dag.md`: `source`, `build`, `test`, `install`, `run` (§5a) |
 
+## 18. Agent-usability QA and the seal (proposed for v0.2, operator D23)
+
+A shapeware app states what agent it needs, the way an app states the disk and memory it needs. The statement is **measured, never declared**, like the release class.
+
+- **The QA run** uses the dogfood method (D22) as the standard. A fixed task pack runs on the release: make sure it works (`build`, `test`), use it, hit a known issue, and build a tbd feature in a work copy graded by `candidate.bsh`. It runs cold, with no hints, by one model per vendor at a band.
+- **Passing a band** means that in one round, every tested model at that band succeeds on the first attempt:
+  - no FAIL and no forbidden move
+  - no probing outside the run block and the card
+  - zero guesses
+  - at least 3 vendors at that band (default)
+  The lowest band that passes is the app's measured `min-band`.
+- **The seal** is the QA record, `qa.json`. It is written by the QA runner, never by hand, and protected like `checks/`. It holds:
+  - the spec and app versions and the task pack version
+  - the band
+  - per model: vendor, model, band, result, calls and guesses
+  - the date and an expiry
+  `SKILL.md` carries a one-line summary in `metadata.agent-requirements`, for example `"L3+; verified 2026-11-25 with codex, agy, muse (3 vendors)"`. The lint checks that it agrees with `qa.json`.
+- **The seal expires:**
+  - on any change to `SKILL.md`, the card, `dag.md`, `features.yaml` or `scripts/`
+  - when a listed model retires
+  - on its date
+  An expired seal shows as "unverified for agents", the same way an expired known issue does.
+- **What the seal does not claim:**
+  - It does not cover models below the band; D13's low-end pack can lower the band later.
+  - It does not make the app safe; the trust rules and the scale gate do that.
+  - It is not signed until signing exists (scale gate).
+
+Open for the operator: the default vendor count per band (3 proposed), the task pack's contents and owner (agent-bench), the seal's lifetime, and whether a release with no seal may still be published (proposed: yes, labelled "unverified for agents").
+
 ## Appendix A: the hello example in the v0.1 layout (as validated)
 
 ### hello/SKILL.md
