@@ -6,7 +6,10 @@ authoritative; this page is the map. Planning only until assigned.
 **Held (operator, 2026-11-24)** until Sprint 705 S3 settles the model below.
 Then re-review O1 and O2 against it. Sprint 701 decided no-go on the UI SDK
 (operator, 2026-11-24; bashy avoids Vercel products and dependencies), so 683
-no longer waits on it. O0 moved to Sprint 703 (2026-11-24) to proceed with D4; neither depends on the UI.
+no longer waits on it. Sprint 703 closed on 2026-11-24 (umbrella 10497e9ad);
+its stories that 683 needs (O0, F11, D4, brainstorm as shaped, the
+`offer --all` bug) moved back here. O0, F11 and D4 do not depend on the UI
+and may proceed before the hold lifts, with the operator's go.
 
 ## Direction: one shapeable page, equally shapeable components
 
@@ -61,7 +64,7 @@ The owner/producer verbs already exist for every app registered
   `6a10293f`/`9a24fd30` (module proxy for fork homes); the todo is still open.
 
 What is missing is evidence: no example app has run release → offer → member
-adopt → undo, and one known defect blocks it (703 D4, offer refuses a
+adopt → undo, and one known defect blocks it (D4, offer refuses a
 released version).
 
 ## Priority apps (operator, 2026-11-24)
@@ -77,15 +80,19 @@ then **brainstorm**.
 - **Viewer.** Content is trivial for an agent; shaping shows only for
   presentation the owner wants to keep and hand on (a report layout, a block
   kind). Second row.
-- **Brainstorm.** Not shaped yet: 703 story `cb9b4b80` (register as shaped).
+- **Brainstorm.** Not shaped yet: story `cb9b4b80` (register as shaped).
   Third row once that lands.
 
 ## Stories
 
 | Story | Prio | Depends on |
 |---|---|---|
-| O0 `b23982703c71` confirm the console builds the desk-family apps from the module proxy; close `d35e0de8`. **Moved to Sprint 703** | p0 | 703 F11 `d246ca4e` (gate host bashy current) |
-| O1 owner publish e2e skill-script on one page shared as a suite with a circle: form/poll, then viewer book, then brainstorm blocks | p1 | 703 O0 `b23982703c71`; 703 D4 `90f03f54`; the 706 R5 `5c1b07e994f1` step-0 shaping baseline (R8 `d8b7f10afa31` was folded into it, wontfix); 710 H6 `14bb7d2b5eab` (H1 `ef2ce499a64a` / H5 `f095ebc76350` by share path); pinned page release (open decision 3); offer audience (open decision 4) |
+| F11 `d246ca4e518e` gate host: the installed bashy predates the local module proxy (from 703) | p0 | none |
+| O0 `b23982703c71` confirm the console builds the desk-family apps from the module proxy; close `d35e0de8` (from 703) | p0 | F11 |
+| D4 `90f03f54c150` root-cause: offer refuses a released version (from 703) | p1 | none; root cause first |
+| `338073746e28` `shape offer --all` is visible to anonymous (from 703) | p3 | reproduce first; fix shape follows open decision 4 |
+| `cb9b4b80a88d` register brainstorm as a shaped app (from 703) | p3 | none; gates O1's brainstorm block (open decision 2) |
+| O1 owner publish e2e skill-script on one page shared as a suite with a circle: form/poll, then viewer book, then brainstorm blocks | p1 | O0; D4; the 706 R5 `5c1b07e994f1` step-0 shaping baseline (R8 `d8b7f10afa31` was folded into it, wontfix); 710 H6 `14bb7d2b5eab` (H1 `ef2ce499a64a` / H5 `f095ebc76350` by share path); pinned page release (open decision 3); offer audience (open decision 4) |
 | O2 kb runbook "Publish a shaped version to members" | p2 | O1 |
 
 O1 flow, on one `desk/page` carrying form/poll, viewer book and brainstorm
@@ -101,12 +108,12 @@ member `undo`es; the owner `submit`s the approved revision. The worker writes an
 script; the conductor runs it live. A model-backed live run is one paid run
 and needs the operator's go.
 
-## Relation to Sprints 703 and 706
+## Relation to Sprint 706, and what 703 left
 
-- 703 D4 (offer refuses a released version) blocks O1: root cause first.
-- 703 brainstorm-as-shaped gates the brainstorm block; 703 F9 (viewer CLI
-  discovery) affects the viewer block; 703 F4 (kit handler lift) touches the
-  form/viewer kit, so land it before O1 freezes a candidate.
+- D4 (offer refuses a released version) blocks O1: root cause first.
+- Brainstorm-as-shaped gates the brainstorm block. 703 F9 `6fb0e96d8fcf`
+  (viewer CLI discovery) and F4 `60b4624b22f9` (kit handler lift) closed
+  won't-do with 703; if the viewer block hits F9's gap, O1 records it.
 - The unit-level baseline of the same verbs is the step-0 evidence record of
   706 R5 `5c1b07e994f1` (R8 `d8b7f10afa31` was folded into it and closed
   wontfix); O1 is its live counterpart on a real page. R5's own scope (a
@@ -129,7 +136,7 @@ owner-named circles, groups or emails; master shares project to satellites
    or miss a circle the page is shared with. Open decision 4.
 2. **`offer --all` is visible to anonymous.** `isVisible` returns
    `offer.All` for an empty principal. Adopting still needs a principal;
-   offers should be member-only. Filed as 703 bug `33807374`.
+   offers should be member-only. Filed as bug `33807374` (now a 683 story).
 3. **The page and its components are a suite.** The page plus the form,
    viewer and brainstorm components it embeds is the unit 710 shares; the
    pinned page release (open decision 3) is the matching unit for versions.
@@ -152,7 +159,7 @@ owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
 
 1. Offer and adopt in the web console (today CLI only): needed for members
    who never use the CLI?
-2. Raise 703 `cb9b4b80` (brainstorm as shaped) from p3, given use? It
+2. Raise `cb9b4b80` (brainstorm as shaped) from p3, given use? It
    gates O1's brainstorm block.
 3. Who builds the pinned page release? Today `shape release APP REV` names a
    release for one app only (`--repair`, `--contract` for approved contract
@@ -165,3 +172,7 @@ owner's app (706 R5); offer/adopt for CLI-kind apps; any release.
    suite) and resolve them through the same grant rules as sharing, or keep
    `--to` principals and check each offer against the share? Product
    decision; input for 705 S3.
+
+Decisions 3 and 4: a design record (no code) is being written by another
+session (umbrella-15, 2026-11-24) as 705 S3 input and reviewed with the
+operator before any story; implementation then lands as 683 stories.
