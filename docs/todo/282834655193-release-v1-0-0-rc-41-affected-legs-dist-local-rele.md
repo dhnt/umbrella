@@ -38,3 +38,29 @@ rerun the affected legs (dispatch e2e 3-OS + agentos tests; full dag test if mai
 new product code), dist, receipt, one release.yml run, tier verdict PASS on three lanes,
 QA refs, bare tag + promote.yml on the operator's typed go. Update the outpost on the
 Windows lane first (its supervisor rolls a foreign bashy back to its own release).
+
+## rc.41 tier verdict run record (claude-opus5.5, 2026-11-25)
+
+Verdict: **PASS**. Record `bashy release/tier-verdicts/0665ffb3.json` in bashy
+commit `d14a9c7c` (branch `s719/tier-verdict-0665ffb3` off origin/main, which
+contains 0665ffb3; NOT pushed). `releaseeligibility --tier-verdict`: PASS.
+Umbrella in the record: `cd977f0e` (pushed; pins bashy 0665ffb3, outpost
+764d9dfc, yoke 89fc8e42; every leaf `drift=false`).
+
+| fold | tier1 | tier2 | tier3 | verdict | cause class |
+|---|---|---|---|---|---|
+| tier-all-native-linux | PASS | PASS | PASS | PASS | - |
+| tier-all-native-windows | PASS | PASS | PASS | PASS | - |
+| tier-all-native-darwin | PASS | PASS | PASS | PASS | - |
+
+Install: archives sha256-verified on the dev box and again on each host,
+copied over the LAN. The Linux lane runs rc.41 on its login PATH (rc.40 kept as
+`bashy.rc40`, rc.37 `bashy.prev`). The Windows lane and the macOS QA host run
+the verified candidate from a scratch dir by absolute path. On Windows,
+outpost pins its managed login-PATH copy. On the macOS QA host, the login-PATH
+bashy serves running jobs and stays rc.40. tier3 per host: image built from the
+verified `bashy-scratch-linux-<arch>` asset with `bashy self image`; denial
+served by a scratch rc.41 outpost on loopback. The podman machines on the
+Windows lane and the macOS QA host were started for the run and stopped after.
+Scratch outposts were stopped on all three. Adapter cold builds on Windows
+pass with no adapter cache set, so the rc.40 product defect is fixed.
