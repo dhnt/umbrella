@@ -393,7 +393,7 @@ All four keep the core of the design and the no-go for scale. The operator accep
 | g6 | GLM | Digest checked against the installed `shaped.json`; signing in the scale gate (§9) |
 | D21 | operator | Minimal lifecycle in `dag.md`: `source`, `build`, `test`, `install`, `run` (§5a) |
 
-## 18. Agent-usability QA and the seal (proposed for v0.2, operator D23)
+## 18. Agent-usability QA and the seal (for v0.2; operator D23, D24)
 
 A shapeware app states what agent it needs, the way an app states the disk and memory it needs. The statement is **measured, never declared**, like the release class.
 
@@ -420,7 +420,11 @@ A shapeware app states what agent it needs, the way an app states the disk and m
   - It does not make the app safe; the trust rules and the scale gate do that.
   - It is not signed until signing exists (scale gate).
 
-Open for the operator: the default vendor count per band (3 proposed), the task pack's contents and owner (agent-bench), the seal's lifetime, and whether a release with no seal may still be published (proposed: yes, labelled "unverified for agents").
+**Decided (operator, 2026-11-25, D24):**
+- at least **3 vendors** per band
+- the task pack lives in **agent-bench**, owned there with its own versioning
+- a release without a seal **may be published**, labelled "unverified for agents"
+- the seal's lifetime defaults to **90 days**, besides the change and model-retirement triggers. 90 days is the author's default, adjustable by the operator.
 
 ## Appendix A: the hello example in the v0.1 layout (as validated)
 
