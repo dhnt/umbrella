@@ -308,6 +308,10 @@ The master execution plan (`docs/sprint-712-master-plan.md`) was approved with t
 
 The operator also asked how versions and upgrades work. The recommendation is in the master plan (spec §8): four independent versions, semver meaning, stable feature and known-issue ids, and an upgrade that rebases local variants through `bashy shape`.
 
+## Spec v0 draft (2026-11-25, Phase 1)
+
+`docs/shapeware-spec-v0.md` (34c427678) is the draft spec. It is validated on scratch copies: lint, release class, skill-record round trip, an upgrade leg, and two runs by agents with no shapeware context (the second built the tbd feature on a copy, keeping the installed copy untouched). The operator added **D18**: one layout serves both the repo and the skill (skill directory names as defaults, `metadata` path keys where a repo already uses those names), so any repo is potential shapeware and one root `SKILL.md` makes it actual. Findings F1 to F6 are listed in spec §16, waiting for operator approval before anything is filed.
+
 ## Full exploration record
 
 All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.

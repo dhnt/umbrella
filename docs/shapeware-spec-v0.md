@@ -210,6 +210,8 @@ The shapeware skill carries the computation as a short script (Appendix B, `rele
 
 ## 13. Enabling an existing repo
 
+**Any repo is potential shapeware (operator, D18).** One root `SKILL.md` with the type line and the standard run block makes it actual. Everything else is optional (D16) and grows release by release: wanted features as `tbd`, checks wrapping the existing tests, known issues as they are found. That is the release spectrum applied to existing code.
+
 Any repo can be run by any agent with three additions and no moves:
 1. **`SKILL.md` at the root** (§1), with the type line and the standard run block. Its steps name the repo's real run and test commands and link its existing `scripts/`, `assets/` and `docs/`. Everything else is optional (§11): a `features.yaml` can start with the backlog's wanted features as `tbd`, and `checks/acceptance.bsh` can wrap the repo's existing tests. Use the `metadata` path keys where the default names are taken. (Zero-touch alternative: the same files in `skills/<name>/`.)
 2. **Discovery.** `bashy skill export <name> --repo` already writes `.agents/skills/` (the vendor-neutral location) and `.claude/skills/` when `.claude` exists. Agents with no skill loader get one line in the files they already read (`AGENTS.md`, `CLAUDE.md`, `README`): "This repo is shapeware: read `SKILL.md` first."
