@@ -426,6 +426,46 @@ A shapeware app states what agent it needs, the way an app states the disk and m
 - a release without a seal **may be published**, labelled "unverified for agents"
 - the seal's lifetime defaults to **90 days**, besides the change and model-retirement triggers. 90 days is the author's default, adjustable by the operator.
 
+## 19. The paradigm: shaping is certification (proposed v0.2; operator 2026-11-25)
+
+Software shaping repeats, for every app, the process Bashy followed for POSIX
+certification (public runbook: Bashy KB `full-profile-d-posix-runbook`). A
+shapeware app counts as built or shaped only when it passes a fixed suite under
+a declared scope, with sealed evidence. Any qualified agent may build it.
+
+| Certification practice | Shaping rule |
+|---|---|
+| A fixed standard and a suite the implementer cannot change | The spec plus a **CLI contract** (numbered assertions); the suite tools (contract runner, DOM walker) **ship with bashy** as an invariant, digest-pinned, usable by agents during development and by graders |
+| Scope contract: declared inventory, optional exclusions, applicability | `features.yaml` scope, **documented freedoms**, and a **conformance statement** per build |
+| Frozen, qualified inputs; an approval never moves to different bytes | `shaped.json` core digest, candidate identity, owner approval bound to the approved bytes |
+| Isolated venue, fresh run state, mandatory readiness checks | A fresh isolated workspace per run and a readiness preflight; venue problems are fixed in the venue, never in the product |
+| Every test purpose reported by name, none unreported | Every assertion reported by name: PASS, FAIL or INCONCLUSIVE |
+| Baseline and no-regression by name, not by count | A reference-vs-reference baseline; a formerly passing assertion that fails blocks |
+| Root cause before fix; deficiency and interpretation route | Each divergence is classified product, test, venue or **spec defect**; the same divergence from several agents is a spec defect |
+| Evidence identity; fresh vs reused; sealed archive | One sealed evidence record per candidate; each result marked fresh or reused |
+| Public claims limited to evidence | The release class (section 12) claims only what the evidence shows |
+| Engineering runs vs the formal run | Development runs use the visible contract; the certification run adds hidden assertions of measured strength (mutation score) |
+| Annual renewal | Re-certify on every version or upgrade; the section 18 seal expires |
+
+**CLI first.** Every app ships a CLI; an API only when needed. The CLI is the
+golden acceptance surface. Every UI action has a CLI path (validated parity
+map), and a thin UI gate compares the page's DOM inventory, read by the shipped
+walker, with the CLI's view of the same item.
+
+**The contract document.** `CONTRACT.md` lists numbered assertions. Each is one
+line of prose, a console block (`$ command`, then the expected output) and an
+exit code. Placeholders such as `{ID}` bind consistently across steps; `--json`
+output is compared structurally; plain text is checked only where given. Visible
+assertions guide agents; hidden assertions in the same format certify.
+
+**Equivalence, not identity.** Two builds are equivalent when they show no
+observable difference at the declared interface, after declared normalization,
+on a hidden suite of measured strength. Byte identity applies only to rebuilding
+the same source with a pinned toolchain.
+
+Status: proposed. The Sprint 721 pilot (form, viewer) validates or adjusts it
+before v0.2.
+
 ## Appendix A: the hello example in the v0.1 layout (as validated)
 
 ### hello/SKILL.md
