@@ -4,7 +4,7 @@ kind: bug
 title: 'bashy TestEmbeddedAdaptersMatchSourceTree fails: adapterembed examples/desk/chart/chart.bsh drifted from source (pre-existing at origin main)'
 seq: 728
 status: todo
-priority: p2
+priority: p1
 labels:
     - bashy
     - test

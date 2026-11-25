@@ -4,7 +4,7 @@ kind: task
 title: 'F11 Gate host: the installed bashy predates the local module proxy; only the lane runner is current'
 seq: 704
 status: todo
-priority: p2
+priority: p0
 labels:
     - venue
 created: 2026-11-24T12:56:16.658847Z
