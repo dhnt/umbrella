@@ -339,3 +339,7 @@ The Sprint 712 story deliverable (2026-11-25, for operator review). It answers w
 ## sprint-719-evidence.md
 
 The one shared evidence record for the bashy v1.0.0-rc.41 candidate (bashy 0665ffb3). It lists each gate leg with its run, commit, result and digests (build, `bashy dag test`, sealed Bash gate, Linux and native-Windows dispatch e2e, shaping smoke, dist, local release receipt), proves why the sealed Bash gate evidence from an earlier commit still applies, and records the findings with their root causes (desk modules, advisories, the quic-go build break, venue reds, the macOS QA host clock wrap). Hosts are named by role.
+
+## conform-plan.md
+
+Plan for `dhnt/conform`, a public Go module holding the invariant suite behind shapeware spec section 19 (shaping is certification): the CONTRACT.md runner, normalization rules, one DOM walker (Go and JS), the reference noise baseline, the mutation harness, and sealed evidence records. It states the gap, dependency direction (conform imports nothing; bashy ships it), scope and non-goals, six bounded stories, acceptance on the gate host, risks and rollback. Starts after the Sprint 721 pilot settles the contract format.
