@@ -218,6 +218,19 @@ Sprint 699, release train 1 (filed 2026-11-23): one coordinated hosted-plane dep
 
 Execution plan for Sprint 697 (backlog, planning only, reviewed with the operator 2026-11-23): the seven stories that make shaping-enabled sites explorable by any agent (A1 template channels incl. `/agents.txt`, A2 hosted-plane release incl. the same-origin `/mcp` proxy, A3 MCP engine side via `bashy mcp serve` profile `site`, A3b bashy `site` verbs, A4 bashy identity to sites, A5 feel-at-home acceptance matrix, A6 docs), their vendors and points, the three waves, the gates and venues, the rules carried from Sprint 693, the story review of 2026-11-23 (eight findings with proposed story changes: statuses, A3b priority, A3 title, the unowned hosted-plane proxy, A1 size, A4 dependency, vendor load, decision lists), a start checklist, and the decisions settled or still reserved.
 
+### design-shape-offer-audience.md
+
+Proposed design for Sprint 683 open decisions 3 and 4, input to Sprint 705 S3.
+An offer's audience uses the grant-rule grammar (circles AND (groups OR
+emails)) that sharing and `shape scope` already use, checked at request time
+against the verified member stamp, so offers are members-only by construction.
+`--all` means every member, which fixes the bug where anonymous callers could
+see `--all` offers. A page release pins the shared releases of the components
+it embeds on the same host and is verified against them; a suite stays the
+access unit, not the version unit. Records the D4 root-cause hypothesis:
+releases are principal-private by default. Operator review comes before any
+story.
+
 ### access-tiers.md
 
 Design of record (operator decisions 2026-11-24) for who a caller is across the cloudbox and bashy stacks: three levels (anonymous; account = a logged-in cloudbox account without a live host, served by the hosted plane; owner = an account with a host paired with the master, a satellite being a kind of outpost), four per-host relationships on the outpost stamp (anonymous < account < member < owner; the wire value `signed-in` becomes `account`, "user" is reserved for the OS user), owner-defined app roles, six invariants (identity mandatory for any kept change, cloudbox the only authority, no second permissions engine, refusals demote), a sixteen-case coverage table, and the three shaping workflows (anonymous configures declared features; group shaping on the owner's host with the owner's LLM; team shaping as group shaping with contributing owners as members of the primary owner). Lists what exists, the gaps filed as Sprint 706 R1-R8, and the sprints retired by the model (639, 640, 667, 669, 679, 689).
