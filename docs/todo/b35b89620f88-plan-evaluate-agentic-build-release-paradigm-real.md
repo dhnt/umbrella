@@ -41,6 +41,12 @@ Rod, not fish: the deliverable is the generic machinery. Cases in the field cann
 - **Known-issue state.** Add an explicit state, separate from closed: known, worked around, tracked until it expires. #3230 is the first case. `bashy todo` has no such status today, so #3230 stays wontfix-for-now until the plan defines it.
 - **Keep** section D (trust, provenance and undo for field changes, required before scale) and plan-only acceptance.
 
+- **Decisions 2026-11-25 (operator: go with the reviewer's recommendations).**
+  - Case (iii), a feature delivered without a new binary, is the `form` desk tool. It runs as follow-on bashy todo 9643d77f, because this story is plan only.
+  - Known issues are written INSIDE the `.bsh` body, not in a separate file.
+  - The name: the GitHub org github.com/shapeware was taken 2026-11-25. The trademark question is still open.
+  - Field defects found during the review: bashy 64ef2626 (form flag schema) and yoke f571c624 (copysheet re-copy).
+
 ## Question
 
 Should software increasingly ship as shapeable source, executable Bash# specs/skills, tests/fixtures, and runtime-agent instructions — with acceptance continuing during real use — instead of shipping only finished code frozen before release? If yes, what parts, under what safety/evidence/versioning rules, and what remains conventionally built and frozen?
