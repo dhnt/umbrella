@@ -139,7 +139,7 @@ each written in a language every agent and human already knows:
 |---|---|---|
 | script | Bash# | what machines run |
 | skill | Markdown (`~~~skill`) | how an agent uses it, plus **Known issues** |
-| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples, optional `critical: true` |
+| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples, optional `critical: true`, optional `band:` |
 | ui | HTML/CSS (restricted semantic profile), JSON/YAML for data, TS for logic | what a human sees and hears (`@media speech` for audio) |
 
 Do not invent formats. If a standard language covers it, use it.
@@ -178,6 +178,21 @@ destructive or irreversible actions, regulated data. A critical feature:
 - belongs to the trusted core and is prebuilt and verified in every release,
   at any point on the spectrum.
 
+## Band floor (who may build in the field)
+
+A tbd feature built in the field is only as good as the agent that builds it.
+To keep look, feel and quality consistent across users:
+- The app declares a minimum band for field building (`min-band`, in the
+  skill frontmatter or `shaped.json`); a feature entry may raise it
+  (`band:`). A band is a floor: any agent at or above it may build.
+- Consistency comes from three layers together: constraints (restricted HTML
+  profile, kit design tokens and components), checks (acceptance, profile and
+  accessibility checks), and the band floor. None is enough alone.
+- Below the floor: route to the cheapest qualified agent (own fleet or a
+  pooled model); if none is available, do not build. The feature stays tbd,
+  the release works as shipped, and the request goes upstream.
+- Critical features are never built in the field, at any band.
+
 ## Rules by event
 
 ### 1. New feature (planned)
@@ -186,7 +201,8 @@ destructive or irreversible actions, regulated data. A critical feature:
 2. Implement. Run acceptance. Only a passing run sets `status: verified`.
 
 ### 2. Missing feature found in use (a `tbd` the user asks for)
-1. Read the feature entry; implement it as a **shaped candidate**
+1. Check the band floor (app `min-band`, or the feature's `band:`); below it,
+   route up or stop (see Band floor). Read the feature entry; implement it as a **shaped candidate**
    (`bashy shape wish` → verify → preview → approve). Never edit the
    deployed source directly.
 2. Acceptance must pass before approve. Offer the variant upstream.
@@ -236,6 +252,7 @@ approves. Its known issues and tbd entries travel with it.
 - New formats where a standard language exists.
 - Shipping a `critical` feature as `tbd`, or with an open or workaround known
   issue; building or shaping a critical feature in the field.
+- Building a feature in the field with an agent below its band floor.
 ````
 
 ## Full exploration record
