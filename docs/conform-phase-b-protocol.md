@@ -69,6 +69,26 @@ is reported next to cost per run.
 - a wall-time cap of 30 minutes (it fits the agy 40-minute session limit);
 - run order randomized within each batch; the seed is recorded.
 
+## Venue and deliverable (added 2026-11-25, before any run)
+
+- **Agent sessions run on the dev box.** That's where the subjects' CLIs and
+  logins live, and every sprint worker uses the same route. Each session gets
+  its own fresh workspace through the agent-bench runner (`bashy chat --agent`,
+  same budget and idle rules for every subject).
+- **Grading runs only on the gate host lane**: Linux x86_64 with Go 1.27,
+  Python 3.12, Node 18, POSIX sh, curl and jq. There is no network, no bashy
+  on the candidate's PATH, and a headless browser stub (`xdg-open` records the
+  URL and exits 0).
+- **The deliverable is source.** It has to include an executable POSIX-sh
+  launcher, `./form`, at the workspace root that builds or runs the app on
+  that Linux venue, compiling on first use if it needs to. Dependencies must
+  be standard library only or vendored in the workspace. A binary built on the
+  dev box is not run.
+- The workspace starts with `CONTRACT.md`, `SKILL.md`, `features.yaml`,
+  `examples/contact.json` (used by the contract) and `TASK.md`, which states
+  the deliverable and the venue above, word for word the same for every
+  subject.
+
 ## Integrity
 
 - The grader, the hidden cases and the expected results stay outside the
