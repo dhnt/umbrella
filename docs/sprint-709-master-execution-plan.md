@@ -30,7 +30,7 @@ password anywhere, and no cloudbox change.
 
 M1 and M2 run in parallel; M3 after both. Every story carries a dated "Code
 inspected" note. Unit tests on the gate host; the sandbox e2e is the
-acceptance; then the operator runs the real test. No release.
+acceptance (operator rule 2026-11-24: no human user acceptance tests). No release.
 
 ## Outcome (2026-11-24)
 
@@ -49,8 +49,8 @@ Notes:
 
 Follow-up (operator, 2026-11-24): todo `e16cbb29`, linked to this sprint. `bashy mcp connect` presents only a per-session child token holding `satellites:delegate` + `host:proxy` (1h, revoked on exit) to the satellite; the account token stays with cloudbox. A hosted "known satellite" check is not possible without a cloudbox change.
 
-Real-host test prerequisites:
+Member prerequisites (for users of `bashy mcp connect`):
 - The member has signed in to the owner's satellite once in the browser, and their account token holds `satellites:delegate` and `host:proxy`.
 - The share must reach the satellite gate. Shares made on the master console are not projected to satellites until Sprint 710 H5 (`f095ebc7`) merges and ships with the release train; until then the owner shares the app on the satellite itself.
 
-Next: the operator runs the real-host test; bugs start a new plan.
+No human acceptance test (operator rule 2026-11-24): the sandbox A/O/C e2e (website + Page legs) is the acceptance; owners fix what it misses by shaping.
