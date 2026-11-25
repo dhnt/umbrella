@@ -9,6 +9,9 @@ labels:
     - bashy
     - tests
 created: 2026-11-25T05:26:42.987797Z
+sprint: 713
+sprint_id: 867b4689-21ed-53db-93f9-b2a926b28de6
+sprint_title: 'Known reds triage after train 1: decide fix or won''t do for each pre-existing test red'
 ---
 
 Seen 2026-11-24 by the Sprint 710 conductor on the gate host (Linux test host, WSL, GOWORK=off). The tests fail identically WITH and WITHOUT the 710 pin bump (bashy 3535205f vs its parent c450753f), so they were red before the bump. Not fixed in 710; root cause each before any fix.
