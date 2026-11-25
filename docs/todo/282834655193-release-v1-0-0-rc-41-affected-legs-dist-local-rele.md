@@ -8,7 +8,7 @@ priority: p0
 labels:
     - release
 created: 2026-11-22T13:43:36.816088Z
-assignee: claude-fable5.1
+assignee: claude-opus5.5
 sprint: 719
 sprint_id: 049a8467-4736-5eab-9ce8-52274347d7a0
 sprint_title: Release bashy v1.0.0-rc.41 (thin bashy; rc.40 never promoted)
