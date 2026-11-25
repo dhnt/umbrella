@@ -1,90 +1,125 @@
-# Sprint 699: release train 1, one hosted-plane deploy for Sprints 682 and 697
+# Sprint 699: release train 1, one hosted-plane deploy
 
-Epic: software-shaping. State: **backlog** (filed 2026-11-23 on the
-operator's direction: "consolidate the deploy for both sprints, create a new
-sprint for the deployment, move the stories into the new sprint"; and the
-standing rule in `CLAUDE.md`: no hosted-plane deploy per sprint). The card
-and its stories are authoritative.
+Epic: software-shaping. Release and sprint manager: claude-opus5.5 (taken
+2026-11-24). The card and its stories are authoritative. Reconciled
+2026-11-24 22:15 PST against the board, the hosted dev branch since v0.18.82,
+the public repositories, and the managers of Sprints 708, 709 and 710 plus
+the A/O/C scope conductor.
 
-## Primary goal
+## Release rules (operator, 2026-11-24)
 
-One coordinated hosted-plane release carries every change merged to dev
-since v0.18.82, tested once on the frozen dev commit and deployed once with
-the operator's go. The live-site verifications that Sprints 682 and 697
-deferred run after it and nowhere else.
+- KISS/MVP. Every released feature is **complete and usable**, even if it is
+  minimal. An unfinished or unusable surface is never released. When part of
+  a feature can ship, ship that part and put the rest in a follow-up sprint
+  (Sprint 711 for this train).
+- Scope is the typical business case A/O/C only: owner, support member
+  without an outpost, and contractor member with an outpost. Anything else is
+  future input.
+- One deploy per train. No bashy release in this train.
+- Every issue in this sprint is resolved, or it goes to the operator for
+  approval with an explanation.
 
-## Stories
+## Feature list: train 1 (hosted plane, dev beyond v0.18.82)
 
-| # | Story | Store | From | Owner | What closes it |
-|---|---|---|---|---|---|
-| T1 | Deploy train 1 (`76eac0ea`): contents, pre-release gate once on the frozen dev commit, operator GO, tag, images, master deploy, satellites, live smoke, live checklist | umbrella | new | conductor of this sprint | the cloudbox playbook run once; the live checklist recorded in `sprint-699-evidence.md` |
-| A5 | Feel-at-home matrix on the live dhnt.io (`4e147ad3e84b`) | umbrella | Sprint 697 | muse-wonder (proposal) | table per client recorded as observed on the live site, after T1 |
-| C4 | Member-principal shaping e2e across the five example apps (`8e5204e127c4`) | bashy | Sprint 682 | conductor | the one approved paid matrix on the retained gate-host installation after Sprint 682 C5 lands; green rows accepted, red rows root-caused |
-| I1 | group-shape skill-script (`9c585822`): one Bash# acceptance run on Page, Session and Notepad (roster member admitted, history / undo / restore, removal and outsider refused, guest by name, PDF of a named revision); fills the coverage matrix verdicts | umbrella | group shaping epic (Sprints 684/685) | conductor | green on integrated main at the frozen commits on the gate host, after Sprint 684 S1–S4 merge |
-| I2 | Klatch owner/member workflow (`5b72b105`): sync, two members, removal, outsider, repeat sync | umbrella | Sprint 684 | conductor | recorded on the running instance; the operator confirms before it is started |
+| # | Feature | Source | Usable from released clients? | Live check |
+|---|---|---|---|---|
+| 1 | Agent-ready public pages on dhnt.io: agents.txt, Markdown/JSON twins, skill.md, citations, Accept tie-break | 697 A2 (d80f551b) | Yes, any HTTP client or agent | `/agents.txt`, twins, headers, Accept matrix through the live edge |
+| 1a | The same pages **without** the `/mcp` and `bashy site attach` advertising | 699 A2a (141bc34d) | Withholds what isn't usable yet (see below) | No `mcp:`, server card, `service-desc` or site-attach line on dhnt.io |
+| 1b | Same-origin `/mcp` dispatch: Bearer to the gateway, anonymous/cookie denied while no upstream is set | 697 A2 | Yes, for Bearer callers (existing gateway) | A2 curl matrix |
+| 2 | Client IP trust: no proxy trusted by default; platform client-IP header on the hosted deploy | 710 H4 (c7e970e6) | Infrastructure | Audit and rate-limit keys show real client addresses; a forged X-Forwarded-For changes nothing; roll back the env setting if the header is missing |
+| 3 | Master host shares projected to attached satellites (grant and revoke) | 710 H5 (f095ebc7) | Yes: the share dialog in the released master console | Share on the console, member admitted on the satellite before first sign-in; revoke, member denied after the next sync |
+| 4 | Re-invite re-sends the invitation email to a pending member | 710 (e22d0e55) | Yes: console, or `fleet member invite` in released bashy | Re-invite a pending test member; mail delivered |
+| 5 | Signed-out satellites show a minimal "Sign in to <satellite>" page, with no master marketing and no owner disclosure | 710 (b7519dfa) | Yes, browser | Signed-out GET `/` on a satellite |
 
-Sprint 697 A2 itself stays in Sprint 697, accepted on dev evidence (merged,
-verified, not live); its live verification is T1's checklist.
+Public-side features that need no hosted change (709 `bashy mcp connect`,
+the site MCP `shape_pull`/`shape_push`, 708's browser fix) ship with bashy
+releases, not with this train. 709 confirmed that their hosted endpoints are
+already live in v0.18.82.
 
-## Order
+### Held back (operator rule) and moved to Sprint 711
 
-I1 and I2 (added 2026-11-24) do not need the deploy either: they are the
-integration tests of the group shaping epic, whose sprints close on unit
-tests only (`sprint-684-685-master-execution-plan.md`). I1 waits for Sprint
-684 S1–S4; I2 can run any time the instance is up.
+- **Site MCP on dhnt.io** (711 F1, daf6adc9). With `PUBLIC_SITE_MCP_UPSTREAM`
+  unset, every anonymous agent that follows the advertised `/mcp` would be
+  denied. A2a removes the advertising; F1 publishes the endpoint and turns the
+  advertising back on in one change.
+- **`bashy site attach`** (711 F2, 507e2cab). The verb first appears in
+  bashy 775bcc30 (2026-11-23), and no released bashy has it (latest
+  v1.0.0-rc.40-dev). It is re-advertised once a release carries it.
+- **C4**, the five-app member matrix (8e5204e1, from 682). Blocked on O0
+  b23982703c71. The A/O/C member path is already covered by the 706/709
+  sandbox e2e plus the operator's real test.
+- **I1**, the group-shape script (9c585822, from 684). It needs no deploy.
+  It runs as a follow-up integration run on integrated main.
 
-C4 does not need the deploy: it runs on the gate host as soon as Sprint 682
-C5 is merged, and is only here so that live and e2e verification is planned
-in one place. T1 waits for the operator's timing (the next hosted feature or
-a cadence). A5 runs after T1 is live.
+### Out of scope (unlinked, kept as future input; operator approval requested)
 
-## Contents of train 1 (hosted plane dev beyond v0.18.82)
+- I2, the Klatch owner/member workflow (5b72b105): outside A/O/C.
+- The hosted-route test case (dfd4ebb8) and the H6b live smoke. The master
+  side of the hosted route (hosted ticket eed85934) is not built, and the
+  feature is outside A/O/C.
 
-- Sprint 697 A2: agent-ready public pages (dhnt/site v0.2.1) and the
-  same-origin `/mcp` auth dispatch. `PUBLIC_SITE_MCP_UPSTREAM` stays unset
-  until an owner site MCP endpoint is published.
-- The Accept tie-break follow-up (absorbed by A2).
-- Later hosted changes join as they merge to dev; each adds its live check to
-  the T1 checklist.
+## Stories in this sprint
 
-## Before any tag or release cut: pins at heads (recorded 2026-11-24)
+| Story | What closes it | Owner |
+|---|---|---|
+| A2a 141bc34d (p0) | Merged to the hosted dev branch before the freeze; unit tests assert absence when off and presence when on | worker, to be assigned after the operator approves |
+| T1 76eac0ea (p0) | Freeze, gate once, operator GO, deploy, live checklist recorded in `sprint-699-evidence.md` | release manager |
+| A5 4e147ad3 (p1) | Feel-at-home matrix on the live dhnt.io after T1, minus the MCP and site-attach legs (in 711) | muse-wonder (proposal) |
 
-Step-by-step version, with the commands: [handoff-sprint-684-685.md](handoff-sprint-684-685.md).
+## Cutoff and freeze (set by the release manager)
 
-Sprints 684 and 685 closed with dependency pins that trail their repository
-heads, because Sprint 675's coreutils pin sync was still in flight and is the
-next writer of all of them. **Nothing is tagged, frozen or cut from this
-train until these are confirmed clean**, on the frozen commit:
+- **Content cutoff:** 2026-11-24 22:15 PST. After it, only A2a and
+  test-only harness commits may merge to the hosted dev branch.
+- **Freeze target:** 2026-11-25 12:00 PST, announced as `699 FREEZE` on
+  bashy mb. After it, no pushes or pin bumps to the hosted dev branch, bashy,
+  yoke, ycode, bashsharp or the umbrella without asking the release manager.
+  Acknowledged by the 708, 709 and A/O/C managers; 710 was asked on mb.
 
-- `bashy mod drift` at the umbrella root shows no `stale` row. Known stale at
-  the time of writing: bashy → bashsharp and ycode → bashsharp (pinned
-  `fa2401af`; bashsharp `main` had `abe0538` and `08fabb3`).
-- Every umbrella gitlink equals its repository's default-branch head. Known
-  behind: bashsharp, coreutils, yoke, outpost.
-- The bashy/ycode pair is at its one-commit minimum (those two modules
-  require each other, so one side always trails by exactly one pin commit).
-- Pin commits are forward only: a new gitlink must contain the one on origin.
+### Freeze preconditions (all must hold on the frozen commit)
 
-Known red tests to carry into the gate as recorded failures, not as passes,
-unless Sprint 703 has fixed them first: ycode
-`TestHarnessStreamWaitsForAppendNotifications` (bug `08ee6df70b5d`: with a
-current bashy the agent's kb lookup gets no context) and `bashy/yoke/fetch`
-`TestStandaloneHelpAndDeps` (`bf5c8c71f65e`). Any other failure is new and
-blocks. Three ycode timing tests fail only when the gate host is busy
-(`5469f847be3f`): run the comparison on an idle lane.
+1. A2a is merged.
+2. `bashy mod drift` shows no stale row. Open at the cutoff:
+   ycode → yoke and bashsharp → yoke (pinned 25ec97b5, head 39aef5bc).
+   710 finishes this by 10:00 PST or hands it to the release manager, who
+   does it under a claim. Whenever bashy's yoke pin moves,
+   `internal/agentos/src_mount.go` `srcModulePins[yoke]` moves with it.
+3. The bashy/ycode cycle is at its one-commit minimum.
+4. Every umbrella gitlink equals its repository's default-branch head,
+   moving forward only. At the cutoff, all are at head except bashy
+   (98551856, head 2f238cc3 and later; kb- and README-only commits on top).
+5. Clean repos: no uncommitted or unpushed work in any checkout used for
+   the train. Local branches and worktrees with unintegrated patches are
+   merged, pushed, or explicitly kept by their owner. Nothing with unique
+   commits is deleted. Open at the cutoff: umbrella
+   `sprint-704-yoke-pin-2615421d`; yoke `s704-p0b-candidate` and
+   `s704-p0c-candidate`; hosted worktree `s652/6210caba`; hosted
+   `s710-h6-cand` (710, in flight); one untracked hosted todo from the
+   rc.40 release (Sprint 692).
 
 ## Gates
 
-- Pre-release, once: container unit suite, desktop-journey e2e with
-  `BASHY_TAG` at the latest promoted bashy, primary and satellite vet and
-  build, on the frozen dev commit, on the gate host.
-- Operator GO before tag and deploy; no release without it.
-- Live checklist after deploy: A2 curl matrix through the live edge (Bearer
-  to the gateway, cookie or anonymous to 401 or the proxy), dhnt.io
-  `/agents.txt` and headers, A5 rows, satellite upgrade and token check.
-- Evidence: `docs/sprint-699-evidence.md`, wire-level, hosts by role.
+- **Pre-release, once, on the frozen dev commit, on the gate host:**
+  container unit suite, desktop-journey e2e with `BASHY_TAG` at the latest
+  promoted bashy, and vet + build for primary and satellite, run as parallel
+  legs on an idle lane.
+- **Known reds** go in as recorded failures, never as passes:
+  - ycode 08ee6df70b5d (wontfix).
+  - bashy/yoke/fetch bf5c8c71.
+  - bashy agentos 60d43cb7 and 01b745b8.
+  - Hosted hub 376365ab: three feed JS cross-checks and one satellite route
+    table test. Not yet root-caused; operator approval requested.
+  - ycode timing tests 5469f847 (fail only on a busy lane).
+
+  Any other red blocks the train, and its root cause is found first.
+- **Operator GO**, recorded on the card, comes before the tag.
+- **Deploy** per the hosted playbook: tag, images, master, satellites, live
+  smoke. Satellite upgrades need the registry token rotated first (hosted
+  todo 4af1cde, an operator credential action). Without that, feature 3 is
+  not usable on satellites.
+- **Live checklist:** the "Live check" column above, plus A5. Evidence goes
+  in `sprint-699-evidence.md`: wire level, hosts by role.
 
 ## Not doing
 
-A release per sprint; any bashy release or rc tag; content changes to the
-dhnt.io pages beyond what A2 carries.
+A release per sprint. Any bashy release or rc tag. dhnt.io content changes
+beyond what A2 and A2a carry.
