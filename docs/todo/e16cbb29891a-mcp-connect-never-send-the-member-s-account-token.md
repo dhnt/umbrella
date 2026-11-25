@@ -11,7 +11,7 @@ labels:
     - security
 created: 2026-11-25T04:03:44.409966Z
 weave: 256
-assignee: qiangli
+assignee: codex-gpt6-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
 sprint_title: 'Member pull/push: a granted member shapes the owner''s app from their own machine'
