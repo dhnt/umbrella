@@ -18,3 +18,7 @@ Problem: offer refuses a version that was released (found in the 2026-11-18 revi
 ## Moved to Sprint 683 (2026-11-24, operator: close Sprint 703)
 
 Owner publishing (offer, adopt) is Sprint 683's workflow, held on 705 S3; this story travels with it instead of being dropped.
+
+## Lead to reproduce first (2026-11-24, from docs/design-shape-offer-audience.md)
+
+Hypothesis, unconfirmed: `bashy shape release` never sets Shared, so the release tag is principal-private, and Offer resolves it as the empty principal. Reproduce with a unit test against yoke origin head before accepting or fixing. Sprint 683 MVP (operator KISS review): D4 is the only blocker of O1.

@@ -8,9 +8,6 @@ priority: p3
 labels:
     - shaping
 created: 2026-11-25T04:09:52.148045Z
-sprint: 683
-sprint_id: a2c119a7-7ca5-571e-8e50-7a19ae1e583f
-sprint_title: Owner publishing for a shapeable page and its shapeable components (any website)
 ---
 
 Found in the Sprint 683 review against Sprint 710's access model (2026-11-24): a satellite admits members; non-members, logged in or not, get only what the owner publishes publicly, as anonymous. Offers of shaped versions should therefore be member-only.
