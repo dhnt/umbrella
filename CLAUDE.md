@@ -170,7 +170,7 @@ never vendored.
 
 ## Layout
 
-Seventeen public submodules (`github.com/qiangli/<name>` unless noted), all
+Eighteen public submodules (`github.com/qiangli/<name>` unless noted), all
 flat siblings. Module paths may differ from directory names; fork module paths
 and version replacements are declared in each `go.mod`.
 
@@ -182,6 +182,7 @@ bashsharp-tests/   Bash# conformance gate: Go profile + POSIX-2016 suite (github
 bashsharp-tour/    the Bash# tour + install-matrix CI (repo `tour`, github.com/bashsharp/tour)
 bashy/             product — pure-Go Bash 5.3 drop-in CLI; consumes sh
 bonsai/ gfy/       embedded DB and its dep (pulled by version; mounted for hacking)
+conform/           invariant behavioural judge for shaped apps: CONTRACT.md runner, DOM walker, certification (github.com/dhnt/conform)
 coreutils/         the POSIX implementation package (116 POSIX names ∪ GNU coreutils); stable, bug fixes only
 gotreesitter/      parser fork used by code-intelligence tools
 nadir/             ycode dep
@@ -220,7 +221,7 @@ pointer — the edits look lost on a fresh clone. `modified content` in root
 `git add -A` at the root; other agents work the umbrella concurrently.
 
 `script/sync.sh` retains the original public synchronization behavior. It
-uses its seventeen-module public list, follows each `origin/HEAD`, fast-forwards
+uses its eighteen-module public list, follows each `origin/HEAD`, fast-forwards
 that branch, and hydrates nested pins. It also rewrites existing `.sibling-pins`
 to the checked-out sibling SHAs and commits and pushes those consumer changes.
 Finally it stages the umbrella gitlinks; it does not commit the umbrella.

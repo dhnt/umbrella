@@ -52,3 +52,6 @@
 [submodule "bash"]
 	path = bash
 	url = https://github.com/qiangli/bash.git
+[submodule "conform"]
+	path = conform
+	url = https://github.com/dhnt/conform.git
