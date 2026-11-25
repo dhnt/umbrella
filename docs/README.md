@@ -343,3 +343,7 @@ The one shared evidence record for the bashy v1.0.0-rc.41 candidate (bashy 0665f
 ## conform-plan.md
 
 Plan for `dhnt/conform`, a public Go module holding the invariant suite behind shapeware spec section 19 (shaping is certification): the CONTRACT.md runner, normalization rules, one DOM walker (Go and JS), the reference noise baseline, the mutation harness, and sealed evidence records. It states the gap, dependency direction (conform imports nothing; bashy ships it), scope and non-goals, six bounded stories, acceptance on the gate host, risks and rollback. Rescoped at the Sprint 721 close: Phase A builds conform; Phase B runs one experiment, "the spec reproduces the app" (spec only -> source, judged behaviourally by conform, cheapest L3 per vendor, n=3).
+
+## handoff-sprint-722-conform.md
+
+Warm handoff written at the Sprint 721 close for the conductor of Sprint 722. It gives the reading order (conform plan, spec section 19, the 721 thread, the 722 card), the operator's rules for 722, the inputs ready for Phase A (the contract prototype on an agent-bench salvage branch, the shapeware pack, the form reference in the v0.1 layout), what 721 delivered, the todos carried forward, and venue notes learned during the sprint.
