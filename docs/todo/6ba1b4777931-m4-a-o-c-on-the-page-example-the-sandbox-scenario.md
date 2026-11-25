@@ -3,13 +3,12 @@ id: 6ba1b4777931
 kind: test
 title: 'M4 A/O/C on the Page example: the sandbox scenario runs against examples/desk/page (MVP)'
 seq: 735
-status: assigned
+status: todo
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-25T04:28:08.884379Z
-weave: 260
 assignee: codex-gpt6.2-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
@@ -39,3 +38,7 @@ Acceptance: the e2e (website + Page legs) green twice on the claimed gate host i
 ## Operator ruling 2026-11-24 20:35 PST (relayed by umbrella-15)
 
 "Page support needs no additional change if A/O/C is supported." M4 is VERIFICATION ONLY: add the Page leg to the existing sandbox e2e; no Page-specific product code, no new UI or verbs. If the Page leg fails, record the root cause here and stop; the conductor brings it to the operator before any fix (a failure is a gap in generic A/O/C support, not Page work).
+
+## Resume plan (operator 2026-11-24: "file and do the right thing")
+
+The Page leg's blocker is a generic verifier defect, fixed by M6 b659aecc1daa (checks reuse the host's binmgr tool cache). After M6 merges: rebase the preserved Page leg (bashy branch s709-m4-page-leg, 773dfa09) onto bashy main with yoke repinned to M6; in the sandbox, seed the owner's tool cache with the Go toolchain `bashy go` expects (offline, from the mounted Go SDK, at binmgr's layout <cache>/go/<version>/go), test harness only. Acceptance unchanged: website + Page legs green twice on the gate host. Still verification only: no Page-specific product code.
