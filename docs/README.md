@@ -327,6 +327,15 @@ The draft shapeware spec v0 from Sprint 712 (2026-11-25): what a shapeware relea
 - what code was inspected, the validation results (including two runs by agents with no shapeware context) and the findings for follow-on
 - the hello example and the lint and release-class skill-scripts, verbatim, in the appendices
 
+## sprint-712-recommendation.md
+
+The Sprint 712 story deliverable (2026-11-25, for operator review). It answers whether software should ship as shapeware: yes, for a bounded class, starting with a narrow pilot on `form`; no-go for scale until signing and provenance exist. It covers:
+- definitions and a lifecycle map walked end to end with the hello example
+- the three schemas (the manifest is the spec, the known issue, and a minimal field-session record)
+- tabletop simulations of the #3230 timing defect, agents with no shapeware context using hello, and the form launch baseline
+- a comparison with the current release train, risks with mitigations, the status-quo dissent, and what stays conventionally frozen
+- the recommendation, the metrics, and a prioritized follow-on split with proposed owners and venues
+
 ## sprint-719-evidence.md
 
 The one shared evidence record for the bashy v1.0.0-rc.41 candidate (bashy 0665ffb3). It lists each gate leg with its run, commit, result and digests (build, `bashy dag test`, sealed Bash gate, Linux and native-Windows dispatch e2e, shaping smoke, dist, local release receipt), proves why the sealed Bash gate evidence from an earlier commit still applies, and records the findings with their root causes (desk modules, advisories, the quic-go build break, venue reds, the macOS QA host clock wrap). Hosts are named by role.

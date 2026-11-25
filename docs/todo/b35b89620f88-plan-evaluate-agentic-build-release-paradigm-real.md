@@ -326,6 +326,10 @@ Filed: yoke befb8a8c (todo cb1a95c4, the skills parser reads `metadata.type`).
 
 The operator also asked for every step it took to launch the review form, as the baseline for a shapeware-enabled `form`. It is recorded on pilot 9643d77f, addendum (e) (bashy 38494c0f): about 20 tool calls, 4 product defects and 1 agent miss before the form was shown. Three new defects were added to bug 64ef2626.
 
+## Deliverable (2026-11-25): the recommendation
+
+`docs/sprint-712-recommendation.md` is the story deliverable. Its §12 maps each acceptance item to a section. In short: go for a narrow pilot on `form`, no-go for scale until signing and provenance exist; spec v0 adopted as the draft standard; a P1–P3 follow-on split with proposed owners. It waits for operator review; the story closes after that.
+
 ## Full exploration record
 
 All discussions, experiments, findings and open questions from the 2026-11-25 session: `docs/sprint-712-shapeware-exploration-2026-11-25.md`. The operator will revisit and finalize after the session.
