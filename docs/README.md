@@ -294,7 +294,7 @@ Full record of the 2026-11-25 Sprint 712 exploration session, kept so the operat
 - the reverse-SDLC thesis (field shaping loop; fix then use; TBD features built on demand)
 - the shapeware model (faces in standard languages; delivery channels; statuses; the release spectrum from requirements to traditional; critical features)
 - UI as restricted semantic HTML/CSS alongside the converter path, and meshing with the web through companion files
-- the operator decisions D1–D12, including the band floor for field building
+- the operator decisions D1–D13, including the band floor for field building and QA of skills against low-end local models
 - four dev-box experiments with their findings: the UI fence, the hello-world SDLC walkthrough, the two-sense visual/audio rendering, and fence-language support
 - the todos filed and the open questions
 

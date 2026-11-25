@@ -193,6 +193,29 @@ To keep look, feel and quality consistent across users:
   the release works as shipped, and the request goes upstream.
 - Critical features are never built in the field, at any band.
 
+## Write for the low end (QA of skills and scripts)
+
+In the reverse SDLC the skill and its scripts are what runs in the field, so
+they are what QA tests. The target is the weakest agent likely to use the app:
+a small local model (`bashy ollama`).
+- **Using** a shapeware app (follow the skill, apply a known-issue workaround,
+  report a tbd, run acceptance) must work for a low-end local model.
+  **Building** a tbd feature may need more: that is the band floor.
+- Put the reasoning in scripts, not prose: the script does the deterministic
+  work and prints a structured result; the model only picks the next verb.
+- Write short imperative steps with exact commands, one action per step, and
+  explicit stop conditions.
+- Write known issues as symptom → action lookups. Acceptance prints PASS,
+  FAIL or TBD lines, never prose to interpret.
+- If a small model cannot follow a skill, simplify the skill; do not raise
+  the requirement.
+- Evaluate: run a fixed task pack (follow the skill, hit a known issue, apply
+  the workaround, report a tbd, run acceptance) with a small local model on
+  the gate host, never on the dev box. Score task success, steps used,
+  forbidden moves and correct escalation. A skill or script change that
+  lowers low-end success is a regression; the same pack on larger models
+  sets the band floor.
+
 ## Rules by event
 
 ### 1. New feature (planned)

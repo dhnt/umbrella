@@ -64,6 +64,7 @@ Status: **exploration, not final.** The operator will revisit and finalize after
 11. **The glue is a skill.** The classic SDLC adapted for agents comes down to rules, the `shapeware` skill draft. It has no new tools.
 12. **Iterative releases (operator).** A release can be anything from user requirements only to a fully built app (the release spectrum), with critical features always verified and prebuilt.
 13. **Band level (operator).** Agent capability becomes critical too: the band ladder's "a band is a floor" rule applies to field building, so shipped apps keep a consistent look and feel (D12).
+14. **QA for the reverse SDLC (operator).** Shaping only works if skills and scripts work for low-end models, preferably local through `bashy ollama`. The skill draft gains "Write for the low end" (D13).
 
 ## 2. The model in one page
 
@@ -92,6 +93,7 @@ Status: **exploration, not final.** The operator will revisit and finalize after
   - direct: the restricted HTML is served as-is, and audio walks the semantic page with speech CSS
   - converter: `lens -f bsh -t md` plus the kit/render `feature`/`ui` renderers, for data faces, raw views and non-browser representations (Markdown/PDF, terminal, MCP elicitation, audio)
 - **Rendering is not running:** a view never executes runners.
+- **Low-end QA:** skills and scripts must work for small local models (`bashy ollama`); evaluated with a fixed task pack on the gate host.
 - **Band floor:** field building needs an agent at or above the app's or feature's minimum band; otherwise route up or don't build.
 - **Safety:** field changes go through `bashy shape` (wish → candidate → verify → preview → approve → undo), never by editing deployed source.
 
@@ -111,6 +113,7 @@ Status: **exploration, not final.** The operator will revisit and finalize after
 | D10 | Release spectrum (requirements … traditional) and critical features added to the skill |
 | D11 | Revisit and finalize after this session |
 | D12 | Band floor: the app declares a minimum agent band for field building (`min-band`; per-feature `band:` may raise it), so shipped shapeware keeps a consistent look, feel and quality. Below the floor: route to the cheapest qualified agent (own fleet or pooled), else don't build. Consistency = constraints + checks + band floor together. Critical features are never field-built at any band. |
+| D13 | QA for the reverse SDLC: skills and scripts are the thing under test and must work for low-end models, preferably local through `bashy ollama`. Reasoning goes into scripts with structured output; the skill is short imperative steps, symptom → action known issues and PASS/FAIL/TBD acceptance. A fixed task pack runs on the gate host (never the dev box), and a drop in low-end success is a regression. The same pack on larger models sets the band floor. |
 
 ## 4. Experiments and evidence
 
@@ -197,6 +200,12 @@ Options:
     - `bashy/docs/band-ladder.md` has L1 QA, L2 coding, L3 conductor, L4 steward.
     - `bashy sprint assign --band` takes 3–5.
     - The 2026-11-20 operator ruling uses L4 for managing a sprint and L5 for managing managers.
+13. **Low-end evaluation pack:**
+    - which small local models are the target
+    - the task pack contents and scoring
+    - where it lives (agent-bench)
+    - the gate-host venue
+    - whether skill and script changes must pass it before release
 
 ## Appendix A: hello-world walkthrough source (v0.2.0)
 
