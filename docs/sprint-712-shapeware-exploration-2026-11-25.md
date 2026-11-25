@@ -343,3 +343,86 @@ present:
 | after: X | placed below X in document order | spoken after X in time order |
 | visual.size: xl | `#` (h1) | ignored (visual-only) |
 | audio.pause_after: 500ms | ignored (audio-only) | `[[slnc 500]]` after the item |
+
+## Appendix C: operator review answers (verbatim)
+The operator's answers to the 2026-11-25 review form, copied word for word, including the original wording and typos. Each heading summarizes the reviewer's point; the full points are in §1 and on story b35b89620f88.
+
+**0. Premise (field issues found in daily use; design the loop on purpose)**
+
+- Choice: agree
+
+````text
+paradigm shift. instead of ask user testing pre release, users "test" and use during working sessions, shape/fix it if error found with the well designed software shaping feature including but not limited to comment/instructions in bash# skill-script format that would help runtime agent to perform the same impelementation/but fixing process/life cycle during traditional uat tests
+````
+
+**1. Start from failure classes, not pillars**
+
+- Choice: agree
+
+````text
+again. rod/not fish, rod is more important as it is impossible to enumerate all possible cases on the field.
+````
+
+**2. Drop the name HUAT from section A**
+
+- Choice: field shaping loop
+
+````text
+regarding huat, I just wanted to stress in the traditional testing metodologhy . most likely it will be agent no longer human for bashy software shaping enabled apps.
+````
+
+**3. Three delivery channels at different speeds**
+
+- Choice: agree
+
+````text
+and also layered. the IT industry has gone through these cycles. now a new one. we should coin a new word for it. that is:
+hardware: machine code
+firmware: aseembly langguage
+software: c/c++.... bash
+X-ware: bash#
+liveware, shapeware, liquidware... recommendations
+````
+
+**4. Root-cause discipline in the field**
+
+- Choice: agree
+
+````text
+we had same problem during development time. so the effort should always be bounded by budget/time or other creteria. and solution/resolution classified. e.g verfied (default) there a feature is shipped but with bugs idendify so the runtime agent where the feature stands and take from there when needed all should be using the same common unified language bash# skill/script.
+````
+
+**5. Feed field fixes back to everyone (N:N)**
+
+- Choice: agree
+
+````text
+good idea. all bashy opt-in  installations become a network/matrix that could benefit each other no traditional software applications could match
+````
+
+**6. Explicit known-issue state; #3230 as the test case**
+
+- Choice: new explicit known-issue state (reopen #3230 into it)
+
+````text
+again rod/not fish. philosophy
+````
+
+**7. Keep section D and plan-only acceptance**
+
+- Choice: agree
+
+**Next step**
+
+- Choice: record agreed points on story b35b89620f88 + sprint 712 thread
+
+**Anything missing from the paradigm?**
+
+````text
+many of the traditional SDLC problems could be solved easily in a reverse order with the support software shaping feature. here are my thoughts for your information:
+1) feature: traditionally, it is compiled into binary after long testing cycles and yet hard to meet the varying requirements of end users. new paradigm: ship in source code (bash#), the users requirement in specs written in bash# skill-script. we should explore more for this topic as especially important to UI applications. why ship in js/html/css/typescript? why not in spec/skill since all entry level LLM  agents could easily handle a spec and show the ui?
+2) bug - hard to catch and only happen on certain dictions. instead of fixing them, document in bash# skill so agents could easily handle them without having to "fix" it - same way if found, by the agents during development. fix then use (instead of fix then ship)
+3) mvp - not designed feature have to be done and some may bloat the release most of users donot need - ship as spec or simply (TBD - not implemeneted with instructions/specs to run agents which could implement on the fly)
+4) e2e uat - cumbersome, slow, requiring human users - just ship after auto/fake user tests, let the real users acceptance happen on the field. failed? fine, runtime agent take care of it/fix it so long the errors are expected and sufficient instructions/specs for the agent to handle it.
+5) many other cases, we could "reverse" the sdlc processes. all of the above "software shaping" could provide the machinery to help the runtime agents in the field after applcation release.  
+````
