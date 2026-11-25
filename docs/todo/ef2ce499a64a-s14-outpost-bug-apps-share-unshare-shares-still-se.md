@@ -34,3 +34,12 @@ App sharing already works through the console, so the A/O/C test does not wait o
 ## Moved to Sprint 710 (2026-11-24)
 
 Sprint 710 (owner sharing) is H1. The console path works; this restores CLI parity and feeds the H6 e2e listing check.
+
+## Worker rules (conductor, 2026-11-24, Sprint 710 H1)
+
+- First commit (separate, before the story change): bump outpost's yoke/pkg/llmgw and yoke/pkg/provider pins from 2615421df628 to yoke origin head ac3d38415ece (pin-only: no source changes under those packages in that range), go mod tidy, build + unit tests green. `bashy mod drift` must show outpost in-sync afterwards.
+- Start from current origin heads; rebase before submitting. Root cause before any fix: reproduce red first and record the cause in the commit message and on this story.
+- Small diff, its own regression tests; run the touched packages' unit tests only (GOWORK=off where the module builds standalone). No e2e, no podman, no full suites on the dev box.
+- Commit trailers: Sprint: 710 / Story: <title> / Story-ID: <id> plus your Agent trailer. Public repos: no host names, logins, IPs or home paths.
+- Do not deploy, tag or release anything. Submit with `bashy sprint submit` naming the commits and the test command + result.
+- Outpost lands on outpost main (push); the conductor bumps the umbrella pin.
