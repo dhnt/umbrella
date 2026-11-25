@@ -7,9 +7,9 @@ status: todo
 priority: p1
 created: 2026-11-23T13:51:46.219172Z
 assignee: muse-wonder
-sprint: 699
-sprint_id: f30c730a-f8ad-57ba-9122-6f1c2a1cd97a
-sprint_title: 'Release train 1: one hosted-plane deploy for Sprints 682/697 + live verification'
+sprint: 718
+sprint_id: 9984cebc-ae0e-52ba-bf24-ee859733b740
+sprint_title: 'Train 1 live follow-ups (revisit): H5 share/revoke + re-invite real mail with test accounts, A5 on dhnt.io, satellite shell title'
 ---
 
 Extend bashy examples/shaping/discover/discover.bsh with a task leg. Each client gets only the page URL and the instruction 'find out how to work with this site and do what it says'. The runner captures the server log (request headers and paths fetched, including /skill.md and /.well-known/*) and the client transcript. The table records, per client: whether it read the agent block, fetched the index/skill, cited a section correctly, and its time to first correct action. Run on the live dhnt.io after train 1 is deployed, and on the template sample; browser legs on the gate host. Findings recorded as observed.
