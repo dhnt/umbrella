@@ -3,12 +3,13 @@ id: 6ba1b4777931
 kind: test
 title: 'M4 A/O/C on the Page example: the sandbox scenario runs against examples/desk/page (MVP)'
 seq: 735
-status: todo
+status: assigned
 priority: p1
 labels:
     - shaping
     - access-tiers
 created: 2026-11-25T04:28:08.884379Z
+weave: 264
 assignee: codex-gpt6.2-astra
 sprint: 709
 sprint_id: b7f6e528-7ee8-56aa-a9bf-0f1db3f255d2
@@ -57,3 +58,7 @@ Step 1, pin propagation (agreed with the Sprint 699 release manager), each on it
 Step 2, Page leg: rebase the preserved Page leg (bashy branch s709-m4-page-leg, 773dfa09) onto the step-1 bashy; in the sandbox seed the owner's tool cache with the Go toolchain `bashy go` uses (offline, from the mounted Go SDK, binmgr layout <cache>/go/<version>/go) - test harness only. Website + Page legs green twice on the gate host in the official image; raw logs kept.
 
 Deliver commits (bashsharp, ycode, bashy, umbrella pins) in the workspace; push nothing; the conductor reviews and pushes in order. Trailers Sprint/Story/Story-ID + `Agent: <assignee>`.
+
+## Delivery split (699 release manager, 2026-11-24 ~23:00 PST)
+
+Deliver Step 1 (pin propagation) as soon as it is green: commit it, record the gate result, announce on mb "709 ROUND READY" with the bashsharp/ycode/bashy/umbrella SHAs and the gate log path, so the conductor pushes it without waiting for the Page leg. Then do Step 2 on top. M4's Page leg goes to main only if green twice by 11-25 10:30 PST.
