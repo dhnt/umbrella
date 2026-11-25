@@ -1,6 +1,6 @@
 # Shapeware spec v0: layout and structure (draft)
 
-Status: **draft for operator review** (Sprint 712, story b35b89620f88, 2026-11-25). Plan only: no product code changed. Validated with scratch walkthroughs on the dev box (§15).
+Status: **draft, operator-reviewed 2026-11-25** (Sprint 712, story b35b89620f88). The decisions from that review (R1–R4, Q1–Q6) are applied; see record D19. Plan only: no product code changed. Validated with scratch walkthroughs on the dev box (§15).
 
 Shapeware is software that ships as Bash# source together with its specs, skill and known issues, and that agents finish or fix in use (the reverse SDLC; record: `docs/sprint-712-shapeware-exploration-2026-11-25.md`). This spec defines what a shapeware release **is on disk**: precise enough that a low-end model can create, check and use one.
 
@@ -61,13 +61,13 @@ The shapeware keys under `metadata`:
 | `type: shapeware` | Declares the folder as shapeware (D17). Without it the folder is a plain skill. |
 | `shapeware: "0"` | The spec version. A reader accepts the same major and ignores unknown keys. |
 | `version: "X.Y.Z"` | The app release (semver, the same as the git tag). |
-| `min-band` | The band floor for field building (D12). Values wait for Q12 (band numbering). |
+| `min-band` | The band floor for field building (D12), one of `L1`–`L5` on the unified ladder (review R2): L1 QA/verify, L2 coding to a spec, L3 story delivery (including conducting one story), L4 sprint manager, L5 manager of managers. Using an app is L1, the D13 low-end target; building a tbd feature is L2. |
 | `requires`, `check-tests` | Existing bashy keys (see `form.bsh`). |
 | `features`, `checks`, `ui` | Path overrides, relative to the folder, for a repo whose layout already uses the default names (§1). Defaults: `features.yaml`, `checks/acceptance.bsh`, `assets/ui/`. |
 
 The release class is **never stored**; it is computed (§12). Critical feature ids live only in `features.yaml`.
 
-Note on `type`: bashy's skill parser already reads a **top-level** `type` key (`yoke/pkg/skills/skill.go`). The open skill format does not allow one, so shapeware uses `metadata.type`. Reconciling the two is follow-on F4 in §16.
+**`type` (decided 2026-11-25, review R1):** the spec favours **one** spelling, `metadata.type: shapeware`, because the strict skill validator (`skills-ref`) rejects any top-level key outside `name`, `description`, `license`, `compatibility`, `metadata` and `allowed-tools`, and D15 requires every release to pass it. Readers also accept a top-level `type:`, for compatibility only. This is the rule bashy's dag format already uses: top-level or `metadata:`, and the top-level one wins. Top-level `type` is to be phased out over time and is never written by shapeware tools. bashy's skill parser currently reads only the top-level `type` (`yoke/pkg/skills/skill.go`); the follow-on F4 adds `metadata.type`.
 
 ## 4. SKILL.md body
 
@@ -177,7 +177,7 @@ Feature and known-issue ids are the join key between versions. The trusted core 
 | `metadata.type` | A plain skill. A shapeware-aware agent may apply all the defaults below. A published release must declare it. |
 | `metadata.shapeware` | The current spec version (v0) |
 | `metadata.version` | The release git tag, else `0.0.0+<commit>`, else `0.0.0+unversioned` |
-| `metadata.min-band`, a feature's `band` | The lowest band: any agent may build a non-critical feature. The checks and the critical rule are the guardrails; an app that wants a higher floor declares one. |
+| `metadata.min-band`, a feature's `band` | No floor (review R3): any agent may build a non-critical feature, on a copy, kept only when its checks PASS. The checks and the critical rule are the guardrails; an app that wants a floor declares one. An agent with no registered band counts as below any **declared** floor. |
 | An agent's own band | The band its operator registered (`bashy agent list`), else the lowest |
 | `features.yaml` | No feature claims |
 | A feature's `status` | `tbd` |
@@ -213,7 +213,7 @@ The shapeware skill carries the computation as a short script (Appendix B, `rele
 **Any repo is potential shapeware (operator, D18).** One root `SKILL.md` with the type line and the standard run block makes it actual. Everything else is optional (D16) and grows release by release: wanted features as `tbd`, checks wrapping the existing tests, known issues as they are found. That is the release spectrum applied to existing code.
 
 Any repo can be run by any agent with three additions and no moves:
-1. **`SKILL.md` at the root** (§1), with the type line and the standard run block. Its steps name the repo's real run and test commands and link its existing `scripts/`, `assets/` and `docs/`. Everything else is optional (§11): a `features.yaml` can start with the backlog's wanted features as `tbd`, and `checks/acceptance.bsh` can wrap the repo's existing tests. Use the `metadata` path keys where the default names are taken. (Zero-touch alternative: the same files in `skills/<name>/`.)
+1. **`SKILL.md` at the root** (§1), with the type line, the standard run block and `metadata.min-band: L2`. Field changes to a whole repo are coding work, so the repo recipe declares the L2 floor explicitly (review R2); the default for small apps stays "no floor". Its steps name the repo's real run and test commands and link its existing `scripts/`, `assets/` and `docs/`. Everything else is optional (§11): a `features.yaml` can start with the backlog's wanted features as `tbd`, and `checks/acceptance.bsh` can wrap the repo's existing tests. Use the `metadata` path keys where the default names are taken. (Zero-touch alternative: the same files in `skills/<name>/`.)
 2. **Discovery.** `bashy skill export <name> --repo` already writes `.agents/skills/` (the vendor-neutral location) and `.claude/skills/` when `.claude` exists. Agents with no skill loader get one line in the files they already read (`AGENTS.md`, `CLAUDE.md`, `README`): "This repo is shapeware: read `SKILL.md` first."
 3. **Lint.** Run `lint.bsh` (Appendix B).
 
@@ -251,11 +251,13 @@ A shapeware skill-script that drafts step 1 from a repo (detecting the build and
 | F1 | `bashy/skills/bashy/SKILL.md` frontmatter is not strict YAML (an unquoted `: ` in `description`); strict skill validators may reject it | bashy todo: quote the description (p3) |
 | F2 | bashy skill admission checks only path safety, not the skill-format name rules, and does not require the name to match the folder | Fold into the shapeware lint as a bashy skill-script; whether `bashy skill add` should warn is an operator call |
 | F3 | A record install writes files 0644 | Spec rule: always run `bashy --bashsharp <file>`. No change needed |
-| F4 | bashy reads a top-level `type`; the open format puts extras under `metadata` | bashy: also read `metadata.type` (small) |
+| F4 | bashy reads a top-level `type`; the open format puts extras under `metadata` | **Approved and filed** (review): yoke skill parser also reads `metadata.type` |
 | F5 | `bashy shape` needs a registered app; a plain folder uses the sibling-copy route | The pilot (9643d77f) tests registration of a shapeware folder |
-| F6 | Q12 band numbering is still open; the defaults use "lowest band" | Operator decision (Phase 3) |
+| F6 | Q12 band numbering | **Decided** (review R2): the unified L1–L5 ladder. The `band-ladder.md` doc update was not filed now |
 
-Not in the MVP: projecting the single `.bsh` into the folder, UI acceptance by role, the `bashy-ui-v1` envelope, signing, the known-issue feed, background upgrades, data migration, and a repo-enable generator.
+**Embedded sub-shapeware (review R4, future extension).** In v0 every shapeware folder stands alone. A repo may hold several (`skills/<a>/`, `skills/<b>/`), and a root `SKILL.md` may link them as sub-apps, but v0 defines no composition: no version, class or known-issue roll-up across them, and no dependency between them. The layout does not prevent a later extension, which would be a new spec major or minor. KISS/MVP, open for extension.
+
+Not in the MVP: composing sub-shapeware, projecting the single `.bsh` into the folder, UI acceptance by role, the `bashy-ui-v1` envelope, signing, the known-issue feed, background upgrades, data migration, and a repo-enable generator.
 
 ## Appendix A: the hello example in the v0 layout (as validated)
 

@@ -69,6 +69,8 @@ Status: **exploration, not final.** The operator will revisit and finalize after
 
 ## 2. The model in one page
 
+> **Superseded in part (D14–D19):** the artifact is now a **skill folder** (a superset of an Agent Skill folder; see `docs/shapeware-spec-v0.md`). Features live in `features.yaml`, not an in-body `~~~feature` fence. The single `.bsh` holding all its faces remains an authoring form only. The rest of this page still holds.
+
 - **Artifact:** one `.bsh` body (or an app plus a companion `.bsh`) with faces in standard languages:
   - script: Bash#
   - skill: Markdown, plus Known issues
@@ -105,7 +107,7 @@ Status: **exploration, not final.** The operator will revisit and finalize after
 |---|---|
 | D1 | All 7 review points agreed; the reverse-SDLC thesis recorded; KISS/MVP (the rod, not a framework) |
 | D2 | Name: shapeware; GitHub org taken; category word, no trademark registration |
-| D3 | Known issues are written inside the `.bsh` body, not in a separate file |
+| D3 | Known issues are written inside the `.bsh` body, not in a separate file. Reconciled by D14/D19: in the folder form, `SKILL.md` is the body |
 | D4 | The form pilot is 712's case (iii), run as follow-on todo `9643d77f` (712 itself stays plan-only) |
 | D5 | UI is a face; JSON/YAML/HTML are the default "fish"; a standard CLI↔serve format is needed now (`bashy-ui-v1`) |
 | D6 | The pilot adds case 2: a companion `.bsh` on an existing web app (`examples/shaping/hello-world`) |
@@ -121,6 +123,7 @@ Status: **exploration, not final.** The operator will revisit and finalize after
 | D16 | Defaults (operator): when part of the spec is missing, documented defaults apply. Only `SKILL.md` is required; every shapeware part is optional, and the defaults are the safe or no-claim values (for example, a feature defaults to `tbd`, `critical` defaults to `false`, and with no features there are no feature claims). |
 | D17 | Self-describing (operator): `SKILL.md` teaches any agent, including agents that know nothing of shapeware, (1) the type, as `metadata.type: shapeware` plus a body line `Type: shapeware (v0)`, and (2) how to run shapeware the right way, in a fixed standard block that links a bundled `references/shapeware.md`. So with no extra advertisement, any current agent can run, check, show and build the app. |
 | D18 | Layout and repos (operator, spec session): one layout serves both the repo and the skill. The skill directory names (`scripts/`, `assets/`, `references/`) are defaults whose meanings repos already use; the shapeware parts have default paths with `metadata` path keys for repos where those names are taken; the repo root can be the skill folder, with `skills/<name>/` as the zero-touch alternative. So any repo is potential shapeware: one root `SKILL.md` makes it actual. Spec: `docs/shapeware-spec-v0.md`. |
+| D19 | Operator review of the spec (2026-11-25, bashy form): **R1** the spec favours one spelling, `metadata.type: shapeware`; a top-level `type` is read only for compatibility (the dag rule: top level wins) and is phased out over time. **R2** one band ladder, L1 QA, L2 coding, L3 story delivery, L4 sprint manager, L5 manager of managers; repo-as-shapeware declares `min-band: L2`. **R3** a missing `min-band` means no floor. **R4** realign the docs; D3 is reconciled (in the folder form `SKILL.md` is the body); embedded sub-shapeware is a future extension. **Q1** the shapeware skill ships as a shapeware folder in the `shapeware` org after the Q9 check. **Q2** the kit's bluemonday policy is the v0 allowlist. **Q3** runners, no engine change. **Q4** the `bashy-ui-v1` envelope is deferred to the pilot. **Q6** the known-issue todo status is a follow-on story. Filed: yoke reads `metadata.type`. Operator: "kiss/mvp allow future extension." |
 
 ## 4. Experiments and evidence
 

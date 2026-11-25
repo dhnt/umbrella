@@ -118,7 +118,7 @@ The glue is a skill, not new machinery: the rules an agent follows at each SDLC 
 - the two-sense run
 - the operator rulings: no reinventing the wheel; restricted HTML and the converter, not either/or
 
-Verbatim draft:
+Verbatim draft. **Realigned 2026-11-25 (D19):** the normative structure is now `docs/shapeware-spec-v0.md`, and the spec's bundled agent card (`references/shapeware.md`) is this skill's condensed form. The draft below is edited to match: a skill folder, `features.yaml`, `metadata` keys and the L1–L5 bands.
 
 ````markdown
 ---
@@ -132,14 +132,15 @@ step uses standard languages and existing bashy verbs.
 
 ## What a shapeware artifact is
 
-One `.bsh` body (or an existing app plus a companion `.bsh`) holding faces,
-each written in a language every agent and human already knows:
+A skill folder (a superset of an Agent Skill folder; any repo can be one)
+holding faces, each written in a language every agent and human already
+knows:
 
 | Face | Language | Holds |
 |---|---|---|
 | script | Bash# | what machines run |
 | skill | Markdown (`~~~skill`) | how an agent uses it, plus **Known issues** |
-| features | YAML (`~~~feature`) | each feature: id, status, intent, acceptance examples, optional `critical: true`, optional `band:` |
+| features | YAML (`features.yaml`) | each feature: id, status, intent, acceptance examples, optional `critical: true`, optional `band:` |
 | ui | HTML/CSS (restricted semantic profile), JSON/YAML for data, TS for logic | what a human sees and hears (`@media speech` for audio) |
 
 Do not invent formats. If a standard language covers it, use it.
@@ -155,8 +156,8 @@ existing skill channels; there is no new package format.
 | skill + known issues | `SKILL.md` |
 | script | `scripts/*.bsh` |
 | ui | assets beside `SKILL.md` (restricted HTML/CSS, JSON data) |
-| features + acceptance | the `~~~feature` list plus `checks/` |
-| release class, `min-band`, critical | frontmatter `metadata:` |
+| features + acceptance | `features.yaml` plus `checks/acceptance.bsh` |
+| type, spec version, version, `min-band` | frontmatter `metadata:` (`type: shapeware`) |
 
 What the skill folder does not give, and shapeware still requires:
 - **Trust:** signing, effect caps (`contract.bsh`) and provenance.
@@ -203,8 +204,8 @@ destructive or irreversible actions, regulated data. A critical feature:
 
 A tbd feature built in the field is only as good as the agent that builds it.
 To keep look, feel and quality consistent across users:
-- The app declares a minimum band for field building (`min-band`, in the
-  skill frontmatter or `shaped.json`); a feature entry may raise it
+- The app may declare a minimum band for field building (`metadata.min-band`,
+  L1–L5; missing means no floor); a feature entry may raise it
   (`band:`). A band is a floor: any agent at or above it may build.
 - Consistency comes from three layers together: constraints (restricted HTML
   profile, kit design tokens and components), checks (acceptance, profile and
@@ -240,7 +241,7 @@ a small local model (`bashy ollama`).
 ## Rules by event
 
 ### 1. New feature (planned)
-1. Spec first: add a `~~~feature` entry with `status: tbd`, intent, and
+1. Spec first: add a `features.yaml` entry with `status: tbd`, intent, and
    acceptance examples a machine can check.
 2. Implement. Run acceptance. Only a passing run sets `status: verified`.
 
@@ -311,6 +312,19 @@ The operator also asked how versions and upgrades work. The recommendation is in
 ## Spec v0 draft (2026-11-25, Phase 1)
 
 `docs/shapeware-spec-v0.md` (34c427678) is the draft spec. It is validated on scratch copies: lint, release class, skill-record round trip, an upgrade leg, and two runs by agents with no shapeware context (the second built the tbd feature on a copy, keeping the installed copy untouched). The operator added **D18**: one layout serves both the repo and the skill (skill directory names as defaults, `metadata` path keys where a repo already uses those names), so any repo is potential shapeware and one root `SKILL.md` makes it actual. Findings F1 to F6 are listed in spec §16, waiting for operator approval before anything is filed.
+
+## Operator review of the spec, 2026-11-25 (D19)
+
+The review was taken through a `bashy form`. All recommendations were agreed; the decisions are in record D19 and applied in the spec.
+- **R1:** favour `metadata.type`, with top-level `type` read only for compatibility and phased out.
+- **R2:** one L1–L5 ladder; repo-as-shapeware declares `min-band: L2`.
+- **R3:** no floor by default.
+- **R4:** docs realigned; embedded sub-shapeware is a future extension.
+- **Q1–Q6** as recommended. Operator: "kiss/mvp allow future extension."
+
+Filed: yoke befb8a8c (todo cb1a95c4, the skills parser reads `metadata.type`).
+
+The operator also asked for every step it took to launch the review form, as the baseline for a shapeware-enabled `form`. It is recorded on pilot 9643d77f, addendum (e) (bashy 38494c0f): about 20 tool calls, 4 product defects and 1 agent miss before the form was shown. Three new defects were added to bug 64ef2626.
 
 ## Full exploration record
 
