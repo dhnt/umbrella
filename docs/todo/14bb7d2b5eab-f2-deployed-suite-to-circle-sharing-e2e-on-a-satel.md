@@ -18,3 +18,13 @@ Sprint 614 S9 shipped suites and circle shares (cloudbox 07411af server + consol
 ## Sprint 710 H6 (2026-11-24): extended acceptance
 
 Moved from the backlog into Sprint 710 (owner sharing) as its acceptance story. Besides the checks above: the circle is an owner-named custom circle; a publicly published app answers an anonymous visitor and a logged-in non-member identically (as anonymous); re-inviting a pending member delivers the mail; the CLI share listing (H1, S14) matches the console. Record the outpost grant-cache TTL as the "live revoke" bound. Green twice on the Linux test host after H1-H5 merge. Plan of record lives with the sprint card.
+
+## Worker rules (conductor, 2026-11-25, Sprint 710 H6)
+
+Candidate commits (all merged): cloudbox dev 3615810 (H2 re-invite, H3 satellite sign-in, H4 client IP, H5 master share projection; closure bookkeeping ae3a596), outpost 6b4a08d (H1 grant-rule share CLI), yoke 39aef5bc (H2b invite output), bashy 98551856. Start from these heads.
+
+- Extend the existing cloudbox e2e harness: script/e2e_fleet (fleet.py, journeys.py) and script/e2e_multisat.py. H5 already moved its shares to the master. Do not build a new harness. Code inspected: fleet.py share()/unshare() on the master wire; shared_checks; user-complex scenario.
+- One scenario covers every acceptance check above. The owner-named custom circle, the suite of two apps on two hosts shared to it, and member-in / member-out / no-credential give 200/403/401. Moving the member out of the circle and removing an app from the suite give 403 without re-share; record the measured latency against the outpost grant-cache TTL (outpost/internal/agent/provision.go). The public app gives an identical answer to an anonymous visitor and a logged-in non-member. Re-inviting a pending member delivers mail: use the harness's existing mail capture or fake (find it; if none exists, report before adding one). `outpost apps shares --json` (H1) lists the same grants as the console API.
+- Keep the 'family: satellite host rows' check from user-complex green as written.
+- You do NOT run the e2e. Never ssh, scp or remote-exec to any host, and never start background tasks. Verify locally with python -m py_compile and any pure-Python unit checks only. Stage one runnable gate command (script + exact args + the commit pins it needs) and put it in your submit message. The conductor runs it twice on the Linux test host.
+- Commit to cloudbox dev via your workspace branch, one commit with Sprint/Story/Story-ID/Agent trailers. Story-ID is this umbrella story; the cloudbox hook may warn that the story is in another store, which is fine. No deploy. No host names, IPs or logins in anything committed to public repos.
