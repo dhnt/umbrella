@@ -50,3 +50,9 @@ Side finding: the cloud-host reaper job's own log has no entry after 2026-10-21,
 ### Enable decision
 
 With jobs 1-5 removed, only the disk alarm clearly earns a running engine on the dev box; 6 and 7 act on outside systems unattended. Recommendation: prune first, decide 6 and 7, then `bashy service enable schedule` only if at least one kept job is wanted continuously. Until the test defect above is fixed, any bashy unit-test run on the dev box can fire whatever is left enabled.
+
+### Operator decisions 2026-11-25
+
+- Jobs 1-5 deleted on the operator's approval (`bashy schedule rm`; the job store was backed up beside itself first). Three jobs remain, all enabled: the CI failure router, the cloud-host reaper and the disk floor alarm.
+- The test defect is filed as da90afb1a1dc (standalone bug, p2).
+- Still open: keep, disable or delete the CI failure router and the cloud-host reaper; whether to enable the schedule unit.
