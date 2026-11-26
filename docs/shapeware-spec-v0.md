@@ -158,9 +158,11 @@ A YAML list. Feature ids are stable across versions, and each example is address
     - hello greet Ada --lang es => ¡Hola, Ada!
   critical: false                # default false; true = never tbd, never field-built
   band: L2                       # optional; raises the app min-band for this feature
+  effort: 2                      # Fibonacci points 1, 2, 3, 5, 8, 13 (13 = split it); relative size
 ```
 
 - A feature's floor is the higher of `metadata.min-band` and its own `band`.
+- `effort` is the feature's relative size in Fibonacci points (operator, 2026-11-25). An app's size is the sum over its features. Points are not minutes: the minutes per point are **measured** per band by the builder drills (Sprint 722: the one full reproduction of `form`, 10 points of verified features, took 1,034 s), and the expected time and cost of a shaping request come from that measurement. A feature estimated at 13 is too large and is split.
 - A work copy may **add** features and examples. It may never change or remove an existing line, so it cannot weaken an example or flip `critical`.
 - UI acceptance by label and role is not in the MVP.
 
