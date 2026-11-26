@@ -3,14 +3,17 @@ id: ee228fa11654
 kind: doc
 title: 'S12 kb runbook shapeware-spec-from-app: draft a shapeware spec from an existing repo/app (reverse)'
 seq: 779
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T05:33:11.757787Z
+assignee: claude-opus5.5
 sprint: 723
 sprint_id: a7f3f8dd-c83a-5191-9739-676397a50c45
 sprint_title: 'Spec to source calibration: sound spec, validator, minimal model, judge band'
+closed: 2026-11-26T11:19:27.392955Z
+closed_by: claude-opus5.5
 ---
 
 Operator 2026-11-25. A bashy kb runbook an agent follows to turn an existing app into a shapeware spec, written from what we did for form:
