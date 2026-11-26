@@ -1,10 +1,10 @@
 # The shapeware workflow standard (v0, first draft)
 
-*Written 2026-11-26 for Sprint 731 (story W1). It answers questions 1 to
-5 and 8 of `shapeware-workflow-findings-2026-11-26.md` §4 and uses bashy's
-`form` app as the proof, stage by stage. It is a draft for the operator
-review (story W3); questions 6 and 7 (how an app enters the workflow, how a
-new tool or model joins) belong to story W2.*
+*Written 2026-11-26 for Sprint 731. It answers the eight questions of
+`shapeware-workflow-findings-2026-11-26.md` §4 (story W1; questions 6 and
+7, how an app enters and how a new tool or model joins, in §8 to §11 by
+story W2) and uses bashy's `form` app as the proof, stage by stage. It is a
+draft for the operator review (story W3).*
 
 Shaping is iterative. No pass is expected to produce a perfect app; the
 workflow makes each pass cheap, checkable and safe to repeat.
@@ -375,13 +375,113 @@ cheapest binding whose band meets the spec's measured `min-band`) reads it.
 the Sprint 723 results exist only in its report.
 
 **Per approval:** consent and override records from gate 2 are required
-(findings §4a); where they are kept is not decided here (§8).
+(findings §4a); where they are kept is not decided here (§12).
 
-## 8. Deliberately not in this first standard
+## 8. How an app enters
 
-- **How an app enters** (reverse step or instructions step), the dogfood
-  order across bashy's apps, and **how a new tool or model joins**:
-  questions 6 and 7, story W2.
+Both paths end in the same loop (§3, stages 3 to 8); they differ in where
+the spec comes from and what certifies it.
+
+### An existing app: the reverse step
+
+1. **Spec from the app** (stage 1): kb runbook `shapeware-spec-from-app`,
+   steps 1 to 8; assertions come from real runs on the app.
+2. **Compile** (stage 2): `conform spec check` reports nothing.
+3. **Owner review** (gate 1): the owner accepts the spec as what the app
+   is; where the app departs from its documentation, the difference is a
+   known issue (same runbook, "What the first conversion taught").
+4. **Certify against the app** (stage 5): `conform cert` and `conform
+   mutate` on a test host (same runbook, step 10). The app is the reference.
+5. **Hidden cases** against that reference (§6, steps 3 and 4).
+6. **Then the loop:** builders rebuild it (stage 3), and so on.
+
+*Before a builder is asked:* a lint-clean spec the owner has reviewed, a
+certified reference with every mutant killed, a frozen hidden set whose
+digest is in a drill protocol, and a stated venue (kb runbook
+`spec-to-source-drill`, part A). *State: partly proven.* Every step but
+the owner review ran on `form`, with the conductor as spec author and judge
+(`sprint-723-report.md`, "Limits"); no agent has written such a spec or its
+hidden cases yet (Sprint 726).
+
+### A new app: the instructions step
+
+1. **Spec from instructions** (stage 1): kb runbook
+   `shapeware-spec-from-plan`; everything `tbd`, open values listed.
+2. **Compile** (stage 2).
+3. **Owner review** (gate 1): every open question is settled.
+4. **First build** (stage 3) against the visible contract only, an
+   engineering run (§6, step 2). The first passing build that the owner
+   keeps becomes the reference.
+5. **Hidden cases and certification** (§6, steps 1 and 3): from here on
+   the app is an existing app and follows the loop.
+
+*Before a builder is asked:* a lint-clean spec with no open question left,
+a stated venue, and consent where it builds (gate 2); with no reference,
+the first build qualifies no one. *State: not yet proven:* steps 1 and 2
+ran once (findings §1); steps 3 to 5 never (story `e130889b`).
+
+## 9. The dogfood order
+
+Each wave is its own sprint with its own plan (the umbrella's mass-change
+rule). Every app below exists, so each wave uses the reverse step (§8).
+
+| Wave | Apps | Entry condition |
+|---|---|---|
+| 0 | `form` (Sprint 731) | a certified spec (v2.1, `handoff-sprint-731.md`): met |
+| 1 | one second app, agents in every role (Sprint 726; `notepad` recommended, plan decision 1) | this standard reviewed (W3), plan decisions 1 to 3 made, the runner leak fix (`6afd1714`) merged |
+| 2 | the remaining desk apps: `chart`, `page`, `viewer` | wave 1 met its acceptance with no conductor-written spec or case, and its runbook fixes are merged |
+| 3 and on | the other bashy examples (about 50), a few at a time, grouped by kind | the previous wave closed, and the wave's plan names its apps, bindings and quota budget |
+
+At bashy `dc49998c`, `chart`, `notepad`, `page` and `viewer` have a `dag.md`
+and an effect cap but no `SKILL.md` or `CONTRACT.md`. **`kit` is a
+library** and needs its own decision, as do `gallery` (screenshots) and
+`evidence` (round-trip results), which hold no app source; not decided here.
+
+## 10. How a new tool or model joins
+
+**The drill.** A new binding qualifies as a builder through the builder
+drill (kb runbook `spec-to-source-drill`, part B: quota check, probe, three
+runs, a gate per batch) on each certified spec with a frozen hidden set.
+Today that is `form`, whose hidden set is fixed for spec v2
+(`spec2src-protocol-v2.md`); a drill on v2.1 first needs a protocol fixing
+its digest. Qualified at 2 of 3 or better; one ladder step gives a bound.
+
+**The cost.** Three scored runs per binding and spec, plus one probe. In
+Sprint 723 a passing session took 302 s to 1846 s: about 5 minutes for
+`claude-sonnet5.5` and `codex-gpt6.1-terra`, 16 to 22 for
+`agy-gemini4-carbon`, one `muse-ember` run at the 30-minute cap
+(`sprint-723-report.md`, "Every run"); grading time was not reported.
+**Quota, not time, is the limit:** probes, worker sessions and scored runs
+share one plan quota per binding (F10); one vendor's plan allows about one
+drill per reset window beside normal work (`plan-reverse-sdlc-workflow.md`,
+"Budget, venue and risks"). A refusal is a venue fault, rerun after the
+reset (§2, rule 7).
+
+**The record.** Today a row per binding in a public report (k of 3,
+session times, classified failures, digests), raw grades in the private
+store; the reader should be the routing rule (§7, "Per binding"). *Not
+built:* the registry record (W6), a quota check before runs (W7), the
+drill as registered commands (W4). *Not yet proven:* intake for the other
+roles: the judge drill (`6e6632d8`) and the spec-author drill (Sprint 726,
+`e130889b`) have not run; the operate drill is story T2.
+
+## 11. Open items for the operator review (story W3)
+
+Recommendations only; the operator decides. No sprint or story is changed.
+
+| Item | Options | Recommended | Why |
+|---|---|---|---|
+| Sprint 726, the loop on a second app | confirm; reshape R1 into an owner review of a Sprint 727 notepad spec; fold into 731; leave in backlog | **confirm** as wave 1, reverse step as filed, after W3 | it measures the unmeasured roles on the one proven path; the reshape would mix in the unproven instructions path, which an existing app judges weakly (F7) |
+| Forward test of the three notepad specs (`e130889b`) | confirm as written; reshape; fold into 726; leave in backlog | **reshape** into the first run of the instructions path (§8), its own sprint after wave 1 | as written it builds with no owner review, which gate 1 requires before any build |
+| Judge study (`6e6632d8`) | confirm; reshape; fold into 726; leave in backlog | **leave in backlog** until 726 closes, then reshape to use 726's evidence too | the plan places judge qualification after iteration 2 ("Later, in order"); 726 gives the first agent-judge classifications to score |
+| Sprint 723 carry-overs: the Google step down, the Zhipu start tier | confirm as a sprint; fold into 726; leave in backlog | **leave in backlog** and run each as an intake drill (§10) when a reset window is free | the goal is a proof of concept, not a census (`handoff-sprint-731.md`, rulings); four vendors already passed |
+| Sprint 730, the field loop | confirm; reshape; leave in backlog | **leave in backlog** until wave 1 closes; at confirmation, point its acceptance at this standard instead of Sprint 728 | it needs the install and run stages measured (T2) and the gates of §5; running it beside 726 doubles the conductor load (F11) |
+
+## 12. Deliberately not in this first standard
+
+- **From §8 to §11:** the judge and spec-author drills as standing intake,
+  the decision on `kit`, `gallery` and `evidence`, and a census of every
+  vendor's lowest tier.
 - **The dry run**, **rules as data** with critical rules in the trusted
   core, the **vault-backed secret check**, the **venue preflight**, and
   **the consent gate as one step** with its log (findings §4a). The rules

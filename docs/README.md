@@ -378,13 +378,17 @@ Input material for Sprint 728, which plans the complete shapeware workflow and i
 
 ## shapeware-workflow-standard.md
 
-The shapeware workflow as one standard, first draft (Sprint 731, story W1), for the operator review. It answers questions 1 to 5 and 8 of the findings and uses bashy's `form` app as the proof, stage by stage:
+The shapeware workflow as one standard, first draft (Sprint 731, stories W1 and W2), for the operator review. It answers the eight questions of the findings and uses bashy's `form` app as the proof, stage by stage:
 
 - the terms, defined once, and the rules: the lifecycle (`dag.md`) is part of the spec with effects and a measured band per step, a spec is compiled before it is built, the contract is the end-to-end test on the build and on the installed app, two human gates, failures classified by cause;
 - the eight stages (instructions to spec, compile, spec to source, build, test, install, run or serve, field shaping), each with who does it, the artifact, the gate, the evidence and whether it is proven, partly proven or not yet proven on `form`, with the source;
 - what done means for one shaping pass, using the format's release classes ("verified with tbd" is normal);
 - the agent roles and the people (owner, account member, contractor) with the gates they hold;
-- hidden cases when no reference app exists, where records live per app and per binding, and what is deliberately left out.
+- hidden cases when no reference app exists, and where records live per app and per binding;
+- how an app enters: an existing app by the reverse step, a new one by the instructions step, each with what must exist before a builder is asked and its proof state;
+- the dogfood order in waves, each its own sprint with a one-line entry condition (`form`, a second app with agents in every role, `chart`/`page`/`viewer`, then the other examples), with `kit`, `gallery` and `evidence` left to their own decision;
+- how a new tool or model joins: the builder drill on certified specs, its cost in runs, session time and shared plan quota, the record it leaves and what is not built;
+- the open items for the operator review (Sprint 726, the notepad forward test, the judge study, the Sprint 723 carry-overs, Sprint 730), each with options and one recommendation, and what is deliberately left out.
 
 ## handoff-sprint-731.md
 
