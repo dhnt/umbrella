@@ -195,6 +195,13 @@ and must make its steps work, instead of inventing one.
 Operator, 2026-11-26. Two things: issues must have a place in the spec,
 and an app should be able to work on its own issues while it runs.
 
+**Superseded as the sprint's plan** by
+`docs/sprint-730-master-execution-plan.md` (review of 2026-11-26). That
+document adds two stories (L0 format decisions, L6 an expected-fail mode in
+`conform cert`), drops L4's dependency on yoke todo `55730ebaf952`, which is
+not built, and records that incident repair activates without the owner
+today. The table below is the plan as first filed.
+
 **What the format already has** (`shapeware-spec-v0.md` §4.2, §4.3, §5):
 a known-issue entry (`KI-n`, status, the feature it belongs to, symptom →
 action, retry bound, expiry, todo), features marked `tbd` with acceptance
