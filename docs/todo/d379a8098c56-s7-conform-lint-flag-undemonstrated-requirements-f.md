@@ -4,7 +4,7 @@ kind: feature
 title: 'S7 conform lint: flag undemonstrated requirements, formats without examples, outputs without open/closed markers'
 seq: 775
 status: todo
-priority: p2
+priority: p0
 labels:
     - conform
 created: 2026-11-26T05:01:34.089803Z

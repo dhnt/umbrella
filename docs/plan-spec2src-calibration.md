@@ -240,3 +240,59 @@ operator. About 30 minutes per batch of 5 in parallel.
 - **Quota or sign-in failures in the arm** (the Keychain trap): probe each
   binding in a real arm before the batch.
 - **Ladder depth is limited** where a vendor lists no higher tier.
+
+## Master execution plan (takeover, 2026-11-26)
+
+Written at the conductor takeover, from a review of the card, this plan,
+the handoff (`docs/handoff-sprint-723.md`) and the current source. It
+applies the operator's MVP ruling of 2026-11-25; where it differs from the
+story list above, this section wins.
+
+**Code inspected (2026-11-26).** The umbrella bashy pin equals the bashy
+origin head and contains spec v2 (bashy 44c4d966, with
+`examples/contact.yaml`). conform is at v0.1.1 on its origin head. The
+private `form-hidden-v2` directory does not exist yet. The Sprint 722
+scripts and the sandbox guard are present. No weaves are held; gate lane 2
+is claimed for this sprint.
+
+| Phase | Work | Owner | Venue | Exit gate |
+|---|---|---|---|---|
+| 0 | Take the lease and lane 2; align the card with the MVP ruling | conductor | dev box | card acceptance matches the ruling |
+| 1a | S3 hidden cases v2 (private): one form per case, the page interaction on a JSON form, one YAML case with block and flow lists | conductor (no subject binding sees it) | gate lane 2 | reference 3/3, null FAIL, digests recorded |
+| 1b | S4 harness v2: standalone `conform` on the agent PATH, `TASK.md` v2, re-frozen adapters, protocol v2 | conductor | gate lane 2 | one unscored smoke with a non-subject binding passes the full chain |
+| 1c | S7 validator, static criteria 1–3 only | one worker, isolated workspace on conform | gate lane 2 for tests | flags G1–G3 on spec v1, clean on spec v2 |
+| 2 | Freeze: protocol v2 with grader digests, ladder, rule and random seed; probe every subject binding in a real arm | conductor | dev box arms | all probes green; no change after this point |
+| 3 | S5 start batch: each vendor's start tier × 3, 30-minute cap, batches in parallel | conductor | arms on the dev box, grading on gate lane 2 | every run graded; every non-pass classified S, A or J |
+| 4 | S6 step batch: one step per vendor (down at ≥ 2/3, up at ≤ 1/3) × 3 | conductor | same | every run graded and classified |
+| 5 | S8 short report (viewer book keyed to the grader digest); runbooks S10, S12, S13 written from what was done | conductor; S12/S13 drafts by a worker | dev box | book renders; kb pages registered |
+| 6 | Release the lane, checkpoint, close on the MVP acceptance | conductor | — | card closed, or carried with reasons |
+
+**Changes from the story list above.**
+
+- **S7 runs before the freeze (phase 1c), static only.** Its acceptance is
+  "clean on spec v2". A flag raised after the ladder would change the spec
+  and void the runs. The dynamic part is deferred.
+- **S6 is one step.** A pass at a step-down tier is reported as "passes at
+  this tier; lower tiers untested", not as the vendor's minimum. A failed
+  start with no listed step-up is reported as "not reached".
+- **S9 (judge study) is not required to close 723.** It stays on the card
+  at p3 and runs only after the builder half, if the box allows; otherwise
+  it carries to the next iteration.
+- **S10 is the runbook only.** The skill-script is deferred.
+
+**Stop rules.**
+
+- A venue fault voids the whole batch. The fix is recorded as a protocol
+  amendment before the rerun.
+- A new judge defect pauses the ladder until conform is fixed and the
+  reference re-certifies.
+- A quota refusal on a worker switches model, then vendor. A subject
+  binding is never substituted.
+
+**Open with the operator.**
+
+- The Zhipu bindings (`glm-5.3`, `glm-5.3-flash`) are registered with
+  usage-priced access. Their runs (up to 6) are held until the operator
+  approves them or drops Zhipu from this iteration.
+- The conductor session's model is also the last Anthropic step-up
+  subject. Grading is mechanical (conform), and protocol v2 records this.
