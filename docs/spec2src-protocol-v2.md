@@ -256,3 +256,10 @@ the classified failures and the limitations.
    file written before the 600-second cutoff), and so does the note that
    part of its quota went to the validator worker session, the probes and
    the scored runs on the same day. The `claude-sonnet5.5` reruns continue.
+4. *2026-11-26, minutes after amendment 3 (operator ruling; it replaces
+   amendment 3).* The `agy-gemini4-carbon` quota exhaustion is treated the
+   same way as the Zhipu one in amendment 1: a venue fault. Its rerun
+   cells that met the refusal are INCONCLUSIVE-venue and kept. The three
+   reruns of amendment 2 run after the quota resets, as their own batch
+   with the amended conditions, and the ladder rule applies to that
+   result.
