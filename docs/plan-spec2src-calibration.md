@@ -97,12 +97,26 @@ without an open/closed marker.
 
 Bands from the bashy model registry: L3 cheapest, L4 middle, L5 top.
 
+**Every registry band is seeded, not measured** (`band_source: seeded`). For
+example, all muse models are seeded at the same cost, with spark1.3 placed at
+L4 although "spark" is Meta's small line (operator, 2026-11-25). The start
+tiers below therefore follow each vendor's product naming:
+
+- Anthropic: haiku, sonnet, opus;
+- Meta: spark, then ember / wonder;
+- Zhipu: flash vs full;
+- Google: flash vs gemini4 tiers;
+- OpenAI: luna, sol, astra.
+
+This drill's results are the first **measured** tier evidence per binding,
+and they feed the bands, as the qualification process prescribes.
+
 | Vendor | Start (latest L4) | Step down (L3) | Step up |
 |---|---|---|---|
 | Anthropic | claude-sonnet5.5 | claude-sonnet5 | claude opus5.5 (L5) |
 | OpenAI | codex gpt6.2-sol | codex gpt6-luna | codex gpt6.2-astra (top L4) |
 | Google | agy gemini4-carbon | agy gemini4-neon or gemini3.8-flash | none listed |
-| Meta | muse-spark1.3 | muse-spark1.2 | muse-wonder (L4) |
+| Meta | muse-ember | muse-spark1.3 (latest small) | muse-wonder |
 | Zhipu | opencode glm-5.3 | opencode glm-5.3-flash | none listed |
 
 **Rule.** Run the start tier × 3.
