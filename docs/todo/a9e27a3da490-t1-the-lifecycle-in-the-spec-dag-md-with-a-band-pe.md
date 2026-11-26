@@ -34,3 +34,17 @@ Decisions:
 5. Not in the MVP: showing the lifecycle result in the public result row (it is read from the private grade record).
 
 Remaining: (c) the private grader runs `build`, `test` and `run` at the venue and reports their exit codes; controls; a smoke run, because the runner changed (bug `6afd1714`, fixed in agent-bench `4f1ed99`); (d) 3 runs with `codex-gpt6.1-terra`.
+
+## Run conditions for part (d), fixed before the scored runs (2026-11-26)
+
+Base: `docs/spec2src-protocol-v2.md` with amendments 1 to 6 (conditions, isolation, grading venue, classification and rerun rules). Changes for these runs only:
+
+- **Question:** can a builder that passed on `form` also make the spec's lifecycle steps work, with the behaviour verdict unchanged?
+- **Subject:** `codex-gpt6.1-terra`, 3 runs, one at a time, after a probe. It passed 3 of 3 in Sprint 723 on spec v2.
+- **Fixture:** agent-bench `a39dac5`: spec v2.1 (contract digest `50fc5bd76199390c`), `dag.md` (`46765725181c086b`), `TASK.md` v3 (`105009067f2f88c3`).
+- **Runner:** agent-bench `4f1ed99` (cleanup on every exit path), started through `packs/spec2src/venue/run.sh` with the Sprint 723 private drill directory, guard, frozen adapter cache and subject judge.
+- **Grader:** v2.2. Behaviour as in Sprint 723: the visible contract (now 16 assertions and the page inventory), the 9 hidden cases, the page interaction. Added: the lifecycle check, which runs the spec's own `build`, `test` and `run` steps on a fresh extraction of the snapshot; `serve` is started and stopped for information.
+- **Pass rule per run:** behaviour PASS on every layer, and `build`, `test` and `run` exit 0. Reported as k of 3, with the two parts shown separately.
+- **Controls (gate lane 2):** empty workspace FAIL on every layer and on the lifecycle; the reference with no `build.sh` PASS 36 of 36 with the lifecycle failing on `build` alone; the reference with a `build.sh` PASS 36 of 36 and lifecycle PASS, 4 of 4.
+- **Smoke (not scored):** `codex-gpt6-sol`, PASS 36 of 36, lifecycle PASS, 354 s; the runner stopped 6 processes tied to the run's directories and left no directory behind.
+- **Disclosures:** the spec-only `dag.md`, the grader change and every classification are the conductor's. `codex-gpt6.2-astra` wrote the runner fix as a worker; it is not a subject. The subject's judge runs on the session host, the grader on the stated Linux venue.
