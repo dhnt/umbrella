@@ -26,3 +26,6 @@
 {"op":"validate","slug":"access-tiers-anonymous-account-owner","id":"01a20ecf-5e6e-7bfa-a9bc-3cd6052dd25d","tool":"agy-gemini4-hydrogen-j","episode":"ep-944c65a4c54c7ebc","parent_episode":"ep-ea6b8631d2fd2451","at":"2026-11-24T21:33:21.183354Z"}
 {"op":"update","slug":"access-tiers-anonymous-account-owner","id":"01a20ecf-5e6e-7bfa-a9bc-3cd6052dd25d","tool":"claude","at":"2026-11-24T23:36:24.303663Z"}
 {"op":"add","slug":"conducting-a-sprint-with-weave-workers-merge-mechanics-that-bite","id":"01a20fea-ee67-7ef8-8d1f-91cea6a8ef7d","tool":"claude","at":"2026-11-24T23:36:24.424893Z"}
+{"op":"add","slug":"spec-to-source-drill","id":"01a21794-377c-7f36-bca3-5bddae1380af","tool":"claude","at":"2026-11-26T11:18:39.230179Z"}
+{"op":"add","slug":"shapeware-spec-from-app","id":"01a21794-386b-7432-bdb3-1af7421cfcb1","tool":"claude","at":"2026-11-26T11:18:39.469235Z"}
+{"op":"add","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T11:18:39.70462Z"}
