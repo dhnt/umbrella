@@ -271,3 +271,8 @@ the classified failures and the limitations.
    concept is that some chosen models succeed, not the lowest tier of
    every vendor. Google is reported as "passes at the start tier; step
    down not run".
+6. *2026-11-26, at the close of the sprint (operator ruling).* The sprint
+   is closed before the scheduled Zhipu attempt, which is cancelled.
+   `opencode-glm-5.3` is reported as not measured (one cell, refused by
+   the provider's usage limit before any work) and is left to a later
+   sprint.

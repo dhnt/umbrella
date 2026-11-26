@@ -1,6 +1,6 @@
 # Sprint 723: which model tiers rebuild `form` from spec v2?
 
-*2026-11-26 · conductor claude-opus5.5 (session model Fable 5.2) · protocol: umbrella `docs/spec2src-protocol-v2.md`, fixed before the scored runs, amendments 1 to 4*
+*2026-11-26 · conductor claude-opus5.5 (session model Fable 5.2) · protocol: umbrella `docs/spec2src-protocol-v2.md`, fixed before the scored runs, amendments 1 to 6 · sprint closed 2026-11-26*
 
 ## Answer (narrow)
 
@@ -12,7 +12,7 @@ Given only spec v2 of bashy's `form` and the judge to check their own work, codi
 | Meta | `muse-spark1.3` | **3/3** | `muse-ember` | **3/3** | passes at ember, the lowest listed tier |
 | Anthropic | `claude-sonnet5.5` | 1/3, rerun **3/3** | `claude-sonnet5` | **2/3** | passes at sonnet5; lower tiers untested |
 | Google | `agy-gemini4-carbon` | 1/3, rerun **3/3** | not run | — | passes at carbon; the step down was not run (quota; to revisit) |
-| Zhipu | `opencode-glm-5.3` | no result | not run | — | open: provider usage limit before any work |
+| Zhipu | `opencode-glm-5.3` | not measured | not run | — | provider usage limit before any work; to revisit |
 
 A pass is complete: 13 of 13 visible CLI assertions, 17 of 17 hidden steps in 9 independent cases, the visible and hidden page inventories, and one page interaction read back through the CLI.
 

@@ -3,14 +3,17 @@ id: 2598bc763021
 kind: task
 title: 'S5 start batch: latest L4 per vendor x3'
 seq: 773
-status: todo
+status: done
 priority: p1
 labels:
     - conform
 created: 2026-11-26T05:01:33.532617Z
+assignee: claude-opus5.5
 sprint: 723
 sprint_id: a7f3f8dd-c83a-5191-9739-676397a50c45
 sprint_title: 'Spec to source calibration: a sound shapeware spec and the minimal model per vendor'
+closed: 2026-11-26T13:21:12.851337Z
+closed_by: claude-opus5.5
 ---
 
 claude-sonnet5.5, codex-gpt6.2-sol, agy-gemini4-carbon, muse-spark1.3, opencode-glm-5.3. Probe each in a real arm first (Keychain trap). Random order with a recorded seed; batch gate for venue faults; every attempt kept.
