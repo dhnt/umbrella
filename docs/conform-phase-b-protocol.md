@@ -138,6 +138,31 @@ A bashy viewer book (`sprint-722`) with:
 - notable failures by assertion name;
 - the narrow conclusion.
 
+## Grader identity (fixed before runs, 2026-11-25)
+
+The hidden material is private and identified here only by its sha256:
+
+| File | sha256 |
+|---|---|
+| HIDDEN.md (11 cases) | `813d4aa4c783e0d93fd0a42f7d96797e83f2de85237ad4f69f316309353d6804` |
+| interact.sh | `6c48c7584e08f3ee9a2ecdb47178dfc4b962de62399e49e08326258ad8c1d4bb` |
+| hidden/fill.js | `26447c7006b3799c8fdcd2ba77000be9dbcaa552d91b1c0dfaf32a4224e4b0d5` |
+| hidden/team.yaml | `2df3ea068c5982b8253f2c6ba04dd265e20b1168c88c562845c266a7d18d64d1` |
+| lane-grade.sh | `a21ec313cc74e29dca84fb54590feedbdcb30d180c888301e79e76aaddea6dde` |
+
+Other fixed inputs:
+
+- the visible spec, bashy `examples/desk/form` at bashy `ebc1466a`;
+- the judge, conform v0.1.0;
+- the reference build, bashy `e95b09a1` (`form` is unchanged in `ebc1466a`).
+
+Controls before any subject run:
+
+- **Reference:** 22/22 PASS three times through the full grader (10 visible,
+  11 hidden, 1 browser interaction).
+- **Null:** an empty workspace fails on every layer.
+- **Suite strength on the visible contract:** 89/89 mutants killed.
+
 ## Amendments
 
 (none)
