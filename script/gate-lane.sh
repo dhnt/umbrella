@@ -19,6 +19,11 @@
 #     caches so child builds can finish within the existing deadlines;
 #   - tests that assert headless behaviour fail when the remote session has
 #     a controlling terminal, so commands run under setsid.
+#   - a lane is headless: the host session can export a display that it
+#     cannot serve, and a desktop query against it (Python's webbrowser
+#     module makes one) then hangs for tens of seconds, which a test reports
+#     as a timeout (root cause recorded 2026-11-26, docs/sprint-731-report.md,
+#     finding 6), so the display variables are removed.
 #
 # Workspace-mode suites (for example bashsharp's, which build sibling
 # binaries) still need an umbrella checkout with submodules; this script does
@@ -40,6 +45,7 @@ gate_env() {
 	export BASHY_GOMOD_PROXY="$GATE_PROXY"
 	export GOPROXY="file://$GATE_PROXY,https://proxy.golang.org,direct"
 	export GONOSUMDB="github.com/qiangli/bashy/examples"
+	unset DISPLAY WAYLAND_DISPLAY
 }
 
 gate_setup() {
@@ -97,6 +103,7 @@ gate_check() {
 	command -v setsid >/dev/null || fail "setsid is missing"
 	command -v python3 >/dev/null || fail "python3 is missing"
 	if setsid -w sh -c ': </dev/tty' 2>/dev/null; then fail "a controlling terminal is visible under setsid"; fi
+	[ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] || fail "a display is exported (DISPLAY or WAYLAND_DISPLAY); a lane is headless"
 	[ "$bad" = 0 ] || return 1
 	echo "gate-lane: ok (go$GATE_GO_VERSION, bashy $(cut -c1-9 "$GATE_BIN/bashy.commit" 2>/dev/null), proxy $GATE_PROXY)"
 }
