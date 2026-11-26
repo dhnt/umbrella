@@ -76,6 +76,9 @@ Secondary measures and accounting are unchanged from Sprint 722.
   (`conform run CONTRACT.md --path . --fresh-home`). The subject sees only
   the visible contract. This is the intended product condition
   (shapeware spec §19).
+- **A plain system shell in every arm** (zsh), set by the runner
+  (`BASHY_FORCE_AGENT_SHELL=0`, `BENCH_PLAIN_SHELL=1`, agent-bench `09e5826`).
+  See "Arm probe result" below for the cause.
 - A wall-time cap of 30 minutes; n = 3; a fresh isolated workspace and HOME
   per run; the sandbox guard; the Keychain opt-ins; opencode auto-update
   off; one frozen, read-only adapter cache (58 executables, digests kept
@@ -178,6 +181,27 @@ the venue: the smoke candidate imported a Python module that is deprecated
 in the venue's Python 3.12, and the warning on stderr failed five error
 assertions. This is the subject's to handle (the venue is stated), and it
 is classified as an agent defect, not a venue fault.
+
+## Arm probe result (2026-11-26, before any scored run)
+
+Each start binding was asked, in a real isolated arm without the task, to
+run `conform version` and report it.
+
+- **Venue fault found and fixed.** `bashy chat` routes an agent's shell
+  commands through bashy by default, and the operator's Claude settings pin
+  the same. In a bashy shell, `conform` is a built-in for bashy's own test
+  batteries, so it shadowed the judge binary: the Claude arm could not
+  reach the tool `TASK.md` names. The codex smoke was not affected, because
+  codex does not take its shell from the environment. Fix, in the venue
+  only: every arm now runs a plain system shell. The name clash itself is
+  a product gap and is tracked as a bashy todo.
+- After the fix, `claude-sonnet5.5`, `codex-gpt6.2-sol`,
+  `agy-gemini4-carbon` and `muse-spark1.3` each reported version 0.1.1.
+- `opencode-glm-5.3` does not answer a one-shot probe (the 722-proven
+  `opencode-glm-5.3-flash` fails the same way, so this is the probe's
+  launch mode). Through the runner's interactive launch path it started
+  and accepted its instruction. Its first scored batch is the check; a
+  launch failure there is INCONCLUSIVE-venue.
 
 ## Reporting
 
