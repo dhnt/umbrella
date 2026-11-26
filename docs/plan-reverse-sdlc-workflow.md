@@ -86,6 +86,32 @@ binaries), a quota check and vendor refusal wording (W7), full accounting
 `min-band` line), a judge-written failure classification, and more than
 two builder bindings.
 
+### The front half: instructions to spec (two stories filed, no sprint yet)
+
+Operator, 2026-11-26. A shapeware release can be the spec itself, shipped
+as the application: a user asks their agent to start shaping, and the agent
+builds and runs the app on the fly. The spec format already carries this
+(features with `status: tbd`, acceptance lines, the release class "verified
+with tbd"; `shapeware-spec-v0.md` §5 and §12). What is missing is the step
+before the spec.
+
+- **Assumption, to be measured later:** premium models (the top tier of
+  each vendor) can turn a user's instructions into a sound shapeware spec.
+- **Sources of instructions:** a plan written by an agentic tool's plan
+  mode, and a bashy sprint card with its stories or a set of todos.
+- **Story P1 (runbook):** `shapeware-spec-from-plan`: convert a plan, or a
+  bashy sprint or todo set, into a shapeware spec folder. Each story or
+  plan step becomes a feature with an intent, an effort estimate and
+  acceptance lines; behaviour that must hold becomes contract assertions;
+  everything starts `tbd`. `conform spec check` must be clean. With no
+  reference app, the first build that passes becomes the reference.
+- **Story P2 (evaluation):** the same instructions given to top-tier
+  bindings of three vendors; each writes a spec; a qualified builder builds
+  from each. This is the spec-author drill for new apps, and it tests the
+  assumption above.
+
+These follow iteration 2 and do not change it.
+
 ### Later, in order (not filed)
 
 - **Judge qualification** (the deferred S9): L4 against L5 evaluators on
