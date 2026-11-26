@@ -11,12 +11,12 @@ tags:
     - spec2src
     - drill
     - benchmark
-status: candidate
-evidence: Sprint 723 run (umbrella docs/spec2src-protocol-v2.md, amendments 1-4); scripts in agent-bench packs/spec2src/venue (670b960), probe.sh verified in a real arm
+status: validated
+evidence: Used end to end for the Sprint 723 drill (28 scored runs, controls, probes, gates, six amendments); the venue scripts it names are in agent-bench packs/spec2src/venue
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
-updated: "2026-11-26T11:33:12Z"
+updated: "2026-11-26T13:52:51Z"
 ---
 
 Goal: decide, with evidence, whether an agent binding (tool:model) can build an app from its shapeware spec alone. Use it to qualify a new tool or model, to find the lowest adequate tier of a vendor, or to check a new spec. Reference run: Sprint 723 on bashy's `form` (`docs/spec2src-protocol-v2.md`). Retro with the reasons behind each rule: [[shapeware-drill-retro-sprints-722-725]].

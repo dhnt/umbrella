@@ -11,33 +11,36 @@ tags:
     - builder
     - spec2src
 status: candidate
-evidence: Failure classes from Sprint 722 (15 runs) and Sprint 723; step 0 added after the Sprint 723 batch 9 failure and the Sprint 729 lint rule (conform 40c5602)
+evidence: Failure classes from Sprints 722 and 723 (umbrella docs/sprint-723-report.md); steps 0, 6 and the lifecycle points added from Sprints 729 and 731. The guide itself has not yet been given to a builder.
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
-updated: "2026-11-26T12:32:57Z"
+updated: "2026-11-26T13:52:50Z"
 ---
 
-Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, a task file) so that it passes the judge at the stated venue. Lessons are from the Sprint 722 and 723 drills.
+Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, `dag.md`, a task file) so that it passes the judge at the stated venue and can be installed and run through its lifecycle. Lessons are from rebuilding bashy's `form` from its spec by agents of four vendors. Related: [[shapeware-spec-from-app]], [[spec-to-source-drill]].
 
 ## Steps
-0. **Lint the spec you were given:** `conform spec check .` (the judge also tells you when you run it: "spec check reports N finding(s)"). Each finding is a place where the spec does not fully decide the behaviour, such as a rule given by example. Do not guess silently there: take the reading that the examples and the rule's purpose both support, and write the choice down in your notes.
-1. **Read the rules section of `CONTRACT.md` before the assertions.** Envelope keys, projection flags and open/closed outputs apply to every command.
-2. **Read the task file for the venue:** OS, interpreter and toolchain versions, network, what is absent. Build for that venue, not for the machine you are on.
+0. **Compile the spec you were given:** `conform spec check .` (the judge also says so when you run it: "spec check reports N finding(s)"). Each finding is a place where the spec does not fully decide the behaviour. Do not guess silently there: take the reading that the examples and the rule's purpose both support, and write the choice in your notes.
+1. **Read the rules section of `CONTRACT.md` before the assertions.** Envelope keys, projection flags, open/closed outputs and error form apply to every command.
+2. **Read the task file and `dag.md` for the venue and the lifecycle:** OS, interpreter and toolchain versions, network, what is absent, and the steps your build must satisfy (build, test, install, run, serve). Build for that venue, not for the machine you are on.
 3. **Write files early.** Start the launcher and a first command within the first minutes, then extend. A long plan with nothing on disk can be cut off.
 4. **Run the judge while you build:** `conform run CONTRACT.md --path . --fresh-home`. Fix by assertion name until all pass.
 5. **Cover every example file and every input format** in `examples/`, including each syntax the examples use.
-6. **Errors:** exactly the stated stream, text prefix and exit code. Nothing else on that stream.
-7. **UI:** follow the stated label, required and control rules; the judge reads the accessible inventory, not your markup.
-8. **Deliver source plus the launcher.** Before you finish:
-   - remove build outputs and caches from the workspace, or make the launcher rebuild when the cached binary does not run;
+6. **Implement a rule as a rule.** Where the spec defines a set (which names are refused, which kinds are valid), implement the definition and test both sides of its boundary, not only the example shown.
+7. **Errors:** exactly the stated stream, text prefix and exit code, and nothing else on that stream (no warnings from your interpreter).
+8. **UI:** follow the stated label, required and control rules; the judge reads the accessible inventory, not your markup.
+9. **Deliver source, the launcher and a working lifecycle.** Before you finish:
+   - remove build outputs and caches from the workspace, or make the launcher rebuild when the cached binary does not run here;
    - make sure the launcher works from a fresh HOME with no network;
-   - use only the standard library or dependencies vendored in the workspace.
+   - use only the standard library or dependencies vendored in the workspace;
+   - stop every server or background process you started.
 
 ## Failure causes seen
-- A binary built on the session host shipped in the workspace and could not execute at the venue.
-- A module that is deprecated in the venue's interpreter version printed a warning on the error stream and failed every error assertion.
+- A binary built on the session host was shipped in the workspace and could not execute at the venue.
+- A module deprecated in the venue's interpreter version printed a warning on the error stream and failed every error assertion.
 - An input format named in the spec was not implemented because only the other format had been tried.
 - A projection flag was honoured on some commands only, or dropped the always-present key.
 - Nothing was delivered: the session ended during a long first planning turn.
-- A rule given by example was implemented for the example's form only (`api_key` refused, `stripe-api-key` accepted). The spec linter flags such rules.
+- A rule given by example was implemented for the example's form only (`api_key` refused, `stripe-api-key` accepted).
+- Servers started for self-checks were left running after the session.
