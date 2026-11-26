@@ -4,14 +4,14 @@ kind: bug
 title: 'bashy internal/agentos: three tests red at origin main before the 710 pin bump (CommonOptionsVocabulary, SkillHelpGoldens/mcp, SrcPinsMatchLinkedModules)'
 seq: 737
 status: todo
-priority: p1
+priority: p2
 labels:
     - bashy
     - tests
 created: 2026-11-25T05:26:42.987797Z
-sprint: 713
-sprint_id: 867b4689-21ed-53db-93f9-b2a926b28de6
-sprint_title: 'Known reds triage after train 1: decide fix or won''t do for each pre-existing test red'
+sprint: 724
+sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
+sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
 ---
 
 Seen 2026-11-24 by the Sprint 710 conductor on the gate host (Linux test host, WSL, GOWORK=off). The tests fail identically WITH and WITHOUT the 710 pin bump (bashy 3535205f vs its parent c450753f), so they were red before the bump. Not fixed in 710; root cause each before any fix.
@@ -24,3 +24,7 @@ Bisect each against the last green gate evidence before changing goldens.
 ## Triage by the Sprint 709 conductor (2026-11-24)
 
 TestSrcPinsMatchLinkedModules and TestSkillHelpGoldens/mcp are 709's (M1 moved bashy's yoke pin and the `bashy mcp` usage without updating src_mount.go and testdata/skillhelp/mcp.skill); root cause and fix are tracked as 709 M5. TestCommonOptionsVocabularyReport (697 fetch --user-agent) stays here.
+
+## Triage 2026-11-25 (consolidated into Sprint 724)
+
+Code inspected at bashy origin main 44c4d966: the reviewed baseline now lists fetch -A/--user-agent; the other two tests were fixed as 709 M5. Probably fixed; not yet run. Verify the three tests by name on the gate host, then close with that evidence.

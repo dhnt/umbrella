@@ -9,9 +9,9 @@ labels:
     - toolchain
     - shaping
 created: 2026-11-25T07:27:06.908357Z
-sprint: 714
-sprint_id: 3e487908-1ba5-5dc0-85ae-41a6833869d5
-sprint_title: 'A/O/C on Page: bashy go in a fresh HOME, then the Page leg (709 follow-up)'
+sprint: 724
+sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
+sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
 ---
 
 Found by Sprint 709 M4 (6ba1b4777931), 2026-11-25. Pre-existing; not caused by 709.

@@ -8,9 +8,9 @@ priority: p1
 labels:
     - collaboration-followup
 created: 2026-11-11T09:56:30.912325Z
-sprint: 715
-sprint_id: a012b004-c4f7-5815-b743-69b7f122150e
-sprint_title: 'Owner sharing e2e acceptance (Sprint 710 follow-up): re-invite mail env binding, H6 green twice'
+sprint: 724
+sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
+sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
 ---
 
 Sprint 614 S9 shipped suites and circle shares (cloudbox 07411af server + console, yoke d0ba2a11 bashy suite, outpost ee1c3344 apps share --circle) verified at unit level and against the fake master only. Run once on the Linux test host with the existing cloudbox e2e harness against a satellite built from those commits: owner creates a named circle, a suite of two apps on two hosts, shares the suite with the circle; member in circle gets 200 on both apps, member outside 403, no credential 401; moving the member out of the circle and removing an app from the suite flip to 403 without re-share; console and CLI show the same suites/grants. Evidence tied to candidate commits.
@@ -46,3 +46,7 @@ These checks passed: custom-circle suite grant, 200/403/401, suite add/remove, r
 Failed: "re-invite delivers a second invitation to the pending member and CLI reports it". The mail capture got 0 deliveries, and the CLI printed "invitation mail NOT sent: mailgun: Post https://api.mailgun.net/... network is unreachable". Root cause (confirmed in code; PRODUCT defect): MAILGUN_API_BASE is neither in conf.BoundEnvKeys nor named in hub/config.*.sh, so viper ignores an env-only value and mail falls back to api.mailgun.net. Filed as cloudbox bug e2903321 in Sprint 715. The conductor's H6a review wrongly took the mapstructure tag as proof that the env override works.
 
 Operator 2026-11-25: on failure, file each failure as a new bug in a new follow-up backlog sprint, move H6 and H6a there, and end 710 at 6/8. Follow-up: Sprint 715 (uuid a012b004-c4f7-5815-b743-69b7f122150e). H6a commits are preserved on cloudbox origin branch sprint-715/h6a-owner-sharing-e2e (64fe617); they are not merged to dev. Harness speed: todo e21df12acf97 (after the 699 freeze); runs must finish in minutes.
+
+## Triage 2026-11-25 (consolidated into Sprint 724)
+
+The scenario is on cloudbox dev (5e98236, script/e2e_fleet/owner_sharing.py, 15 checks, fake accounts, offline containers, fake mail capture). Last run os-2: 14/15; the one red is e2903321, still unfixed on dev. Order: fix e2903321, then run twice. The 749 s run time exceeds the minutes budget (todo e21df12acf97, not on this sprint).

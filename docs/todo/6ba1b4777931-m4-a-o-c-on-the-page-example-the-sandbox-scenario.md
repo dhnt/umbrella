@@ -10,9 +10,9 @@ labels:
     - access-tiers
 created: 2026-11-25T04:28:08.884379Z
 assignee: codex-gpt6.2-astra
-sprint: 714
-sprint_id: 3e487908-1ba5-5dc0-85ae-41a6833869d5
-sprint_title: 'A/O/C on Page: bashy go in a fresh HOME, then the Page leg (709 follow-up)'
+sprint: 724
+sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
+sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
 ---
 
 Operator 2026-11-24: deliver today a minimal A/O/C with Page support in examples. KISS/MVP: the same A/O/C flow pointed at Page; fix only what breaks; no new features.
