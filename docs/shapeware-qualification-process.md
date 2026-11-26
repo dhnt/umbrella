@@ -93,23 +93,30 @@ drill.
 The ladder is per role. The judge band is measured separately from the
 builder band.
 
-**Band evidence has three grades**, recorded as `band_source`:
+**A band is a recorded composite** (operator, 2026-11-25), per binding and
+per role:
 
-1. `seeded`: a registry default, no evidence.
-2. `price-prior`: the within-vendor rank by list price (registry
-   `cost_micro`, with the price's source recorded), newest generation first
-   at equal price. It orders a family and picks the ladder's start and step
-   order. It is never compared across vendors. Where prices are flat or
-   missing, naming is used and recorded.
-3. `measured`: from a qualification drill, per role and spec version, with
-   the evidence linked. It overrides the other two.
+| Component | Source | What it contributes | Scope |
+|---|---|---|---|
+| **a. Drill** | agent-bench qualification drills (this process; the harness is to be improved) | k/n PASS per role and spec version, sealed evidence | strongest; role-specific |
+| **b. Leaderboards** | public leaderboard data relevant to the role (for example coding-agent and terminal-task boards), with source, date and version recorded | a cross-vendor anchor (percentile) | general capability; may lag new models |
+| **c. Price rank** | the vendor's list price (registry `cost_micro`, with its source), newest first at equal price | the order within one family | within-vendor only; blind to generation, plans and "fast" pricing |
+| **d. Operator weight** | an explicit operator adjustment, with its reason and an expiry | factors the other three miss (reliability, quota, policy) | bounded to ±1 band, always logged |
 
-**Limits of the price prior:**
-
-- it is within-vendor only;
-- it is blind to a newer generation at the same price;
-- subscription plans hide the marginal cost;
-- "fast" variants are priced for latency.
+- **Score** = w_a·a + w_b·b + w_c·c, each component normalized to 0–1. The
+  score maps to L1–L5 by fixed thresholds, then d is applied.
+- **Initial weights** (arbitrary, recorded, recalibrated once drill evidence
+  accumulates): w_a 0.5, w_b 0.3, w_c 0.2. A missing component is left out
+  and the others are renormalized. The record lists which components were
+  present.
+- **`band_source`** records what the band rests on:
+  - `seeded`: nothing yet;
+  - `price-prior`: c only;
+  - `composite:b+c`, `composite:a+b+c` and so on;
+  - plus `+d` when an operator weight applies.
+- **A drill result (a) for a role always outranks the other components for
+  that role.** If a contradicts b or c, the case is recorded as calibration
+  evidence for the weights.
 
 ## Artifacts
 
