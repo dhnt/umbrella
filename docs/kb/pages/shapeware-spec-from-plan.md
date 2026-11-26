@@ -13,10 +13,11 @@ tags:
     - sprint
     - todo
 status: candidate
-evidence: 'First use: Sprint 727 conversion of the Sprint 537 notepad stories (results to follow)'
+evidence: 'Sprint 727 (2026-11-26): three top-tier bindings converted the four Sprint 537 notepad stories in 3 to 7 minutes each; all three specs pass conform spec check; guardrails 1 to 3 added from the result'
 source:
     tool: claude
 created: "2026-11-26T11:43:01Z"
+updated: "2026-11-26T11:53:29Z"
 ---
 
 Goal: turn instructions (an agent's plan, or a bashy sprint card with its stories, or a set of todos) into a shapeware spec folder that another agent can build from with no further questions. Format: `docs/shapeware-spec-v0.md`. Worked example of a finished spec: bashy `examples/desk/form` (`CONTRACT.md`, `features.yaml`, `examples/`). Related: [[shapeware-spec-from-app]] when the app already exists; [[spec-to-source-drill]] to test the result.
@@ -36,6 +37,9 @@ Goal: turn instructions (an agent's plan, or a bashy sprint card with its storie
 10. **Reference.** With no app yet, the first build that passes the contract becomes the reference; then certify it (`conform cert`) and measure the suite (`conform mutate`). If an app exists, run the contract against it: every failing assertion is either a spec error or a place where the app left its instructions, and each one is recorded.
 
 ## Guardrails
+- **Do not guess a literal the instructions never give.** A status name, a field name or an error code that no story states goes in as an open value (`"status":"..."`) and under "Open questions". In the first use, three converters each guessed a first status of `open`; the existing app says otherwise, the first assertion failed, and every later assertion that needed its id failed with it.
+- **Do not hang the whole contract on one assertion.** Give the first create step a fixed id (`--id NAME`) where the app allows one, so a mismatch in one output does not unbind the rest.
+- **The owner settles the open questions before anyone builds.** Three converters given the same stories chose different names for the same things. The spec review is where a person decides; the list of open questions is its agenda.
 - Do not invent features the instructions do not contain; do not drop ones they do.
 - Keep outputs open (`"...": "..."`) unless closing one protects content.
 - Text that only a person reads (list formatting, help) is free: require the exit code, not the wording.
