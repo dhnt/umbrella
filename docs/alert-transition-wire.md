@@ -72,3 +72,18 @@ is `bashy paired-host reachability {status,ack,mute,threshold}`.
 
 Use the Cloudbox origin where the host is paired. For an attached host,
 select its server with the existing CLI endpoint and account options.
+
+### Master reachability reads
+
+The master accepts the same owner-scoped status GET for hosts indexed from
+satellite reports. Use `?satellite=SATELLITE_ID` to select a reporting
+satellite. Omitting the selector yields a conflict when the caller owns
+multiple current pairings with the same host name. Bashy passes the selector
+from `paired-host reachability status HOST --satellite SATELLITE_ID`.
+
+The master checks the current owner and pairing before returning the
+projection. Missing or older projections produce unknown state. Stale
+projections keep their observation timestamps and omit alert details. The
+existing host list uses the same projection and
+`bashy paired-host ls --json` preserves it. The owning satellite handles
+alert evaluation, delivery and policy changes.
