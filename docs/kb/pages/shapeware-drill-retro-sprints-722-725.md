@@ -48,6 +48,8 @@ Retro of the first shapeware drills: Sprint 722 (spec v1, cheapest models), Spri
 - **Conditions changed while batches ran** (723). Rule: change between batches only.
 - **A wrong root cause recorded** (723): the judge was said to be unreachable in a bashy shell, when the installed build was simply older than source. Rule: check the installed version against source before blaming the design; correct the record where it was written.
 
+- **Servers left running on the session host** (723, found at cleanup): 63 candidate processes from 28 runs. Rule: reap per batch, by workspace path.
+
 ## Open, for the next drills
 - The judge runs on the session host in the loop and on the venue at grading. Parity is not built.
 - The page interaction is scripted outside the judge.

@@ -52,4 +52,5 @@ Goal: decide, with evidence, whether an agent binding (tool:model) can build an 
 - **Auto-update** off for every tool during the run.
 - **Test host.** A system copy of a tool on the host's base PATH can shadow the lane-built one. Tools that build on demand need a prewarmed cache to run offline in a fresh HOME. Move binaries off the host as base64 and compare digests.
 - **Shell utilities.** In a bashy shell some GNU flags are missing (`grep -a`); use the system binary by absolute path in venue scripts.
+- **Leaked servers on the session host.** Subjects start their app's server while checking their work, and nothing stops it when the session ends: after 28 runs, 63 candidate server processes were still running on the session host. After every batch, stop the processes whose path is under the run workspaces and remove the workspaces and arm directories; never by a broad name match.
 - **Changing conditions mid-drill.** A script edited while batches are running splits them across two conditions. Change between batches, and write the amendment first.
