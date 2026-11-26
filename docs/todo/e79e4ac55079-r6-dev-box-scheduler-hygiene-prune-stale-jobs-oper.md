@@ -3,14 +3,17 @@ id: e79e4ac55079
 kind: chore
 title: 'R6 Dev-box scheduler hygiene: prune stale jobs, operator decides on enabling the schedule unit'
 seq: 280
-status: todo
+status: done
 priority: p2
 labels:
     - ops
 created: 2026-11-14T22:23:13.051427Z
+assignee: claude-fable5.2
 sprint: 637
 sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
+closed: 2026-11-26T06:29:57.551917Z
+closed_by: claude-fable5.2
 ---
 
 Operator-run. State of bashy schedule list on the dev box:
@@ -58,3 +61,4 @@ With jobs 1-5 removed, only the disk alarm clearly earns a running engine on the
 - Still open: keep, disable or delete the CI failure router and the cloud-host reaper; whether to enable the schedule unit.
 - 2026-11-25, later: the operator had the CI failure router and the cloud-host reaper disabled (`bashy schedule disable`; definitions kept). The disk floor alarm is the only enabled job. Still open: whether to enable the schedule unit.
 - Correction to "Cause of the 11-22 firing" above: the test only runs a real scheduler when `BASHY_SELF` is present in its environment (then the unit's child is a real bashy instead of the test stub); on 11-22 an adapter environment leak supplied it, fixed that morning in bashy 86c645bc. The missing scheduler-state isolation is the second gap. Full root cause and the fix are on da90afb1a1dc.
+- 2026-11-25 10:29 PM PST: the operator had the schedule unit enabled (`bashy service enable schedule`). The supervised daemon is active and ticks every minute on the dev-box job store. All three R6 items are settled: stale jobs pruned, enable decision made, cause of the 11-22 firing recorded.
