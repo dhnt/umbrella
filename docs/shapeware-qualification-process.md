@@ -132,6 +132,23 @@ formula.*
 | Hidden cases, raw grades, archives | private: `dhnt/docs` |
 | Qualification records | the bashy agent registry (band evidence) |
 
+## The system view: agentic software shaping in bashy (operator, 2026-11-25)
+
+The pieces form one system:
+
+| Piece | Role | Where |
+|---|---|---|
+| **Shapeware specs** | the format (`CONTRACT.md`; `features.yaml` with `effort` points and `band`; examples), soundness criteria (spec §20), and the validator `conform spec check` | spec v0 §5/§20, conform |
+| **Spec → source minimum band** | each spec declares the lowest band that reliably builds it. `metadata.min-band` is **measured** by the builder ladder, not seeded | the spec's `SKILL.md`, from drill evidence |
+| **Band certification** | each tool:model binding holds a per-role band: drill, leaderboards, within-vendor price and an operator weight (design with Sprint 559) | the bashy agent registry |
+| **Runbooks** | `shapeware-spec-from-app` (reverse: existing app → spec), `shapeware-source-from-spec` (the builder's guide), `spec-to-source-drill` (qualify and judge) | bashy kb, then skill-scripts |
+
+**Routing rule.** A shaping request goes to the cheapest binding whose
+certified builder band is at least the spec's measured `min-band`. The
+`effort` points plus that band's measured minutes per point give the
+expected time and cost. Every delivery adds qualification evidence, so the
+system improves over time.
+
 ## Iterations
 
 1. **Sprint 723** (`form`). Sound-spec criteria and spec v2, the validator,
