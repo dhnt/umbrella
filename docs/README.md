@@ -440,3 +440,7 @@ The mid-sprint warm handoff for Sprint 723. It gives the reading order (card, pl
 ## sprint-731-report.md
 
 The result of taking bashy's `form` the whole way by agents (Sprint 731): the stage table with who did each stage, the gate, the result and the band; what was built for it (a lifecycle for the app as a spec, a lifecycle check in the grader, the operate drill, a runner that cleans up); every run; seven findings, among them that the lifecycle steps need no model, that a service app needs a defined serve and stop, and one venue fault that looked like a build failure; the limits; the questions for the operator review.
+
+## handoff-sprint-726.md
+
+The handoff note for Sprint 726, written by the Sprint 731 conductor after triaging its stories: the operator's rulings (the spec author writes the lifecycle, no required owner step, a mechanical end-to-end test of the lifecycle after the spec and after each build, the kb runbooks used and improved), the master execution plan (six steps, each with who does it, what is delivered and its gate), what already exists from the form drills, the traps found in Sprint 731, and what is left out.

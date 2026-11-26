@@ -152,3 +152,4 @@
 - `handoff-sprint-731.md` — Handoff of Sprint 731 (shapeware workflow standard, proven by the full trip on form): reading order, operator rulings in force, the triaged stories in two tracks, the in-flight form spec fix, mechanics and traps, held resources, backlog
 - `handoff-sprint-723.md` — Sprint 723 mid-sprint warm handoff (2026-11-25): reading order, operator rulings D1-D5 + ladder + effort + runbooks, story status (S1, S2 done), mechanics and venue traps from Sprint 722, held resources
 - `sprint-731-report.md` — Sprint 731 report: the full trip on `form` (spec with its lifecycle, built 3 of 3, operated cold 3 of 3 by two lower-tier bindings and by a script), every run, seven findings, limits
+- `handoff-sprint-726.md` — Handoff of Sprint 726 (the loop on a second app, notepad, run by agents): operator rulings, master execution plan with one gate per story, what already exists, traps from Sprint 731
