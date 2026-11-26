@@ -13,4 +13,6 @@ sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
 ---
 
-yoke/pkg/bus/notify.go line ~37 says at, batch, crontab, sleep and timeout call NotifyEvent once their event occurs for a shared --notify flag. Survey 2026-11-14: nothing calls NotifyEvent except notify itself and yoke/pkg/todo/notify.go; none of the five applets has a --notify flag (bashy sleep/timeout/at --help show none). Decide: either wire --notify TARGET SUBJECT into the five applets through their common host layer as the comment intends (then sleep 10m --notify me 'tea' is a one-line reminder), or delete the comment. Done when: the comment matches the code; if implemented, one applet test per command.
+yoke/pkg/bus/notify.go line 37 says at, batch, crontab, sleep and timeout call NotifyEvent once their event occurs for a shared --notify flag. Survey 2026-11-14, re-checked 2026-11-25 (yoke d617ba6a): nothing calls NotifyEvent except notify itself (notify.go:244) and yoke/pkg/todo/notify.go:59; none of the five applets has a --notify flag.
+Triage 2026-11-25 (default, operator may change): delete the stale comment, do not implement. bashy notify --in DUR already is the one-line reminder; wiring --notify into five applets is feature work on POSIX names. Rewrite the comment to describe the actual callers.
+Done when: the comment matches the code (own commit in yoke).

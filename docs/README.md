@@ -247,6 +247,10 @@ Sprint 706 (backlog, planning only, reviewed with the operator 2026-11-24): the 
 
 Sprint 709 lets a member with the shape scope work on the owner's app from their own machine: `bashy mcp connect` bridges the member's local MCP client to the owner's site MCP with the member's cloudbox account token exchanged on the satellite (identity only; the share and the scopes stay the owner's, per app, and no OS password is used), the site MCP gains `shape_pull` and `shape_push` (a patch on a base revision, refused when stale, verified on the owner's host, approved by the owner), and the A/O/C sandbox e2e covers the path.
 
+### sprint-637-master-execution-plan.md
+
+Sprint 637 (backlog, planning only, reviewed with the operator 2026-11-25): a reminder set through any bashy front door either fires or tells the user why not. Records the code inspection at current heads (no engine-state check exists; the schedule unit is opt-in; jobs on the dev box stopped firing silently), the triage (R1 engine state and hint, R2 stale comment, R4 kb runbook, R6 operator hygiene kept; R3 overdue-todo alarm and R5 desktop toast moved out as standalone todos), the decision to change the one scheduler code base in coreutils rather than duplicate it, the coordination steps with the POSIX certification sprint manager before any code, the sequence, targeted tests, checks and risks.
+
 ### handoff-sprint-706-703.md
 
 Vendor-neutral handoff (2026-11-24) for the next conductor of Sprint 706 (access tiers) or Sprint 703 (group shaping follow-ups): where to start, both cards in one screen with story ids, priorities and dependencies, the operator decisions still to confirm (R5 defaults), the open cloudbox tickets named by id, the six sprints closed that day and where their pieces went, and the mechanics (provenance trailers, the backlog-sprint closing recipe, verb gotchas, the gate venue). Nothing in it depends on any agent's private memory.
