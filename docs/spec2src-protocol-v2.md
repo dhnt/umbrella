@@ -246,3 +246,13 @@ the classified failures and the limitations.
      with the 600-second cutoff and batch 6 with the 30-minute one. Any of
      their failures is regraded with grader v2.1, both grades are
      reported, and a run ended by the 600-second cutoff is rerun.
+3. *2026-11-26, during rerun batch R1 (operator ruling).* The
+   `agy-gemini4-carbon` plan quota ran out while its reruns were in
+   flight. The operator ruled that the binding is not measured again: it
+   is reported as **not meeting the minimum requirement** on its primary
+   result (1 of 3 at the start tier; Google lists no step-up, so "not
+   reached"). Its rerun cells are kept as INCONCLUSIVE-venue and are not
+   repeated. The cause recorded for its two primary failures stands (no
+   file written before the 600-second cutoff), and so does the note that
+   part of its quota went to the validator worker session, the probes and
+   the scored runs on the same day. The `claude-sonnet5.5` reruns continue.
