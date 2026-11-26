@@ -3,15 +3,18 @@ id: da90afb1a1dc
 kind: bug
 title: bashy supervisor test starts a real schedule daemon on the host job store (missing BASHY_SCHEDULE_STATE isolation)
 seq: 781
-status: todo
+status: done
 priority: p2
 labels:
     - scheduler
     - test
 created: 2026-11-26T06:22:41.379383Z
+assignee: agy-gemini4-neon
 sprint: 637
 sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
+closed: 2026-11-26T06:32:54.032566Z
+closed_by: claude-fable5.2
 ---
 
 Found during Sprint 637 R6 (e79e4ac55079), 2026-11-25. Root cause corrected the same day after reading the test harness (the first filing blamed only the missing scheduler-state isolation).
