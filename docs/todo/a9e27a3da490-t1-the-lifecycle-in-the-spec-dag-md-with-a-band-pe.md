@@ -48,3 +48,21 @@ Base: `docs/spec2src-protocol-v2.md` with amendments 1 to 6 (conditions, isolati
 - **Controls (gate lane 2):** empty workspace FAIL on every layer and on the lifecycle; the reference with no `build.sh` PASS 36 of 36 with the lifecycle failing on `build` alone; the reference with a `build.sh` PASS 36 of 36 and lifecycle PASS, 4 of 4.
 - **Smoke (not scored):** `codex-gpt6-sol`, PASS 36 of 36, lifecycle PASS, 354 s; the runner stopped 6 processes tied to the run's directories and left no directory behind.
 - **Disclosures:** the spec-only `dag.md`, the grader change and every classification are the conductor's. `codex-gpt6.2-astra` wrote the runner fix as a worker; it is not a subject. The subject's judge runs on the session host, the grader on the stated Linux venue.
+
+## Result of part (d) (2026-11-26)
+
+`codex-gpt6.1-terra`, 3 runs on the fixture with the lifecycle: **3 of 3**.
+
+| Run | Session | Behaviour (36 checks) | build | test | run | serve (information) |
+|---|---|---|---|---|---|---|
+| 1 | 308 s | PASS 36/36 | 0 | 0 | 0 | returned at once with status 0 |
+| 2 | 293 s | PASS 36/36 | 0 | 0 (first grade: 1, venue fault, see below) | 0 | ran in the foreground, stopped on TERM |
+| 3 | 379 s | PASS 36/36 | 0 | 0 | 0 | failed: address already in use |
+
+The behaviour verdict is unchanged from Sprint 723 (3 of 3). The builder made `build`, `test` and `run` work in every run. After each run the runner stopped the processes tied to the run's directories (7, 6 and 10) and left no directory behind.
+
+**One venue fault, root cause recorded before the fix.** Run 2's first grade failed the `test` step: the first contract command timed out at the judge's 30-second step limit. Cause: the test host's login session exports a display, and its display server was in a crash loop. Python's `webbrowser` module asks the desktop for the default browser when a display is set, and that query hung for 15 to 45 seconds until the display server restarted (measured directly: 3 of 123 calls). Run 2's build is Python and opens the page with that module. Classification: environment. Fixed in the venue: grader v2.3 hides the display from every candidate phase, as a headless venue should. Controls were rerun and the three snapshots regraded; both grades of every run are kept. The same snapshot also passed 5 of 5 regrades under v2.2.
+
+**One spec gap, in the lifecycle (not a builder defect).** `serve` worked as a foreground service in 1 of 3 builds. The contract makes a form's page answer as soon as `form add` returns, so every build starts its own background server; the `serve` step does not say what happens when that server is already running. One build returned at once, one failed on the busy port. The step needs one more sentence (for example: when a server for this user is already running, `serve` attaches to it or replaces it), and the app needs a stop. Carried to T2 (the operate drill uses the build whose `serve` works) and to the standard.
+
+Evidence: results rows and first grades in the private drill directory (batches `t1-731-1` to `-3`), regrades and controls in the Sprint 731 private directory; grader README in the private docs repository (v2.2 and v2.3, digests).
