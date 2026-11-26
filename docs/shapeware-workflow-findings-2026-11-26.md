@@ -133,6 +133,14 @@ bashy should carry the tooling that helps agents succeed at shaping.
   script preflight (`bashy check`); this would extend the same idea to
   specs.
 
+- **The framing: a spec is compiled before it is built** (operator,
+  2026-11-26). The spec is the source. Lint and dry run are the compile
+  step: they report errors and warnings in seconds, with no model in the
+  loop, before any agent spends a session. The agent's build is code
+  generation, and the judge is the test run. The plan should name these
+  stages in those terms and decide which findings are errors (block the
+  build) and which are warnings.
+
 ## 5. Material
 
 - Plans: `plan-spec2src-calibration.md`, `plan-reverse-sdlc-workflow.md`
