@@ -54,7 +54,7 @@ parallel.
 | # | Story | State and what to do |
 |---|---|---|
 | 1 | Runner leak bug `6afd1714` (agent-bench, p0) | Open. Root cause first, from the Sprint 723 runner logs; then the fix and a test. It must land before any new drill, because the operate drill has subjects start services on purpose. A good first worker story. |
-| 2 | T1 lifecycle in the spec `a9e27a3d` (p0) | Partly done: the lint rules are merged (conform `1be6b39`), and `form`'s own `dag.md` has band lines (see "In flight"). Still to do: (a) write the spec-only `dag.md` that the builder is handed, with steps that run without bashy at the venue (build, test with `conform run`, install as a launcher on the PATH, run, serve); (b) add it to the fixture with a new `TASK.md` and digests (agent-bench `packs/spec2src/t1-form`); (c) make the private grader also check at the venue that build, test and run work; (d) 3 runs with one builder that passed (`codex-gpt6.1-terra` is the cheapest that was 3 of 3). |
+| 2 | T1 lifecycle in the spec `a9e27a3d` (p0) | Partly done: the lint rules are merged (conform `1be6b39`), and `form`'s own `dag.md` has band lines (bashy `ecc8e527`). Still to do: (a) write the spec-only `dag.md` that the builder is handed, with steps that run without bashy at the venue (build, test with `conform run`, install as a launcher on the PATH, run, serve); (b) add it to the fixture with a new `TASK.md` and digests (agent-bench `packs/spec2src/t1-form`); (c) make the private grader also check at the venue that build, test and run work; (d) 3 runs with one builder that passed (`codex-gpt6.1-terra` is the cheapest that was 3 of 3). |
 | 3 | T2 operate drill `22ae0904` (p0) | Open; needs 1 and 2. A new small pack task: a low-band binding takes one passing T1 folder, cold, through build, test, install, one CLI command, serve, fetch the page, stop. Graded by exit codes and by the contract against the installed app. Protocol note before runs; probe each binding; check quota. |
 | 4 | T3 record the measured bands `38582fce` (p1) | After 3. Into `dag.md` and `SKILL.md`, as bounds. |
 | 5 | T4 report and operate runbook `98f5050d` (p1) | After 3. |
@@ -67,17 +67,15 @@ parallel.
 | 7 | W2 entry paths, dogfood order, intake `a97079f7` (p2) | After W1. It also decides what happens to Sprint 726 and the two unsprinted stories. |
 | 8 | W3 operator review `95f4a97a` (p1) | Last. Then file the next execution sprint. |
 
-## In flight, kept by the previous conductor
+## Nothing is in flight
 
-**Do not edit these three files until the previous conductor says they
-are committed:** bashy `examples/desk/form/CONTRACT.md`, `features.yaml`
-and `dag.md`. They hold the secret-name rule fix (assertions F-14 to F-16,
-"Spec v2.1") and the band lines. They are uncommitted while the reference
-re-certifies on gate lane 2: the certification passed 17 of 17 with no
-noisy assertion, and the mutant run was still going at handoff. The
-previous conductor commits them, bumps the umbrella pin and closes Sprint
-729, then posts on the 731 thread. If the mutant run fails, that is
-reported there instead.
+The `form` spec fix is committed (bashy `ecc8e527`, pin bumped): the
+secret-name rule is defined with assertions F-14 to F-16 ("Spec v2.1"),
+and `dag.md` states a band per step (`none` for source and test,
+`unmeasured` for the rest until the operate drill). The reference
+re-certified on gate lane 2: 17 of 17 over 3 runs with no noisy
+assertion, 117 of 117 mutants killed, the app's own acceptance checks 11
+PASS and 4 TBD. Sprint 729 is closed.
 
 ## Mechanics and traps
 
@@ -115,9 +113,7 @@ reported there instead.
 
 ## Held resources
 
-- **Gate lane 2** is claimed by the previous conductor for the
-  re-certification. It is released when the in-flight item above is done;
-  take it then, or use lane 3.
+- **Gate lane 2** is released. Claim it, or lane 3, before any build or test.
 - No worktrees or branches are held for 731. One salvage ref in bashy
   (`refs/salvage/abandoned-145`) keeps an unrelated one-line change on
   purpose.
