@@ -217,12 +217,13 @@ Both carry `Band: unmeasured`. The one page interaction (fill by label,
 submit, read back through the CLI) is still scripted outside the judge
 (kb retro `shapeware-drill-retro-sprints-722-725`, "Open").
 
-*State: proven on `form`, with one gap.* The same two bindings ran one
+*State: proven on `form`.* The same two bindings ran one
 command, served the page, fetched it and stopped the service, 3 of 3 each,
 and the judge passed the contract against the installed app
-(`sprint-731-report.md`). The gap: the spec does not define `serve` when the
-app's own background server is already running, nor a stop; 2 of 3 builds
-did not serve in the foreground (same report, finding 3).
+(`sprint-731-report.md`). The gap found there (no defined `serve` when the
+app's own server already runs, and no stop) is closed in spec v2.2: `form
+stop` is in the contract, the lifecycle has a `stop` step, and all three
+v2.2 builds serve and stop (same report, "After the operator review").
 
 ### Stage 8: field shaping
 

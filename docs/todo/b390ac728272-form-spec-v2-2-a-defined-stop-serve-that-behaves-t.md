@@ -3,14 +3,17 @@ id: b390ac728272
 kind: task
 title: 'form spec v2.2: a defined stop, serve that behaves the same for every build, and the spec''s lifecycle in the spec; rerun build and operate'
 seq: 801
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
 created: 2026-11-26T16:06:19.944136Z
+assignee: claude-fable5.2
 sprint: 731
 sprint_id: 88c254ad-f4a4-5c54-a0fd-ac469894c684
 sprint_title: Shapeware workflow standard, proven by the full trip on form
+closed: 2026-11-26T17:24:10.822846Z
+closed_by: claude-fable5.2
 ---
 
 Operator rulings at the Sprint 731 review (2026-11-26): resolve the serve and stop gap now; a spec is self-contained (design left to the conductor).
@@ -41,3 +44,11 @@ Operator rulings at the Sprint 731 review (2026-11-26): resolve the serve and st
 ## Run conditions for the reruns, fixed before they start
 
 As for story T1, with these changes: fixture and grader as above (contract digest `737e7c4658bce7e4`, lifecycle `9ad2c66b609650ab`); lanes are headless. Build: `codex-gpt6.1-terra`, 3 runs; pass = behaviour PASS on every layer and lifecycle PASS including the service. Operate: after the build runs, with the task reordered (build, test, install, serve, run, fetch, stop) and one more check (the page no longer answers after the stop); the no-model control first, then `codex-gpt6-luna`, 3 runs. A provider refusal is a venue fault. Every non-pass is classified from the logs before it is counted.
+
+## Result (2026-11-26)
+
+- **Build on v2.2**, `codex-gpt6.1-terra`: 3 of 3. Behaviour 40 of 40 in each run (20 visible assertions and the page inventory, 17 hidden steps, the page interaction). Lifecycle with the service in each run: `build`, `test`, `run` and `stop` exit 0, `serve` alive, the page answers while serving and is gone after the stop. Sessions 327, 311 and 297 s. Before v2.2 `serve` worked as a service in 1 of 3 builds.
+- **Operate on v2.2** (agent-bench `7017ea5`: serve first, `stop` as a step, a check that the page no longer answers): the untouched folder fails, the no-model script passes; `codex-gpt6-luna` 3 of 3 on every mechanical check, sessions 236, 247 and 283 s.
+- **One venue fault, root cause recorded before the fix.** In operate run 3 the subject's own `test` step exited 1 (its report is advisory; the grade passed). Cause: the build opens its page with the system `open`; on the session host that put a real tab in the operator's browser, whose open connection blocked the build's one-connection server, and the judge's page fetch timed out. Reproduced 11 of 15; with no-op `open` and `xdg-open` first on the PATH, 0 of 15. Classification: environment. Fixed in the venue (agent-bench `7424330`: the drill venue requires the stand-ins). Setting `BROWSER` is not enough.
+- **Defects filed, not fixed (frozen baseline):** coreutils `8302f07a` (`rm -f` and a vanishing file), bashy `941f35b6` (`exec` does not replace the shell).
+- Report and standard updated (`docs/sprint-731-report.md`, "After the operator review").

@@ -63,6 +63,30 @@ In bashy `examples/desk/form/SKILL.md` (`4b8cc25f`), as bounds by binding with t
 - The consent gate, the owner review and field shaping were not exercised.
 - Tokens and cost were not recorded.
 
+## After the operator review: spec v2.2 (same day)
+
+The operator ruled that the serve and stop gap (finding 3) and the place of the spec's lifecycle (finding 7) be resolved, not carried.
+
+- **Spec v2.2** (bashy `9ee40025`): the contract gains service rules and assertions F-17 to F-20. `form stop` stops the user's server and exits 0 whether or not one runs; stored forms are kept; the next `form add` starts the server again. What a signal does is left free. The lifecycle gains a `stop` step, and `serve` stops any running server first, so it behaves the same for every build.
+- **A spec is self-contained.** A spec release is its own folder with one `dag.md`. The reference folder keeps the spec's lifecycle in `spec/dag.md`, with `spec/README.md` listing the files of a release; the drill fixture copies them byte for byte.
+- **Certification:** lint clean on the folder and on the assembled release; the reference passes 21 of 21 over 10 runs with no noisy assertion; 127 of 127 mutants killed.
+
+| Drill on v2.2 | Binding | Result | Sessions |
+|---|---|---|---|
+| build | codex-gpt6.1-terra | **3 of 3**: behaviour 40 of 40 each; lifecycle with the service (serve alive, the page answers, stop exits 0, the page is gone) in all three | 327, 311, 297 s |
+| operate, control | no model (script) | PASS, including the page gone after stop | seconds |
+| operate | codex-gpt6-luna | **3 of 3** on every mechanical check | 236, 247, 283 s |
+
+Before v2.2, `serve` worked as a service in 1 of 3 builds; with the rule defined it works in 3 of 3.
+
+What the new assertions and the reruns exposed:
+
+8. **A race in the reference's own `stop`** (about 2 of 8 stops failed): it removed a state file that the stopping server removes too. Fixed in the reference (bashy `d486a5d0`); 0 failures in 30 cycles afterwards. The first certification had passed 3 of 3 by luck, which is why it was repeated with 10 runs.
+9. **Two product defects, filed and not fixed (frozen baseline):** the pure-Go `rm -f` fails when the file vanishes just before the unlink (coreutils todo `8302f07a`); and in bashy `exec PROGRAM` does not replace the shell, so the program survives a TERM sent to the shell (bashy todo `941f35b6`). The second is why the reference's server survived TERM, and why the stop had to be a verb.
+10. **A venue fault on the session host.** In one operate run the subject's own `test` step exited 1. Cause: the build opens its page by calling the system `open`, which put a real tab in the operator's browser; the browser's open connection blocked the build's server, which handles one connection at a time, and the judge's page fetch timed out (11 of 15 repeats). The drill venue now requires no-op `open` and `xdg-open`; 0 of 15 repeats fail. The mechanical grade of that run was not affected.
+11. **A behaviour the contract cannot see yet.** A build whose server handles one connection at a time passes every assertion on a headless venue and stalls as soon as a browser holds a page open. A case with two clients would catch it; none exists.
+12. **The gate host fault of finding 6 has a root cause:** the host's GUI layer is in a restart loop because its remote-display client gets a display of size zero. Every lane is headless now (`script/gate-lane.sh`), so no run can reach it.
+
 ## What comes next
 
-The operator review of `shapeware-workflow-standard.md` (story W3), with the open items of its section 11 and three questions from this trip: what `serve` and stop mean for a service app; where a spec's own lifecycle lives when the folder is also the reference build; and whether the usage-billed and local bindings should be run to step the operate ladder down.
+Sprint 726: the same loop on a second app, `notepad`, with an agent in every role, the spec author writing the lifecycle, and a mechanical end-to-end test of the lifecycle after the spec and after every build (`handoff-sprint-726.md`). Left for later by the operator: stepping the operate ladder further down, and the open items of section 11 of the standard other than Sprint 726.
