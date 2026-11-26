@@ -139,6 +139,21 @@ bashy should carry the tooling that helps agents succeed at shaping.
   script preflight (`bashy check`); this would extend the same idea to
   specs.
 
+- **A consent gate on the user's machine** (operator, 2026-11-26; not
+  built as one step). A spec shipped as an application is built and run on
+  the user's own infrastructure by the user's agent, so a person decides
+  before that happens. The format already has the parts: the effect cap
+  declared in `contract.bsh` (§7; no cap means read-only and not
+  field-built), the computed release class (§12; fail closed), and the
+  rule that a candidate can never raise the cap. What the workflow needs
+  is one gate that puts them in front of the user: what this spec will do
+  here (effects, paths, ports, tools; from the dry run), its lint
+  warnings, its release class and its measured minimum band, then an
+  explicit yes before the first build or run. Later shaping passes inside
+  the approved cap do not ask again; anything beyond it does. Every
+  approval and every override is logged. With the spec review on the
+  author's side, this makes two human gates: the owner approves what the
+  app is, and the user approves that it runs here.
 - **The framing: a spec is compiled before it is built** (operator,
   2026-11-26). The spec is the source. Lint and dry run are the compile
   step: they report errors and warnings in seconds, with no model in the
