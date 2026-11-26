@@ -31,3 +31,4 @@
 {"op":"add","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T11:18:39.70462Z"}
 {"op":"update","slug":"spec-to-source-drill","id":"01a21794-377c-7f36-bca3-5bddae1380af","tool":"claude","at":"2026-11-26T11:33:12.46734Z"}
 {"op":"add","slug":"shapeware-drill-retro-sprints-722-725","id":"01a217a1-8b7b-708c-a724-998769844dfd","tool":"claude","at":"2026-11-26T11:33:12.700202Z"}
+{"op":"add","slug":"shapeware-spec-from-plan","id":"01a217aa-868d-779d-b3cd-0f73d8c22bcf","tool":"claude","at":"2026-11-26T11:43:01.262738Z"}
