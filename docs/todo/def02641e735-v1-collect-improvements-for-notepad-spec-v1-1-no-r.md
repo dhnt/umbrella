@@ -16,6 +16,7 @@ sprint_title: 'Shapeware spec method: collect improvements from the builds (note
 Operator rulings 2026-11-26, during Sprint 726:
 1. Record improvements as a follow-up and **collect more before running another round**. This story is the collection. No spec change, no hidden-case change and no build round starts from it.
 2. **The solution is generic, not just for notepad.** Each weakness is fixed where every shapeware app benefits: the spec format, the judge (`conform`), the lint (`conform spec check`), the kb runbooks, the drill harness. A change in notepad's own files is only the instance that proves the generic fix.
+3. **What applies only to notepad is added only for notepad.** An item goes in the generic table when another app could meet the same weakness; otherwise it goes in the notepad-only list below and changes nothing outside notepad's folder.
 
 Add an item whenever a build, a judge or a user finds a weakness. Give the evidence (run, assertion, digest), the generic fix, and the notepad instance if there is one.
 
@@ -35,6 +36,22 @@ Add an item whenever a build, a judge or a user finds a weakness. Give the evide
 | 10 | **Task statement.** A builder delivered with visible assertions failing. | `opencode-glm-5.3-flash` run 1: 3 visible FAIL at delivery. | **Runbook** `shapeware-source-from-spec` and the task template: deliver only when the judge shows every visible assertion PASS. | `TASK.md` of `t3-notepad`. |
 | 11 | **Lifecycle test compares JSON as text.** | `venue/lifecycle-notepad.sh`, check `installed`: looks for `"body":"hello"` compact. It changed no verdict. | **Harness:** parse the JSON; make the script generic (app name, create command, page check as parameters) instead of one per app. | the script itself. |
 | 12 | **Session time is not part of the result.** | `opencode-glm-5.3-flash` used 21 and 25 of 30 minutes; `codex-gpt6.1-terra` about 6. | **Protocol/report:** report time next to the verdict; state the cap when rounds are compared. | none. |
+
+## Notepad only (no generic change)
+
+These are facts and decisions about this one app. They become notepad spec v1.1 and nothing else.
+
+| # | Item | Evidence | Change, in notepad's folder only |
+|---|---|---|---|
+| N1 | `--format` is ignored; content sniffing always decides. | Judge, R2. | Decide: fix the app, or drop `--format` from the contract. Then assert it. |
+| N2 | Content sniffing is broader than the contract: content holding certain html tags is html where the contract says txt. | Judge, R2. | Decide which is right; write the rule as a defined set with a boundary pair. |
+| N3 | The first body write after an empty `add` is `r2`; the contract says `r1`. | Judge, R2. | Decide; assert the revision after an empty `add`. |
+| N4 | The acceptance line `add ... --fields id,title` fails on the reference (exit 2, and the note is stored anyway). | Judge, R2. | Correct the line or the app; a refused command must not store. |
+| N5 | Which page buttons every implementation must have (layout and copy buttons, or only Save Note and New Note). | Author's open question 2. | Owner decision, then the UI rule. |
+| N6 | Should `add` start the server, and should the binary have its own `stop`. | Author's open question 1. | Owner decision (the generic service pattern is item 3 above; this is notepad's choice within it). |
+| N7 | pdf and png export are asserted only by the reported `format`. | Author's open question 3. | Owner decision: pin a property of the written file or leave it open. |
+| N8 | KI-1: a verb against an unreachable server prints a long dial error and exits 255. | Author, R1. | Fix the app's error and exit code, then assert them. |
+| N9 | KI-2: html and pdf import call `bashy lens`, against the README's pure-Go claim. | Author, R1. | Correct the README, or make the import self-contained. |
 
 Sprint 726's R4 applies the runbook wording that is already certain (the guesses listed on stories `7512c17bc9d5` and `f232758ae073`); what needs a decision, a judge change or a lint rule stays here.
 
