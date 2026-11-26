@@ -169,6 +169,13 @@ one artifact, the spec folder, instead of handing work between a
 development side and an operations side. The typical business case
 (`access-tiers.md`; Sprints 706 and 709), described here by role:
 
+The letters, as used since Sprint 706 and confirmed 2026-11-26:
+**A** is an **account** member (an employee with a login and no machine
+in the mesh), **O** is the **owner** (the business owner, who hosts the
+app and is the only approver), **C** is a **contractor** (a member with a
+machine in the mesh and the shaping scope). "Operator" is not one of the
+three; in this repository it means the person directing the project.
+
 | Person | Role in the team | What they do in a shaping pass | What the spec gives them |
 |---|---|---|---|
 | The business owner | holds the account, hosts the app, the only approver | settles the open questions of a spec change; approves what is kept and served; gives consent for what runs on the business's machines | the release class, the effect cap and the band per step, in one place to approve |
