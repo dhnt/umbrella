@@ -56,3 +56,5 @@ With jobs 1-5 removed, only the disk alarm clearly earns a running engine on the
 - Jobs 1-5 deleted on the operator's approval (`bashy schedule rm`; the job store was backed up beside itself first). Three jobs remain, all enabled: the CI failure router, the cloud-host reaper and the disk floor alarm.
 - The test defect is filed as da90afb1a1dc (standalone bug, p2).
 - Still open: keep, disable or delete the CI failure router and the cloud-host reaper; whether to enable the schedule unit.
+- 2026-11-25, later: the operator had the CI failure router and the cloud-host reaper disabled (`bashy schedule disable`; definitions kept). The disk floor alarm is the only enabled job. Still open: whether to enable the schedule unit.
+- Correction to "Cause of the 11-22 firing" above: the test only runs a real scheduler when `BASHY_SELF` is present in its environment (then the unit's child is a real bashy instead of the test stub); on 11-22 an adapter environment leak supplied it, fixed that morning in bashy 86c645bc. The missing scheduler-state isolation is the second gap. Full root cause and the fix are on da90afb1a1dc.
