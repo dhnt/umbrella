@@ -3,14 +3,18 @@ id: c61a0ec7e18a
 kind: doc
 title: 'W1 draft the shapeware workflow standard: stages, gates, roles, artifacts, records'
 seq: 788
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
 created: 2026-11-26T12:02:29.430555Z
+weave: 279
+assignee: claude-opus5.5
 sprint: 731
 sprint_id: 88c254ad-f4a4-5c54-a0fd-ac469894c684
 sprint_title: 'The full shaping trip on form: spec to source to artifact to install to run and serve, with the band needed at each stage'
+closed: 2026-11-26T13:51:44.100899Z
+closed_by: claude-fable5.2
 ---
 
 Write docs/shapeware-workflow-standard.md: the shapeware workflow as one standard, proven stage by stage with what was actually done on bashy's form app.
