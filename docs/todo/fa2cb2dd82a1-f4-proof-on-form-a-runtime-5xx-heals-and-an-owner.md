@@ -13,6 +13,13 @@ sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
 ---
 
+F4 build notes (conductor 2026-11-26, at assignment):
+- Base: bashy origin/main 9e516af8 or later, yoke 2b10346c or later. F3b (ab9cbdd6f838) runs in parallel and adds `bashy shape wish --source KIND:REF`, the off-switch/log on the wish path and shape-feed calling `shape approve`; write (b) and (c) against that interface, as specified on the F3b card.
+- Location: bashy tests/field-loop-e2e/ (run.sh or run.py + README.md + fixtures), plus a dag.md target `test-field-loop-e2e` next to `test-group-shaping-e2e` (dag.md ~:291). Copy that harness's patterns (throwaway HOME, fake shaping agent, evidence path argument, fail-closed) instead of inventing new ones.
+- Fakes only: a fake shaping agent that makes a deterministic fix, an issues file for `shape-feed --source file:...`, no network, no real GitHub, no browser (BROWSER=/usr/bin/true and no-op open/xdg-open on PATH). Finishes in a few minutes; waits are configurable.
+- (a) injected 5xx on form -> incident repair heals -> activated -> `bashy shape auto log` shows trigger/attempt/verdict/activation -> previous revision restorable; (b) owner issue via shape-feed --apply -> todo (origin feed, reporter) -> wish -> approve -> activated; non-owner issue skipped; (c) the same feed from `bashy schedule` once; after `bashy shape auto off` a second run files nothing and the log shows the refusal.
+- Do NOT run the e2e on the dev box. Syntax-check only (bash -n / python -m py_compile). The conductor runs it on the gate lane and sends back failures.
+
 Delivery rules (conductor 2026-11-26, Sprint 730 started):
 - Work on current heads: yoke and bashy at origin/main (yoke 257ce147, bashy b5e679bb or later). Commit inside the submodule on a branch named s730-<story-short-id>; the conductor merges. Never push to main, never bump pins, never touch other submodules.
 - Commit trailers: Sprint: #730, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
