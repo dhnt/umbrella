@@ -8,6 +8,7 @@ priority: p1
 labels:
     - shapeware
 created: 2026-11-26T12:45:54.236285Z
+assignee: agy-gemini4-hydrogen
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'

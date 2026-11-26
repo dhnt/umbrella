@@ -8,6 +8,7 @@ priority: p0
 labels:
     - shapeware
 created: 2026-11-26T12:45:54.901267Z
+assignee: claude-fable5.2
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'

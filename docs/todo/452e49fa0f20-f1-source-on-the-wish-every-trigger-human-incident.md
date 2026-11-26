@@ -3,14 +3,17 @@ id: 452e49fa0f20
 kind: feature
 title: 'F1 Source on the wish: every trigger (human, incident, feed, schedule) enters the one shaping workflow with provenance and fenced text'
 seq: 814
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
 created: 2026-11-26T23:22:56.224058Z
+assignee: codex-gpt6.2-astra
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
+closed: 2026-11-26T23:38:39.327014Z
+closed_by: claude-opus5.5
 ---
 
 Delivery rules (conductor 2026-11-26, Sprint 730 started):
