@@ -123,6 +123,16 @@ bashy should carry the tooling that helps agents succeed at shaping.
   versions, variables and ports a spec names exist where it will run).
   Most of the surprises in finding F4 were of the second kind.
 
+- **A dry run of a spec or a skill** (a thought, not built): walk it
+  without executing anything and report what would happen. For a contract:
+  the order of the steps, which later assertions depend on a value bound
+  by an earlier one (so a single point that would cascade is visible, as
+  in finding F5), which commands, example files and tools each step needs
+  and whether they exist. For a skill-script: its steps and declared
+  effects. bashy already has `--dry-run` as a common option and a static
+  script preflight (`bashy check`); this would extend the same idea to
+  specs.
+
 ## 5. Material
 
 - Plans: `plan-spec2src-calibration.md`, `plan-reverse-sdlc-workflow.md`
