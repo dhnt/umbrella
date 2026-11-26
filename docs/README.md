@@ -367,6 +367,16 @@ The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accou
 - the rerun rules (venue failures only);
 - the batches and the viewer-book report.
 
+## plan-reverse-sdlc-workflow.md
+
+Plan for operator review, written at the close of Sprint 723. It sets out how software shaping becomes one repeatable workflow ("reverse SDLC") and how it is dogfooded on bashy's applications:
+
+- what Sprints 722 to 725 established, and the eight gaps (W1 to W8) between that and an end-to-end workflow;
+- the roles (spec author, judge, builder, conductor) and how each qualifies;
+- iteration 2, the MVP loop: an agent writes the spec for a second app, another vendor's agent writes the hidden cases, two bindings rebuild it, and the measured minimum band is recorded;
+- what is deliberately not in the MVP, and the later sprints in order;
+- budget (quota), venue, risks and the decisions needed.
+
 ## spec2src-protocol-v2.md
 
 The Sprint 723 protocol, fixed before any scored run. It replaces the Sprint 722 Phase B protocol for the model ladder and defines:
