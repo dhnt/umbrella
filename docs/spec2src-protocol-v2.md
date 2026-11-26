@@ -218,3 +218,29 @@ the classified failures and the limitations.
    quota resets, as their own batch with the same conditions; the first
    attempt is kept. Batches 2 and 3 run for the other four vendors in
    their seeded order with the Zhipu cell left out.
+2. *2026-11-26, after start batches 1 to 3, before any rerun (operator
+   ruling).* Two harness conditions decided four of the six failures, so
+   both are fixed and the two affected start bindings are measured again.
+   - **Stale native binaries.** Both `claude-sonnet5.5` failures came from
+     a macOS binary that its launcher cached while the subject ran
+     `conform` on the dev box; the snapshot carried it to the Linux venue.
+     Regraded with only that file removed, both snapshots pass 33 of 33.
+     Fix: the lane grader (v2.1, digest `ca64c02381e8bf46`) removes native
+     executables (ELF, Mach-O) from every snapshot before grading and
+     records their names. This enforces the existing rule that a binary
+     built on the dev box is not run. The task text is unchanged. Controls
+     with v2.1: reference 33 of 33, null 0 of 33.
+   - **The no-write cutoff.** The runner ended a session after 600 seconds
+     without a file written to the workspace, a rule this protocol did not
+     state. Both `agy-gemini4-carbon` failures were ended by it during a
+     long first reasoning turn, with nothing written. Fix: the cutoff is
+     the full 30-minute cap for every later run.
+   - **Reruns.** `claude-sonnet5.5` and `agy-gemini4-carbon` run 3 more
+     times each under these conditions (batches R1 to R3). The first three
+     runs of each are kept and reported next to the reruns. The ladder
+     rule applies to the rerun result. The `codex-gpt6.2-sol` and
+     `muse-spark1.3` results stand: each passed 3 of 3 under the stricter
+     conditions.
+   - The step-down batches 4 to 6 were launched before this amendment
+     with the 600-second cutoff. Any of their failures is regraded with
+     grader v2.1, and both grades are reported.
