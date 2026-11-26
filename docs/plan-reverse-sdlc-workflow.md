@@ -112,6 +112,35 @@ before the spec.
 
 These follow iteration 2 and do not change it.
 
+### The field loop: issues in, shaped fixes out (Sprint 730 filed, backlog)
+
+Operator, 2026-11-26. Two things: issues must have a place in the spec,
+and an app should be able to work on its own issues while it runs.
+
+**What the format already has** (`shapeware-spec-v0.md` §4.2, §4.3, §5):
+a known-issue entry (`KI-n`, status, the feature it belongs to, symptom →
+action, retry bound, expiry, todo), features marked `tbd` with acceptance
+lines, and the Build intent (work copy, graded by the installed folder's
+`candidate.bsh`, "offer, never self-approve"). `form` carries one real
+known issue (KI-1) and one real `tbd` feature (`group-required`).
+
+**What is missing:** the step from an incoming issue to those entries, a
+feed to take issues from, and a loop that runs it without a person
+starting each pass.
+
+| Story | What it delivers |
+|---|---|
+| L1 issue to spec | A kb runbook: classify an incoming issue and write it into the spec. A **bug** becomes a known-issue entry plus an acceptance example that fails today; a **new feature** becomes a `tbd` feature with acceptance lines; a **missing or `tbd` feature** that someone needs becomes a Build request for the existing entry. Open questions go to the owner, as for any spec change. |
+| L2 lint for issues | `conform spec check` rules for the compile step: a known issue names an existing feature, has a status and an expiry; a bug's example exists; a `tbd` feature has acceptance lines; a `critical` feature has no open issue. |
+| L3 one issues feed | The smallest feed: one designated source (a label on one GitHub repository's issues, or one chat channel) read into issue records with a stable id, text and reporter. Read-only; the feed never authorizes anything (text is data). |
+| L4 the loop on one app | For `form`: an issue arrives from the feed, or the app's own check fails while it runs; an agent applies L1, builds in a work copy, and the installed folder's checks and the judge decide. A pass is offered to the owner; a failure leaves a known-issue entry. One bug and one `tbd` feature end to end. |
+| L5 guard for unattended shaping | Bounded effort per issue, the installed effect cap, no change to critical features or the trusted core, every action logged, a switch that turns the loop off, and the owner's approval before anything is kept. |
+
+Related work that this reuses, not repeats: yoke todo `55730ebaf952`
+(hand a failed command trajectory to the repair loop) and umbrella todo
+`af84c70fd72c` (telemetry review for agentic self-healing), both on
+Sprint 611.
+
 ### Later, in order (not filed)
 
 - **Judge qualification** (the deferred S9): L4 against L5 evaluators on
