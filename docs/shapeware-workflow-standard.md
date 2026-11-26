@@ -188,8 +188,8 @@ contract at the venue (`spec2src-protocol-v2.md`, "Grading venue").
 
 ### Stage 6: install
 
-Before the first install or run on a machine, the **consent gate** shows the
-person who answers for that machine what the spec will do there: the
+Before the first build, install or run on a machine, the **consent gate**
+shows the person who answers for that machine what the spec will do there: the
 effect cap (`contract.bsh`; the format §7), the `Effects:` and `Band:` of
 each step, the lint warnings, the release class and the measured minimum
 band. Nothing runs without an explicit yes. Later passes inside the
@@ -301,9 +301,10 @@ The two gates, stated once:
 
 - **Gate 1, what the app is.** The owner reviews every spec change before
   it is built: open questions, features, acceptance lines (stage 1).
-- **Gate 2, that it runs here.** Before the first install or run on a
-  machine, the person who answers for it consents (stage 6). In the
-  business case that is the owner (findings §4b).
+- **Gate 2, that it runs here.** Before the first build, install or run on
+  a machine, the person who answers for it consents (stage 6; at stage 3 or
+  4 when the build happens on that machine). In the business case that is
+  the owner (findings §4a, §4b).
 
 Rules that already hold and stay (findings §4b): one served version, on the
 owner's line; a member's change is a verified candidate until the owner
