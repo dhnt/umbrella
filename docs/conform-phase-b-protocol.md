@@ -175,3 +175,28 @@ Controls before any subject run:
    Without it, `bashy chat` cannot start in the runner's isolated fresh HOME
    (bashy todo `cbce9995`), and no session launches. The condition is the same
    for every subject.
+3. *2026-11-25, after batch 1, before any rerun.* The batch-1 gate found three
+   venue failures and an integrity gap.
+   - **agy-gemini3.8-flash and muse-spark1.2 were never signed in.** Both
+     keep their login in the macOS Keychain, which the runner's isolated arm
+     HOME cannot see. Fix: the runner's recorded Keychain opt-ins
+     (`BENCH_AGY_KEYCHAIN=1`, plus a new `BENCH_MUSE_KEYCHAIN=1`,
+     agent-bench `536c017`).
+   - **opencode-glm-5.3-flash** read the spec, then its built-in auto-updater
+     ran mid-session (a Homebrew upgrade on the dev box) and the session
+     ended after 71 s. Fix: `OPENCODE_DISABLE_AUTOUPDATE=1`.
+   - These three cells are reclassified as INCONCLUSIVE-venue (the grader had
+     recorded "missing ./form"). They rerun as attempt 2, and both attempts
+     are kept.
+   - **Integrity gap.** Subjects had read access to the whole dev box,
+     including the reference source and the private hidden cases. Their
+     transcripts show no access outside the workspace: one fallback
+     `find / -maxdepth 3 -iname TASK.md` was never reached. From the reruns
+     on, every session runs under a macOS sandbox profile (`BENCH_GUARD`)
+     that denies reads of the projects tree and writes to the operator
+     HOME, /opt/homebrew and /usr/local. The two batch-1 runs that did real
+     work (codex-gpt6-luna, claude-sonnet5) stand, scored unguarded, and are
+     reported as such.
+   - A second unscored smoke (codex-gpt6-sol) validates the guarded setup
+     before the reruns.
+
