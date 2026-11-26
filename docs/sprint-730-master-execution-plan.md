@@ -86,17 +86,13 @@ bump and announce it.
 - the `candidate.bsh` digest gap when it runs with no arguments, filed as
   todo `c61c6d33f114`. F3 checks only the console route's protected paths.
 
-## Decision for the operator
+## Operator decisions
 
-**One activation policy for every unattended source:**
-
-- Recommended: when verification and replay pass, activate automatically with
-  the existing active/previous rollback, then notify the owner, who can undo.
-  This is what auto heal already does, and it is what cuts the owner's cost.
-- Alternative: stop at verified and offer the change. The owner approves each
-  one.
-
-Also needed: the GitHub repository and label that make up `form`'s feed.
+- **Activation policy (2026-11-26):** one rule for every unattended source.
+  When verification and replay pass, the change is activated automatically
+  with the existing active/previous rollback, and the owner is notified and
+  can undo. This is how incident repair already works.
+- **Still open:** the GitHub repository and label that make up `form`'s feed.
 
 ## Checks
 
