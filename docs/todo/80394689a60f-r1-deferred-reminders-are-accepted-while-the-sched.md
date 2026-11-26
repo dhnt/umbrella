@@ -33,3 +33,16 @@ Worker rules for commit 1 (R1a, coreutils), fixed before assignment:
 5. Tests: targeted only, GOWORK=off go test ./pkg/schedule/... ./cmds/at/... ./cmds/batch/... ./cmds/crontab/... on a claimed gate-host lane (bashy claim), not on the dev box. No full suite, no conformance run. Report test names added and the pass list.
 6. One commit, trailers Sprint: #637 / Story: #275 / Story-ID: 80394689a60f / Agent: <your registered name>. Submit with the branch name and commit SHA. Keep it under 30 minutes; if blocked, submit what exists with the blocker stated.
 Commit 2 (R1b, yoke notify hint) is NOT part of this assignment; it waits for the coreutils merge.
+
+## Sprint 385 review of R1a (2026-11-25)
+
+The Sprint 385 manager reviewed coreutils branch s637-r1 (bef90e27) and approved it from the POSIX side. The "engine:" first line in `schedule list` and the transient lockfile.Owner probe do not affect the conformance run (it uses a private schedule state directory and never invokes `schedule list` or `schedule add`). The merge HOLD stays: coreutils main remains f9833f72 until the Sprint 385 Phase 1 checkpoint.
+
+## R1b worker rules (yoke; prepared on a branch while the hold stands)
+
+1. Work only in the yoke repository (github.com/qiangli/yoke), on a new branch s637-r1b created from origin/main (efe0bed7). Push that branch to origin. NEVER push or merge to yoke main, and do not touch coreutils, bashy or the umbrella pins: the merge waits for the coreutils hold to lift.
+2. go.mod: change only the one require line for github.com/qiangli/coreutils to v0.0.0-20261126020849-bef90e271000 (branch s637-r1), plus the go.sum lines that follow. Edit the line by hand; do not let `go get` or `go mod tidy` reformat go.mod. Leave the goawk replace line alone.
+3. pkg/bus/notify.go: in NewNotifyCmd, after ScheduleNotify succeeds for --in/--at, call schedule.HintIfEngineOff(cmd.ErrOrStderr(), "notify") once (both text and --json paths; the hint goes to stderr only, stdout stays the receipt). No other change: the job is always stored, the exit code and receipt are unchanged, no new hint text or suppression logic in yoke (coreutils owns both).
+4. Tests in pkg/bus/notify_test.go, on a scratch BASHY_SCHEDULE_STATE: (a) no daemon lock holder: `notify --in` stores the job and stderr carries the engine-off hint; (b) BASHY_HINTS=off: no hint, job stored; (c) --json: stdout is exactly the receipt JSON. Existing tests stay green by name.
+5. Run only GOWORK=off go test ./pkg/bus/... on a claimed gate-host lane (bashy claim), not on the dev box. No full suite. Report test names added and the pass list.
+6. One commit, trailers Sprint: #637 / Story: #275 / Story-ID: 80394689a60f / Agent: <your registered name>. Submit with the branch name and commit SHA. Keep it under 30 minutes; if blocked, submit what exists with the blocker stated.
