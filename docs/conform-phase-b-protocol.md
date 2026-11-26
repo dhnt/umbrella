@@ -165,4 +165,7 @@ Controls before any subject run:
 
 ## Amendments
 
-(none)
+1. *2026-11-25, before any scored run.* The smoke run uses a non-subject
+   agent (codex-gpt6-sol) instead of one of the five subjects. The smoke
+   only freezes the harness, so no subject sees the task outside its three
+   scored runs. Batches 1 to 3 are unchanged.
