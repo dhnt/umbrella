@@ -39,8 +39,9 @@ Two verdicts, reported apart:
 2. **Lifecycle:** agent-bench `packs/spec2src/venue/lifecycle-notepad.sh`,
    every step of the spec's `dag.md` and its service checks.
 
-A binding passes at 2 of 3 runs or better on behaviour. The lifecycle result
-is reported per run and does not change the behaviour count. Every non-pass
+A run passes when both verdicts are PASS (the rule of story R3). A binding
+passes at 2 of 3 runs or better. The two verdicts are reported apart for
+every run. Every non-pass
 is classified from the logs (builder, spec, hidden case, venue) before it is
 counted. A venue fault is INCONCLUSIVE and may be rerun once; a provider
 quota refusal is a venue fault and is deferred, not retried in a loop.
