@@ -3,11 +3,13 @@ id: 7512c17bc9d5
 kind: feature
 title: 'R1 reverse: an agent writes the shapeware spec for the second app'
 seq: 782
-status: doing
+status: assigned
 priority: p0
 labels:
     - conform
 created: 2026-11-26T11:23:43.465764Z
+weave: 281
+assignee: muse-wonder
 sprint: 726
 sprint_id: 224903a6-fe24-5dba-afc4-b7d6f86af9e9
 sprint_title: Shapeware MVP end-to-end loop on a second app, run by agents (reverse SDLC iteration 2)
@@ -42,3 +44,27 @@ Operator go 2026-11-26. Spec author: `muse-wonder`. The conductor gates and reco
 - **Do not change notepad's behaviour.** A defect you find in the app becomes a known-issue entry in the spec and a line in your report, not a source change. The only non-spec files you may edit are `dag.md` (missing steps and band lines) and what the lifecycle steps need to run with `sh` and no bashy; say so in the report if you add any.
 - **When you stop,** end with a report in your final message: the branch and commit; what passed on the lane (lint on the folder, certification runs, mutants killed of total) with the commands you ran; your open questions for the owner; and **every point where the runbook left you guessing or was wrong**. That list is a deliverable of this sprint: do not smooth it over.
 - If a session ends before the work is done, commit what you have on the branch and say where you stopped; the conductor resumes the same run.
+
+## Result (2026-11-26)
+
+Author `muse-wonder`, one session of 40 minutes (weave run 281), no conductor coaching beyond the mechanics note above. Landed on bashy main as `eb41d87b` (spec v1.0): `CONTRACT.md` (37 assertions), `features.yaml`, `SKILL.md`, `examples/` (txt, md, json, html, pdf), `spec/dag.md`, `spec/README.md`, the folder's `dag.md` with the missing steps and band lines. No Go source changed. Added for the lifecycle: `build.sh` and an sh launcher `notepad`, which carries the `stop` verb (the Go binary has none).
+
+Gate, run by the conductor on gate lane 2 from the committed branch: `conform spec check` (conform main) reports nothing on the reference folder and on the assembled spec release; `conform cert` v0.1.1, 3 runs, verdict PASS, 37 results, none noisy (contract sha256 `1624be7b...`); `conform mutate` 124 of 124 killed (8 minutes); notepad's own unit tests pass; the lifecycle end-to-end test of E1 passes 3 of 3.
+
+Open questions the author left for the owner (recorded for the report, not blocking):
+1. The Go binary has no `stop` verb and no verb starts the server, so `stop` lives in the launcher. Should the binary get `stop`, and should `add` start the server as `form add` does?
+2. Are the page's layout and copy buttons required of every implementation, or only the title, the body, Save Note and New Note?
+3. pdf and png export are asserted only by the reported `format`, never by the written bytes. Should a later spec pin a property of those files?
+
+Known issues the author recorded in the spec: KI-1 a verb against an unreachable server prints a long dial error and exits 255; KI-2 html and pdf import call `bashy lens`, which contradicts the README's pure-Go claim; KI-3 the page's field texts are not programmatically associated with their controls.
+
+Runbook guesses (`shapeware-spec-from-app`), for R4:
+1. Step 6 assumes labelled page controls and a `ui` inventory assertion; there is no fallback when the reference's page fails those rules (the author used a console page check and KI-3).
+2. Nothing covers a service that has no stop verb and no auto-start: where `stop` may live, how a contract starts its server.
+3. The runbook never says what the reference command is for a wrapped app (the conductor's note said to build the Go binary; certification only works against the launcher).
+4. Assertions whose last command has no `--json` are judged as plain text, so the open-object form does not apply; the runbook does not mention this split.
+5. "A surviving mutant is a missing assertion" was wrong twice: two survivors were artefacts of the command's shape (redirections and pipes absorbed by the mutant shim, mutations hidden inside compound commands); the fix was restructuring the commands.
+6. One example per input format: no PDF fixture existed, so the example is one the reference exported itself, and its extracted text is extractor-specific. Nothing on fixture provenance.
+7. Which `dag.md` the lint reads in the reference folder is not stated: it reads the folder's root file, not `spec/dag.md`, so both had to be clean.
+
+Conductor's observations for the report: all 37 assertions run in order against one server on one fixed port and one data folder (form's run each in a fresh HOME); `stop` is defined per folder (a pid file), where form's is per user; KI-2 means an implementation that follows the reference needs an extractor on the venue for html and pdf, which the R3 venue must state.
