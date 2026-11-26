@@ -367,6 +367,15 @@ The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accou
 - the rerun rules (venue failures only);
 - the batches and the viewer-book report.
 
+## shapeware-workflow-findings-2026-11-26.md
+
+Input material for Sprint 728, which plans the complete shapeware workflow and its standard processes. It is not the plan. It records:
+
+- what was measured: spec to source on `form` (Sprints 722 and 723) and instructions to spec on the notepad stories (Sprint 727);
+- twelve findings, each with its evidence, such as the spec deciding the outcome more than the model tier, most surprises being venue faults, and instructions to spec being fast but not deterministic;
+- what the findings imply: the spec review as the human gate, the first passing build as the reference, small judged passes, independent cases, fixed venue conditions, recorded roles, and budgeted quota;
+- the eight questions the plan must answer, and the list of existing plans, protocols, runbooks and tools.
+
 ## plan-reverse-sdlc-workflow.md
 
 Plan for operator review, written at the close of Sprint 723. It sets out how software shaping becomes one repeatable workflow ("reverse SDLC") and how it is dogfooded on bashy's applications:
