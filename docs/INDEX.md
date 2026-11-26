@@ -19,6 +19,7 @@
 - `bashy-bashsharp-yoke-position.md` — Architectural opinion: portable shell environments, language composition, and coherent verified workflows across tools, agents, and machines
 
 - `plan-self-contained-offline-bashy.md` — Sprint 654 master execution plan for protected offline bootstrap, reused artifact services and platform acceptance
+- `offline-bashy-contracts-v1.md` — Sprint 654 S0 v1 schemas (`profile-v1`, `manifest-v1`, publication, leases/GC), permissive reuse boundaries, `tools/bashy-build` coexistence and baseline ledger
 
 - `plan-s568-master-execution.md` — Sprint 568 design plan for shared human/agent membership and bidirectional service communication
 
