@@ -3,7 +3,7 @@ id: 80394689a60f
 kind: bug
 title: 'R1 Deferred reminders are accepted while the schedule engine is off: preflight hint + engine state'
 seq: 275
-status: todo
+status: done
 priority: p1
 labels:
     - scheduler
@@ -12,6 +12,8 @@ assignee: agy-gemini4-neon
 sprint: 637
 sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
+closed: 2026-11-26T06:21:35.793477Z
+closed_by: claude-fable5.2
 ---
 
 Finding (dev box, 2026-11-14): bashy schedule add --at/--cron/--every, bashy notify --in/--at, and the at/batch/crontab applets all persist jobs into coreutils/pkg/schedule, but the fleet unit yoke/pkg/fleet/baseline/services/schedule.yaml is opt-in and disabled by default; no front door warns when no engine is running, so reminders are accepted and never fire.
