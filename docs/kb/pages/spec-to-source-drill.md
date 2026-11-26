@@ -12,11 +12,11 @@ tags:
     - drill
     - benchmark
 status: validated
-evidence: Used end to end for the Sprint 723 drill (28 scored runs, controls, probes, gates, six amendments); the venue scripts it names are in agent-bench packs/spec2src/venue
+evidence: Sprint 723 drill on form (28 scored runs, six amendments) and the Sprint 726 drill on notepad, a service app, with hidden cases written from part A by an agent (umbrella docs/sprint-726-report.md); venue scripts in agent-bench packs/spec2src/venue
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
-updated: "2026-11-26T13:52:51Z"
+updated: "2026-11-26T21:32:52Z"
 ---
 
 Goal: decide, with evidence, whether an agent binding (tool:model) can build an app from its shapeware spec alone. Use it to qualify a new tool or model, to find the lowest adequate tier of a vendor, or to check a new spec. Reference run: Sprint 723 on bashy's `form` (`docs/spec2src-protocol-v2.md`). Retro with the reasons behind each rule: [[shapeware-drill-retro-sprints-722-725]].
@@ -30,6 +30,16 @@ Goal: decide, with evidence, whether an agent binding (tool:model) can build an 
 6. **Private drill directory** (`S2S_HOME`, outside any source tree): `tools/conform` (the standalone judge built for the session host, digest recorded), `adapters/` (a frozen copy of the bashy adapter cache, digest list kept), `guard.sb` (from `packs/spec2src/venue/guard.sb.template`). Check the guard: the judge runs under it; the hidden cases and the evidence are unreadable.
 7. **Protocol** committed before any scored run: question, bindings, pass rule, conditions, controls, digests, seeds, rerun rules, disclosures. Later changes are numbered amendments with a reason.
 8. **Smoke** with a binding that is not a subject: `packs/spec2src/venue/run.sh AGENT smoke 1`. The chain must run end to end (session, snapshot, grade). Then freeze the harness.
+
+## A, when the app is a service (second drill: a notes server, hidden cases written by an agent)
+- **Per-case state is whatever the app keeps:** HOME, a data folder, a port, a pid file. Each hidden case gets its own of each, on a port the visible contract does not use. Never begin a case with `stop`: a pid file left by another phase can name a process of another namespace.
+- **Each detection route is its own case.** "One case per input format" means one per route by which a format is recognised (extension, content, standard input, a flag).
+- **Text and JSON are judged differently.** Only a command that carries `--json` is compared structurally; a `curl` check needs the exact text. Write hidden steps the same way the visible contract does.
+- **A case that fails the reference.** If the case is wrong, fix it. If the reference contradicts its own contract, drop the case, report the defect to the spec owner and disclose it in the protocol. It blocks the builds only when a visible assertion depends on it.
+- **Hidden binary inputs:** make them with the reference's own exporter or a standard tool, and record how.
+- **Build before grading.** If the launcher does not build on demand, the grader runs the spec's `build` step on the snapshot before the behaviour phases, offline, in its own namespace. The task says what the venue's module cache holds (standard library or vendored only, unless stated).
+- **Lifecycle phase.** After the behaviour phases, run every step of the spec's `dag.md` (never the candidate's copy) on a fresh copy of the snapshot, then check the service: it answers after `serve`, the installed command works, nothing answers after `stop`. Report this verdict apart from the behaviour verdict. Pattern: agent-bench `packs/spec2src/venue/lifecycle-notepad.sh`; a harness check that reads JSON parses it, never matches it as text.
+- **Also fix before the runs:** the page interaction, the method of the hidden-set digest, and controls for the lifecycle phase (the reference passes, an empty folder fails, one broken step fails alone).
 
 ## B. Evaluate a binding (repeat per tool or model)
 1. Confirm it is registered: `bashy agent list`. Check its plan quota before you start; three runs plus a probe must fit one window.
@@ -47,6 +57,7 @@ Goal: decide, with evidence, whether an agent binding (tool:model) can build an 
 - **Loop host differs from venue.** The subject's judge runs on the session host; the grader runs on the stated venue. A cached build or a host-only interpreter feature passes in the loop and fails at the venue. The grader drops native binaries; the task must state the venue's versions.
 - **Quiet-workspace cutoff.** The runner ends a session after a period with no file written. `venue/run.sh` sets it to the wall-time cap; a shorter one cuts long first planning turns.
 - **Quota.** Probes, worker sessions and scored runs share one plan quota per binding. A refusal is a venue fault. The runner recognises some refusal wordings only; "Individual quota reached" is logged as a candidate fail with a missing launcher after about 200 seconds, so read the screen log before counting a short empty run as a fail.
+- **Nothing delivered after a long first turn.** A session that reads the spec, thinks for minutes and ends without writing a file is an agent fail when the screen log shows no refusal by the provider; a refusal makes it a venue fault. Read the log before counting.
 - **Subject hygiene.** Give no drill-related worker story to a subject binding, and disclose any exposure in the protocol.
 - **Logins in the OS keychain** need the runner's recorded opt-ins, or the isolated arm is signed out.
 - **Auto-update** off for every tool during the run.

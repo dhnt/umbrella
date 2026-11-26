@@ -434,6 +434,11 @@ The Sprint 723 protocol, fixed before any scored run. It replaces the Sprint 722
 
 The protocol for the Sprint 726 notepad builds, fixed before any builder ran. It adds to protocol v2: the four role bindings (spec author, judge, two builders, from four vendors), the `t3-notepad` task and its one venue difference (`bashy lens` as the converter the contract names), two verdicts per run reported apart (behaviour and lifecycle), the pass rule, the controls with their digests, and what is disclosed (reference defects no case asserts, the smoke run).
 
+
+## sprint-726-report.md
+
+The result of Sprint 726. On a second test app (`notepad`, a notes server), an agent wrote the spec from the app, an agent of another vendor wrote the hidden cases, and a builder of a third vendor rebuilt the app 3 of 3 with every check and the lifecycle test passing; the second vendor's builders did not reach 2 of 3. Lists every run with its classification, seven findings about the method (unasserted rules, the two ways the judge compares output, what a service app needs), what changed in the runbooks, and the input for Sprints 730 and 734.
+
 ## plan-spec2src-calibration.md
 
 Plan for Sprint 723, from the Sprint 722 results. It classifies every Sprint 722 failure by cause (spec gap, agent defect, judge) into seven spec gaps: an undemonstrated YAML requirement, undefined `--fields` semantics, implicit open vs closed outputs, no page-interaction acceptance line, accessibility rules buried in one bullet, undescribed definition shapes, and behaviour mixed with reference operation. From these it proposes soundness criteria for a shapeware spec. It plans form spec v2, independent hidden cases v2, conform available to the agent while building, and a model ladder that starts at the latest middle tier per vendor and steps down or up to find the minimal tier (at least 2 of 3 PASS).

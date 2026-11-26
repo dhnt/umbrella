@@ -39,3 +39,7 @@
 {"op":"update","slug":"shapeware-drill-retro-sprints-722-725","id":"01a217a1-8b7b-708c-a724-998769844dfd","tool":"claude","at":"2026-11-26T13:52:50.890047Z"}
 {"op":"validate","slug":"spec-to-source-drill","id":"01a21794-377c-7f36-bca3-5bddae1380af","tool":"claude","at":"2026-11-26T13:52:51.17341Z"}
 {"op":"add","slug":"shapeware-operate-from-dag","id":"01a2186e-40e2-73d8-9e80-2d5795636b18","tool":"claude+2","at":"2026-11-26T15:16:48.483454Z"}
+{"op":"update","slug":"shapeware-spec-from-app","id":"01a21794-386b-7432-bdb3-1af7421cfcb1","tool":"claude","at":"2026-11-26T21:32:51.947595Z"}
+{"op":"update","slug":"spec-to-source-drill","id":"01a21794-377c-7f36-bca3-5bddae1380af","tool":"claude","at":"2026-11-26T21:32:52.151967Z"}
+{"op":"update","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T21:32:52.292276Z"}
+{"op":"update","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T21:32:56.203944Z"}

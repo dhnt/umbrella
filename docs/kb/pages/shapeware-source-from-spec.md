@@ -11,26 +11,28 @@ tags:
     - builder
     - spec2src
 status: candidate
-evidence: Failure classes from Sprints 722 and 723 (umbrella docs/sprint-723-report.md); steps 0, 6 and the lifecycle points added from Sprints 729 and 731. The guide itself has not yet been given to a builder.
+evidence: Failure causes classified from the form and notepad rebuilds (umbrella docs/sprint-723-report.md, docs/sprint-726-report.md); the task statements do not name this page, so no builder was observed following it
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
-updated: "2026-11-26T13:52:50Z"
+updated: "2026-11-26T21:32:56Z"
 ---
 
-Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, `dag.md`, a task file) so that it passes the judge at the stated venue and can be installed and run through its lifecycle. Lessons are from rebuilding bashy's `form` from its spec by agents of four vendors. Related: [[shapeware-spec-from-app]], [[spec-to-source-drill]].
+Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, `dag.md`, a task file) so that it passes the judge at the stated venue and can be installed and run through its lifecycle. Lessons are from rebuilding two bashy apps from their specs (`form`, a form tool, and `notepad`, a notes server) by agents of several vendors. Related: [[shapeware-spec-from-app]], [[spec-to-source-drill]].
 
 ## Steps
 0. **Compile the spec you were given:** `conform spec check .` (the judge also says so when you run it: "spec check reports N finding(s)"). Each finding is a place where the spec does not fully decide the behaviour. Do not guess silently there: take the reading that the examples and the rule's purpose both support, and write the choice in your notes.
 1. **Read the rules section of `CONTRACT.md` before the assertions.** Envelope keys, projection flags, open/closed outputs and error form apply to every command.
 2. **Read the task file and `dag.md` for the venue and the lifecycle:** OS, interpreter and toolchain versions, network, what is absent, and the steps your build must satisfy (build, test, install, run, serve). Build for that venue, not for the machine you are on.
 3. **Write files early.** Start the launcher and a first command within the first minutes, then extend. A long plan with nothing on disk can be cut off.
-4. **Run the judge while you build:** `conform run CONTRACT.md --path . --fresh-home`. Fix by assertion name until all pass.
+4. **Run the judge while you build:** `conform run CONTRACT.md --path . --fresh-home`. Fix by assertion name until all pass. Do not deliver while any visible assertion fails.
 5. **Cover every example file and every input format** in `examples/`, including each syntax the examples use.
 6. **Implement a rule as a rule.** Where the spec defines a set (which names are refused, which kinds are valid), implement the definition and test both sides of its boundary, not only the example shown.
 7. **Errors:** exactly the stated stream, text prefix and exit code, and nothing else on that stream (no warnings from your interpreter).
-8. **UI:** follow the stated label, required and control rules; the judge reads the accessible inventory, not your markup.
-9. **Deliver source, the launcher and a working lifecycle.** Before you finish:
+8. **Output compared as text matches byte for byte.** Only output of a command that carries `--json` is compared structurally. Where the contract shows JSON printed by another command (an HTTP API read with `curl`), print it exactly as shown: compact, keys in that order.
+9. **UI:** follow the stated label, required and control rules; the judge reads the accessible inventory, not your markup.
+10. **A service:** implement the start and stop the contract's service rules define (readiness, what `stop` is scoped to, state kept across a stop), and make every step of `dag.md` work when its block is run with `sh` on a fresh copy, `build` included: the launcher may not rely on something you built by hand.
+11. **Deliver source, the launcher and a working lifecycle.** Before you finish:
    - remove build outputs and caches from the workspace, or make the launcher rebuild when the cached binary does not run here;
    - make sure the launcher works from a fresh HOME with no network;
    - use only the standard library or dependencies vendored in the workspace;
@@ -44,3 +46,5 @@ Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`,
 - Nothing was delivered: the session ended during a long first planning turn.
 - A rule given by example was implemented for the example's form only (`api_key` refused, `stripe-api-key` accepted).
 - Servers started for self-checks were left running after the session.
+- JSON from an HTTP API was printed with spaces and another key order; the checks compare that output as text, and every one of them failed although the behaviour was right. Three of those assertions were visible at delivery.
+- A session read the spec, spent nine minutes in one thinking step and ended without writing a file.

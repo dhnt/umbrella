@@ -81,3 +81,10 @@ binary (conform v0.1.1) `3fd12fbdbaacfc15`.
    cells under the same conditions and digests. `opencode` has no one-shot
    probe, so its first cell is the check. The `flash` result stands as
    measured and is reported as a bound.
+2. *2026-11-26, during the step-up batch (operator ruling).* A quota
+   problem or any other issue with this vendor's bindings is reported and
+   closed, without further runs or approval. `opencode-glm-5.3` cell 1 had
+   delivered no file (the same pattern as the `flash` cell 3); cell 2 was
+   stopped by the conductor after 16 minutes and cell 3 was not started.
+   `opencode-glm-5.3` is reported as not measured (0 of 1). The sprint
+   closes with one vendor's builder passing.
