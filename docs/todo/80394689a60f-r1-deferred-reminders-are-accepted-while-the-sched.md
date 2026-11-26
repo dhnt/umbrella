@@ -8,6 +8,7 @@ priority: p1
 labels:
     - scheduler
 created: 2026-11-14T22:23:12.355952Z
+assignee: agy-gemini4-neon
 sprint: 637
 sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
