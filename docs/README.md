@@ -365,3 +365,5 @@ The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accou
 - the reference, mutant and null controls;
 - the rerun rules (venue failures only);
 - the batches and the viewer-book report.
+
+- **`plan-sprint-698-outpost-reliability.md`** — Describes the owner-scoped master read path, Windows and WSL disk reporting, alert and retention fixtures, and delivery within the sprint time box.
