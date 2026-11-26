@@ -436,3 +436,7 @@ The proposed standing process behind Sprint 723. It has two coupled halves, mode
 ## handoff-sprint-723.md
 
 The mid-sprint warm handoff for Sprint 723. It gives the reading order (card, plan, process doc, spec sections 5/19/20, the 722 protocol), every operator ruling in force, and the story status. S1 (criteria) and S2 (form spec v2) are done: the reference certifies against contract v2 (14/14 PASS, 109/109 mutants). The next stories are hidden cases v2, harness v2 and the L4 batch. It also carries the Sprint 722 mechanics and venue traps (Keychain opt-ins, the adapter cache, the auto-update switch, the sandbox guard, lane-only grading, the daemon leak, safe commits in shared checkouts) and the resources held.
+
+## sprint-731-report.md
+
+The result of taking bashy's `form` the whole way by agents (Sprint 731): the stage table with who did each stage, the gate, the result and the band; what was built for it (a lifecycle for the app as a spec, a lifecycle check in the grader, the operate drill, a runner that cleans up); every run; seven findings, among them that the lifecycle steps need no model, that a service app needs a defined serve and stop, and one venue fault that looked like a build failure; the limits; the questions for the operator review.

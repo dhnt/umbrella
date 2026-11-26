@@ -80,10 +80,10 @@ a part measured, or measured elsewhere. **Not yet proven**: nothing measured.
 | 1 | Instructions to spec | spec author (top tier, assumed) | spec folder with open questions | **human:** owner review | the spec version; the owner's decisions | partly proven, not on `form` |
 | 2 | Compile the spec | no model | lint findings | mechanical: no error finding | the lint output for the spec digest | partly proven (lint only) |
 | 3 | Spec to source | builder (`unmeasured` as a band; bounds per binding below) | source plus launcher, in a work copy | mechanical: the judge, visible contract (hidden cases when qualifying) | per-assertion verdicts, digests | proven on `form` |
-| 4 | Source to artifact (`dag build`) | operator agent (`unmeasured`) | built binary or verified core | mechanical: the step exits 0 | the step log | not yet proven |
-| 5 | End-to-end test (`dag test`) | no model | PASS/FAIL/TBD lines | mechanical: no FAIL | the lines; the judge's verdicts | partly proven |
-| 6 | Install (`dag install`) | operator agent (`unmeasured`) | the app installed for agents and people | **human:** consent, then the step exits 0 | the consent record; the step log | not yet proven |
-| 7 | Run or serve (`dag run`, `dag serve`) | operator agent (`unmeasured`) | a CLI answer; a served page | mechanical: the contract again, on the installed app | the judge's verdicts | not yet proven |
+| 4 | Source to artifact (`dag build`) | operator agent (`unmeasured`) | built binary or verified core | mechanical: the step exits 0 | the step log | proven on `form` |
+| 5 | End-to-end test (`dag test`) | no model | PASS/FAIL/TBD lines | mechanical: no FAIL | the lines; the judge's verdicts | proven on `form` |
+| 6 | Install (`dag install`) | operator agent (`unmeasured`) | the app installed for agents and people | **human:** consent, then the step exits 0 | the consent record; the step log | partly proven (no consent gate) |
+| 7 | Run or serve (`dag run`, `dag serve`) | operator agent (`unmeasured`) | a CLI answer; a served page | mechanical: the contract again, on the installed app | the judge's verdicts | proven on `form` |
 | 8 | Field shaping | any agent at or above the feature's floor | a graded work copy, a known-issue entry | mechanical: `candidate.bsh`; **human:** owner keeps it | the candidate's PASS/FAIL lines and variant id | partly proven |
 
 The stages are a loop: stage 8 feeds stage 1, since a request or a bug
@@ -167,7 +167,7 @@ and a launcher, not a folder with a `dag.md`, so no builder's `dag build`
 has been run (`plan-reverse-sdlc-workflow.md`, "The gap found while
 writing this"; story T1).
 
-*State: not yet proven;* the operate drill (story T2) measures the band.
+*State: proven on `form`.* With the lifecycle handed to the builder, `codex-gpt6.1-terra` supplied a `build.sh` that exits 0 at the venue in 3 of 3 runs, and in the operate drill two lower-tier bindings and a script with no model ran the step (`sprint-731-report.md`).
 
 ### Stage 5: end-to-end test
 
@@ -183,8 +183,8 @@ acceptance checks print 11 PASS and 4 TBD (`handoff-sprint-731.md`,
 "Nothing is in flight"). For every Sprint 723 build, the grader ran the
 contract at the venue (`spec2src-protocol-v2.md`, "Grading venue").
 
-*State: partly proven;* not yet run as `dag test` on a builder's folder
-(story T1).
+*State: proven on `form`:* the spec's `test` step, run at the venue on each
+builder's folder, exits 0 in 3 of 3 runs (`sprint-731-report.md`).
 
 ### Stage 6: install
 
@@ -201,8 +201,10 @@ install`. On a machine without bashy, install means a launcher on the PATH
 *`form`:* the effect cap is `read,write,exec,net`; the install step runs
 `register.sh`; `Band: unmeasured`.
 
-*State: not yet proven.* The consent gate exists only as parts (the cap,
-the computed class, no cap raise by a candidate); no install is measured.
+*State: partly proven.* The install step, a launcher on the PATH, was run
+cold 3 of 3 by `codex-gpt6-luna` and by `opencode-glm-5.3-flash`, and by a
+script with no model (`sprint-731-report.md`). The consent gate exists only
+as parts (the cap, the computed class, no cap raise by a candidate).
 
 ### Stage 7: run or serve
 
@@ -215,7 +217,12 @@ Both carry `Band: unmeasured`. The one page interaction (fill by label,
 submit, read back through the CLI) is still scripted outside the judge
 (kb retro `shapeware-drill-retro-sprints-722-725`, "Open").
 
-*State: not yet proven* (story T2).
+*State: proven on `form`, with one gap.* The same two bindings ran one
+command, served the page, fetched it and stopped the service, 3 of 3 each,
+and the judge passed the contract against the installed app
+(`sprint-731-report.md`). The gap: the spec does not define `serve` when the
+app's own background server is already running, nor a stop; 2 of 3 builds
+did not serve in the foreground (same report, finding 3).
 
 ### Stage 8: field shaping
 
