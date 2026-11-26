@@ -93,6 +93,24 @@ drill.
 The ladder is per role. The judge band is measured separately from the
 builder band.
 
+**Band evidence has three grades**, recorded as `band_source`:
+
+1. `seeded`: a registry default, no evidence.
+2. `price-prior`: the within-vendor rank by list price (registry
+   `cost_micro`, with the price's source recorded), newest generation first
+   at equal price. It orders a family and picks the ladder's start and step
+   order. It is never compared across vendors. Where prices are flat or
+   missing, naming is used and recorded.
+3. `measured`: from a qualification drill, per role and spec version, with
+   the evidence linked. It overrides the other two.
+
+**Limits of the price prior:**
+
+- it is within-vendor only;
+- it is blind to a newer generation at the same price;
+- subscription plans hide the marginal cost;
+- "fast" variants are priced for latency.
+
 ## Artifacts
 
 | Artifact | Where |

@@ -111,11 +111,22 @@ tiers below therefore follow each vendor's product naming:
 This drill's results are the first **measured** tier evidence per binding,
 and they feed the bands, as the qualification process prescribes.
 
+**The step order uses a price prior** (operator, 2026-11-25). Within one
+vendor, the registry `cost_micro` rank plus generation recency orders the
+family, newest first at equal price:
+
+- OpenAI: luna 3k < terra 9k < sol 18k < astra 24k;
+- Google: 3.8-flash 1.2k < hydrogen 4.5k < neon 9k ≈ carbon 10k;
+- Anthropic: sonnet 6k < opus 15k < fable 30k;
+- Zhipu: flash 0.5k < glm 0.9k.
+
+Meta's prices are flat placeholders (5k each), so Meta follows naming.
+
 | Vendor | Start (latest L4) | Step down (L3) | Step up |
 |---|---|---|---|
-| Anthropic | claude-sonnet5.5 | claude-sonnet5 | claude opus5.5 (L5) |
-| OpenAI | codex gpt6.2-sol | codex gpt6-luna | codex gpt6.2-astra (top L4) |
-| Google | agy gemini4-carbon | agy gemini4-neon or gemini3.8-flash | none listed |
+| Anthropic | claude-sonnet5.5 | claude-sonnet5 | claude opus5.5, then fable5.2 (priced 2x opus) |
+| OpenAI | codex gpt6.2-sol | codex gpt6.1-terra, then gpt6-luna | codex gpt6.2-astra |
+| Google | agy gemini4-carbon | agy gemini4-neon (priced near carbon), then gemini4-hydrogen, then gemini3.8-flash | none listed |
 | Meta | muse-ember | muse-spark1.3 (latest small) | muse-wonder |
 | Zhipu | opencode glm-5.3 | opencode glm-5.3-flash | none listed |
 
