@@ -112,6 +112,50 @@ before the spec.
 
 These follow iteration 2 and do not change it.
 
+### The full trip: spec to a running app (Sprint 731 filed, backlog)
+
+Operator, 2026-11-26. Spec to source is one leg. A shaping trip ends with
+the app installed and running: a command for a CLI, a service for a web
+app. The format already fixes the lifecycle as five exact,
+non-interactive `dag.md` steps (source, build, test, install, run), with
+more allowed (`serve`, `show`); `form` has all seven
+(`shapeware-spec-v0.md` §5a).
+
+| Stage | Who | Output | Gate | Band expected | State |
+|---|---|---|---|---|---|
+| 1 Instructions to spec | spec author | spec folder | owner review of open questions | top tier (assumed) | one observation (Sprint 727) |
+| 2 Compile the spec | no model | findings | lint clean; later a dry run | none | lint built |
+| 3 Spec to source | builder | source and launcher | the judge, visible and hidden | middle tier and one below pass on `form` | measured (Sprint 723) |
+| 4 Source to artifact | operator agent | built binary or verified core | `dag build` exits 0 | low | not measured |
+| 5 End-to-end test | no model | PASS/FAIL lines | `dag test`: the contract and acceptance checks on the built app | none | exists for the reference |
+| 6 Install or deploy | operator agent | registered command, skill and app on the user's machine | consent gate; `dag install` exits 0 | low | not measured |
+| 7 Run or serve | operator agent | a CLI answer; a page served | the contract again, against the installed app | low | not measured |
+| 8 Use and shape in the field | any agent | answers; known issues handled; `tbd` features built | the installed folder's checks | measured once (Sprint 721 pack: use, known issue, tbd) | partly measured |
+
+**Where end-to-end tests belong.** They are the spec's contract and
+acceptance checks, and they ship with the spec. No separate suite. They
+run twice: at stage 5 on the fresh build, before anything is installed,
+and at stage 7 against the installed, running app, which is the only run
+that proves the trip. Both are run by the judge, not by a model, and a
+shaping pass may not change them. The owner's hidden cases stay private
+and are used for qualification, not shipped.
+
+**The band expectation.** Stages 4, 6 and 7 are exact steps with one
+source of truth, so they should need a much lower band than stage 3, down
+to small local models. That is a hypothesis until measured; the pilot of
+Sprint 721 measured stage 8 only.
+
+**The gap found while writing this.** The Sprint 723 builders delivered
+source and a launcher, not a shapeware folder: no `dag.md`, no install
+step. A build that cannot be installed by the lifecycle is not yet an app.
+
+| Story | What it delivers |
+|---|---|
+| T1 the builder delivers a shapeware folder | The spec-to-source task asks for the source, the launcher and a `dag.md` with the five steps plus `serve` for an app with a page; the grader checks that the steps exist and that `build`, `test` and `run` work at the venue. On `form`, with one builder that already passed. |
+| T2 the operate drill | A low-band binding gets a built folder and its run block, cold, and must build, test, install, run one CLI command, start the service, fetch the page and stop it. Graded mechanically by exit codes and the contract against the installed app. Ladder downward from the builder's band. |
+| T3 record the bands per stage | The measured minimum band for building and for operating go into the app's `SKILL.md`, as two values. |
+| T4 report and runbook | A short report of the trip and a kb runbook for the operate stages. |
+
 ### The field loop: issues in, shaped fixes out (Sprint 730 filed, backlog)
 
 Operator, 2026-11-26. Two things: issues must have a place in the spec,
