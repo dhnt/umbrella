@@ -425,6 +425,11 @@ The Sprint 723 protocol, fixed before any scored run. It replaces the Sprint 722
 - the classification and rerun rules, the batches with their seeds, and the disclosures.
 
 - **`plan-sprint-698-outpost-reliability.md`** — Describes the owner-scoped master read path, Windows and WSL disk reporting, alert and retention fixtures, and delivery within the sprint time box.
+
+## sprint-726-protocol.md
+
+The protocol for the Sprint 726 notepad builds, fixed before any builder ran. It adds to protocol v2: the four role bindings (spec author, judge, two builders, from four vendors), the `t3-notepad` task and its one venue difference (`bashy lens` as the converter the contract names), two verdicts per run reported apart (behaviour and lifecycle), the pass rule, the controls with their digests, and what is disclosed (reference defects no case asserts, the smoke run).
+
 ## plan-spec2src-calibration.md
 
 Plan for Sprint 723, from the Sprint 722 results. It classifies every Sprint 722 failure by cause (spec gap, agent defect, judge) into seven spec gaps: an undemonstrated YAML requirement, undefined `--fields` semantics, implicit open vs closed outputs, no page-interaction acceptance line, accessibility rules buried in one bullet, undescribed definition shapes, and behaviour mixed with reference operation. From these it proposes soundness criteria for a shapeware spec. It plans form spec v2, independent hidden cases v2, conform available to the agent while building, and a model ladder that starts at the latest middle tier per vendor and steps down or up to find the minimal tier (at least 2 of 3 PASS).
