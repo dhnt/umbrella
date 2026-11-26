@@ -141,3 +141,4 @@
 - `sprint-719-evidence.md` — Sprint 719 shared evidence for the bashy v1.0.0-rc.41 candidate (0665ffb3): per-leg results and digests, leg-3 reuse proof, findings with root causes, open release steps
 
 - `plan-sprint-698-outpost-reliability.md` — Sprint 698 execution sequence and acceptance gates for reachability and disk pressure.
+- `plan-spec2src-calibration.md` — Sprint 723 plan from the 722 results: evidence-based spec gap catalogue (G1-G7), soundness criteria for a shapeware spec, form spec v2, hidden cases v2, conform in the loop, and the L4-start model ladder per vendor; operator decisions D1-D3 before start

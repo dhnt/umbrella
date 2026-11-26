@@ -367,3 +367,6 @@ The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accou
 - the batches and the viewer-book report.
 
 - **`plan-sprint-698-outpost-reliability.md`** — Describes the owner-scoped master read path, Windows and WSL disk reporting, alert and retention fixtures, and delivery within the sprint time box.
+## plan-spec2src-calibration.md
+
+Plan for Sprint 723, from the Sprint 722 results. It classifies every Sprint 722 failure by cause (spec gap, agent defect, judge) into seven spec gaps: an undemonstrated YAML requirement, undefined `--fields` semantics, implicit open vs closed outputs, no page-interaction acceptance line, accessibility rules buried in one bullet, undescribed definition shapes, and behaviour mixed with reference operation. From these it proposes soundness criteria for a shapeware spec. It plans form spec v2, independent hidden cases v2, conform available to the agent while building, and a model ladder that starts at the latest middle tier per vendor and steps down or up to find the minimal tier (at least 2 of 3 PASS).
