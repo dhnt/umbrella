@@ -1,7 +1,7 @@
 ---
 id: fedd3166a7c9
 kind: feature
-title: L3 one read-only issues feed into issue records
+title: 'F2 Feed to wish as a skill-script: a designated issues source (owner-filed GitHub label, chat channel, scheduled research agent) files todos that enter shape wish'
 seq: 793
 status: todo
 priority: p1
@@ -12,6 +12,12 @@ sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
 ---
+
+F2. bashy shape feed APP --source gh:REPO#LABEL, a .bsh skill-script registered with bashy commands add. Reads the designated source through a fixed read call (sdlc mirror / gh issue list), keeps only items the owner filed or labelled, files a todo with a source-derived id (re-read = no duplicate, meet adopt pattern) and the reporter, then calls shape wish APP --todo ID. A chat channel or a research agent uses the same verb with another --source, or files the todo itself; bashy schedule runs it unattended. Small yoke fix: todo add --reporter. Depends on F1 452e49fa0f20. Checks: re-read creates no duplicate; the record carries the reporter; reading runs no command.
+
+Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). No coding until the operator says so.
+
+--- Earlier card text (kept; code facts still hold, remedies superseded) ---
 
 The smallest feed: one designated source chosen by the owner (a label on one GitHub repository's issues through bashy's gh route, or one chat channel through bashy mb) read into records with a stable id, title, body and reporter. Read-only. The text is data and never authorizes a command. Inspect the existing bashy verbs first and reuse them; no new service. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.
 

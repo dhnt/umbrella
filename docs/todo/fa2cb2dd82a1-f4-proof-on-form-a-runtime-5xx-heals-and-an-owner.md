@@ -1,7 +1,7 @@
 ---
 id: fa2cb2dd82a1
 kind: task
-title: 'L4 the loop on form: one bug and one tbd feature from feed or runtime failure to an offered, judged change'
+title: 'F4 Proof on form: a runtime 5xx heals and an owner-filed GitHub issue is shaped through the same workflow, once from bashy schedule'
 seq: 794
 status: todo
 priority: p1
@@ -12,6 +12,12 @@ sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
 ---
+
+F4. On a claimed gate lane, sandbox e2e with fakes within the minutes budget: (a) an injected 5xx on form heals through the console incident path; (b) an issue the owner filed on GitHub goes feed -> todo -> shape wish -> verify -> activated or offered per the policy; (c) the feed runs once from bashy schedule and the off switch stops it. A failure leaves a known-issue note on the todo with what was tried. Evidence recorded once on the candidate. Depends on F1, F2, F3.
+
+Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). No coding until the operator says so.
+
+--- Earlier card text (kept; code facts still hold, remedies superseded) ---
 
 An issue arrives from the L3 feed, or form's own check fails while it runs. An agent applies L1, builds in a work copy per the Build intent, and the installed folder's candidate.bsh and conform decide. A pass is offered to the owner, never self-approved; a failure leaves a known-issue entry with what was tried. Gate lane only for builds and tests. Reuse yoke todo 55730ebaf952 (failed trajectory to the repair loop) rather than a second trigger. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.
 

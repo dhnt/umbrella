@@ -1,7 +1,7 @@
 ---
 id: 37fd86c8a8cb
 kind: feature
-title: 'L5 guard for unattended shaping: bounds, cap, log, off switch, owner approval'
+title: 'F3 One guard for every unattended shaping source: host bound wins, per-item bound, off switch, decision log, logged override'
 seq: 795
 status: todo
 priority: p0
@@ -12,6 +12,12 @@ sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
 ---
+
+F3. Applies to every unattended source, incident repair included. The host bound wins over shaped.json repair.max_attempts (shaped_repair_limit.go:32-40); a bound on attempts and wall time per item; one off switch that stops new triggers and a running loop; one append-only decision log line per trigger, attempt, verdict and activation; --override --reason, logged (pattern weave/sprint_lease_token.go:110-125). Activation follows the one policy the operator picks for unattended sources (see plan). Not in MVP: spend cap, critical enforcement in code, candidate.bsh no-arg digest gap (own todo). Depends on F1. Checks: unit tests that the host bound wins, the off switch stops a running loop, and an override is logged.
+
+Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). No coding until the operator says so.
+
+--- Earlier card text (kept; code facts still hold, remedies superseded) ---
 
 Before L4 runs unattended: a bound on effort per issue (time and attempts); work only under the installed effect cap; no change to critical features, the trusted core or contract.bsh; every action and decision logged; one switch that turns the loop off; the owner's approval before a change is kept; an explicit, logged override path. Inspect the existing @guard, effect cap and shape verifier code first and state what already enforces each point. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.
 

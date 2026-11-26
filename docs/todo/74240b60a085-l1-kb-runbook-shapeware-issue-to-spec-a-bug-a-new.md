@@ -8,9 +8,9 @@ priority: p0
 labels:
     - shapeware
 created: 2026-11-26T12:45:53.061634Z
-sprint: 730
-sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
-sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
+sprint: 734
+sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
+sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
 ---
 
 Classify an incoming issue and write it into the spec. Bug: a known-issue entry (KI-n, status, feature, symptom -> action, retry, expiry, todo) plus an acceptance example that fails today. New feature: a tbd feature with id, intent, effort and acceptance lines. Missing or tbd feature someone needs: a Build request for the existing entry, not a new one. Anything the issue does not decide goes to the owner as an open question. Try it on form's real KI-1 and on its tbd feature group-required. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.
@@ -29,3 +29,5 @@ Review (2026-11-26, files re-read at bashy 8e051472 and conform 5148116):
 - Shipping: write in the umbrella kb with bashy kb, then carry to bashy/kb/defaults as a generalized page and re-index (bashy/kb/defaults/README.md).
 - Sprint 734 edits the neighbouring runbooks (def02641e735 items 1-6, 9, 10). This story owns the new page; do not run both sprints on the kb pages at once.
 No coding until the operator says so (2026-11-26).
+
+Moved from Sprint 730 to Sprint 734 on 2026-11-26: operator KISS/MVP rescope of 730 (the field loop reuses the existing shaping workflow; spec-method items belong to 734). See docs/sprint-730-master-execution-plan.md.

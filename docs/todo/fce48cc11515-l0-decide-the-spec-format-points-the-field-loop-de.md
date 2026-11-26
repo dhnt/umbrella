@@ -8,9 +8,9 @@ priority: p0
 labels:
     - shapeware
 created: 2026-11-26T21:51:05.94751Z
-sprint: 730
-sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
-sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
+sprint: 734
+sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
+sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
 ---
 
 Problem: L1, L2 and L4 each assume answers the format does not give. Without them the runbook and the lint would be written against guesses, and Sprint 734 would settle the same points separately.
@@ -25,3 +25,5 @@ Also: the one canonical place for known issues. Section 4.2 says the SKILL.md bo
 Verification: the amended sections are reviewed by the owner; form and notepad specs still pass conform spec check.
 
 Triage (2026-11-26, review): p0, no dependencies, first. L1, L2 and L6 start after it. Decided once here and cited by Sprint 734. No coding until the operator says so (2026-11-26).
+
+Moved from Sprint 730 to Sprint 734 on 2026-11-26: operator KISS/MVP rescope of 730 (the field loop reuses the existing shaping workflow; spec-method items belong to 734). See docs/sprint-730-master-execution-plan.md.

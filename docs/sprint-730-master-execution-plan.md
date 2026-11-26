@@ -1,21 +1,122 @@
 # Sprint 730: the field shaping loop
 
 Sprint UUID: `84e490e9-6cc4-55f2-befb-36c1ba042c5b`. Epic: software-shaping.
-Status: backlog, planning only. No coding until the operator says so (2026-11-26).
-Origin: `docs/plan-reverse-sdlc-workflow.md`, section "The field loop". This
-document replaces that section as the sprint's plan. Written 2026-11-26 from an
-independent review that re-read the code and the format.
+Status: backlog, planning only. No coding until the operator says so.
+Rescoped 2026-11-26 (KISS/MVP, operator ruling). This page replaces the
+seven-story plan of the same day; that plan's code findings are kept as an
+appendix because they are still true of the code.
 
 Sprint 732 (shared shaping ledger) waits on this sprint, and Sprint 733
 (ClassGo pilot) waits on 732.
 
+## Operator ruling (2026-11-26)
+
+The field loop handles a few typical cases:
+
+- (a) an error during use, for example in a web UI or its backend: auto heal,
+  auto shaping;
+- (b) an issues feed: GitHub issues filed by the owner, a chat channel, or a
+  scheduled research agent.
+
+It runs unattended, so that the owner spends less on maintaining an
+application. These are not separate flows. They use exactly the same software
+shaping workflow. Only the source differs: an agent or a system trigger instead
+of a person. Everything after the trigger is reused.
+
 ## Primary goal
 
-An issue (bug, new feature, missing feature) has a defined place in a shapeware
-spec, and one app handles issues from one designated feed and its own runtime
-failures through a guarded shaping pass that the owner approves.
+Runtime errors and designated issue feeds trigger the existing shaping workflow
+unattended. The work is bounded, logged and can be switched off. Proven on
+`form`.
 
-## Review (2026-11-26)
+## What the code already gives
+
+Inspected at yoke `257ce147` and bashy `b5e679bb`.
+
+- **Case (a) already runs on the shaping workflow.** Console incident repair
+  records a wish through the shape candidate service
+  (`yoke/pkg/webconsole/shaped_candidate.go:484-489`). It verifies with the
+  shared verifier (`:914-916`), replays, then activates
+  (`shaped_repair.go:157-330`). When a repair runs out of attempts, it becomes
+  an ordinary request for the owner to review. `form` qualifies, because it is
+  a web app with a declared server.
+- **Case (b) has its entry point.** `shape wish APP --todo ID` runs the same
+  `shape.Service.Wish` path that a person uses
+  (`yoke/pkg/shape/service.go:643-679`). `bashy sdlc mirror` already reads one
+  repository's issues by label, and reading twice creates no duplicates.
+  `bashy schedule` runs jobs unattended. A scheduled research agent is a
+  scheduled job that files a todo or a wish.
+- **Gaps that matter only for unattended sources:**
+  1. `shape.Wish` carries no source (`service.go:81-93`). Tracking refuses a
+     todo whose origin is not empty or `shape` (`shape/tracking.go:89-90`), so
+     a feed item cannot be wished.
+  2. Issue text is not fenced safely. The text can close the wish brief's fence
+     (`shape/helpers.go:98-115`). The repair brief inserts the incident message
+     with no fence at all (`shaped_repair.go:141-154`).
+  3. The app's `shaped.json` overrides the host's attempt bound and may set it
+     to unlimited (`shaped_repair_limit.go:32-40`). There is no time bound per
+     item, no global off switch, no single decision log and no override path.
+  4. The activation policy depends on the source. Incidents activate
+     automatically; wishes stop at verified. Unattended sources need one rule
+     (see "Decision for the operator").
+
+## Stories
+
+| # | Story | Repo | Size | Reuses |
+|---|---|---|---|---|
+| F1 `452e49fa0f20` | Source on the wish. Add `Source{Kind: human, incident, feed or schedule; Ref}` to `shape.Wish` and to the candidate record. Tracking accepts feed origins. One fence helper, which escapes the closing marker, is used by both the wish brief and the repair brief. | yoke | S | `shape.Service.Wish`, `tracking.go`, `helpers.go` |
+| F2 `fedd3166a7c9` | Feed to wish, as a skill-script. `bashy shape feed APP --source gh:REPO#LABEL` reads the designated source through a fixed read call. It keeps only items the owner filed or labelled. It files a todo whose id is derived from the source, so a re-read creates no duplicate, and records the reporter. Then it calls `shape wish APP --todo ID`. A chat channel or a research agent uses the same verb with another `--source`, or files the todo itself. `bashy schedule` runs it unattended. Small yoke fix: `todo add --reporter`. | bashy kb/defaults, yoke | S-M | `sdlc mirror`, the `meet adopt` id pattern, `bashy schedule` |
+| F3 `37fd86c8a8cb` | One guard for every unattended source, incidents included. The host's bound wins over `shaped.json`. There is a bound on attempts and wall time per item, and one off switch. Each trigger, attempt, verdict and activation appends one line to a single decision log. `--override --reason` is logged. | yoke, bashy | M | incident attempt records, the existing activation with slot rollback |
+| F4 `fa2cb2dd82a1` | Proof on `form`, on a claimed gate lane. (a) An injected 5xx heals through the incident path. (b) An issue the owner filed on GitHub goes from the feed to a todo, a wish and verification, then is activated or offered as the policy says. (c) The feed runs once from `bashy schedule`, and the off switch stops it. A failure leaves a known-issue note on the todo that records what was tried. | bashy, form | M | sandbox e2e with fakes, within the minutes budget |
+
+Order: F1, then F2 and F3 in parallel, then F4. Merge yoke first, then
+`bashy mod sync` and bashy, then the umbrella gitlinks. Take a claim on each pin
+bump and announce it.
+
+**Not in this MVP.** These are recorded here and get no new stories:
+
+- a spend cap;
+- the spec-method items (format decisions, the issue-to-spec runbook, the
+  known-issue and `tbd` lint, the expected-fail cert mode). They moved to
+  Sprint 734's collection as `fce48cc11515`, `74240b60a085`, `43074ef074ea`
+  and `b7be89cac2d2`;
+- capturing failures from terminal runs, outside the console;
+- the skill adapt loop;
+- enforcing `critical` in code;
+- the `candidate.bsh` digest gap when it runs with no arguments, filed as
+  todo `c61c6d33f114`. F3 checks only the console route's protected paths.
+
+## Decision for the operator
+
+**One activation policy for every unattended source:**
+
+- Recommended: when verification and replay pass, activate automatically with
+  the existing active/previous rollback, then notify the owner, who can undo.
+  This is what auto heal already does, and it is what cuts the owner's cost.
+- Alternative: stop at verified and offer the change. The owner approves each
+  one.
+
+Also needed: the GitHub repository and label that make up `form`'s feed.
+
+## Checks
+
+- F1 to F3: unit tests in yoke and bashy, run on a gate lane. They show that the
+  fence survives a closing marker inside the text, that the host's bound wins,
+  that the off switch stops a running loop, that a re-read of the feed creates
+  no duplicate, and that a todo from the feed can be wished.
+- F4: sandbox e2e with fake accounts, finishing in minutes, with evidence
+  recorded once on the candidate.
+- `bashy mod drift` is clean for yoke and bashy at close.
+- No release and no hosted deploy.
+
+## Appendix: code findings from the first review (2026-11-26)
+
+Read at bashy `8e051472`, yoke `bbe744c9` and conform `5148116`. The 2026-11-26
+rescope re-checked them at bashy `b5e679bb` and yoke `257ce147`. The later
+commits do not touch these files. The findings are kept as code facts. The
+remedies they proposed are superseded by the stories above.
+
+### First review
 
 Read at bashy `8e051472`, yoke `bbe744c9` and conform `5148116` (equal to the
 bashy pin). The goal stands. Six findings change the stories.
@@ -60,7 +161,7 @@ Smaller corrections:
 - A terminal run of `form` or its `dag.md` test creates no incident. Runtime
   capture exists only for console-served web apps.
 
-## What exists
+### What exists
 
 - **Format.** Known-issue entries in the `SKILL.md` body (§4.2), the Build
   intent (§4.3: work copy, graded by the installed `checks/candidate.bsh`,
@@ -87,7 +188,7 @@ Smaller corrections:
 - **Scheduling and lanes.** `bashy schedule` runs jobs unattended; `bashy claim`
   takes a lane lease and an unattended process can hold one.
 
-## Gaps
+### Gaps
 
 1. Six format points are undecided (story L0).
 2. No runbook takes an issue to a spec change.
@@ -104,117 +205,3 @@ Smaller corrections:
 8. The trusted core is not protected when `candidate.bsh` runs without
    arguments: the clone's server is checked against the clone's own digest.
 
-## Design
-
-**One route, owner at the end.** Feed issue or captured incident → todo item →
-the L1 runbook writes the spec change → the owner reviews the spec change →
-`shape wish --todo` or the Build intent in a work copy → graded by the installed
-`candidate.bsh` and conform on a claimed gate lane → offered → the owner
-approves or rejects. Incident repair's automatic activation is not used by the
-loop; capture runs in record-only mode.
-
-**Issue records are todo items.** The id is derived from the source
-(repository and issue number), so a re-read does not duplicate. Provenance is
-kept on the record. The feed is GitHub issues with one owner-chosen label, read
-through a fixed read call. Because the record is a todo item, it is already the
-problem key Sprint 732's ledger uses.
-
-**The feed never authorizes.** Reading an issue creates a record and nothing
-else. The loop acts only on records the owner has accepted. Issue text is
-passed to agents as fenced data with the closing marker escaped.
-
-**The guard is a property of the host, not the app.** The host's bounds win
-over the app's `shaped.json`. The loop runs under an identity that can file a
-wish and cannot approve. One switch stops it. Every action and decision is
-appended to one log.
-
-**Format decisions are made once.** L0 settles the six points and amends the
-spec. Sprint 734 cites the result.
-
-## Stories and triage
-
-| # | Story | Pri | Size | Repos | Depends on |
-|---|---|---|---|---|---|
-| L0 `fce48cc11515` | Decide the spec format points the field loop depends on | p0 | S | umbrella docs | none |
-| L1 `74240b60a085` | kb runbook `shapeware-issue-to-spec` | p0 | M | umbrella kb, bashy kb | L0 |
-| L5 `37fd86c8a8cb` | Guard for unattended shaping | p0 | L | yoke, bashy | none |
-| L2 `43074ef074ea` | `conform spec check` rules for known issues and `tbd` features | p1 | M | conform | L0 |
-| L6 `b7be89cac2d2` | `conform cert`: fail on the old reference, pass on the fixed one | p1 | M | conform | L0 |
-| L3 `fedd3166a7c9` | One read-only issues feed into issue records | p1 | S-M | yoke, bashy | none |
-| L4 `fa2cb2dd82a1` | The loop on `form`: one bug and one `tbd` feature | p1 | L | bashy, form | L0, L1, L3, L5, L6 |
-
-Triage decisions:
-
-- **L0 is new and first.** L1, L2 and L6 would otherwise be written against
-  guesses.
-- **L6 is new.** The bug-fix rule needs a judge change, not only lint. Sprint
-  734 names the same rule; this sprint owns it.
-- **L4 drops its dependency on `55730ebaf952`** and uses `shape wish` with a
-  separate owner approval. Runtime failures enter through console incident
-  capture in record-only mode. A hook for terminal runs is out of scope.
-- **L5 grew.** Beyond the listed points it must stop self-approval on the
-  routes the loop touches, make the host's bounds win, add a bound per issue,
-  fence issue text, close the core-digest gap in `candidate.bsh`, and add the
-  off switch, the decision log and the override path.
-- **L2 starts with a `SKILL.md` input and a known-issue parser.** The `tbd`
-  acceptance rule is a warning unless L0 changes the format.
-- **L3 reuses** `sdlc mirror` and the `meet adopt` pattern. GitHub label is the
-  recommended source; the chat route is not.
-- **Boundary with Sprint 734.** This sprint owns the issue-to-spec runbook, the
-  known-issue, `tbd` and `critical` lint rules, and the expected-fail cert
-  mode. Sprint 734 owns the other generic lint and runbook fixes. Both edit
-  `conform/spec/check.go`, its README and the shapeware kb pages, so they run
-  in sequence, not in parallel.
-- **Smallest useful cut: L0, L1, L2.** Issues have a defined, checked place in a
-  spec, applied by hand. L5, L3, L6 and L4 add the unattended loop.
-
-## Sequence
-
-Nothing starts until the operator says so.
-
-1. L0, with the owner.
-2. L1, L2 and L6 after L0. L5 and L3 can run beside them; they share no files.
-3. L4 last, on integrated heads, first attended, then unattended once L5 is
-   accepted.
-
-Changes that span repos merge yoke first, then `bashy mod sync` with the bashy
-change, then the umbrella gitlinks. conform changes need a bashy pin bump.
-
-## Checks
-
-- L0: the amended spec sections are reviewed by the owner; `form` and `notepad`
-  still pass `conform spec check`.
-- L1: the runbook is applied to `form` KI-1 and `group-required`, and to one
-  notepad known issue, by an agent that did not write it.
-- L2 and L6: unit tests and fixtures in conform, run on a gate lane.
-- L3: a re-read of the feed creates no duplicate; a record carries the reporter;
-  no command runs from reading.
-- L5: unit tests that a passing repair is not activated when the loop is the
-  caller, that the host's bound wins over `shaped.json`, that the off switch
-  stops a running loop, and that a closing marker inside issue text does not
-  end the fence.
-- Acceptance (L4): on `form`, one bug and one `tbd` feature go from the feed, or
-  from a captured runtime failure, to an offered, judged change that the owner
-  approves. A failure leaves a known-issue entry with what was tried. Builds
-  and tests run on a claimed gate lane, never the dev box.
-- No release and no hosted deploy.
-
-## Decisions for the operator
-
-1. The six format points in L0.
-2. The feed source: GitHub issues with one label (recommended), and which
-   repository and label.
-3. Severities for the L2 rules (proposed on the card).
-4. Whether incident repair's automatic activation stays as it is for apps
-   outside the loop, or becomes opt-in everywhere.
-5. Order against Sprint 734.
-
-## Risks
-
-- A public issue is untrusted text aimed at an agent. The feed creates records
-  only, the owner accepts them, and the text is fenced.
-- An unattended loop can spend without limit: there is no spend cap today. The
-  bound per issue and the off switch come before L4 runs unattended.
-- Changing how incident repair activates affects apps that rely on it today.
-  The loop's rule is scoped to the loop unless the operator decides otherwise.
-- New format fields are additive, so existing specs keep passing.
