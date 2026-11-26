@@ -1,8 +1,7 @@
 # Sprint 654 — self-contained offline bashy: master execution plan
 
-Status: planning handoff complete; implementation has not started. The operator
-requested commit and clean exit. Manager remains unassigned. Sprint UUID:
-`e505bc2c-9f7b-5ce5-a426-7b88c6a8d198`.
+Status: active implementation authorized by operator on 2026-11-26 (`agy-gemini4-carbon-s654`).
+Sprint UUID: `e505bc2c-9f7b-5ce5-a426-7b88c6a8d198`.
 
 ## Outcome and hard guarantees
 
@@ -99,7 +98,7 @@ Generated source must be retained verbatim; rerunning an LLM is not recovery.
 
 ### Go proxy and publication
 
-Preserve bashy go argument forwarding; add bashy go proxy serve/publish/status.
+Preserve `bashy go` transparent argument forwarding (`gotoolchain.NewGoCmd()`), and extend existing `bashy mod proxy` (`yoke/pkg/gomod`) to `bashy mod proxy serve/publish/status` backed by the protected artifact store.
 Reuse the upstream protocol handler and fetcher. Internal publication first
 persists exact source in Loom and a durable ref, then produces immutable .mod,
 .info and canonical .zip records. Existing module/version content cannot change.
@@ -213,17 +212,22 @@ only after producer publication, then commit umbrella gitlinks. Delivery commits
 carry Sprint/Story/Story-ID trailers. Preserve foreign changes and use isolated
 worktrees. This work does not authorize a release or bypass POSIX certification.
 
+## 2026-11-26 review adjustments (against current heads)
+
+- **Runner and build-image alignment**: Sprint 653 (`R0–R9`) closed as won't-do on 2026-11-25 in favor of registered custom runner commands (`bashy commands register`) plus the rolling official build image (`tools/bashy-build/{build.sh,run.sh,image.lock}` at Go `1.27.4`). S0, S4, S7 and S8 integrate directly with `tools/bashy-build` and registered custom runner scripts, claiming shared remote lanes via `bashy claim`.
+- **Product Go startup-signal overlay**: Offline `self build` and bootstrap closure in S3/S7 retain and invoke `scripts/go-product.sh` / `tools/productgo` over Go `1.27.4` so offline self-rebuilds preserve the startup-signal contract and match rolling release binaries byte-for-byte.
+- **Reuse and disambiguation**:
+  - S0 uses `bashy-offline-profile-v1` and `bashy-artifact-manifest-v1` in `yoke/pkg/artifact`, registering the new guard-rail packages in `yoke/pkg/src`'s `ProtectedManifest()` and `yoke/pkg/atlas`.
+  - S1 mounts top-level `bashy prune` overview (`prune.NewOverviewCommand`) and registers the `artifact` prune noun; Windows close-before-remove semantics follow `yoke/pkg/dbstore/bboltdb`.
+  - S2 extends `yoke/pkg/gomod` (`bashy mod proxy serve|publish|status`), keeping `bashy go` a pure toolchain passthrough with sealed environment injection.
+  - S3 folds `binmgr` tool seeds (`self seed`) into the unified ORAS portable bundle (`self export` / `self import`).
+  - S6 wires `yoke/pkg/resources` (`watch.go` / `disk_floor.go`) + `yoke/pkg/prune` + `bashy/internal/agentos/{resource_admission,limit}.go` + Ollama idle-unload + `pkg/room`/OTel alerts (`yoke/pkg/admission` is turn-boundary inbox budgeting and stays untouched).
+- **Triage cleanup**: Venue observation `14323dfcce0a` unlinked to standalone (`--sprint 0`); superseded intake `a73be9fa4889` closed.
+
 ## Current execution checkpoint
 
-- Sprint 654 created in backlog, S0–S8 filed; no production code changed.
-- Standalone intake item a73be9fa is superseded by this sprint's detailed stories.
-- Unused isolated yoke and bashy worktrees removed; their fully integrated
-  codex/offline-bootstrap branches deleted. No production changes to preserve.
-- The locked build image is not installed in the inspected local engine; obtain
-  a registered runner with that image before running build/test acceptance.
-- No manager lease taken or stories claimed. Sprint remains in backlog. Resume
-  with the operator-selected manager, read S0 and this plan, then follow the
-  normal orientation/start/claim lifecycle before implementation.
+- 2026-11-26: Reviewed against `coreutils` `5f9da913`, `yoke` `17bf1a1d`, `bashsharp` `9d621d8c`, `outpost` `24c7e91e`, `bashy` `b873a4a6`.
+- Triage cleaned (`14323dfcce0a` unlinked; `a73be9fa4889` closed) and Sprint 654 activated under `agy-gemini4-carbon-s654` with Gate A (`S0–S3`), Gate B (`S4–S6`) and Gate C (`S7–S8`).
 
 ## Research sources
 
