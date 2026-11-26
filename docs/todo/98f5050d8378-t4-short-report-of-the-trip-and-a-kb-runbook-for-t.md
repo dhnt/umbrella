@@ -3,7 +3,7 @@ id: 98f5050d8378
 kind: doc
 title: T4 short report of the trip and a kb runbook for the operate stages
 seq: 799
-status: assigned
+status: done
 priority: p1
 labels:
     - shapeware
@@ -12,6 +12,8 @@ assignee: claude-fable5.2
 sprint: 731
 sprint_id: 88c254ad-f4a4-5c54-a0fd-ac469894c684
 sprint_title: 'The full shaping trip on form: spec to source to artifact to install to run and serve, with the band needed at each stage'
+closed: 2026-11-26T15:17:10.748087Z
+closed_by: claude-fable5.2
 ---
 
 Report: stage by stage, who did it, the gate, the result and the band; limitations. Runbook: how an agent takes a shapeware folder from build to a running command or service, with the traps found in T2. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The full trip' (operator 2026-11-26). Reuse agent-bench packs/spec2src with venue/, the Sprint 723 grader and kb runbook spec-to-source-drill. Operator review before start.
