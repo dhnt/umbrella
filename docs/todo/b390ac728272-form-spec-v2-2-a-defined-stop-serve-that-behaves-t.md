@@ -30,3 +30,14 @@ Operator rulings at the Sprint 731 review (2026-11-26): resolve the serve and st
 - agent-bench fixtures and private grader updated, with controls (empty workspace fails; the reference passes, including serve and stop).
 - Build 3 runs and operate 3 runs reported, every non-pass classified.
 - The report and the standard updated; the bashy `exec` finding filed if it is a product defect.
+
+## Progress (2026-11-26)
+
+- **Spec v2.2 merged** (bashy `9ee40025`): service rules and assertions F-17 to F-20 in `CONTRACT.md`; a `stop` step in the folder's `dag.md`; the spec's own lifecycle in `spec/dag.md` with `spec/README.md` listing the files of a spec release. `conform spec check` reports nothing on the reference folder and on the assembled spec release. Mutation: 127 of 127 killed.
+- **A defect in the reference, found by the new assertions and fixed** (bashy `d486a5d0`). Root cause: `stop` signals the server and then removes the server's state file, which the stopping server removes too; when the server wins, `rm -f` reports the missing file and the script exits 1 (about 2 of 8 stops, and one failure of F-17 in a control). Two causes recorded: the script must not depend on that removal (fixed), and the pure-Go `rm -f` does not ignore a file that vanishes just before the unlink (coreutils todo `8302f07a`, not fixed: frozen baseline). After the fix: 0 failures in 30 add-then-stop cycles; the reference certifies over 10 runs, 21 of 21, none noisy. Form's server tests and acceptance checks are unchanged (11 PASS, 4 TBD).
+- **Fixture** (agent-bench `8dcad00`): a spec release of `form` at v2.2, six files byte for byte from bashy, `dag.md` from `spec/dag.md`.
+- **Private grader v2.4**: the lifecycle check now requires the service to work: `serve` alive, a new form's page answers, `stop` exits 0, the page no longer answers. Controls pass (empty workspace fails; the reference fails only on a missing `build.sh`; the reference with `build.sh` passes 3 of 3).
+
+## Run conditions for the reruns, fixed before they start
+
+As for story T1, with these changes: fixture and grader as above (contract digest `737e7c4658bce7e4`, lifecycle `9ad2c66b609650ab`); lanes are headless. Build: `codex-gpt6.1-terra`, 3 runs; pass = behaviour PASS on every layer and lifecycle PASS including the service. Operate: after the build runs, with the task reordered (build, test, install, serve, run, fetch, stop) and one more check (the page no longer answers after the stop); the no-model control first, then `codex-gpt6-luna`, 3 runs. A provider refusal is a venue fault. Every non-pass is classified from the logs before it is counted.
