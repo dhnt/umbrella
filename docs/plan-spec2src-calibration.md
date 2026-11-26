@@ -12,6 +12,13 @@ Operator review is required before any story starts.*
    tier that reproduces the app from spec v2 (PASS in at least 2 of 3 runs,
    judged by conform). Start at the latest middle tier, then step down or
    up.
+3. **A shapeware spec checker/validator** (operator, 2026-11-25), so the
+   criteria are mechanical, not a reviewer's judgement.
+4. **The band an evaluator needs** (operator, 2026-11-25), L4 or L5, to do
+   the judge's job done by hand after Sprint 722: classify every failure by
+   cause, find judge defects, and derive the spec gaps.
+5. **A bashy kb runbook, then a skill,** for the whole recipe, so the next
+   drill is run from the recipe rather than rediscovered.
 
 ## Evidence: Sprint 722 failure classification
 
@@ -104,7 +111,8 @@ are reported as observations, not estimates. A step-down rerun of an L3
 model from Sprint 722 is a new measurement (spec v2 and conform in the
 loop), not a comparison.
 
-**Budget.** 15 start runs plus at most 15 step runs. These are
+**Budget.** 15 start runs plus at most 15 step runs, plus 8 evaluator runs
+(S9). These are
 subscription-plan seats; nothing paid by usage is used without the
 operator. About 30 minutes per batch of 5 in parallel.
 
@@ -127,9 +135,47 @@ operator. About 30 minutes per batch of 5 in parallel.
    and an unscored smoke with a non-subject agent.
 5. **S5 Start batch:** the latest L4 per vendor × 3, in random order.
 6. **S6 Step batch:** down or up per vendor, using the rule above.
-7. **S7 `conform lint`** for criteria 1–3. Runs on spec v1 (must flag
-   G1–G3) and spec v2 (clean).
-8. **S8 Report:** a viewer book with the minimal tier per vendor, the
+7. **S7 Spec validator** (`conform spec check DIR`), in two parts:
+   - **Static:** criteria 1–3. Prose features with no acceptance line,
+     declared formats with no worked example, outputs with no open/closed
+     marker, and `--json` outputs missing an always-present key.
+   - **Dynamic:** reuses `cert` and `mutate` (the reference certifies,
+     every mutant is killed), plus a hidden-case independence check (each
+     case runs alone in a fresh HOME). The grader passes the hidden case
+     directory in.
+
+   Acceptance: on spec v1 it flags G1–G3, and on spec v2 it is clean.
+8. **S9 Judge-band study (L4 vs L5).**
+   - **Pack:** one evidence pack from Sprint 722, with no conclusions in it:
+     the spec v1 files, the 15 snapshots' raw per-assertion grades, the
+     rendered pages, the session logs, and the conform source.
+   - **Task** (fixed prompt): classify every non-pass as a spec gap, an
+     agent defect or a judge defect; name any judge defects with a repro;
+     list the spec gaps.
+   - **Evaluators:** the latest L4 and L5 binding of two vendors (for
+     example claude-sonnet5.5 vs opus5.5, and codex gpt6.2-sol vs
+     gpt6.2-astra), n = 2 each.
+   - **Reference set:** this sprint's catalogue, frozen before the
+     evaluators run, plus an independent second L5 classification;
+     disagreements are adjudicated and recorded.
+   - **Scoring:** agreement on the item labels; detection of the two known
+     judge defects (the lone checkbox, the yes/no select); the YAML cause
+     split (no parser, partial parser, not YAML); no invented causes.
+   - **Result:** the lowest band that matches the reference set at a stated
+     threshold, fixed before the runs.
+9. **S10 kb runbook, then a skill-script:** `bashy kb` page
+   `spec-to-source-drill`, covering:
+   - protocol first, then the harness;
+   - the arm traps (Keychain opt-ins, the adapter cache, auto-update);
+   - the sandbox guard;
+   - grading only on the lane (netns, xdg-open stub);
+   - batches and gates;
+   - the judge audit (render the failing pages);
+   - the ladder and the report.
+
+   Then a skill-script that runs the mechanical steps (probe, batch,
+   gate, regrade, table).
+10. **S8 Report:** a viewer book with the minimal tier per vendor, the
    criteria validated or refuted, and limitations.
 
 ## Decisions needed from the operator before S2
@@ -142,6 +188,8 @@ operator. About 30 minutes per batch of 5 in parallel.
    wherever it protects content, as in F-02.
 - **D3 conform in the loop as the standard condition** (recommended), or
   also run an ablation without it (+15 runs).
+- **D4 Judge-band threshold** for S9, for example ≥ 90 % label agreement
+  and both judge defects found.
 
 ## Non-goals
 
