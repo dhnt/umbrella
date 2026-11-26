@@ -386,6 +386,15 @@ Plan for operator review, written at the close of Sprint 723. It sets out how so
 - what is deliberately not in the MVP, and the later sprints in order;
 - budget (quota), venue, risks and the decisions needed.
 
+## sprint-723-report.md
+
+The Sprint 723 result, narrow by design: with spec v2 of bashy's `form` and the judge available to the builder, agents from three vendors rebuilt the app, and so did the tier one step below each. It gives:
+
+- the per-vendor table (start tier, one step down, the bound), with Google and Zhipu left open by quota;
+- every run with its session time and note;
+- the failures by cause: one agent defect, four runs decided by harness conditions that were then fixed, three quota refusals, no spec gap and no judge defect;
+- the controls, digests and limits.
+
 ## spec2src-protocol-v2.md
 
 The Sprint 723 protocol, fixed before any scored run. It replaces the Sprint 722 Phase B protocol for the model ladder and defines:
