@@ -145,15 +145,43 @@ source of truth, so they should need a much lower band than stage 3, down
 to small local models. That is a hypothesis until measured; the pilot of
 Sprint 721 measured stage 8 only.
 
+**Operator ruling, 2026-11-26: no separate pipeline. The lifecycle is part
+of the spec.** A shapeware release carries its `dag.md`; that file is
+sufficient for build, install, deploy and run, and it states the least
+agent that can carry out each step. The real deployment depends on the
+user's infrastructure and is done there by the user's agent, behind the
+consent gate. The table above is therefore not a pipeline to build; it is
+what one `dag.md` describes.
+
+What this means in the format:
+
+- **`dag.md` is required in a spec,** not only in a built app. This is
+  already the rule for a published release (§5a: a missing step is a lint
+  failure).
+- **In a spec-only release, the `build` step is the spec-to-source step:**
+  "an agent at band X builds this from the contract; the judge decides".
+  `test` is the contract. `install`, `run` and `serve` are exact commands
+  where the venue is known, and a stated goal with a check where it is
+  the user's own infrastructure.
+- **Each step states its minimum band next to its effects.** Steps already
+  carry an `Effects:` line; a `Band:` line is the one addition. Build
+  needs the builder's band; install, run and serve are expected to need
+  much less.
+- **A stated band is a measured band.** The value comes from a drill, as
+  the minimum band of an app does (D23), never from an estimate.
+- **The contract is rerun against the installed app,** so the result is
+  checked however the deployment was done.
+
 **The gap found while writing this.** The Sprint 723 builders delivered
 source and a launcher, not a shapeware folder: no `dag.md`, no install
-step. A build that cannot be installed by the lifecycle is not yet an app.
+step. With the lifecycle in the spec, the builder is handed the `dag.md`
+and must make its steps work, instead of inventing one.
 
 | Story | What it delivers |
 |---|---|
-| T1 the builder delivers a shapeware folder | The spec-to-source task asks for the source, the launcher and a `dag.md` with the five steps plus `serve` for an app with a page; the grader checks that the steps exist and that `build`, `test` and `run` work at the venue. On `form`, with one builder that already passed. |
-| T2 the operate drill | A low-band binding gets a built folder and its run block, cold, and must build, test, install, run one CLI command, start the service, fetch the page and stop it. Graded mechanically by exit codes and the contract against the installed app. Ladder downward from the builder's band. |
-| T3 record the bands per stage | The measured minimum band for building and for operating go into the app's `SKILL.md`, as two values. |
+| T1 the lifecycle in the spec | `form`'s spec folder carries its `dag.md` with a `Band:` line per step; a `conform spec check` rule requires the five steps and a band on each; the spec-to-source task hands the builder that file, and the grader checks at the venue that `build`, `test` and `run` work. One builder that already passed, 3 runs. |
+| T2 the operate drill | A low-band binding gets a built folder and its run block, cold, and must run the lifecycle: build, test, install, one CLI command, start the service, fetch the page, stop it. Graded mechanically by exit codes and the contract against the installed app. Ladder downward; this measures the `Band:` values. |
+| T3 record the measured bands | The measured values go into `dag.md` and `SKILL.md`, as bounds where the ladder was not exhausted. |
 | T4 report and runbook | A short report of the trip and a kb runbook for the operate stages. |
 
 ### The field loop: issues in, shaped fixes out (Sprint 730 filed, backlog)
