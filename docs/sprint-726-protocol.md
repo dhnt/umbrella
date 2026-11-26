@@ -66,3 +66,18 @@ binary (conform v0.1.1) `3fd12fbdbaacfc15`.
   the hidden cases each use their own server, port and data folder.
 - One smoke run with `claude-sonnet5.5`, not a subject, checks the chain
   first. It is not scored.
+
+## Amendments
+
+1. *2026-11-26, after the six scored cells.* `codex-gpt6.1-terra` passed 3
+   of 3. `opencode-glm-5.3-flash` passed 1 of 3: run 1 failed 17 of 177
+   assertions on one cause (the HTTP API's JSON printed with spaces and
+   another key order, where those checks compare text; three of the 17 are
+   visible), run 2 passed, run 3 delivered no file (the session read the
+   spec, spent nine minutes in one thinking step and ended its turn; no
+   refusal by the provider in the log). Both failures are counted as the
+   builder's. Following the ladder rule of protocol v2 (step up at 1 of 3 or
+   fewer), the next tier of the same vendor, `opencode-glm-5.3`, runs 3
+   cells under the same conditions and digests. `opencode` has no one-shot
+   probe, so its first cell is the check. The `flash` result stands as
+   measured and is reported as a bound.
