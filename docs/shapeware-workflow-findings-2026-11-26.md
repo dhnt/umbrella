@@ -162,6 +162,29 @@ bashy should carry the tooling that helps agents succeed at shaping.
   stages in those terms and decide which findings are errors (block the
   build) and which are warnings.
 
+## 4b. Group shaping on one artifact (operator, 2026-11-26)
+
+With the lifecycle inside the spec, a team shapes a feature by working on
+one artifact, the spec folder, instead of handing work between a
+development side and an operations side. The typical business case
+(`access-tiers.md`; Sprints 706 and 709), described here by role:
+
+| Person | Role in the team | What they do in a shaping pass | What the spec gives them |
+|---|---|---|---|
+| The business owner | holds the account, hosts the app, the only approver | settles the open questions of a spec change; approves what is kept and served; gives consent for what runs on the business's machines | the release class, the effect cap and the band per step, in one place to approve |
+| An office employee | uses the app every day; no machine of their own in the mesh | says what is needed or what went wrong, in plain words; this becomes an issue and then a spec change; tries the result | features and known issues in words they can read; acceptance lines that say what "works" means |
+| A tech support contractor | has a machine in the mesh and the shaping scope | has their agent build the change in a work copy and carry out the lifecycle steps that need more skill or access | `dag.md`: exact steps, the effects and the least agent each step needs |
+
+Rules that already hold and stay: one served version, on the owner's
+line; a member's change is a verified candidate until the owner approves;
+scope per member (edit or shape) is recorded with the app; a candidate
+never raises the effect cap.
+
+What the plan should add: which of the two human gates each person
+holds (the owner holds both), which steps a member's agent may run by
+band and by scope, and how an employee's plain-words request reaches the
+spec (the issue-to-spec step of Sprint 730).
+
 ## 5. Material
 
 - Plans: `plan-spec2src-calibration.md`, `plan-reverse-sdlc-workflow.md`
