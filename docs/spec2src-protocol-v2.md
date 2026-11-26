@@ -263,3 +263,11 @@ the classified failures and the limitations.
    reruns of amendment 2 run after the quota resets, as their own batch
    with the amended conditions, and the ladder rule applies to that
    result.
+5. *2026-11-26, after the Google reruns.* `agy-gemini4-carbon` reruns 2
+   and 3 ran after the quota reset and passed, so its rerun result is 3 of
+   3 (R1 and the two deferred cells). The rule selects a step down
+   (`agy-gemini4-neon`). It is not run in this sprint: the plan quota had
+   just reset after a refusal, and the operator's goal for this proof of
+   concept is that some chosen models succeed, not the lowest tier of
+   every vendor. Google is reported as "passes at the start tier; step
+   down not run".

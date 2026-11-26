@@ -4,14 +4,14 @@
 
 ## Answer (narrow)
 
-Given only spec v2 of bashy's `form` and the judge to check their own work, coding agents from three vendors rebuilt the app, and so did the tier one step below each. These are observations from these runs, with these exact bindings and this configuration; n = 3 per binding.
+Given only spec v2 of bashy's `form` and the judge to check their own work, coding agents from four vendors rebuilt the app, and for the three vendors where it was measured so did the tier one step below. These are observations from these runs, with these exact bindings and this configuration; n = 3 per binding.
 
 | Vendor | Start tier | Result | One step down | Result | Bound |
 |---|---|---|---|---|---|
 | OpenAI | `codex-gpt6.2-sol` | **3/3** | `codex-gpt6.1-terra` | **3/3** | passes at terra; lower tiers untested |
 | Meta | `muse-spark1.3` | **3/3** | `muse-ember` | **3/3** | passes at ember, the lowest listed tier |
 | Anthropic | `claude-sonnet5.5` | 1/3, rerun **3/3** | `claude-sonnet5` | **2/3** | passes at sonnet5; lower tiers untested |
-| Google | `agy-gemini4-carbon` | 1/3; rerun 1 of 1 completed passed | not run | — | open: two reruns deferred by quota |
+| Google | `agy-gemini4-carbon` | 1/3, rerun **3/3** | not run | — | passes at carbon; the step down was not run (quota; to revisit) |
 | Zhipu | `opencode-glm-5.3` | no result | not run | — | open: provider usage limit before any work |
 
 A pass is complete: 13 of 13 visible CLI assertions, 17 of 17 hidden steps in 9 independent cases, the visible and hidden page inventories, and one page interaction read back through the CLI.
@@ -41,6 +41,8 @@ For comparison, Sprint 722 ran spec v1 with each vendor's cheapest model and no 
 | R1 | agy-gemini4-carbon | PASS | 958 s | rerun under amendment 2 |
 | R2 | agy-gemini4-carbon | venue fault | 216 s | "Individual quota reached"; logged by the runner as a candidate fail |
 | R3 | agy-gemini4-carbon | venue fault | 210 s | same |
+| R2b | agy-gemini4-carbon | PASS | 1148 s | rerun 2, after the quota reset |
+| R3b | agy-gemini4-carbon | PASS | 1325 s | rerun 3, after the quota reset |
 | 4 | codex-gpt6.1-terra | PASS | 328 s | |
 | 5 | codex-gpt6.1-terra | PASS | 329 s | |
 | 6 | codex-gpt6.1-terra | PASS | 363 s | |
@@ -69,7 +71,7 @@ For comparison, Sprint 722 ran spec v1 with each vendor's cheapest model and no 
 - n = 3 per binding; one step per vendor, so each result is a bound, not a minimum.
 - The step-down batches 4 and 5 ran with the 600 s cutoff and batch 6 onward with the 30-minute one. The cutoff ended the two muse-ember sessions of batches 4 and 5 after their work was complete, and both passed; no step-down run failed because of it.
 - The claude-sonnet5.5 reruns shipped no host binary, so they would have passed without the grader fix; the fix is shown by the regrades and by batch 9.
-- `agy-gemini4-carbon` also served as a worker on the spec checker the same day (disclosed in the protocol), and its quota ran out before its reruns finished.
+- `agy-gemini4-carbon` also served as a worker on the spec checker the same day (disclosed in the protocol). Its quota ran out during the reruns; the last two ran after the reset. Its step down was not run.
 - The subject's judge runs on the session host; the grader runs on the stated Linux venue.
 - Tokens were recorded for two tools only; cost for none.
 - The judge-band study (S9) was not run.
