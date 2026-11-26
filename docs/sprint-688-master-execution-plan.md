@@ -7,7 +7,12 @@ Revised 2026-11-25. Sprint ID `b6d0bf82-bf8a-5ba7-bbab-90b24be56deb`.
 | A. Fetch and show | `6254c3c64248` | Ask once what a worker is doing and whether a limit is affecting it. See available session state, quota or reset time, and usage or spend. Unavailable readings are identified. |
 | B. Watch and diff | `db7b7f8c51ee` | Follow the same information for a chosen duration and optionally see only what changed. A watch ends when the duration expires. |
 
-For example, an operator might request `--watch 30s --diff=true`. Implementing agents choose the command, flag details, data sources and presentation. Existing invocations should continue to work.
+```sh
+bashy sprint worker-status
+bashy sprint worker-status --watch 30s --diff
+```
+
+The command shows local sessions and cached account readings. Watch mode prints an initial snapshot. With `--diff`, it then prints only changes through the deadline. Add `--json` for a JSON snapshot or newline-delimited watch events.
 
 ## What already works
 
@@ -27,3 +32,9 @@ For example, an operator might request `--watch 30s --diff=true`. Implementing a
 | Point-based budgets (`e868c8201747`) | Defer the budget and band experiment. |
 
 The earlier research and proposals, including the quota-exhaustion design cited by older stories, remain in the [November 21 plan](https://github.com/dhnt/umbrella/blob/0d92f29f6d2838b99fdd78e87c290aa271227914/docs/sprint-688-master-execution-plan.md).
+
+## Delivery evidence
+
+- The routed one-shot command read 15 live worker rows and 12 account pools. It showed 34 available and 121 unavailable quota, usage, or spend readings.
+- The routed 16-second change-only watch reported one live worker task change, stayed silent on unchanged polls, and exited in 16.12 seconds.
+- The standalone sprint adapter tests and build passed on the self-hosted Linux gate. The integrated adapter source tree matches the tested tree.
