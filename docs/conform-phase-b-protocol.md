@@ -199,4 +199,16 @@ Controls before any subject run:
      reported as such.
    - A second unscored smoke (codex-gpt6-sol) validates the guarded setup
      before the reruns.
+4. *2026-11-25, after batch 2. Exploratory, never the primary outcome.* In
+   batches 1 and 2, most candidates failed the hidden YAML case (H-01).
+   Because H-02 to H-05, HU-01 and the browser interaction HI-01 all build
+   on H-01's form, one YAML gap removes up to seven checks, and the
+   interaction is never evaluated for those candidates. The grader stays
+   frozen for batch 3. A **secondary diagnostic** is added: the same
+   hidden cases with the form defined in JSON (`HIDDEN-JSON.md`,
+   `interact-json.sh`, `hidden/team.json`; private; the reference passes
+   22/22 three times; the null control fails). It is applied to every scored
+   snapshot after batch 3 and reported separately as "with the YAML
+   dependency removed". The coupling is reported as a limitation of the
+   primary hidden layer.
 
