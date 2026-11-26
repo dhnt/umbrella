@@ -4,7 +4,7 @@ kind: doc
 title: 'W2 entry paths and order: existing apps, new apps, new tools and models'
 seq: 789
 status: todo
-priority: p1
+priority: p2
 labels:
     - shapeware
 created: 2026-11-26T12:02:29.813275Z

@@ -376,6 +376,10 @@ Input material for Sprint 728, which plans the complete shapeware workflow and i
 - what the findings imply: the spec review as the human gate, the first passing build as the reference, small judged passes, independent cases, fixed venue conditions, recorded roles, and budgeted quota;
 - the eight questions the plan must answer, and the list of existing plans, protocols, runbooks and tools.
 
+## handoff-sprint-731.md
+
+Handoff note for Sprint 731, written when the conductor seat changed on 2026-11-26. It gives the reading order, the operator rulings in force, the stories triaged into two independent tracks (the trip on `form`, and the standard documents) with what to do for each, the one item still in flight with its owner, the mechanics and traps of running a drill, the held resources and the backlog outside the sprint.
+
 ## plan-reverse-sdlc-workflow.md
 
 Plan for operator review, written at the close of Sprint 723. It sets out how software shaping becomes one repeatable workflow ("reverse SDLC") and how it is dogfooded on bashy's applications:
