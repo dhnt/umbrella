@@ -3,14 +3,17 @@ id: a9915c7ff9e8
 kind: doc
 title: 'R4 Document the reminder route: kb runbook ''set a reminder'' + calendar README line'
 seq: 278
-status: todo
+status: done
 priority: p2
 labels:
     - docs
 created: 2026-11-14T22:23:12.776352Z
+assignee: claude-fable5.2
 sprint: 637
 sprint_id: a8b3d759-ebd1-5fe5-b44c-ae68c465f22f
 sprint_title: 'Reminders that fire: scheduler engine state, notify routes, calendar hand-off'
+closed: 2026-11-26T02:02:32.6976Z
+closed_by: claude-fable5.2
 ---
 
 There is no kb page for reminders (bashy kb search reminder finds nothing; re-checked 2026-11-25).
