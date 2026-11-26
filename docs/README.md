@@ -366,6 +366,17 @@ The Sprint 722 Phase B protocol, fixed before any run, so that outcome and accou
 - the rerun rules (venue failures only);
 - the batches and the viewer-book report.
 
+## spec2src-protocol-v2.md
+
+The Sprint 723 protocol, fixed before any scored run. It replaces the Sprint 722 Phase B protocol for the model ladder and defines:
+
+- the question: which model tier of each vendor reproduces `form` from spec v2 with the judge's tool in the loop;
+- the ladder: each vendor's start binding three times, then one step down or up three times, with results reported as bounds;
+- the primary outcome over three layers, with every hidden case independent of the others;
+- the conditions (spec v2 fixture, a standalone `conform` on the subject's PATH, the 30-minute cap, the guard) and the grading venue, where each phase runs in its own namespace;
+- the reference, null and mutant controls, and the grader digests;
+- the classification and rerun rules, the batches with their seeds, and the disclosures.
+
 - **`plan-sprint-698-outpost-reliability.md`** — Describes the owner-scoped master read path, Windows and WSL disk reporting, alert and retention fixtures, and delivery within the sprint time box.
 ## plan-spec2src-calibration.md
 
