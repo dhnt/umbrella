@@ -1,8 +1,9 @@
 # Sprint 732: a shared shaping ledger
 
 Sprint UUID: `f71a8649-8650-54de-9d57-9b5b04015fef`. Epic: software-shaping.
-Status: backlog, planning only. No coding yet: implementation waits until Sprints 726 and 730 are done (operator, 2026-11-26), and operator review comes first.
+Status: backlog, planning only. No coding until Sprint 730 completes (operator, 2026-11-26). That covers every story, including the access fix L0 and the delegate depth bug.
 Follows Sprint 706 (shaping scopes, A/O/C) and Sprint 709 (member pull/push).
+Revised 2026-11-26 after an independent review that re-read the code; see "Review" below.
 
 ## Why
 
@@ -28,7 +29,58 @@ Every agent and participant shaping an app inherits why earlier changes were
 made, what they were expected to fix and what was observed, across vendors,
 versions and the contractor hop.
 
-## What exists (code inspected 2026-11-26, yoke `0bc70d51`, bashy `eb41d87b`, both at origin head)
+## Review (2026-11-26)
+
+The code was re-read at yoke `0bc70d51` and bashy `eb41d87b`, the same commits
+the first plan was written against. The goal and the overall shape stand. Five
+findings change the stories and the order.
+
+1. **History and incident reads are not access-checked.** On an owned web app,
+   any signed-in caller can read the owner's version history, diffs and
+   incidents. The gate only requires a verified identity for `/api` paths
+   (`yoke/pkg/webconsole/gate.go:70-115`), the handler only requires a principal
+   (`shaped_candidate.go:664-684`), and the read resolves to the owner's line
+   and store for every caller (`shaped_history.go:187`,
+   `shaped_incident_capture.go:356-377`, `shape/service.go:173-178`). This was
+   an open point for L5; it is confirmed and becomes story L0, first.
+2. **Reasons kept only on the candidate record would be lost.** Draft save
+   deletes the draft directory (`shaped_draft.go:533-535`), reject deletes the
+   candidate directory (`service.go:925-976`), and only the approve path
+   archives the record (`service.go:890-922`). Tidy re-creates entries without
+   their second parent (`src/tidy.go:256-320`).
+3. **Standing cannot be derived from today's undo records.** Undo and restore
+   are not activations. They are forward commits with no second parent, and
+   their kind is guessed from the commit subject (`src/history.go:171-180`,
+   `:560-643`). The undone version is not recorded, a second undo is a redo, and
+   a system rollback after a failed repair release (`shaped_repair.go:324`)
+   looks the same as a user undo.
+4. **Nothing groups attempts into a problem.** An activation names its candidate
+   only by revision, drafts have no candidate id, and no field names an earlier
+   attempt. A problem key is added (see Design).
+5. **There is no single entry point for agent briefs.** Six paths build a brief;
+   `BriefWithExtra` serves two of them. L3 is larger than first triaged.
+
+Corrections to the first plan:
+
+- Tracing: the shaping path has no OTel spans and no trace id reaches the
+  verdict. The evidence reference is the existing locator `shape-evidence:<rev>`
+  (`shape/tracking.go:190-198`) or the incident id. A trace id is deferred.
+- Actor on push: the contractor is already recorded as the candidate's principal
+  and as the history author. `Actor` is the host process identity and stays so.
+- Contractor is a circle, not a tier. `bashy/internal/agentos/shape_scope.go` is
+  the owner's scope-admin command and decides no tier; tiers are resolved in
+  `mcp_site.go:76-125`.
+- The candidate reply over the site MCP exposes more than three path fields: it
+  also carries the owner's email, a board item id and the evidence path
+  (todo `3895d1c3`).
+- A `dag.md` step is not executed by the web verifier, which runs `checks/*.bsh`
+  frozen from the base (`shape/verify/contract.go:65`). The acceptance item is
+  reworded to a check script.
+- "Reopens on a new incident with the same signature" is not how incidents work:
+  `Observe` reuses the existing incident for a signature unless it is refused or
+  external (`shaped_incident.go:196-214`).
+
+## What exists
 
 - **One venue.** Candidates, version history, incidents and tracking live on the
   owner's host. A support member works in the owner's console; a contractor
@@ -38,128 +90,184 @@ versions and the contractor hop.
   principal, actor, agent, coverage, next steps, verdict and revisions
   (`yoke/pkg/shape/service.go:98-136`). The candidate commit carries
   `Shape-Request`, `Shape-Principal`, `Shape-Agent` and `Shape-Next` trailers
-  (`helpers.go:171-180`). An activation records request, verdict, evidence,
-  principal, author and `Trigger`, the incident id of a repair
-  (`yoke/pkg/src/activate.go:389-396`). Undo and restore are activations with
-  their own kind (`yoke/pkg/src/history.go:173-176`).
-- **One entry point for agents, with a slot already in the brief.**
-  `BriefWithExtra(app, wish, extra)` (`helpers.go:94`) takes extra text; one
-  console caller uses it today (`yoke/pkg/webconsole/shaped_candidate.go:358`).
-  The closing block COVERED / NOT COVERED / NEXT is parsed at `helpers.go:39`.
+  (`helpers.go:175-180`), except when the agent committed itself (`:165-167`).
+  An activation records request, verdict, evidence, principal, author and
+  `Trigger`, the incident id of a repair (`yoke/pkg/src/activate.go:389-396`),
+  and its second parent is the candidate commit.
+- **What survives.** Approved candidates are archived under
+  `shape-work/.approved` with no time limit. Repair candidates are never
+  removed. Every candidate has a tracking todo (`tracking.go:174-182`), and each
+  verified revision has a sealed evidence record. Incidents hold a signature,
+  base revision and attempts (`webconsole/shaped_incident.go:61-87`).
+- **All lines are readable in one pass.** Each principal has a ref
+  `refs/shaping/<slug>/line`, listed by `PrincipalLines` (`activate.go:107`).
+  On owned web apps members activate onto the owner's line with an `Author`
+  trailer.
+- **Grouping already exists for todos.** `--story` and `--todo` link several
+  candidates to one tracking item (`tracking.go:46-127`).
 
 ## Gaps
 
-1. Nothing assembles the records per problem, and the brief does not carry them.
-2. No rationale or prediction is asked of the agent.
-3. Reject removes the candidate and keeps nothing (`service.go:925-943`).
-4. The agent name is not passed to the activation (`production.go:230`).
-5. A contractor's push carries the patch only: the request is recorded as the
-   fixed text "Import member patch" (`transfer.go:135`), with no agent, reasons
-   or contractor as actor, and pull returns source only.
+1. History and incident reads have no tier or scope check (L0).
+2. Nothing assembles the records per problem, and no problem key is recorded.
+3. No rationale or prediction is asked of the agent, and the candidate record
+   is not a durable place to keep them.
+4. Undo and restore record neither their kind, the version undone, the actor,
+   nor whether a person or the system did it.
+5. Reject removes the candidate and keeps no ledger line; failed attempts are
+   overwritten on retry or lost with a draft.
+6. The agent name is not passed to the activation (`production.go:141,230`).
+7. Four brief paths in scope do not carry earlier reasons.
+8. A contractor's push carries the patch only: the request is the fixed text
+   "Import member patch" (`transfer.go:135`), with no agent or reasons, and pull
+   returns source only.
+9. The candidate reply over the site MCP is unfiltered.
 
 ## Design
 
-**The ledger is derived.** It is recomputed from the version line and the
-candidate and incident records, and holds no state of its own. Undo and restore
-are inputs to the fold like any other activation, so they cannot leave the
-ledger stale.
+**The ledger is a derived view over durable records.** It is recomputed from the
+version line and its commit trailers, the incident records, and one small
+append-only record for attempts that never reach the version line (rejects and
+failures). It keeps no summary state of its own, so undo and restore cannot
+leave it stale. The first plan said "no state of its own"; the reject line and
+the failure line are the one exception, and they are append-only.
 
-**Versioning, undo and redo.** Shaping is ongoing and iterative, and the ledger
-follows the version line.
+**Reasons live in commit trailers.** `Shape-Rationale` and `Shape-Predicted` go
+on the candidate commit and on each draft step commit, beside the existing
+`Shape-*` trailers, and are kept on the candidate record too. Tidy carries them
+forward as `Original-*`. The tidy base is the ledger's horizon.
+
+**Problem key.** The linked todo id if the wish names one, else the incident id,
+else the candidate's own tracking item. It is written as a `Shape-Problem`
+trailer so the fold reads git alone and does not depend on the todo store, which
+is mutable. A sprint id is the wrong grain: a sprint holds many problems and a
+consumer shaping an app has none. Non-owners see an opaque alias, never the
+board id. Sprint 730's issue ids can join this key later; a slot is reserved.
+
+**Versioning, undo and redo.**
 
 - Every attempt is tied to its revision and has a standing: active, undone,
   restored, superseded, rejected or failed.
+- Undo and restore commits carry trailers: kind, the revision undone, the actor,
+  and whether a person or the system did it, with an optional reason. Old
+  entries fall back to the subject-line guess.
 - Undo marks an attempt undone and keeps it. Restore marks it active again.
   Nothing is deleted.
-- An undo is evidence that a direction did not work; undo and restore may carry
-  a reason.
 - The view is relative to a base revision: what is live there, with undone and
-  later attempts marked, so a restored old version does not present later work
-  as if it were in the code.
-- A problem collects attempts across versions and reopens on a new incident
-  with the same signature.
-- Each principal has its own version line; entries name their line.
+  later attempts marked.
+- A problem collects attempts across versions and across incident records that
+  share a signature.
+- Entries name the principal line they belong to.
 
 **Shown to every agent.** The view for the candidate's base revision goes into
-the wish brief and the repair brief, and into a file in the work clone that is
-kept out of the commit. Entries are presented as prior experience, not
-instructions. The size is bounded for small-context local models: open
-problems in full, closed ones as one line, newest first.
+the brief on four paths: service wish, console wish, draft step and incident
+repair. Protected-page intent and core repair of bashy itself are out of scope.
+The same view is written to a file in the work clone, kept out of the commit by
+`.git/info/exclude`; verification refuses a candidate whose tree contains it,
+which covers agents that commit themselves. Entries are presented as prior
+experience, not instructions. The size is bounded for small-context local
+models: open problems in full, closed ones as one line, newest first.
 
 **Filtered by viewer.** The owner sees everything. A member or contractor view
-leaves out host paths, board ids and other members' addresses, following the
-existing shape scopes. The filter is part of the view from the first story,
-since nothing may reach a contractor unfiltered.
+leaves out host paths, board ids, the owner's and other members' addresses,
+the host actor and agent receipts. The filter is built in L1 and reused for the
+candidate reply (`3895d1c3`). Every read of the ledger goes through the access
+check from L0.
 
 ## Stories and triage
 
-| # | Story | Pri | Repos | Depends on |
-|---|---|---|---|---|
-| L1 `d25c43e7ebfc` | Ledger fold over the version line, standing per attempt, viewer-filtered view, `--json` | p1 | yoke | none |
-| L2 `e5b46eba0de6` | Capture rationale, prediction, reject line, agent at activation, reason on undo/restore | p1 | yoke | none |
-| L3 `ddfb81fa062f` | Ledger in both briefs and as a file in the work clone, size-bounded | p1 | yoke | L1 |
-| L4 `08b77aabb1f9` | Contractor hop: ledger on pull, reasons and the contractor as actor on push | p2 | yoke, bashy | L1, L2 |
-| L5 `86e8a12324d7` | Group end-to-end test (acceptance) and the two open points | p1 | bashy | L1 to L4 |
-| `3895d1c38be7` | Site MCP candidate reply returns host paths to members | p2 | bashy, yoke | with L4 |
-| `759c57a66ff5` | `bashy delegate` has no depth counter for genie-to-genie nesting | p3 | yoke, ycode | none |
+| # | Story | Pri | Size | Repos | Depends on |
+|---|---|---|---|---|---|
+| L0 `6a8709362f55` | Check the caller's tier on shaping history and incident reads | p0 | S | yoke | none |
+| L2 `e5b46eba0de6` | Capture rationale, prediction, problem key, agent at activation; structured undo/restore records; reject and failure record | p1 | L | yoke | record format |
+| L1 `d25c43e7ebfc` | Ledger fold, standing per attempt, viewer-filtered view, `shape ledger --json` | p1 | M | yoke, bashy | L0, record format |
+| `3895d1c38be7` | Filter the candidate reply over the site MCP | p1 | S | bashy, yoke | L1 filter |
+| L3 `ddfb81fa062f` | Ledger in four briefs and as an excluded file in the work clone | p1 | M | yoke | L1 |
+| L4 `08b77aabb1f9` | Contractor hop: ledger on pull, reasons and agent on push | p2 | M | yoke, bashy | L1, L2, `3895d1c3` |
+| L5 `86e8a12324d7` | Group end-to-end test (acceptance) | p1 | L | bashy | L0 to L4 |
+| `759c57a66ff5` | `bashy delegate` has no depth counter | p2 | S | yoke, ycode, bashy | none |
 
 Triage decisions:
 
-- **Viewer filter moved from L5 into L1.** L4 exposes the ledger to a
-  contractor, so the filter has to exist before it. L5 is now the acceptance
-  test only.
-- **L3 is smaller than first filed.** The brief already has an `extra` slot;
-  the CLI wish path and the repair brief need to pass the ledger through it.
-- **L1 and L2 run in parallel.** L1 adds new files; L2 touches `helpers.go`,
-  `service.go` and `production.go`. They meet only at the `Candidate` fields,
-  which L2 adds and L1 reads when present.
-- **Smallest useful cut: L1, L2, L3.** That delivers the shared memory for the
-  owner and support member on one host. L4 extends it to the contractor.
-- **Cuttable inside L2:** the reason on undo and restore. Standing is derived
-  without it.
-- **`3895d1c3` rides with L4** (same handler, same concern as the filter).
-- **`759c57a6` is linked at the operator's request but independent.** It is not
-  on the acceptance path and can move off the sprint without affecting it.
-- **Not in MVP:** choosing an agent per step. The ledger yields the track
-  record that would need; routing is a separate decision.
+- **L0 is new and lands first.** The ledger widens exactly the reads that are
+  open today.
+- **L1 and L2 are no longer fully parallel.** They share a record format
+  (trailers, problem key, undo and restore records, the reject record). That is
+  agreed first, as a short written step; then they proceed side by side.
+- **L2 grew.** Durable carriers, the problem key and structured undo and restore
+  records are required. Only the free-text reason on undo and restore remains
+  cuttable.
+- **L3 grew.** Four brief paths, an exclude, and a guard against self-commits.
+- **`3895d1c3` raised to p1** and placed before L4. Nothing new goes to a
+  contractor while the candidate reply is unfiltered. It changes two harness
+  checks that read leaked fields (`tests/group-shaping-e2e/sandbox.py:272,311`).
+- **L4's actor wording changed.** Add the contractor's agent and reasons; leave
+  `Actor` as the host.
+- **`759c57a6` raised to p2.** Confirmed: the allow list reaches the child, so
+  genie-to-genie nesting is bounded only by timeouts and spend. Still
+  independent and off the acceptance path.
+- **Smallest useful cut: L0, L2, L1, L3.** That delivers the shared memory for
+  the owner and support member on one host. `3895d1c3` and L4 extend it to the
+  contractor.
+- **Not in MVP:** choosing an agent per step; a trace id as evidence; members
+  linking a follow-up to an existing problem, which needs an operator today
+  (`shaped_candidate.go:771`) and is an owner decision.
 
 ## Sequence
 
-1. L1 and L2 in parallel, each on current heads, unit tests on the branch.
-2. L3 after L1 merges.
-3. L4 with `3895d1c3` after L1 and L2 merge.
-4. L5 on integrated main.
-5. `759c57a6` whenever a worker is free.
+Nothing starts until Sprint 730 completes.
+
+1. L0.
+2. Agree the record format in writing.
+3. L2 and L1, each with unit tests on its branch.
+4. `3895d1c3`, then L3.
+5. L4.
+6. L5 on integrated main.
+7. `759c57a6` whenever a worker is free.
+
+Each change that spans repos merges yoke first, then `bashy mod sync` with the
+bashy change, then the umbrella gitlinks. bashy pins yoke `b7ca202e`, two
+commits behind yoke head at review time. `759c57a6` also needs the ycode genie
+allowlist and a pin bump.
 
 ## Checks
 
-- Fast unit tests per story in `yoke/pkg/shape` and the bashy site MCP handlers.
+- Fast unit tests per story in `yoke/pkg/shape`, `yoke/pkg/src`,
+  `yoke/pkg/webconsole` and the bashy site MCP handlers. Existing fixtures to
+  extend: `fakeMemberDelegate` and `newScopedOwnerFixture`
+  (`shape/scope_test.go`), `s525a10Fixture` (`src/history_test.go`),
+  `historyFixture` and `repairShaper` (webconsole tests).
+- L0: a signed-in non-member, an account holder and a member outside the scope
+  are refused history, diff and incident reads on an owned app.
 - Acceptance (L5): one sandbox end-to-end test with fake accounts and fake
-  agents, minutes long, on the gate host in the official image, never the dev
-  box. A member's wish is built by agent X with a rationale; a runtime incident
-  is repaired by agent Y, whose brief contains X's rationale and prediction and
-  whose attempt lands under the same problem; a contractor pulls the filtered
-  ledger and pushes a patch with reasons, recorded with the contractor as
-  actor; undo then restore changes standing and deletes nothing; a `dag.md`
-  test step reads the ledger file in the work clone.
+  agents, on the gate host in the official image, never the dev box. A member's
+  wish is built by agent X with a rationale; a runtime incident is repaired by
+  agent Y, whose brief contains X's rationale and prediction and whose attempt
+  lands under the same problem; a contractor pulls the filtered ledger and
+  pushes a patch with reasons; undo then restore changes standing and deletes
+  nothing; a check script reads the ledger file in the work clone; an
+  out-of-scope caller is refused the ledger.
+- Harness work this needs: the stub agent prints no closing block and exits on
+  any prompt but its two fixed ones, there is one binding, and incidents, undo
+  and restore are not exercised. Baseline today is 62 checks.
 - No release and no hosted deploy. Hosted-plane code is untouched.
 
 ## Open points
 
-Operator input (2026-11-26) settles one and narrows the other:
-
-- **Settled: the local model.** It can be run or proxied by the satellite, so
-  the `dag.md` build and test step reaches it there, on the same side as the
-  ledger. The step reads the ledger file in the work clone like any other
-  agent; no separate carrier is needed for a local model.
-- **Narrowed: observation and audit.** OTel is supported. The ledger's observed
-  side can cite existing telemetry (a trace or log reference for a verify run,
-  a build and test step, or a runtime incident) instead of copying evidence
-  text, and ledger reads by members and contractors can be traced. This is a
-  reference field on an attempt, not a new store.
-- **Still to verify in L5:** whether the console's history and incident reads
-  are tier-checked in code (the handlers do no check of their own). Telemetry
-  can show who read what; it does not replace the check.
+- **Settled: the local model.** It can be run or proxied by the satellite, so a
+  build and test step reaches it there and reads the ledger file in the work
+  clone.
+- **Settled: access check.** History and incident reads are not tier-checked;
+  see L0.
+- **Changed: observation and audit.** No trace id is available on the shaping
+  path. Attempts cite `shape-evidence:<rev>` or the incident id. Tracing ledger
+  reads is deferred.
+- **To confirm in L3:** that the contained check process can see an excluded
+  file in the work clone.
+- **To confirm in L2:** whether draft saves and incident repairs create a
+  tracking item as ordinary wishes do; if not, they key on the incident id or
+  get one.
+- **Owner decision:** whether a member may name an earlier problem by its alias.
 - The satellite side of admission was not inspected; it is outside this
   workspace.
 
@@ -167,7 +275,10 @@ Operator input (2026-11-26) settles one and narrows the other:
 
 - A stale reason can anchor a stronger agent. Hence "prior experience, not
   instructions", and the standing on every entry.
-- One ledger widens what participants see of each other. The filter is in L1
-  and the acceptance test checks it.
+- One ledger widens what participants see of each other. L0 closes the open
+  read first, the filter is in L1, and the acceptance test checks both.
+- The repair path stores incidents in the owner's store but activates on the
+  caller's line (`shaped_repair.go:311`); for a member on an owned app these
+  differ, and the fold has to join across them.
 - New fields are optional everywhere, so older agents, records and MCP clients
   keep working; rollback is removing the brief text and the pull field.
