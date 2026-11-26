@@ -87,3 +87,25 @@ projections keep their observation timestamps and omit alert details. The
 existing host list uses the same projection and
 `bashy paired-host ls --json` preserves it. The owning satellite handles
 alert evaluation, delivery and policy changes.
+
+## Paired-host disk pressure
+
+Outpost can include a `disk` observation in the authenticated host
+heartbeat. Each observation supplies `observed_at` and up to 32
+`volumes`. A volume reports a stable `id`, `used_bytes`, `total_bytes`
+and up to three `growers`. Each grower supplies a fixed directory label
+and a positive `delta_bytes` from consecutive complete measurements.
+
+The optional `display_name` identifies the volume for the owner. For
+example, a Windows volume can appear as `C:` and WSL roots can appear as
+`WSL Fixture-A /` and `WSL Fixture-B /`. Distinct filesystems and
+distros retain distinct IDs when their growth labels match. Notices
+include the recorded label, the stable ID and the fastest observed
+growers. Raw measurement paths stay local to Outpost.
+
+The owning satellite evaluates 80%, 90% and 95% used-space thresholds
+per volume and uses the transition delivery contract above. The owner
+reads the observations and active alerts at
+`GET /api/v1/hosts/{host}/disk-pressure` with an account token scoped for
+host reads. In Bashy use `paired-host reachability disk-pressure HOST`
+with the owning satellite's endpoint and account options.
