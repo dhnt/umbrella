@@ -3,7 +3,7 @@ id: 60d43cb7e7f0
 kind: bug
 title: 'bashy internal/agentos: three tests red at origin main before the 710 pin bump (CommonOptionsVocabulary, SkillHelpGoldens/mcp, SrcPinsMatchLinkedModules)'
 seq: 737
-status: todo
+status: wontfix
 priority: p2
 labels:
     - bashy
@@ -12,6 +12,7 @@ created: 2026-11-25T05:26:42.987797Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:16:00.964811Z
 ---
 
 Seen 2026-11-24 by the Sprint 710 conductor on the gate host (Linux test host, WSL, GOWORK=off). The tests fail identically WITH and WITHOUT the 710 pin bump (bashy 3535205f vs its parent c450753f), so they were red before the bump. Not fixed in 710; root cause each before any fix.

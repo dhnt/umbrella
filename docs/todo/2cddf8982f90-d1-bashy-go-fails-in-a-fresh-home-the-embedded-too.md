@@ -3,7 +3,7 @@ id: 2cddf8982f90
 kind: bug
 title: 'D1 bashy go fails in a fresh HOME: the embedded toolchain/go adapter has no sources to build its launcher'
 seq: 746
-status: todo
+status: wontfix
 priority: p1
 labels:
     - toolchain
@@ -12,6 +12,7 @@ created: 2026-11-25T07:27:06.908357Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:15:47.790646Z
 ---
 
 Found by Sprint 709 M4 (6ba1b4777931), 2026-11-25. Pre-existing; not caused by 709.

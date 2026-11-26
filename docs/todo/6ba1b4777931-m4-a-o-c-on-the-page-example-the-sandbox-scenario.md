@@ -3,7 +3,7 @@ id: 6ba1b4777931
 kind: test
 title: 'M4 A/O/C on the Page example: the sandbox scenario runs against examples/desk/page (MVP)'
 seq: 735
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shaping
@@ -13,6 +13,7 @@ assignee: codex-gpt6.2-astra
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:16:06.300524Z
 ---
 
 Operator 2026-11-24: deliver today a minimal A/O/C with Page support in examples. KISS/MVP: the same A/O/C flow pointed at Page; fix only what breaks; no new features.

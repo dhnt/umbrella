@@ -3,7 +3,7 @@ id: 65e122506d13
 kind: enhancement
 title: 'M1: go-sdk v1.9.x + MCP 2026-07-28 interop for yoke, bashy, outpost'
 seq: 752
-status: todo
+status: wontfix
 priority: p3
 labels:
     - mcp
@@ -11,6 +11,7 @@ created: 2026-11-25T14:41:47.085764Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:16:03.483667Z
 ---
 
 Problem: the operator asked to upgrade bashy MCP support to "v2" — the MCP spec revision 2026-07-28 (https://blog.modelcontextprotocol.io/posts/2026-07-28/): stateless core (no initialize handshake / Mcp-Session-Id; version+capabilities in _meta), server/discover, Mcp-Method/Mcp-Name headers, MRTR replacing server-initiated elicitation/sampling/roots, subscriptions/listen, ttlMs/cacheScope list caching, Tasks as extension, auth (RFC 9207 iss, CIMD). Roots/Sampling/Logging and legacy HTTP+SSE deprecated with 12-month offramp. There is NO go-sdk /v2 module (proxy: none); go-sdk is the Tier 1 Go SDK and speaks 2026-07-28 from v1.8.0.

@@ -3,7 +3,7 @@ id: 507e2cab30e5
 kind: feature
 title: F2 Re-advertise 'bashy site attach' on agent-ready pages once a released bashy carries it
 seq: 741
-status: todo
+status: wontfix
 priority: p2
 labels:
     - hosted-plane
@@ -12,6 +12,7 @@ created: 2026-11-25T06:08:19.593255Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:15:58.159085Z
 ---
 
 Held back from train 1 by A2a. 'bashy site attach' first landed in bashy 775bcc30 (2026-11-23) and is in no released bashy (latest v1.0.0-rc.40-dev). Switch the line back on in the hosted plane config only after the bashy release that carries it is promoted; verify from that release against dhnt.io.

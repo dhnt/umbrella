@@ -3,7 +3,7 @@ id: 4d2192566bea
 kind: test
 title: 'Train 1 (v0.18.83) open live checks: H5 share/revoke, re-invite real mail, A5 matrix, satellite shell title (revisit with operator first)'
 seq: 748
-status: todo
+status: wontfix
 priority: p3
 labels:
     - release
@@ -13,6 +13,7 @@ created: 2026-11-25T09:41:44.044784Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:15:52.915452Z
 ---
 
 Carried out of Sprint 699 on 2026-11-25 (operator: 'file as one story; we will revisit'). v0.18.83 is live on the master and all three satellites; the rest of the checklist passed (docs/sprint-699-evidence.md). Open items, each needs an operator decision before work:

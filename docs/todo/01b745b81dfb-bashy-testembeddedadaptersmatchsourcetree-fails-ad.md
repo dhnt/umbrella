@@ -3,7 +3,7 @@ id: 01b745b81dfb
 kind: bug
 title: 'bashy TestEmbeddedAdaptersMatchSourceTree fails: adapterembed examples/desk/chart/chart.bsh drifted from source (pre-existing at origin main)'
 seq: 728
-status: todo
+status: wontfix
 priority: p2
 labels:
     - bashy
@@ -12,6 +12,7 @@ created: 2026-11-24T21:33:21.157657Z
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:15:40.178442Z
 ---
 
 Seen 2026-11-24 by the Sprint 706 conductor while verifying R10: GOWORK=off go test -run TestEmbeddedAdaptersMatchSourceTree ./internal/agentos fails with 'embedded adapter examples/desk/chart/chart.bsh drifted from source tree' (adapter_dispatch_test.go:214). On origin/main the two files already differ by 3 lines; the source was last changed by 56b5b1a1 (kit and chart are published modules). Pre-existing, unrelated to 706; not repaired there. Root cause first: was the embed regenerated after 56b5b1a1? Fix: go generate ./internal/agentos/adapterembed and confirm only chart.bsh changes; unit test is the acceptance.

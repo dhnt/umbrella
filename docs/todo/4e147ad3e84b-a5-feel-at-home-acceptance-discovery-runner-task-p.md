@@ -3,13 +3,14 @@ id: 4e147ad3e84b
 kind: test
 title: 'A5 Feel-at-home acceptance: discovery runner task-prompt leg; matrix on the live site for the fleet CLIs, a browser and a chat fetcher; record who read the block, fetched skill/index, connected to MCP or used bashy, cited correctly'
 seq: 676
-status: todo
+status: wontfix
 priority: p2
 created: 2026-11-23T13:51:46.219172Z
 assignee: muse-wonder
 sprint: 724
 sprint_id: 4c6a8940-8673-582a-adef-d7665a30d524
 sprint_title: 'Consolidated follow-ups after train 1 (supersedes 711, 713, 714, 715, 718, 720): owner-sharing and A/O/C sandbox e2e, site MCP and site attach, deferred integration runs, known reds, MCP 2026-07-28'
+closed: 2026-11-26T11:15:50.371123Z
 ---
 
 Extend bashy examples/shaping/discover/discover.bsh with a task leg. Each client gets only the page URL and the instruction 'find out how to work with this site and do what it says'. The runner captures the server log (request headers and paths fetched, including /skill.md and /.well-known/*) and the client transcript. The table records, per client: whether it read the agent block, fetched the index/skill, cited a section correctly, and its time to first correct action. Run on the live dhnt.io after train 1 is deployed, and on the template sample; browser legs on the gate host. Findings recorded as observed.
