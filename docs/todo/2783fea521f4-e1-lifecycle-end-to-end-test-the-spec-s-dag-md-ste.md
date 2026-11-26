@@ -3,14 +3,17 @@ id: 2783fea521f4
 kind: test
 title: 'E1 lifecycle end-to-end test: the spec''s dag.md steps must build, test, install, run, serve and stop, on the reference and on every build'
 seq: 802
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
 created: 2026-11-26T17:19:12.368655Z
+assignee: claude-fable5.2-s726
 sprint: 726
 sprint_id: 224903a6-fe24-5dba-afc4-b7d6f86af9e9
 sprint_title: Shapeware MVP end-to-end loop on a second app, run by agents (reverse SDLC iteration 2)
+closed: 2026-11-26T18:43:09.640958Z
+closed_by: claude-fable5.2-s726
 ---
 
 Operator ruling 2026-11-26: after the spec is written and after source is generated, test the validity of the `dag.md` steps end to end: the app must build, install, run and serve. Mechanical, no model.
