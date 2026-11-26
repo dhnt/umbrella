@@ -3,14 +3,17 @@ id: d379a8098c56
 kind: feature
 title: 'S7 conform lint: flag undemonstrated requirements, formats without examples, outputs without open/closed markers'
 seq: 775
-status: todo
+status: done
 priority: p0
 labels:
     - conform
 created: 2026-11-26T05:01:34.089803Z
+assignee: claude-opus5.5
 sprint: 723
 sprint_id: a7f3f8dd-c83a-5191-9739-676397a50c45
 sprint_title: 'Spec to source calibration: a sound shapeware spec and the minimal model per vendor'
+closed: 2026-11-26T09:43:40.624767Z
+closed_by: claude-opus5.5
 ---
 
 A small conform subcommand over CONTRACT.md + features.yaml + the examples dir. It must flag G1-G3 on form spec v1 and be clean on v2. Unit tests with fixtures.
