@@ -20,3 +20,5 @@ Code inspected (2026-11-26): yoke/pkg/shape/service.go:98-136 (Candidate fields)
 Verification: unit tests in yoke/pkg/shape for grouping, standing across undo/restore, and the view at a base revision.
 
 Triage (2026-11-26): p1, no dependencies, runs in parallel with L2. The viewer filter moves here from L5: the view takes a viewer (owner sees everything; a member or contractor view leaves out host paths, board ids and other members' addresses, following the shape scopes), because L4 exposes the ledger to a contractor and nothing may leave unfiltered. Planning only until Sprints 726 and 730 are done.
+
+Operator input (2026-11-26): OTel is supported. Give each attempt an optional evidence reference (trace or log id) for its observed result, cited rather than copied; no new store.

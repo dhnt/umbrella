@@ -20,3 +20,5 @@ Code inspected (2026-11-26): yoke/pkg/shape/service.go:288-304 (canAccessCandida
 Verification: the end-to-end test above plus unit tests for the filter.
 
 Triage (2026-11-26): p1, depends on L1 to L4, runs on integrated main. The viewer filter moved to L1; this story is now the acceptance test and the two open points only. Planning only until Sprints 726 and 730 are done.
+
+Operator input (2026-11-26): the local model can be run or proxied by the satellite, so the dag.md build and test step reaches it there and reads the ledger file in the work clone (open point settled). OTel is supported: an attempt may cite a trace or log reference as its observed evidence, and ledger reads can be traced. Still to verify here: whether console history and incident reads are tier-checked in code.

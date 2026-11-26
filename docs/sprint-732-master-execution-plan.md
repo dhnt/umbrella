@@ -146,10 +146,20 @@ Triage decisions:
 
 ## Open points
 
-- Whether the console's history and incident reads are already tier-checked
-  (the handlers do no check of their own).
-- How the `dag.md` build and test step reaches the local model, and so where it
-  reads the ledger file.
+Operator input (2026-11-26) settles one and narrows the other:
+
+- **Settled: the local model.** It can be run or proxied by the satellite, so
+  the `dag.md` build and test step reaches it there, on the same side as the
+  ledger. The step reads the ledger file in the work clone like any other
+  agent; no separate carrier is needed for a local model.
+- **Narrowed: observation and audit.** OTel is supported. The ledger's observed
+  side can cite existing telemetry (a trace or log reference for a verify run,
+  a build and test step, or a runtime incident) instead of copying evidence
+  text, and ledger reads by members and contractors can be traced. This is a
+  reference field on an attempt, not a new store.
+- **Still to verify in L5:** whether the console's history and incident reads
+  are tier-checked in code (the handlers do no check of their own). Telemetry
+  can show who read what; it does not replace the check.
 - The satellite side of admission was not inspected; it is outside this
   workspace.
 
