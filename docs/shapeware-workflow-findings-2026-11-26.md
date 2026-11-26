@@ -123,6 +123,12 @@ bashy should carry the tooling that helps agents succeed at shaping.
   versions, variables and ports a spec names exist where it will run).
   Most of the surprises in finding F4 were of the second kind.
 
+  Constraints agreed with the operator for the secret check: it runs with
+  the caller's own access and never elevates, so it compares only against
+  secrets the caller could already read and adds no way to probe others;
+  it answers yes or no without naming the secret; it never logs or stores
+  the value; and where the caller has no vault access it says "not
+  checked" and the name rule still applies.
 - **A dry run of a spec or a skill** (a thought, not built): walk it
   without executing anything and report what would happen. For a contract:
   the order of the steps, which later assertions depend on a value bound
