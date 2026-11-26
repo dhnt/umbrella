@@ -112,7 +112,13 @@ before the spec.
 
 These follow iteration 2 and do not change it.
 
-### The full trip: spec to a running app (Sprint 731 filed, backlog)
+### The full trip: spec to a running app (Sprint 731, started 2026-11-26)
+
+Sprint 731 now also carries the workflow standard (the former Sprint 728,
+merged by operator order): the standard is written alongside the trip and
+uses `form` as its proof, stage by stage. The notepad forward test and the
+judge study are back in the unsprinted backlog.
+
 
 Operator, 2026-11-26. Spec to source is one leg. A shaping trip ends with
 the app installed and running: a command for a CLI, a service for a web

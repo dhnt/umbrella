@@ -8,9 +8,6 @@ priority: p3
 labels:
     - conform
 created: 2026-11-26T05:03:49.385918Z
-sprint: 728
-sprint_id: 47fdc85a-85cb-5589-9119-d4082a1b909c
-sprint_title: Plan the complete shapeware workflow and its standard processes (reverse SDLC), from the Sprint 722-727 findings
 ---
 
 Operator goal d (2026-11-25). Build a conclusion-free evidence pack from Sprint 722: the spec v1 files, the 15 snapshots' raw per-assertion grades, the rendered failing pages, the session logs and the conform source. Fixed prompt: classify every non-pass as spec gap, agent defect or judge defect; name any judge defects with a repro; list the spec gaps. Evaluators: the latest L4 and L5 of two vendors (e.g. claude-sonnet5.5 vs opus5.5; codex gpt6.2-sol vs gpt6.2-astra), n=2 each. Reference set: this sprint's catalogue, frozen first, plus an independent second-L5 classification, with disagreements adjudicated. Score: label agreement, both known judge defects found (lone checkbox; yes/no select), the YAML cause split (no parser / partial parser / not YAML), no invented causes. Threshold D4 fixed before runs. Output: the lowest adequate evaluator band.
