@@ -142,3 +142,4 @@
 
 - `plan-sprint-698-outpost-reliability.md` — Sprint 698 execution sequence and acceptance gates for reachability and disk pressure.
 - `plan-spec2src-calibration.md` — Sprint 723 plan from the 722 results: evidence-based spec gap catalogue (G1-G7), soundness criteria for a shapeware spec, form spec v2, hidden cases v2, conform in the loop, and the L4-start model ladder per vendor; operator decisions D1-D3 before start
+- `shapeware-qualification-process.md` — proposed standing process: shapeware spec creation (author, validate, certify, hidden cases, reproduction check, publish) and agent qualification per role (builder, judge, spec author) with drills, pass rules, the L4-start ladder and band evidence; Sprint 723 is iteration 1

@@ -3,6 +3,11 @@
 *Status: backlog plan, written 2026-11-25 from the Sprint 722 results.
 Operator review is required before any story starts.*
 
+This is the first iteration of the standing process in
+`docs/shapeware-qualification-process.md`: spec creation, plus agent
+qualification for the builder, judge and spec-author roles. Sprint 723
+proves the process on `form`, for the builder and judge roles.
+
 ## Objectives
 
 1. **What a sound shapeware spec is.** Turn the gaps that Sprint 722
