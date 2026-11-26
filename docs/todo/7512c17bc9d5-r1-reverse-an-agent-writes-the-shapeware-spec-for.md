@@ -3,7 +3,7 @@ id: 7512c17bc9d5
 kind: feature
 title: 'R1 reverse: an agent writes the shapeware spec for the second app'
 seq: 782
-status: todo
+status: doing
 priority: p0
 labels:
     - conform
@@ -26,3 +26,19 @@ Added to this story:
 4. No owner review step is required (operator: not needed for this sprint). The author still lists open questions in the spec; the conductor records them for the report.
 
 Lessons from form that the brief to the author must carry: a rule given by example is a lint error, define the set; a service needs a stop that the contract can check (a signal is not one: bashy todo `941f35b6`); state the venue; the reference decides what the lifecycle may demand, so run every step on the reference before claiming it.
+
+## Conductor note for the author's session (2026-11-26; mechanics only, no spec advice)
+
+Operator go 2026-11-26. Spec author: `muse-wonder`. The conductor gates and records; it answers questions about the venue, not about the spec.
+
+- **Where you work.** The `bashy/` submodule of your workspace, folder `examples/desk/notepad` (if `bashy/` is empty: `git submodule update --init bashy`). Create branch `s726-r1-notepad-spec` from bashy `origin/main` (`3d708c4f`). Commit on that branch only. Do not push, do not merge, do not change the umbrella pin: the conductor fetches the branch from your workspace.
+- **Commit trailers** (the hook refuses a commit without them): `Sprint: #726`, `Story: #782`, `Story-ID: 7512c17bc9d5`, `Agent: muse-wonder`.
+- **Read first:** `bashy kb show shapeware-spec-from-app` (your procedure) and the worked example `examples/desk/form` (`CONTRACT.md` v2.2, `features.yaml`, `SKILL.md`, `dag.md`, `spec/dag.md`, `spec/README.md`).
+- **Never build, test or run notepad on the session host** (no `go build`, no `go test`, no server, nothing that opens a page). Use the test host through the conductor's helper, a plain script outside the repository:
+  - `/bin/bash ~/.bashy/evidence/s726/tools/lane sync bashy/examples/desk/notepad` copies your folder to the lane (it replaces the lane copy);
+  - `/bin/bash ~/.bashy/evidence/s726/tools/lane run 'CMD'` runs `sh -c CMD` in that folder on the lane;
+  - `/bin/bash ~/.bashy/evidence/s726/tools/lane reap` stops processes left on the lane.
+  The lane is Linux x86-64, headless (no display), with Go 1.27.4, Node, Python 3 and Chrome; `HOME` and `TMPDIR` are lane-local folders; `open` and `xdg-open` do nothing. Build with `GOWORK=off go build -o "$TMPDIR/notepad" .`. Judges on the lane PATH: `conform-main spec check DIR` (the lint) and `conform` v0.1.1 (`run`, `cert`, `mutate`). `conform cert` needs `--dir` set to the folder that holds the examples, or file-reading assertions are reported as noisy. Stop every server you start (`lane reap` when in doubt). A mutation pass is slow (17 minutes on form's 21 assertions): run it when the certification is clean, not on every edit.
+- **Do not change notepad's behaviour.** A defect you find in the app becomes a known-issue entry in the spec and a line in your report, not a source change. The only non-spec files you may edit are `dag.md` (missing steps and band lines) and what the lifecycle steps need to run with `sh` and no bashy; say so in the report if you add any.
+- **When you stop,** end with a report in your final message: the branch and commit; what passed on the lane (lint on the folder, certification runs, mutants killed of total) with the commands you ran; your open questions for the owner; and **every point where the runbook left you guessing or was wrong**. That list is a deliverable of this sprint: do not smooth it over.
+- If a session ends before the work is done, commit what you have on the branch and say where you stopped; the conductor resumes the same run.
