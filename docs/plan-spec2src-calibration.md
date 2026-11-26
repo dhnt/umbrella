@@ -291,8 +291,9 @@ is claimed for this sprint.
 
 **Open with the operator.**
 
-- The Zhipu bindings (`glm-5.3`, `glm-5.3-flash`) are registered with
-  usage-priced access. Their runs (up to 6) are held until the operator
-  approves them or drops Zhipu from this iteration.
+- Resolved (operator, 2026-11-26): the Zhipu bindings (`glm-5.3`,
+  `glm-5.3-flash`) are a subscription plan reached with a key, so the
+  registry lists them as key access. They are not usage-priced, and their
+  runs are in scope.
 - The conductor session's model is also the last Anthropic step-up
   subject. Grading is mechanical (conform), and protocol v2 records this.
