@@ -169,3 +169,9 @@ Controls before any subject run:
    agent (codex-gpt6-sol) instead of one of the five subjects. The smoke
    only freezes the harness, so no subject sees the task outside its three
    scored runs. Batches 1 to 3 are unchanged.
+2. *2026-11-25, before any scored run.* Every session runs with
+   `BASHY_ADAPTER_CACHE` pointing at one frozen, read-only copy of the
+   prebuilt bashy adapters (55 executables, digests kept with the evidence).
+   Without it, `bashy chat` cannot start in the runner's isolated fresh HOME
+   (bashy todo `cbce9995`), and no session launches. The condition is the same
+   for every subject.
