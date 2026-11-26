@@ -20,6 +20,7 @@
 
 - `plan-self-contained-offline-bashy.md` — Sprint 654 master execution plan for protected offline bootstrap, reused artifact services and platform acceptance
 - `offline-bashy-contracts-v1.md` — Sprint 654 S0 v1 schemas (`profile-v1`, `manifest-v1`, publication, leases/GC), permissive reuse boundaries, `tools/bashy-build` coexistence and baseline ledger
+- `sprint-654-delivery-evidence.md` — Sprint 654 S0–S8 delivery evidence: synchronized candidate SHAs, binary/dependency/storage/latency measurements, air-gapped Linux/Windows/macOS fixed-point and recovery proofs, and tracked pre-existing test notes
 
 - `plan-s568-master-execution.md` — Sprint 568 design plan for shared human/agent membership and bidirectional service communication
 

@@ -18,6 +18,7 @@
 
 - **`plan-self-contained-offline-bashy.md`** — Sprint 654 master execution plan: ORAS/bbolt/goproxy/Athens reuse, protected rebuild inputs, internal module publication and regeneration, sealed bootstrap and recovery, OCI/model retention, tier policy, resource automation, dependency-ordered stories and platform acceptance.
 - **`offline-bashy-contracts-v1.md`** — Sprint 654 S0 authoritative contract specification: `bashy-offline-profile-v1` and `bashy-artifact-manifest-v1` schemas, Loom publication refs, epoch/PID-bound GC leases, confinement-preserving tier fallback, permissive dependency provenance, `tools/bashy-build` (`go1.27.4` + `go-product.sh`) coexistence, and synchronized baseline evidence.
+- **`sprint-654-delivery-evidence.md`** — Sprint 654 end-to-end delivery record for stories S0–S8: synchronized `coreutils`/`yoke`/`bashsharp`/`outpost`/`bashy` SHAs, zero-growth certified `cmd/sh` isolation, `+3`-module dependency delta, full-`bashy` `unshare -rn` 3-stage byte-identical self-rebuild (`sha256:7616abcd...`), portable ORAS `export`/`import`, Podman CAS restore + `--network=none` sandbox, native Windows and macOS acceptance, and pre-existing test notes.
 
 One entry per doc with its abstract. `INDEX.md` is the one-line index.
 
