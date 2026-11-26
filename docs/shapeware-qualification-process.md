@@ -94,7 +94,10 @@ The ladder is per role. The judge band is measured separately from the
 builder band.
 
 **A band is a recorded composite** (operator, 2026-11-25), per binding and
-per role:
+per role. *The detailed design (sources, normalization, weights, thresholds,
+and improving the agent-bench drills) is deferred to Sprint 559 (Agent
+Bench). The table below records the agreed components, not a final
+formula.*
 
 | Component | Source | What it contributes | Scope |
 |---|---|---|---|
