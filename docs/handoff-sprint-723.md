@@ -37,11 +37,11 @@ handoff: the operator left the timing to the conductor.*
   | Anthropic | sonnet5.5 | sonnet5 | opus5.5, then fable5.2 |
   | OpenAI | gpt6.2-sol | gpt6.1-terra, then gpt6-luna | gpt6.2-astra |
   | Google | gemini4-carbon | gemini4-neon, then hydrogen, then 3.8-flash | none listed |
-  | Meta | muse-ember | muse-spark1.3 | muse-wonder |
+  | Meta | muse-spark1.3 | muse-ember | muse-wonder, then wonder-full |
   | Zhipu | glm-5.3 | glm-5.3-flash | none listed |
 
-  Open question: is ember below wonder in Meta's lineup? All registry bands
-  are seeded.
+  Meta's order is from its docs (2026-11-25): ember is the cheapest,
+  spark1.3 the mid tier and wonder the top. All registry bands are seeded.
 - **Effort points** (Fibonacci) on every feature; minutes per point are
   measured.
 - **Runbooks to write:** S12 (reverse: app → spec), S13 (the builder's

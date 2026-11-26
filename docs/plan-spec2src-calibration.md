@@ -98,8 +98,15 @@ without an open/closed marker.
 Bands from the bashy model registry: L3 cheapest, L4 middle, L5 top.
 
 **Every registry band is seeded, not measured** (`band_source: seeded`). For
-example, all muse models are seeded at the same cost, with spark1.3 placed at
-L4 although "spark" is Meta's small line (operator, 2026-11-25). The start
+example, all muse models are seeded at the same placeholder cost.
+
+Meta's own docs (checked 2026-11-25) give the order. Ember is the
+high-volume, cheapest model ($0.10 / $0.50 per 1M tokens). Spark 1.3 is
+"mid-tier" ($1.25 / $4.25). Wonder is the "highest capability" model
+($4 / $20). Wonder Full sits above it on plans only. Meta maps
+haiku → ember, sonnet → spark and opus → wonder. The Sprint 722 Meta
+subject, spark1.2, was therefore an older **mid-tier** model, not a cheap
+one. The start
 tiers below therefore follow each vendor's product naming:
 
 - Anthropic: haiku, sonnet, opus;
@@ -120,14 +127,14 @@ family, newest first at equal price:
 - Anthropic: sonnet 6k < opus 15k < fable 30k;
 - Zhipu: flash 0.5k < glm 0.9k.
 
-Meta's prices are flat placeholders (5k each), so Meta follows naming.
+Meta's registry prices are flat placeholders (5k each). Meta follows its list prices: ember < spark < wonder.
 
 | Vendor | Start (latest L4) | Step down (L3) | Step up |
 |---|---|---|---|
 | Anthropic | claude-sonnet5.5 | claude-sonnet5 | claude opus5.5, then fable5.2 (priced 2x opus) |
 | OpenAI | codex gpt6.2-sol | codex gpt6.1-terra, then gpt6-luna | codex gpt6.2-astra |
 | Google | agy gemini4-carbon | agy gemini4-neon (priced near carbon), then gemini4-hydrogen, then gemini3.8-flash | none listed |
-| Meta | muse-ember | muse-spark1.3 (latest small) | muse-wonder |
+| Meta | muse-spark1.3 (Meta: "mid-tier") | muse-ember (Meta: high-volume, cheapest) | muse-wonder, then wonder-full |
 | Zhipu | opencode glm-5.3 | opencode glm-5.3-flash | none listed |
 
 **Rule.** Run the start tier × 3.
