@@ -93,10 +93,10 @@ prune framework is permitted:
 
 | Concern | Upstream module | Baseline / target revision | License | Boundary |
 | --- | --- | --- | --- | --- |
-| CAS blob layout & OCI bundles | `oras.land/oras-go/v2` | `v2.x` (pinned in S1 `go.mod`) | Apache-2.0 | Direct Go import (`content/oci`, `oras.Copy`) |
+| CAS blob layout & OCI bundles | `oras.land/oras-go/v2` | `v2.7.0` (`yoke/go.mod`) | Apache-2.0 | Direct Go import (`content/oci`, `oras.Copy`) |
 | Transactional catalog & leases | `go.etcd.io/bbolt` | `v1.5.0` (existing in `yoke/go.mod`) | MIT | Direct Go import |
-| Go module proxy HTTP protocol | `github.com/goproxy/goproxy` | latest permissive tag (pinned in S2) | MIT | Direct Go import behind `yoke/pkg/gomod` |
-| Proxy single-flight & storage tests | `github.com/gomods/athens` | narrow attributed files if needed in S2 | MIT | Preserved copyright/license + `THIRD_PARTY_LICENSES.md` |
+| Go module proxy HTTP protocol | `github.com/goproxy/goproxy` | `v0.27.0` (`yoke/go.mod`) | MIT | Direct Go import behind `yoke/pkg/gomod` |
+| Proxy single-flight regeneration | `golang.org/x/sync/singleflight` | `v0.25.0` (existing in `yoke/go.mod`) | BSD-3-Clause | Direct Go import (`singleflight.Group`) |
 | Canonical module ZIP & `h1:` hash | `golang.org/x/mod` | `v0.42.0` (existing in `yoke/go.mod`) | BSD-3-Clause | Direct Go import (`modfile`, `module`, `zip`, `dirhash`) |
 | OCI registry & container engine | `qiangli/zot` (`v2.1.22`), `qiangli/podman` | existing `external/zot`, `external/podman` | Apache-2.0 | Existing `binmgr` / engine wrappers |
 | Guarded deletion CLI contract | `github.com/qiangli/yoke/pkg/prune` | existing `yoke` `17bf1a1d` | MIT | Register `artifact` `prune.Noun` + mount `bashy prune` |
