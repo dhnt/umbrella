@@ -193,8 +193,9 @@ run `conform version` and report it.
   batteries, so it shadowed the judge binary: the Claude arm could not
   reach the tool `TASK.md` names. The codex smoke was not affected, because
   codex does not take its shell from the environment. Fix, in the venue
-  only: every arm now runs a plain system shell. The name clash itself is
-  a product gap and is tracked as a bashy todo.
+  only: every arm now runs a plain system shell. The dev box's installed
+  bashy predates the build in which `bashy conform run` reaches the judge;
+  the remaining naming overlap is tracked as a bashy todo.
 - After the fix, `claude-sonnet5.5`, `codex-gpt6.2-sol`,
   `agy-gemini4-carbon` and `muse-spark1.3` each reported version 0.1.1.
 - `opencode-glm-5.3` does not answer a one-shot probe (the 722-proven
@@ -241,6 +242,7 @@ the classified failures and the limitations.
      rule applies to the rerun result. The `codex-gpt6.2-sol` and
      `muse-spark1.3` results stand: each passed 3 of 3 under the stricter
      conditions.
-   - The step-down batches 4 to 6 were launched before this amendment
-     with the 600-second cutoff. Any of their failures is regraded with
-     grader v2.1, and both grades are reported.
+   - The step-down batches were already running. Batches 4 and 5 ran
+     with the 600-second cutoff and batch 6 with the 30-minute one. Any of
+     their failures is regraded with grader v2.1, both grades are
+     reported, and a run ended by the 600-second cutoff is rerun.
