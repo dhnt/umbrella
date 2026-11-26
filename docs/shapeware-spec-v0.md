@@ -466,6 +466,36 @@ the same source with a pinned toolchain.
 Status: proposed. The Sprint 721 pilot (form, viewer) validates or adjusts it
 before v0.2.
 
+## 20. A sound spec reproduces its app (proposed v0.2; Sprint 722 evidence)
+
+A spec is **sound for reproduction** when an agent given only the spec folder
+can build an app that conform judges equivalent to the reference. Sprint 722
+measured why cheap agents failed: 15 runs, every failure classified as spec
+gap, agent defect or judge defect (`docs/plan-spec2src-calibration.md`,
+G1–G7). Agents reliably build what a spec demonstrates, and silently drop what
+it only states. The criteria follow from that.
+
+| # | Criterion | Checked by | 722 evidence |
+|---|---|---|---|
+| 1 | **Every requirement is demonstrable.** Each stated behaviour has at least one `CONTRACT.md` assertion or `features.yaml` acceptance line. Prose alone is not a requirement. | `conform spec check` (static) | YAML was stated only in prose, and 8 runs failed on it (G1). Page submit had no acceptance line, and 4 runs failed on it (G4) |
+| 2 | **Every input format has a worked example** in the spec folder, covering the syntax actually used (YAML: block and flow lists), and every input shape is described (`--def FILE` object, `--definition` array). | static | G1, G6 |
+| 3 | **Output rules are stated once:** always-present keys (`schema_version`), projection (`--fields` on every verb), and open or closed per output. A closed output gives its reason where that is load-bearing (for example, no content leaks from `open`). | static | 4 runs failed on `--fields` (G2), 3 runs on extra keys (G3) |
+| 4 | **UI requirements are checkable rules:** the accessible inventory (programmatic labels, one control per field, `required` marked, option labels distinct from the field label), plus at least one page-interaction assertion: fill, submit, then the CLI reads the result back. | static (rules present) + `ui` assertions | 5 runs failed the inventory (G5) |
+| 5 | **Behaviour is separate from reference operation.** The reproduction spec states what the app does, never how the reference is run (its scripts, task files or workarounds). | review | G7 |
+| 6 | **Hidden cases vary only documented behaviour, and each is independent** (no case depends on another's state), with the reference passing them 3/3 and the null control failing. | `conform spec check` (dynamic) | one YAML case cascaded into 7 checks in Sprint 722 |
+
+**Certified spec.** A spec version is certified when:
+- `conform spec check` is clean;
+- the reference certifies (PASS on every layer, 0 noisy over 3 runs, every
+  seeded mutant killed);
+- the hidden-case controls hold;
+- qualified builders reproduce the app (≥ 2/3 PASS).
+
+Builder qualification and the evaluator role are defined in
+`docs/shapeware-qualification-process.md`.
+
+Status: proposed. Sprint 723 applies it to `form` (spec v2) and measures it.
+
 ## Appendix A: the hello example in the v0.1 layout (as validated)
 
 ### hello/SKILL.md
