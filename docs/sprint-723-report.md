@@ -49,14 +49,14 @@ For comparison, Sprint 722 ran spec v1 with each vendor's cheapest model and no 
 | 6 | muse-ember | PASS | 1846 s | ran to the 30-minute cap |
 | 7 | claude-sonnet5 | PASS | 844 s | |
 | 8 | claude-sonnet5 | PASS | 1031 s | |
-| 9 | claude-sonnet5 | FAIL | 945 s | one hidden case: a hyphenated secret field name was accepted |
+| 9 | claude-sonnet5 | FAIL | 945 s | one hidden case: a hyphenated secret field name was accepted (spec gap: the rule is given by example) |
 
 ## Failures by cause
 
-- **Agent defect, one run** (claude-sonnet5, batch 9): the secret-name rule was implemented for `api_key` style names and missed `stripe-api-key`. 32 of 33 assertions passed. This is the only failure that says something about the build itself.
+- **Spec gap, one run** (claude-sonnet5, batch 9; first recorded as an agent defect, corrected the same day). The build refused `api_key` and accepted `stripe-api-key`. The contract states this rule by example only: "secret-named fields (`api_key`, `db_password`, ...)". It never defines which names are secret, and the hidden case tested a hyphenated form the spec does not document, which breaks soundness criterion 6 (hidden cases vary documented behaviour only). The other bindings happened to generalize the way the reference does. 32 of 33 assertions passed. The reference keeps this rule as one pattern in its shared kit, and the feature is marked `critical`, which the format says is never rebuilt in the field.
 - **Harness condition, four runs:** two claude-sonnet5.5 snapshots carried a binary built on the session host; two agy-gemini4-carbon sessions were ended by a runner cutoff the protocol had not stated. Both conditions were fixed (amendment 2). In batch 9 the grader removed a cached binary and the run went on to pass 32 of 33, which shows the fix working on a real snapshot.
 - **Venue fault, three cells:** provider quota refusals (Zhipu once, Google twice). Not scored.
-- **Spec gap:** none found. **Judge defect:** none found.
+- **Agent defect:** none that decided a run. **Judge defect:** none found.
 
 ## Controls and identity
 
