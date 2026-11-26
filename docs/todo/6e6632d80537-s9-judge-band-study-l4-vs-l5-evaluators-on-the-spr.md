@@ -4,7 +4,7 @@ kind: spike
 title: 'S9 judge-band study: L4 vs L5 evaluators on the Sprint 722 evidence pack'
 seq: 777
 status: todo
-priority: p1
+priority: p3
 labels:
     - conform
 created: 2026-11-26T05:03:49.385918Z
