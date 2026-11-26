@@ -211,4 +211,10 @@ the classified failures and the limitations.
 
 ## Amendments
 
-None yet.
+1. *2026-11-26, at the batch-1 gate.* The `opencode-glm-5.3` cell of
+   batch 1 is INCONCLUSIVE-venue: the provider refused the session with
+   "Usage limit reached for 5 hour" before any work (the plan's shared
+   quota). No venue fix applies. The three Zhipu start cells run after the
+   quota resets, as their own batch with the same conditions; the first
+   attempt is kept. Batches 2 and 3 run for the other four vendors in
+   their seeded order with the Zhipu cell left out.
