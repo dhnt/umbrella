@@ -103,6 +103,26 @@ Three top-tier bindings (`claude-opus5.5`, `codex-gpt6.2-astra`,
    and what it costs in quota.
 8. **What is deliberately left out of the first standard.**
 
+## 4a. Tooling ideas recorded for the plan (operator, 2026-11-26)
+
+bashy should carry the tooling that helps agents succeed at shaping.
+
+- **Lint, for both roles** (done in Sprint 729): `conform spec check` flags
+  a rule given by example, and `conform run` tells a builder when the spec
+  it is building from has findings.
+- **Rules as data, critical rules as trusted core** (not built): a rule
+  every implementation must apply the same way ships with the spec as a
+  normative data file; a feature marked `critical` is supplied, not
+  rebuilt (`shapeware-spec-v0.md` §5).
+- **Validate against the real environment, not only the text** (a thought,
+  not built): where a spec or a request refers to something in the
+  environment, bashy can check it before work proceeds and say what is
+  wrong. Two cases: a secret check that asks the vault (a field whose name
+  is a stored secret's name, or whose value is a stored secret, is
+  refused, whatever it is called); and a venue preflight (the tools,
+  versions, variables and ports a spec names exist where it will run).
+  Most of the surprises in finding F4 were of the second kind.
+
 ## 5. Material
 
 - Plans: `plan-spec2src-calibration.md`, `plan-reverse-sdlc-workflow.md`

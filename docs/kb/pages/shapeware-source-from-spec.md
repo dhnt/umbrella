@@ -11,15 +11,17 @@ tags:
     - builder
     - spec2src
 status: candidate
-evidence: Failure classes from Sprint 722 (15 runs) and Sprint 723 (start, step and rerun batches)
+evidence: Failure classes from Sprint 722 (15 runs) and Sprint 723; step 0 added after the Sprint 723 batch 9 failure and the Sprint 729 lint rule (conform 40c5602)
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
+updated: "2026-11-26T12:32:57Z"
 ---
 
 Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, a task file) so that it passes the judge at the stated venue. Lessons are from the Sprint 722 and 723 drills.
 
 ## Steps
+0. **Lint the spec you were given:** `conform spec check .` (the judge also tells you when you run it: "spec check reports N finding(s)"). Each finding is a place where the spec does not fully decide the behaviour, such as a rule given by example. Do not guess silently there: take the reading that the examples and the rule's purpose both support, and write the choice down in your notes.
 1. **Read the rules section of `CONTRACT.md` before the assertions.** Envelope keys, projection flags and open/closed outputs apply to every command.
 2. **Read the task file for the venue:** OS, interpreter and toolchain versions, network, what is absent. Build for that venue, not for the machine you are on.
 3. **Write files early.** Start the launcher and a first command within the first minutes, then extend. A long plan with nothing on disk can be cut off.
@@ -38,3 +40,4 @@ Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`,
 - An input format named in the spec was not implemented because only the other format had been tried.
 - A projection flag was honoured on some commands only, or dropped the always-present key.
 - Nothing was delivered: the session ended during a long first planning turn.
+- A rule given by example was implemented for the example's form only (`api_key` refused, `stripe-api-key` accepted). The spec linter flags such rules.
