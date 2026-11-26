@@ -1,7 +1,7 @@
 # Sprint 730: the field shaping loop
 
 Sprint UUID: `84e490e9-6cc4-55f2-befb-36c1ba042c5b`. Epic: software-shaping.
-Status: backlog, planning only. No coding until the operator says so.
+Status: started 2026-11-26 on the operator's go; conductor claude-opus5.5.
 Rescoped 2026-11-26 (KISS/MVP, operator ruling). This page replaces the
 seven-story plan of the same day; that plan's code findings are kept as an
 appendix because they are still true of the code.

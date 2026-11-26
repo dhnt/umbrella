@@ -10,12 +10,21 @@ labels:
 created: 2026-11-26T12:45:54.568985Z
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
-sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
+sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
 ---
+
+Delivery rules (conductor 2026-11-26, Sprint 730 started):
+- Work on current heads: yoke and bashy at origin/main (yoke 257ce147, bashy b5e679bb or later). Commit inside the submodule on a branch named s730-<story-short-id>; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #730, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: smallest change that meets this card; no new options beyond those named. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+
+F4 scope (after F1-F3 merge; conductor runs it on a claimed gate lane). Sandbox e2e with fakes, finishing in minutes: (a) form with an injected 5xx heals through console incident repair with a fake shaping agent, activates, and the previous revision is restorable; (b) shape-feed form --source file:issues.json --apply turns one owner issue into a todo and a wish that verifies and activates; a non-owner issue is skipped; (c) the same feed runs once from bashy schedule; after `bashy shape auto off` a second run files nothing; the decision log shows every step.
 
 F4. On a claimed gate lane, sandbox e2e with fakes within the minutes budget: (a) an injected 5xx on form heals through the console incident path; (b) an issue the owner filed on GitHub goes feed -> todo -> shape wish -> verify -> activated or offered per the policy; (c) the feed runs once from bashy schedule and the off switch stops it. A failure leaves a known-issue note on the todo with what was tried. Evidence recorded once on the candidate. Depends on F1, F2, F3.
 
-Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). No coding until the operator says so.
+Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). Operator go given 2026-11-26 (Sprint 730 started); this line from the planning stage no longer applies.
 
 --- Earlier card text (kept; code facts still hold, remedies superseded) ---
 
@@ -31,4 +40,4 @@ Review (2026-11-26, code re-read at bashy 8e051472 and yoke bbe744c9): two parts
 - shape wish records --reproduction, --expected and --evidence only for the reserved bashy target (yoke/pkg/shape/service.go:88-90). For form the issue text reaches the brief only as the request.
 - Judging a bug fix needs L6 b7be89cac2d2. The worked cases are form KI-1 (bug) and group-required (tbd feature).
 - Depends on L0, L1, L3, L5 and L6. Citation: section 7 is the effect cap; the checks contract is section 6.
-No coding until the operator says so (2026-11-26).
+Operator go given 2026-11-26 (Sprint 730 started); this line from the planning stage no longer applies.

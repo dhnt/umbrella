@@ -10,12 +10,27 @@ labels:
 created: 2026-11-26T12:45:54.901267Z
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
-sprint_title: 'Field shaping loop: issues become spec changes, and an app works on its own issues from a designated feed'
+sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
 ---
+
+Delivery rules (conductor 2026-11-26, Sprint 730 started):
+- Work on current heads: yoke and bashy at origin/main (yoke 257ce147, bashy b5e679bb or later). Commit inside the submodule on a branch named s730-<story-short-id>; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #730, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: smallest change that meets this card; no new options beyond those named. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+
+F3 scope (yoke, small bashy CLI wiring). Activation policy (operator): verified + replay pass -> auto-activate with the existing active/previous rollback; owner notified, can undo. Do not change that behaviour; bound and log it.
+1. Host bound wins: shaped.json repair.max_attempts may only lower the host bound (--repair-max-attempts / default), never raise it or set unlimited (webconsole/shaped_repair_limit.go:32-40).
+2. Per-item wall-time bound for an incident's whole repair (host option, default 60m), on top of the 20m per attempt.
+3. One host off switch for unattended shaping: a marker file under the bashy state dir, toggled by `bashy shape auto off|on|status`. When off, incident capture still records but starts no repair, and shape-feed --apply (F2) files nothing; a running repair stops before its next attempt.
+4. One append-only decision log (JSONL in the bashy state dir): one line per trigger, attempt, verdict, activation, refusal, with app, source, ref, result, time. `bashy shape auto log` prints it.
+5. Override: `--override --reason TEXT` on `bashy shape auto on` lets one run exceed the host bound; the reason is logged (pattern weave/sprint_lease_token.go:110-125).
+Tests: host bound wins over a larger shaped.json value and over "unlimited"; off switch blocks a new repair and stops a running one before the next attempt; each decision writes one log line; an override without --reason is refused.
 
 F3. Applies to every unattended source, incident repair included. The host bound wins over shaped.json repair.max_attempts (shaped_repair_limit.go:32-40); a bound on attempts and wall time per item; one off switch that stops new triggers and a running loop; one append-only decision log line per trigger, attempt, verdict and activation; --override --reason, logged (pattern weave/sprint_lease_token.go:110-125). Activation policy (operator 2026-11-26): verified + replay pass -> auto-activate with the existing active/previous rollback, notify the owner, owner can undo; the same rule for every unattended source. Not in MVP: spend cap, critical enforcement in code, candidate.bsh no-arg digest gap (own todo). Depends on F1. Checks: unit tests that the host bound wins, the off switch stops a running loop, and an override is logged.
 
-Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). No coding until the operator says so.
+Plan: docs/sprint-730-master-execution-plan.md (rescoped 2026-11-26, operator ruling: the field loop is the existing shaping workflow with a different source). Operator go given 2026-11-26 (Sprint 730 started); this line from the planning stage no longer applies.
 
 --- Earlier card text (kept; code facts still hold, remedies superseded) ---
 
@@ -33,4 +48,4 @@ Review (2026-11-26, code re-read at bashy 8e051472 and yoke bbe744c9): what enfo
 - @guard is a Bash# function decorator that caps the effects of what a call dispatches (bashy/internal/agentos/decorators.go:238-251). It is not a loop guard.
 - Added scope: issue text is untrusted. The wish brief fences the request between markers but nothing escapes a closing marker inside the text (shape/helpers.go:98-115), and the repair brief inserts the incident message unfenced (shaped_repair.go:139-154).
 - Stays p0 and before L4. Larger than first filed: mostly yoke, some bashy.
-No coding until the operator says so (2026-11-26).
+Operator go given 2026-11-26 (Sprint 730 started); this line from the planning stage no longer applies.
