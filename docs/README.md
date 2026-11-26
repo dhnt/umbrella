@@ -376,6 +376,16 @@ Input material for Sprint 728, which plans the complete shapeware workflow and i
 - what the findings imply: the spec review as the human gate, the first passing build as the reference, small judged passes, independent cases, fixed venue conditions, recorded roles, and budgeted quota;
 - the eight questions the plan must answer, and the list of existing plans, protocols, runbooks and tools.
 
+## shapeware-workflow-standard.md
+
+The shapeware workflow as one standard, first draft (Sprint 731, story W1), for the operator review. It answers questions 1 to 5 and 8 of the findings and uses bashy's `form` app as the proof, stage by stage:
+
+- the terms, defined once, and the rules: the lifecycle (`dag.md`) is part of the spec with effects and a measured band per step, a spec is compiled before it is built, the contract is the end-to-end test on the build and on the installed app, two human gates, failures classified by cause;
+- the eight stages (instructions to spec, compile, spec to source, build, test, install, run or serve, field shaping), each with who does it, the artifact, the gate, the evidence and whether it is proven, partly proven or not yet proven on `form`, with the source;
+- what done means for one shaping pass, using the format's release classes ("verified with tbd" is normal);
+- the agent roles and the people (owner, account member, contractor) with the gates they hold;
+- hidden cases when no reference app exists, where records live per app and per binding, and what is deliberately left out.
+
 ## handoff-sprint-731.md
 
 Handoff note for Sprint 731, written when the conductor seat changed on 2026-11-26. It gives the reading order, the operator rulings in force, the stories triaged into two independent tracks (the trip on `form`, and the standard documents) with what to do for each, the one item still in flight with its owner, the mechanics and traps of running a drill, the held resources and the backlog outside the sprint.
