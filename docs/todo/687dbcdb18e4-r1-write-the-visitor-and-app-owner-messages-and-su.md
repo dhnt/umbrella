@@ -3,7 +3,7 @@ id: 687dbcdb18e4
 kind: doc
 title: R1 Write the visitor and app-owner messages and substantiate each public claim
 seq: 717
-status: todo
+status: wontfix
 priority: p2
 labels:
     - software-shaping
@@ -11,6 +11,7 @@ created: 2026-11-24T19:41:08.60644Z
 sprint: 707
 sprint_id: 7dd246c4-2465-51e2-ad46-eee5805e276f
 sprint_title: Renovate dhnt.io through software shaping and test the everyday-user promise
+closed: 2026-11-27T22:46:22.599339Z
 ---
 
 Prepare two homepage paths. “Try the form” serves the visitor. “Request a paid pilot” serves the operations owner who pays staff to chase incomplete applications. Keep the bashy installation path available for builders.
