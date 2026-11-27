@@ -106,3 +106,27 @@ Findings:
 4. **Packaging the genie bundle copies files only** (`genie build`, no compile), so it is allowed on the dev box.
 
 **Verdict:** GO for the design. The spike stays open until C2a lands and the same run passes with `claude-opus5.5` and `muse-wonder`.
+
+## 10. Root cause: where the door runs (2026-11-27), stories G1 and G2
+
+After C2a cligw lists claude, muse and agy, but a request still failed in 0.2 s with "the upstream errored: failing over" (502). Bisected:
+
+| Door started from | Environment | claude-opus5.5, muse-wonder |
+|---|---|---|
+| the user's login session | the user's | `PROBE_OK` |
+| the user's login session | exactly the service's variables | `PROBE_OK` |
+| supervisord under outpost's LaunchDaemon | the service's | 502 in 0.2 to 0.3 s |
+
+Outpost runs as a **system-domain LaunchDaemon** with the user's name, and the door (`bashy llm serve`, under `outpost supervisord` → `bashy supervisord`) inherits it. A system daemon cannot use the user's login keychain, where claude, muse and agy keep their subscription logins on macOS; codex keeps its login in a file and works. The same holds on the other systems in their own form (the desktop keyring on Linux, the per-user credential store on Windows). The keychain step is inferred from the bisection, not observed inside the daemon; G1 confirms it.
+
+The credential model, agreed with the operator:
+1. **One-time human setup per vendor:** the vendor's own login (browser or device code), once per host and again when it expires. The credential stays where the vendor's CLI keeps it.
+2. **Everything else uses bashy tokens:** agents, contained genie, services and other outposts reach the door with bashy-issued credentials (the owner token, `bashy llm key`, per-peer credentials from `bashy llm peer`, `bashy llm share` grants, session-scoped door URLs, and C2's per-run tokens). No vendor credential is copied, projected or stored by bashy, and no OS password is stored.
+
+Stories:
+- **G1** (p0): run the door per user in the login session on all three systems (macOS LaunchAgent, Linux `systemd --user` with lingering, Windows per-user logon task); outpost and the other services stay where they are. A Mac rebooted but not yet logged in refuses with a named reason.
+- **G2** (p1): a missing or expired vendor login is reported as needs-login with the vendor's one-time step, not as a transient 502 that trips the breaker; the owner is told once; serving resumes after login without a restart.
+
+Dropped: projecting vendor tokens into each worker (the opposite of the model above). Out of scope: `delegate` and `weave` launching vendor CLIs directly (yoke todos `1da1b9c67cf7`, `44539a940c1c`).
+
+Also observed: the door restarted by the update at 07:48 still listed no claude, muse or agy model, while a clean `bashy service start llm` at 08:07 did. Not yet explained; recorded so G1's restart path is checked for it.
