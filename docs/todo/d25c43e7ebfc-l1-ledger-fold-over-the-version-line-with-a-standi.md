@@ -3,14 +3,17 @@ id: d25c43e7ebfc
 kind: feature
 title: L1 Ledger fold over the version line, with a standing per attempt
 seq: 803
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:24.90768Z
+assignee: claude-fable5.2
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T06:21:47.28499Z
+closed_by: claude-opus5.5
 ---
 
 Problem: an app's shaping records are never assembled, so nobody (agent or person) can see why earlier changes were made.

@@ -38,7 +38,7 @@ Build brief (conductor 2026-11-26; uses the L1 API: Fold, ForViewer and the size
 - Tests (targeted): each of the four briefs carries the ledger block when the log has an entry for the app and nothing when empty; the block is fenced; a member brief has no owner-only fields; the file exists in the work clone and the candidate commit does not contain it.
 
 Delivery rules (conductor 2026-11-26, Sprint 732 started):
-- Work on current heads: yoke main after L1 merges (has the L1 ledger), bashy 25e87ba4 or later on origin main (fetch first). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Work on current heads: yoke 997d9c1c (has the L1 ledger), bashy 7993b062, bashy 25e87ba4 or later on origin main (fetch first). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
 - Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
 - Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
 - KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
