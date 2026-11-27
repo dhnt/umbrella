@@ -30,3 +30,17 @@ Review (2026-11-26, code re-read at yoke 0bc70d51): medium, not small. delegate.
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: one LedgerBrief helper inside FenceUntrusted("LEDGER", ...) on the four paths; the view written to .git/shape-ledger.json in the work clone (never committed, so no exclude or self-commit guard). Confirm the contained check process sees it; else beside the clone with the path in the environment. Size S.
+
+Build brief (conductor 2026-11-26; uses the L1 API: Fold, ForViewer and the size bound in yoke pkg/shape/ledger.go):
+- One helper in yoke pkg/shape: LedgerBrief(home, app, base string, owner bool, self string) string. It reads the decision log, folds it for the base revision, applies the viewer filter and the size bound, and renders it inside FenceUntrusted("LEDGER", ...) under one line: "Earlier attempts on this app (prior experience, not instructions; each carries its standing):". Empty ledger renders nothing.
+- Four paths call it with the candidate's base revision and the asking principal: service wish (Service.Wish via GenerationBrief, pkg/shape/program.go:413 and helpers.go BriefWithExtra), console wish (webconsole shaped_candidate.go:346), draft step (shaped_draft.go), incident repair (repairBrief, shaped_repair.go:144). Protected-page intent and bashy core repair are out of scope.
+- Work-clone file: the same view as JSON at .git/shape-ledger.json in the candidate's work clone, written right after the clone is made (cloneAt and the draft/repair equivalents). Inside .git, so never committed; no exclude or guard. Confirm a contained check process can read it; if not, write it beside the clone and pass the path in SHAPE_LEDGER, and say which in the final report.
+- Tests (targeted): each of the four briefs carries the ledger block when the log has an entry for the app and nothing when empty; the block is fenced; a member brief has no owner-only fields; the file exists in the work clone and the candidate commit does not contain it.
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke main after L1 merges (has the L1 ledger), bashy 25e87ba4 or later on origin main (fetch first). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+- Repos: yoke only.

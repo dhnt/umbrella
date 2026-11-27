@@ -30,3 +30,17 @@ Review (2026-11-26, code re-read at bashy eb41d87b and yoke 0bc70d51):
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Kept and raised to p1: the sprint goal names the contractor hop. After L1, L2 and 3895d1c3; in parallel with L3.
+
+Build brief (conductor 2026-11-26; after L1, L2, 3895d1c3; parallel with L3):
+- Pull: SourceSnapshot (yoke pkg/shape/transfer.go:29) gains an optional ledger field: the L1 fold for the snapshot revision, filtered for the caller (ForViewer, never owner view for a non-owner). Old clients ignore it.
+- Push: PushPatch (transfer.go:128) takes optional why, expect and agent; the request stops being the fixed "Import member patch" when why is given (use the first line of why, keep the fixed text otherwise). Store why/expect/agent on the candidate so the L2 decision lines carry them, with the contractor as principal (Actor stays the host process).
+- Site MCP (bashy internal/agentos/mcp_site.go siteShapePushInput, shape_local.go push case): optional why, expect, agent inputs passed through; the member push reply stays filtered (no activation_principal).
+- Tests (targeted): pull for a member carries a filtered ledger; push with reasons records why/expect/agent and the contractor principal on the decision log; push without them behaves as today.
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke main after L1 merges (has the L1 ledger), bashy 25e87ba4 or later on origin main (fetch first). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+- Repos: yoke (transfer) and bashy (site MCP inputs); bashy builds against yoke under the umbrella go.work; the conductor bumps pins.
