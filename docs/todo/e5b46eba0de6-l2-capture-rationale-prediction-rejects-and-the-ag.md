@@ -45,7 +45,7 @@ Record format (conductor 2026-11-26; L1 and L3 build on exactly this):
 - Tests (targeted, GOWORK=off): a record round-trip with and without the new fields; a human wish writes trigger/verdict/activation lines with problem, agent, why, expect; reject, undo, restore and the system rollback each write one line with by set; the parser reads WHY:/EXPECT: and tolerates their absence.
 
 Delivery rules (conductor 2026-11-26, Sprint 732 started):
-- Work on current heads: yoke 1ae2290c, bashy 9cae0c5b, ycode fcc970b or later on origin main. Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Work on current heads: yoke 625c20d9, bashy 25e87ba4, ycode cfa8bdc or later on origin main (fetch first; L0 changed the history handlers you touch). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
 - Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
 - Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
 - KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
