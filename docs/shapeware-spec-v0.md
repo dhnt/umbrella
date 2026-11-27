@@ -79,6 +79,7 @@ The shapeware keys under `metadata`:
 | `min-band` | The band floor for field building (D12), one of `L1`–`L5`: L1 QA/verify, L2 coding to a spec, L3 story delivery, L4 sprint manager, L5 manager of managers. |
 | `requires`, `check-tests` | Existing bashy keys (see `form.bsh`). |
 | `features`, `checks`, `ui`, `dag` | Path overrides relative to the folder (§1). Defaults: `features.yaml`, `checks/acceptance.bsh`, `assets/ui/`, `dag.md`. |
+| `implementation`, `reference-commit` | A lifted surface only (§4.3a): the clone URL of the repository that implements it, and the full commit its contract was certified against. |
 
 **`type` (review R1, then muse #1):**
 - Shapeware writes **only** `metadata.type`.
@@ -146,6 +147,42 @@ The block is fixed text with **named slots only**: `<name>` and `<page>`; run an
 - **Report**: the template in the card
 
 Every change to the block is gated by fresh unaware-agent runs (§15).
+
+### 4.3a Lifted surfaces: the implementation is outside the folder
+
+Adopted 2026-11-27. A self-contained app ships its code in the folder; a surface lifted from a larger repo (`shapeware/<surface>/`, §1) does not: its implementation is the rest of the repository. The folder must still be enough on its own. **An agent given only the folder knows what it is, where the code is, and how to check and change it.** So a lifted surface's `SKILL.md` and `dag.md` add three things to the standard block, with three more named slots: `<surface>`, `<repo>` (the clone URL) and `<commit>` (the full commit the contract was certified against; also `metadata.implementation` and `metadata.reference-commit`).
+
+1. **What it is**, right after the trust preamble, verbatim apart from the slots:
+
+   > This folder specifies the `<surface>` surface of `<repo>`. Its implementation is outside this folder: the repository that contains this folder, or, when this folder stands alone, `<repo>` at commit `<commit>`. The `source` step finds it; never look for it yourself.
+
+2. **A two-way `source` step** in `dag.md`. It resolves the implementation and records its path in `.shapeware/impl`; `build`, `test`, `run` and the rest read `${IMPL:-$(cat .shapeware/impl)}`, so a work copy can be judged by setting `IMPL`. It is the folder's only network step, and says so in `Effects:`.
+
+   ```bash
+   set -eu
+   mkdir -p .shapeware
+   top=$(git rev-parse --show-toplevel 2>/dev/null || true)
+   if [ -n "$top" ] && [ "$top" != "$PWD" ] && [ -f "$top/shapeware/index.bsh" ]; then
+       impl=$top                       # inside the implementing repository
+   else
+       impl=$PWD/.shapeware/src        # standing alone: fetch the certified commit
+       [ -d "$impl/.git" ] || git clone -q <repo> "$impl"
+       git -C "$impl" checkout -q --detach <commit>
+   fi
+   printf '%s\n' "$impl" > .shapeware/impl
+   echo "implementation: $impl"
+   ```
+
+   With `Effects: read, write, net` and `Band: none`.
+
+3. **Build for a lifted surface** replaces the self-contained Build steps 3 to 5:
+   1. stop if the feature is critical; stop and ask if a declared floor is not met or your band is unknown (unchanged);
+   2. make a work copy of the **implementation**, not of this folder: a fresh clone or `git worktree` of the resolved repository under `.shapeware/work/`;
+   3. change only the implementation files the change needs. Never change this folder's `CONTRACT.md`, `features.yaml`, `checks/` or examples: a spec change is the owner's decision, offered separately;
+   4. grade by running this folder's checks against the work copy: `IMPL=.shapeware/work/<name> bashy dag -f dag.md build` and `... test`;
+   5. offer, never self-approve (unchanged).
+
+**The folder-alone check.** A lifted surface is not done until an agent given only the folder (copied out, no checkout around it) reaches a passing **Check** using nothing but the folder's own text and lifecycle.
 
 ## 5. features.yaml
 
