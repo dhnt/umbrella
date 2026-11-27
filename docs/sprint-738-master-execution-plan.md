@@ -153,8 +153,9 @@ The socket is owner-only (0600 in a 0700 directory), serves the door's OpenAI an
 
 **Seam B, C3 (bashy `internal/agentos/contain*.go`): file confinement on the existing verb.**
 ```
-bashy contain --net deny --dir DIR [--socket /abs/path.sock]… [--ro /abs/path]… -- CMD [ARGS…]
+bashy contain --net deny --dir DIR [--socket /abs/path.sock]… [--ro /abs/path]… [--loopback PORT]… -- CMD [ARGS…]
 ```
+`--loopback PORT` (added after the C3 review, 2026-11-27): the only loopback port usable inside; without it there is no loopback. macOS has no network namespace, so the profile names the port; on Linux the namespace is private and the flag needs no rule. C4 picks a free port and gives it to both the sandbox and the forwarder.
 With `--dir`: `DIR` and a fresh private temp (exported as `TMPDIR`) are the only writable places and `DIR` is the working directory; the user's home is unreadable except each `--ro` path and bashy itself; each `--socket` is reachable; no other network (loopback inside the sandbox stays usable for the forwarder). The environment is scrubbed to a fixed allow-list (`PATH`, `LANG`, `LC_ALL`, `TERM`, `TMPDIR`, plus names passed with a repeatable `--env NAME`); `HOME` points at the private temp. macOS: a generated Seatbelt profile. Linux: bashy's image, `DIR`, the `--ro` paths and the sockets bind-mounted, network none. Windows and any host that cannot enforce it: exit 125 with a named reason; nothing runs. Without `--dir` the verb behaves exactly as today.
 
 **Seam C, C4 (bashy `internal/agentos/genie*.go`): the verb.**
