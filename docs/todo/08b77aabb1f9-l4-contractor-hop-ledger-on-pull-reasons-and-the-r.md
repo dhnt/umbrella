@@ -4,7 +4,7 @@ kind: feature
 title: 'L4 Contractor hop: ledger on pull, reasons and the right actor on push'
 seq: 806
 status: todo
-priority: p2
+priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:25.656652Z
@@ -28,3 +28,5 @@ Review (2026-11-26, code re-read at bashy eb41d87b and yoke 0bc70d51):
 - Depends on L1, L2, L0 6a8709362f55 and todo 3895d1c38be7, which lands first.
 - Two repos: merge yoke first, then bashy mod sync with the bashy change, then the umbrella gitlinks. bashy pins yoke b7ca202e, two commits behind yoke head.
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Kept and raised to p1: the sprint goal names the contractor hop. After L1, L2 and 3895d1c3; in parallel with L3.

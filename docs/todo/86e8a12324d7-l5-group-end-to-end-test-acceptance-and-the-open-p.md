@@ -34,3 +34,5 @@ Review (2026-11-26, code re-read at bashy eb41d87b): large. The harness covers n
 - The 'never the dev box' rule is enforced only by run.py:21 (linux and GROUP_SHAPING_GATE=1). Claim the lane by hand.
 - Today's baseline: 62 checks (5 setup, 39 scenario, 18 member pull and push), two passing runs required.
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Acceptance reworded to the revision 2 records (decision log, .git/shape-ledger.json); runs once on integrated main on the gate host.

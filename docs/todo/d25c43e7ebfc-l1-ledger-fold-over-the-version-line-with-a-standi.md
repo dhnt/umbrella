@@ -36,3 +36,5 @@ Review (2026-11-26, code re-read at yoke 0bc70d51 and bashy eb41d87b):
 - CLI: add 'ledger APP' beside history at bashy/internal/agentos/shape.go:65, with cases in shape_local.go:73,112 and shape_remote.go:156.
 - Tests to extend: yoke/pkg/src/history_test.go (s525a10Fixture), first_undo_test.go; yoke/pkg/shape/scope_test.go (fakeMemberDelegate, newScopedOwnerFixture).
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: fold over the decision log (not git trailers) per app and base revision; incident joins the problem of the attempt live at its base revision; standing; size bound; viewer filter; bashy shape ledger --json behind L0. Size M.

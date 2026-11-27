@@ -24,3 +24,5 @@ Review (2026-11-26, code re-read at bashy eb41d87b and yoke 0bc70d51): raised to
 - The end-to-end harness reads two of the leaked fields (tests/group-shaping-e2e/sandbox.py:272, :311). Change them in the same commit.
 - Other members' candidates are not exposed (canAccessCandidate, service.go:288-302).
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Known leak, fixed here; first, in parallel with L0. Its filter is shared with L1 (whichever lands first owns it; the other reuses it). Lands before L4.

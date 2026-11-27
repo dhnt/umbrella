@@ -28,3 +28,5 @@ Review (2026-11-26, code re-read at yoke 0bc70d51): medium, not small. delegate.
 - The view passed in is the viewer-filtered one for the candidate's principal, never the owner view.
 - Depends on L1, and on L0 6a8709362f55.
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: one LedgerBrief helper inside FenceUntrusted("LEDGER", ...) on the four paths; the view written to .git/shape-ledger.json in the work clone (never committed, so no exclude or self-commit guard). Confirm the contained check process sees it; else beside the clone with the path in the environment. Size S.

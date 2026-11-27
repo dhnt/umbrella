@@ -4,7 +4,7 @@ kind: bug
 title: bashy delegate has no depth counter for genie-to-genie nesting
 seq: 809
 status: todo
-priority: p2
+priority: p1
 labels:
     - genie
 created: 2026-11-26T19:45:26.28323Z
@@ -24,3 +24,5 @@ Review (2026-11-26, code re-read at yoke 0bc70d51 and ycode fcc970b2): confirmed
 - Fix: about 15 lines in yoke/pkg/chat/delegate.go before Invoke (around :125-131): read BASHY_DELEGATE_DEPTH, refuse at the limit, set depth plus one. Add the name to genie's agent.yaml and agent-yolo.yaml allowlists, or the count resets at each genie hop, and to shape's delegateEnvAllow. One test.
 - Three repos: yoke, then the ycode genie yaml, then the bashy pin bump.
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Raised to p1 and on the acceptance list: a known bug in scope is fixed in this sprint (operator: MVP means minimal, not broken). First, in parallel with L0.

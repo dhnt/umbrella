@@ -1,9 +1,121 @@
 # Sprint 732: a shared shaping ledger
 
 Sprint UUID: `f71a8649-8650-54de-9d57-9b5b04015fef`. Epic: software-shaping.
-Status: backlog, planning only. No coding until Sprint 730 completes (operator, 2026-11-26). That covers every story, including the access fix L0 and the delegate depth bug.
+Status: reviewed with the operator 2026-11-26 and approved to start. Sprints 726 and 730 are done.
 Follows Sprint 706 (shaping scopes, A/O/C) and Sprint 709 (member pull/push).
-Revised 2026-11-26 after an independent review that re-read the code; see "Review" below.
+Revision 2 (2026-11-26) re-plans on the records Sprint 730 added; see "Revision 2" first. The sections after it are the first plan and its review, kept for the record; where they disagree, Revision 2 wins.
+
+## Revision 2: execution plan on the existing workflow (2026-11-26)
+
+Code re-read at yoke `1ae2290c` (origin main). The idea stays borrowed from SIM
+(Self-Improvement Memory, arXiv 2611.18856): per problem, each attempt's change,
+reason, prediction, observed result and provenance. What changes is where it is
+kept: on the workflow records Sprint 730 already added, not on new ones.
+
+Operator rulings for this revision: a known bug in scope is fixed in this sprint
+(MVP means minimal, not broken; it must work end to end); the rest is the
+conductor's judgment.
+
+### What Sprint 730 changed
+
+| First plan assumed | Now on yoke main | Effect |
+|---|---|---|
+| No problem key; add a `Shape-Problem` trailer | `Source{Kind, Ref}` on every wish and candidate (`892a1149`, `shape/service.go:83`) | The key exists. No trailer. |
+| A new append-only record for rejects and failures | The decision log `<home>/shape/auto-decisions.jsonl` (`shape/state/auto.go`): trigger, attempt, verdict, activation, refusal, keyed by source and ref (`8514373c`, `1ae2290c`). No non-test reader yet. | This is the SIM record. Widen it; build nothing parallel. |
+| Six brief paths, no shared entry point | `FenceUntrusted` shared by the wish, context and repair briefs (`shape/helpers.go`) | The ledger is one fenced block from one helper. |
+| History and incident reads unchecked | Unchanged (`gate.go`, `shaped_history.go`) | L0 still first. |
+
+Because the record is an append-only host file rather than git trailers, these
+first-plan items fall away: trailers on undo and restore commits, carrying
+reasons through tidy as `Original-*`, and records lost when a draft is saved or
+a candidate rejected. Standing is a fold over the log's events.
+
+### Design (revision 2)
+
+- **One record.** `AutoDecision` gains optional fields: `Rev`, `Agent`,
+  `Principal`, `Line`, `Problem`, `Why`, `Expect`. Human wishes are logged too
+  (`source: human`); unattended-only behaviour (off switch, refusal) keys on
+  `Source.Unattended()` and is unchanged. New events: `reject`, `undo`,
+  `restore`, each with the actor and `by: person|system` (a rollback after a
+  failed repair release is `system`). Old lines without the new fields still
+  parse. The log stays a record, not a gate.
+- **Problem key.** `Source.Ref` when set (incident id, feed ref), else the
+  linked todo or story, else the candidate's tracking item. An incident joins
+  the problem of the attempt that is live at its base revision, so a repair
+  files under the wish it repairs.
+- **Reason and prediction.** The brief's closing block (COVERED / NOT COVERED /
+  NEXT) gains `WHY:` and `EXPECT:`, parsed like `ParseCoverage`. A contractor's
+  push carries them as fields.
+- **Fold.** Per app and base revision: problems, newest first; each attempt
+  with agent, principal line, request, why, expect, observed verdict or
+  incident, and standing (active, undone, restored, superseded, rejected,
+  failed). Size bound: open problems in full, closed ones one line.
+- **Viewer filter.** The owner sees everything. Members and contractors get no
+  host paths, board ids, others' addresses, host actor or agent receipts; the
+  problem shows as an opaque alias. The same filter serves the site MCP
+  candidate reply (`3895d1c3`). Every read goes through L0.
+- **Shown to every agent.** `LedgerBrief` renders the filtered fold inside
+  `FenceUntrusted("LEDGER", ...)`, labelled prior experience, not
+  instructions, on the four paths: service wish, console wish, draft step,
+  incident repair. The same view is written to `.git/shape-ledger.json` in the
+  work clone: inside the clone, never committed, so no exclude and no
+  self-commit guard are needed, and a build or test step (a local model via the
+  satellite) can read it.
+
+### Stories (the existing ids; none added)
+
+| Order | Story | Pri | Size | Repos | Scope in revision 2 |
+|---|---|---|---|---|---|
+| 1 | L0 `6a8709362f55` | p0 | S | yoke | Unchanged: tier and scope check on history, diff, incident reads; undo/restore/name on the line the view shows |
+| 1 | `759c57a66ff5` delegate depth | p1 | S | yoke, ycode, bashy | Known bug, fixed here: `BASHY_DELEGATE_DEPTH` mirroring `BASHY_MEET_DEPTH`; genie allowlists; pin bumps |
+| 1 | `3895d1c38be7` site MCP reply | p1 | S | bashy, yoke | Known leak, fixed here: filter the candidate reply; update the two harness checks |
+| 2 | L2 `e5b46eba0de6` | p1 | M | yoke | Widen the decision log; log human wishes; reject/undo/restore events; `WHY:`/`EXPECT:`; agent name to the activation |
+| 3 | L1 `d25c43e7ebfc` | p1 | M | yoke, bashy | Fold, standing, size bound, viewer filter, `bashy shape ledger --json` |
+| 4 | L3 `ddfb81fa062f` | p1 | S | yoke | `LedgerBrief` on four paths; `.git/shape-ledger.json` |
+| 4 | L4 `08b77aabb1f9` | p1 | M | yoke, bashy | Ledger on pull; `why`/`expect`/agent on push, recorded with the contractor as principal |
+| 5 | L5 `86e8a12324d7` | p1 | M | bashy | Acceptance end-to-end test |
+
+L4 stays: the sprint goal names the contractor hop. `3895d1c3` lands before L4,
+since nothing new goes to a contractor over an unfiltered reply.
+
+### Sequence
+
+0. Start on current heads: fetch, `bashy mod drift`, bump the touched pins
+   (ycode's yoke and coreutils pins are stale; bashy is in sync), build and run
+   unit tests. Claim the pin bump; announce on `bashy mb`.
+1. L0, delegate depth and `3895d1c3` in parallel: independent, small.
+2. L2 (record format first, in its story).
+3. L1.
+4. L3 and L4 in parallel.
+5. Merge order per change: yoke, then `bashy mod sync` with the bashy change,
+   then umbrella gitlinks. Delegate depth also bumps ycode.
+6. L5 once, on integrated main, on the gate host, in the official image.
+
+Fast unit tests per story on its branch; the end-to-end test runs once at the
+end. No release, no hosted deploy.
+
+### Acceptance (revision 2)
+
+One sandbox end-to-end test with fake accounts and fake agents on the gate
+host: a member's wish built by agent X records why and expect; a runtime
+incident repaired by agent Y whose brief contains X's why and expect, filed
+under the same problem; a contractor pulls the filtered ledger and pushes a
+patch with reasons, recorded with the contractor as principal; undo then
+restore changes each attempt's standing and deletes nothing; a check step reads
+`.git/shape-ledger.json` in the work clone; an out-of-scope caller is refused
+the ledger. Unit tests pass for the L0 refusals, fold, size bound, viewer
+filter, MCP reply filter and the delegate depth limit.
+
+### Risks (revision 2)
+
+- The decision log is host-wide and grows without bound; the fold filters by
+  app and the view is size-bounded. Rotation is not in this sprint.
+- A member's repair activates on the caller's line while incidents sit in the
+  owner's store (`shaped_repair.go:311`); one host-wide log makes the join
+  possible, and L5 exercises it.
+- To confirm in L3: the contained check process sees `.git/` in the clone. If
+  not, the file moves beside the clone and its path is passed in the
+  environment.
 
 ## Why
 

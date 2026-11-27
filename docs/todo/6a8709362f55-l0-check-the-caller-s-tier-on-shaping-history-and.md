@@ -19,3 +19,5 @@ Code inspected (2026-11-26, yoke 0bc70d51): yoke/pkg/webconsole/gate.go:70-115; 
 Verification: unit tests in yoke/pkg/webconsole that a signed-in non-member, an account holder and a member outside the scope are refused history, diff and incident reads on an owned app, and that an in-scope member and the owner still read.
 
 Triage (2026-11-26, review): p0, no dependencies, lands first. The ledger widens these reads, so nothing in L1 to L4 ships before this. Was the open point 'still to verify in L5'; now confirmed. No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Unchanged scope. First, in parallel with 759c57a6 and 3895d1c3.

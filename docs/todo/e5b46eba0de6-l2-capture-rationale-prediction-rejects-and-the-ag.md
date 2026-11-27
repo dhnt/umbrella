@@ -32,3 +32,5 @@ Review (2026-11-26, code re-read at yoke 0bc70d51): larger than first triaged. T
 - Members cannot link a follow-up to an existing problem today: linking a story in the console requires an operator (shaped_candidate.go:771). Decide whether a member may name an earlier problem by its alias.
 - Parser: ParseCoverage starts at helpers.go:28 and ParseNext at :249; RATIONALE and PREDICTED extend the same closing block.
 No coding until Sprint 730 completes (operator, 2026-11-26).
+
+Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: widen the S730 decision log (shape/state/auto.go AutoDecision) with optional Rev, Agent, Principal, Line, Problem, Why, Expect; log human wishes (source human) without changing unattended-only behaviour; add reject, undo and restore events with actor and by person|system; WHY:/EXPECT: headings in the brief closing block, parsed like ParseCoverage; agent name passed to the activation. No commit trailers on undo/restore, no tidy carry-forward. Problem key = Source.Ref, else todo/story, else tracking item. Size M.
