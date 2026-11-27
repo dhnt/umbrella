@@ -36,3 +36,9 @@ Review (2026-11-26, code re-read at bashy eb41d87b): large. The harness covers n
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Acceptance reworded to the revision 2 records (decision log, .git/shape-ledger.json); runs once on integrated main on the gate host.
+
+Build brief (conductor 2026-11-26, after L1-L4 merge; venue: the group-shaping harness, bashy tests/group-shaping-e2e, which passes 65 checks on bashy 9b3d488e via ~/.bashy/evidence/s732/lane-e2e.sh on the gate lane):
+- Stub: the codex fixture prints the closing block (COVERED/NOT COVERED/WHY/EXPECT/NEXT) with a distinct WHY and EXPECT per prompt, appends its whole prompt to $HOME/stub-prompts, and answers the repair brief with a deterministic fix. Two bindings on the same stub (X = codex:gpt6-sol, Y = codex:gpt6-terra or similar), proven by delegate dry runs.
+- Scenario additions, in order: (1) member wish by X records why/expect (owner `bashy shape ledger APP --json`); (2) owner CLI incident on the active revision with --agent Y; the repair activates by itself; Y's recorded prompt contains X's WHY and EXPECT inside the LEDGER fence, and the ledger files Y's attempt under X's problem; (3) contractor shape_pull returns a filtered ledger (no owner address, no host paths) and shape_push with why/expect/agent is recorded with the contractor as principal; (4) owner undo then restore: standings change (undone, then restored) and the attempt count is unchanged; (5) a check step (checks/*.bsh in the website template, or the verifier record) proves .git/shape-ledger.json was readable in the work clone; (6) an out-of-scope caller is refused the ledger route and reads.
+- Keep every existing check green; count before and after.
+
