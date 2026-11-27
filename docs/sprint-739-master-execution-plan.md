@@ -106,17 +106,33 @@ audience with zero new audience code.
     with size and sha256. Consumers stream or `get` them on demand.
 - **Folders: owner versus members (operator, 2026-11-27).**
   - HOME is for the owner only, through File Browser as today.
-  - Members only ever see **designated folders under one bashy-managed root**,
-    `<bashy-home>/shared/NAME/` (default `~/.bashy/shared/`). A folder is created
-    empty when it is designated; the owner (or a command's output) puts files in
-    it.
-  - No arbitrary host directory is shared with members. There is no `DIR`
-    argument, and the root is fixed, so a share can never point into HOME.
-  - A new outpost capability `outpost.shares` scans `<bashy-home>/shared/` (one
-    designated folder per subdirectory, listed in `settings.folders: [NAME, …]`).
-    It registers one app `files-NAME` per folder (`require_login`, read-only for
-    members). Its handler serves:
-  - `os.OpenInRoot`, so a symlink or `..` cannot escape the folder;
+  - Members only ever see **designated folders**. The default is an empty
+    bashy-managed folder, `~/.bashy/shared/NAME/` (`<bashy-home>/shared/`). The
+    owner may also designate a folder at any other path. Members never get HOME
+    as a whole.
+  - **Record: one JSON file per share**, `~/.bashy/shared/NAME.json`. It holds the
+    metadata of what is shared with the team:
+
+    ```json
+    {"name": "renders", "path": "/data/renders", "mode": "ro",
+     "audience": {"circles": ["support"], "groups": [], "emails": []},
+     "created": "2026-11-27T20:00:00Z", "note": "video outputs"}
+    ```
+
+    A missing `path` means `~/.bashy/shared/NAME/`, created empty. The file is the
+    local list of what is shared. The audience it records is applied with the
+    existing `outpost apps share files-NAME` and enforced by outpost, as for any
+    app. There is no outpost unit setting and no second store.
+  - **Guard with an escape hatch:** a `path` that is HOME itself, an ancestor of
+    HOME, or anything containing `~/.bashy` (vault, tokens) is refused unless
+    `--force` is given. A forced share is logged in the record (`"forced": true`,
+    with a reason).
+  - A new outpost capability, `outpost.shares`, reads `~/.bashy/shared/*.json`
+    (and reloads when the directory changes). It registers one app `files-NAME`
+    per record (`require_login`, read-only; `mode: rw` is out of MVP). Its handler
+    serves:
+  - `os.OpenInRoot` on the record's path, so a symlink or `..` cannot escape the
+    folder;
   - `http.ServeContent`, giving Range, HEAD and Last-Modified;
   - a weak ETag from size and mtime;
   - a JSON listing for directories.
@@ -124,11 +140,11 @@ audience with zero new audience code.
   The URI is `bashy://HOST/files-NAME/PATH`. It resolves through the satellite for
   members and through the mesh for owned hosts.
 - **Folder CLI:**
-  - owner: `bashy files share NAME [--circle|--group|--email]` creates the empty
-    `<bashy-home>/shared/NAME/`, adds NAME to the capability setting, then runs
-    `outpost apps share files-NAME`. Also `unshare NAME` (it removes the app and
-    the rule and keeps the files) and `shares`. The owner fills the folder with
-    ordinary file commands;
+  - owner: `bashy files share NAME [--path DIR] [--circle|--group|--email]
+    [--force --reason R]` writes `NAME.json` (and creates the empty default
+    folder when no `--path` is given), then runs `outpost apps share files-NAME`.
+    `unshare NAME` removes the record, the app and the rule, and keeps the
+    files. `shares` lists the records;
   - member: `bashy files ls|stat|cat|get|link`.
 
   Agents with a shell use the CLI. An MCP wrapper is out of MVP unless bashy's
@@ -142,11 +158,11 @@ audience with zero new audience code.
 |---|---|---|
 | **K1** named peer runs + per-command allow-list | Caller only for the run: `runPeer` accepts `TOOL:NAME`/`NAME`, and a `DispatchPeerCommand` sends `slash=NAME[,tool=TOOL]` without the measured-selection checks. Door: `PeerShare.Commands` allow-list, checked from the parsed slash name; empty = no named commands, so nothing widens (fixes missing item 2). | yoke `pkg/toolcmd`, `pkg/broker` |
 | **K2** offerable registered commands and bashy verbs | Generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
-| **F1** `outpost.shares` capability | fixed root `<bashy-home>/shared/`, `settings.folders: [NAME…]` (subfolders only, no arbitrary paths), one `files-NAME` app per folder, handler (`os.OpenInRoot` on the folder + `ServeContent` + weak ETag + JSON listing), read-only for members. File Browser over HOME unchanged and owner only. | outpost |
-| **F2** folder CLI and URIs | `bashy files share NAME` (creates the empty `<bashy-home>/shared/NAME/`) / `unshare` / `shares` (owner), `ls/stat/cat/get/link` (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `files-*` apps | yoke `pkg/fleet`, bashy |
+| **F1** `outpost.shares` capability | reads one record per share, `~/.bashy/shared/NAME.json` (path, default the empty `~/.bashy/shared/NAME/`; mode; audience; created), and reloads on change; one `files-NAME` app per record; handler (`os.OpenInRoot` on the folder + `ServeContent` + weak ETag + JSON listing), read-only for members. File Browser over HOME unchanged and owner only. | outpost |
+| **F2** folder CLI and URIs | `bashy files share NAME [--path DIR] [--force --reason]` writes `NAME.json` (default folder created empty; refuses HOME, its ancestors and `~/.bashy` without `--force`) and applies the audience with `outpost apps share`; `unshare` / `shares` (owner); `ls/stat/cat/get/link` (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `files-*` apps | yoke `pkg/fleet`, bashy |
 | **K3** inputs and outputs by reference | Refuse host paths from peer callers (fixes the pre-existing item 3); fetch URI inputs into scratch; publish artifacts into the offerer's output share and return URIs with size and sha256 | yoke `pkg/toolcmd`, `pkg/cligw` |
 | **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list`; register `offer-NAME` (`require_login` + `trust_cloud_identity`); the door stamp branch with the prefix-to-offer check; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
-| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers `llm` and `transcribe`; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place; a non-member, a path escape (`..`, a symlink out of the folder, any HOME path) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
+| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers `llm` and `transcribe`; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
 
 Order: F1 and K1 first (independent), then F2 and K2, then K3 (needs F2), then K4,
 then K5. Each story is delivered in its module first; then consumer pins and the
