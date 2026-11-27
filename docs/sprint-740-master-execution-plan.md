@@ -204,7 +204,7 @@ commands. The first verifier is **video**:
   - sample deliveries with verifier reports;
   - a price guide in credits.
 
-  The first entry is video. It needs no hosted change.
+  The first entries are listed in 3.5. The catalog needs no hosted change.
 - **Listing (live, cloudbox):** an SGI offer is published to the cloudbox listing
   with its command, kind, seller, ask range, verifier digest, source digest, deal
   type and audience. Cloudbox's own offers are listed the same way.
@@ -218,6 +218,73 @@ commands. The first verifier is **video**:
     `bashy store order ID --spec F --bid R` (the verified-delivery flow).
   - Web: a store page, a thin UI over the same CLI operations.
   - With no tools, a member sees cloudbox offers and pays with purchased credits.
+
+### 3.5 Catalog roadmap (operator, 2026-11-27)
+
+Entries are ranked by value: how scarce the capability is (GPU, paid model,
+installed tooling) times how objectively a verifier can check the result.
+"verified" means verified delivery and "call" means a per-call deal. Every entry
+must use a named bashy command with published source.
+
+**Tier 1: high value, strongly verifiable**
+
+| # | Kind | Spec in → artifact out | Deal | Binding verifier checks |
+|---|---|---|---|---|
+| 1 | `video` | video spec (script, scenes, style, length) → MP4 + captions | verified | duration, resolution, fps, codec; EBU R128 loudness; no black frames or silent gaps; captions in sync; transcribed speech matches the script (WER ≤ t); every spec scene covered |
+| 2 | `spec2src` | shapeware spec → app source | verified | conform contract plus hidden cases; build passes; license scan |
+| 3 | `transcribe` | audio/video → transcript + SRT/VTT | call or verified | valid SRT/VTT; timestamps monotonic and covering the audio; WER on a known-answer slice |
+| 4 | `dub` | script + voice (+ video) → audio track or dubbed video | verified | duration window; loudness; transcribe-back matches the script; a/v offset ≤ t |
+| 5 | `build` | repo@commit + recipe → artifacts + test report | verified | reproducible artifact digest (anyone can rebuild); signed report; pass/fail counts |
+| 6 | `llm` | prompt → completion (route declared) | call | none binding: price, source digest and declared backing only |
+
+**Tier 2: high demand, verifiable with structure**
+
+| # | Kind | Spec in → artifact out | Deal | Binding verifier checks |
+|---|---|---|---|---|
+| 7 | `translate` | file + target language + glossary → localized file | verified | placeholders and markup preserved; glossary used; length limits; back-translation ≥ t |
+| 8 | `subtitle-translate` | SRT + target language → SRT | verified | cue count and timing kept; line length and reading speed; back-translation ≥ t |
+| 9 | `extract` | documents + JSON schema → JSON records | verified | schema-valid; known-answer fields; every document accounted for |
+| 10 | `ocr` | scans/PDF → searchable PDF + text | call or verified | text layer present; CER on a known-answer page; page count kept |
+| 11 | `image-set` | image spec (count, sizes, elements, text) → images | verified | count, size, format; OCR'd text matches the spec; vision checks advisory |
+| 12 | `doc` | outline spec → PDF/DOCX/PPTX report or deck | verified | required sections or slides; links resolve; file valid; page/word limits; citations resolve |
+
+**Tier 3: taste matters more (advisory judges)**
+
+| # | Kind | Spec in → artifact out | Deal | Binding verifier checks |
+|---|---|---|---|---|
+| 13 | `song` | lyrics + style + length → audio | verified | duration; loudness; sung lyrics transcribe back to the spec; no clipping |
+| 14 | `podcast-edit` | recordings + edit spec → mastered episode | verified | loudness target; silence trimmed; chapters; transcript coverage |
+| 15 | `site` | page spec → static site | verified | conform DOM walker: inventory, links, accessibility basics |
+| 16 | `dataviz` | data + chart spec → charts or page | verified | every series plotted from the data (values match); axes and labels per spec |
+
+**Not catalog entries:**
+- raw compute or GPU rental (sphere tier);
+- open-ended work with nothing objective to verify;
+- anything backed by a personal subscription (owner-only).
+
+**Shared checks.** About ten reusable check commands cover all 16 kinds:
+- ffprobe;
+- loudness;
+- black and silence detection;
+- caption timing;
+- transcribe-back WER;
+- OCR / CER;
+- JSON-schema validation;
+- link checking;
+- reproducible digest;
+- conform.
+
+V2 builds this library, and each new kind is then mostly a contract file plus its
+catalog entry.
+
+**Order.**
+- In this sprint (S1): `video` (V2's first verifier), `transcribe`, `dub` and
+  `spec2src`. The first three share the transcription and loudness checks;
+  `spec2src` reuses conform.
+- Next: `extract` and `translate` (the broadest everyday demand), then the rest of
+  Tier 2, then Tier 3.
+- Each later entry is a small story on its own, filed when the previous one has
+  settled real deals.
 
 ## 4. Reuse (code inspected 2026-11-27)
 
@@ -241,9 +308,9 @@ commands. The first verifier is **video**:
 | **G2** receipts | `hold` / `final` / `release` receipts, signed and chained; receipt header; caller store; `--verify` | yoke `pkg/broker` |
 | **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
 | **V1** verified delivery | offer `verifier`, `spec-format`, `redeliver`; hold → deliver → buyer verify → final/release; waiver; timeout settle | yoke, bashy |
-| **V2** verifier framework and the video verifier | conform-based verifier commands; ffprobe, loudness, black/silence, captions, transcript-WER and scene-coverage checks; deterministic verdict | conform, bashy examples |
+| **V2** verifier framework and the video verifier | conform-based verifier commands; the shared check library of section 3.5 (ffprobe, loudness, black/silence, caption timing, transcribe-back WER, scene coverage first); deterministic verdict | conform, bashy examples |
 | **L1** ledger wire and client | public wire for checkpoint submit (both-signed), per-account append-only record (double entry, hash-chained), signed tree head, inclusion and consistency proofs, position query, track record; `bashy credits checkpoint`, `record` and `audit` (proof checks, tree-head gossip); door position check; cloudboxfake with a Merkle log. The hosted implementation is tracked privately. | yoke `pkg/fleet`, bashy |
-| **S1** CaaS catalog | `appstore` `caas/<kind>/` format, video entry with an example spec and a sample delivery | appstore |
+| **S1** CaaS catalog | `appstore` `caas/<kind>/` format; the first four roadmap entries (`video`, `transcribe`, `dub`, `spec2src`, section 3.5), each with an example spec and a passing sample delivery | appstore |
 | **S2** listing and store CLI | publish offers to the listing wire; `bashy store list/show/order`; track record per row; cloudboxfake support | yoke, bashy |
 | **S3** store web page | thin UI over the store CLI operations | bashy |
 | **G5** cloudbox offers and Tessaro credit (spike, doc only) | public wire for cloudbox-offered commands and the purchased-credit balance type | umbrella docs |
