@@ -3,14 +3,17 @@ id: e5b46eba0de6
 kind: feature
 title: L2 Capture rationale, prediction, rejects and the agent at activation
 seq: 804
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:25.158191Z
+assignee: codex-gpt6.2-astra
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T06:03:36.357714Z
+closed_by: claude-opus5.5
 ---
 
 Problem: the ledger lacks the reasons. Agents return COVERED / NOT COVERED / NEXT but no rationale or prediction; reject deletes the candidate with no trace; the agent name is dropped at activation; undo and restore carry no reason.

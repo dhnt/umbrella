@@ -3,14 +3,17 @@ id: 6a8709362f55
 kind: bug
 title: L0 Check the caller's tier on shaping history and incident reads
 seq: 811
-status: todo
+status: done
 priority: p0
 labels:
     - shaping
 created: 2026-11-26T21:30:30.699797Z
+assignee: codex-gpt6.2-astra
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T05:51:23.148836Z
+closed_by: claude-opus5.5
 ---
 
 Problem: on an owned web app, any signed-in caller can read the owner's version history, diffs and incidents. The gate only requires a verified identity for /api paths, the handler only requires a principal, and the read resolves to the owner's line and store for every caller. Callers that wish creation refuses (signed-in, account, visitor) can still read. Incident ids are guessable (inc-<timestamp>-<sig8>). Restore, undo and name act on the caller's own line while the view shows the owner's line.
