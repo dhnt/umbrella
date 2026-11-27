@@ -85,5 +85,6 @@ sprint. None ran on the dev box.
 A spend cap; the spec-method stories (`fce48cc11515`, `74240b60a085`,
 `43074ef074ea`, `b7be89cac2d2`, now in Sprint 734); failure capture outside the
 console; the skill adapt loop; `critical` in code; the `candidate.bsh` digest
-gap (`c61c6d33f114`). The GitHub repository and label for `form`'s real feed are
-still the operator's to name. No release and no hosted deploy.
+gap (`c61c6d33f114`). Turning on a real GitHub feed is deferred by the operator
+(2026-11-26) to the classgo/lern setup, where the repository and label will be
+chosen. No release and no hosted deploy.
