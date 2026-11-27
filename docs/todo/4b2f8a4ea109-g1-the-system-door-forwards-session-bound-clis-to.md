@@ -3,12 +3,15 @@ id: 4b2f8a4ea109
 kind: bug
 title: G1 the system door forwards session-bound CLIs to a user-session cligw (bashy llm up --session); no outpost change
 seq: 836
-status: todo
+status: done
 priority: p0
 created: 2026-11-27T16:25:06.687699Z
+assignee: claude-opus5.5
 sprint: 738
 sprint_id: 7ecf2342-069f-53f2-b07e-bd3a348052e9
 sprint_title: 'Contained subscription agents: genie in a sandbox over cligw'
+closed: 2026-11-27T16:48:08.204352Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-738-master-execution-plan.md §10. Operator decision 2026-11-27 (revised twice the same day): NO change to outpost, and the system door stays the front.
