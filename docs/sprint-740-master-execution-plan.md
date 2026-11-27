@@ -1,238 +1,331 @@
-# Sprint 740: SGI (bashy commands as a service, per call, for credits)
+# Sprint 740: SGI (bashy commands as a service for credits, with verified delivery and a store)
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only.*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only. Revised the same day: verified delivery, the store, and a per-account append-only credit records kept by cloudbox in a transparency log.*
 
 ## 1. The gap
 
 **SGI** ("super general intelligence, the dhnt way") is a recommended opt-in feature
-for every user. A member chooses which agentic tools and models to share with their
-trusted group. They share **commands**, never raw RAM or GPU (pooling those belongs
-to the sphere tier). Sharing earns **credits**. People who own no satellite, outpost
-or tools can **buy** credits.
+for every user:
+- A member offers **bashy commands** as a service to the people they have a
+  relationship with. Others' agents buy calls or deliveries with **credits**.
+- Sharing earns credits. People who own no satellite, outpost or tools buy credits
+  and spend them on commands that cloudbox itself offers.
+- A **store** lists what kinds of service exist and who offers them now.
 
-**The differentiator is command as a service, not a task marketplace (operator,
-2026-11-27).**
-- Agent-hiring platforms trade whole tasks: post a job, agents bid, escrow, accept.
-  SGI trades a much smaller unit, **one call of a named bashy command**.
-- **SGI-eligible:** any named bashy command, built-in or standard (shipped with
-  bashy, e.g. `llm`), example (a shaped `.bsh` command), or registered
-  (`bashy commands add`, custom or not). These are exactly what Sprint 739 K2 makes
-  offerable. Each has a name, a typed argument schema, declared effects and a
-  timeout, so a call is well-defined, bounded and comparable across offerers.
-  Mutating and `confirm` commands stay refused remotely (`Admit`).
-- **The source must be available, so the call can be verified (operator,
-  2026-11-27).** An SGI command is eligible only if a taker can fetch its source and
-  check that the source digest is the one that runs (section 3, Verifiable source).
-- Ad-hoc shell lines and whole tasks are not SGI offers.
-- **Cloudbox offers too (operator, 2026-11-27).** The hosted plane is an offerer like
-  any member. It offers named commands on hosted capacity (Tessaro). Purchased
-  credits are spent there, which is how a person with no satellite, outpost or tools
-  gets service.
-- **Credits only.** No crypto, stablecoin or Lightning rail. The price of a call is
-  in credits.
+Sprint 739 (`docs/sprint-739-master-execution-plan.md`) builds the sharing mechanism:
+- offers and folders as gated apps;
+- the member stamp;
+- `bashy remote`;
+- artifacts by `bashy://` reference.
 
-Sprint 739 (`docs/sprint-739-master-execution-plan.md`) already builds the sharing
-mechanism:
-- offers and designated folders as gated apps;
-- the member stamp at the door;
-- `bashy remote HOST -- NAME`;
-- per-peer limits.
+SGI is the economy, verification and discovery layer on top. Sprint 740 depends on
+Sprint 739 K1–K4 and does not reopen it.
 
-Its non-goals exclude billing. SGI is the **economy layer** on top: who used whose
-tool, how much, and what the group owes. Sprint 740 depends on Sprint 739 K4 and
-does not reopen it.
+### Operator rulings (2026-11-27)
 
-Operator decisions (2026-11-27):
-- The first version covers the **trusted group only**. A public pool comes later.
-- Purchased credits buy **Tessaro capacity only**.
-- The ledger design considered p2p and crypto technologies (section 2). The result
-  is credits only, kept p2p with signed receipts.
-- The unit is one call of a named bashy command (built-in, standard, example or
-  registered).
-- Cloudbox can offer commands too; purchased credits are spent on its offers.
+1. **Trusted relationships only.** Anyone may invite anyone, which creates a mutual
+   buyer/seller relationship. There is no anonymous public market.
+2. **Credits only.** No crypto, stablecoin or Lightning payment rail.
+3. **Command as a service, not task hiring.** The unit is a named bashy command:
+   built-in, standard, example (shaped) or registered, custom or not.
+4. **The source must be available**, so takers can verify what runs.
+5. **Cloudbox offers commands too.** Purchased credits are spent only on those.
+6. **Verify the product, not the hardware.** A bashy-provided verifier checks the
+   delivered result. If the verifier accepts, the deal is done.
+7. **SGI has a store** that lists offerings.
+8. **Cloudbox keeps the credit ledger and the listing.** The ledger records totals
+   only, never transaction details.
+9. **Crypto technology is welcome for the ledger itself.** The ledger uses
+   cryptographic techniques (signatures, hash chains, a Merkle transparency log),
+   not a token or a blockchain (section 3.3).
 
 ## 2. State of the art (what to copy, what to avoid)
 
-| Approach | What it is | Lesson for SGI |
+| Approach | Lesson for SGI |
+|---|---|
+| Nostr NIP-90 data vending machines (job request, result and feedback, with a `bid`) | Copy the request/result shape and the one-round bid. Upstream marks the spec "unrecommended" because it sprawled, and open markets show **no demand**. So keep the scope narrow and serve relationships, not strangers. |
+| x402 / L402 (HTTP 402 pay-per-call) | Copy the wire shape: refuse with **402** and a machine-readable counter. 429 stays for rate limits. The payment rails are **not used**. |
+| Agent-hiring markets (NEAR AI Agent Market, TaskMarket, Wuselverse, OpenTask; IETF PACT draft) | Whole tasks, crypto escrow, buyer accept or reject. SGI instead uses typed commands, credit holds, and a **pinned verifier** that decides. One round of sealed bids with ranges matches what PACT recommends. |
+| Blockchains, ecash mints, DePIN tokens | A blockchain buys consensus among *mutually distrusting operators*, but SGI has one operator (cloudbox), so it isn't needed. Tokens bring value transfer and subsidy problems. **No token and no chain.** |
+| Transparency logs (Certificate Transparency, Sigstore Rekor, Trillian) | **Copy.** An append-only Merkle log run by one operator. Clients get inclusion and consistency proofs, so the operator cannot rewrite or fork history without detection. This is the useful crypto for a single-operator ledger. |
+| Mutual credit / time banking | Credits are bilateral and net to zero. Fits relationships. It needs a per-account limit once relationships are open (the Sybil problem), hence the cloudbox position ledger. |
+| Closed-loop prepaid rules | Tessaro sells credit for its own offers only. Earned credits never cash out. |
+| LLM vendor terms | Subscription-backed offers stay owner-only. |
+| Remote attestation (TPM, SEV-SNP/TDX, sealed images) | It can't stop an owner with root on consumer machines, and it doesn't exist on macOS. **Not pursued.** Results are checked instead. |
+| conform (this workspace) | The model to follow: one invariant judge that builders and graders both run. |
+
+## 3. Design
+
+### 3.1 What can be offered
+
+- **Eligible:** any named bashy command whose **source is published**. These are
+  the commands Sprint 739 K2 makes offerable. Mutating and `confirm` commands stay
+  refused remotely (`Admit`).
+- **Command opt-in:** `bashy offer NAME --sgi [--ask MIN..MAX] [--verifier V@DIGEST
+  --spec-format F --redeliver N]`.
+- **Each offer declares its backing:** `local`, `api-own-key` or `subscription`.
+  `subscription` is refused for anyone but the owner unless the owner passes
+  `--force --reason R`, which is logged.
+- **Source digest per kind.** The digest is the command's identity: in the offer,
+  in the listing and in every receipt.
+
+| Command kind | Source digest |
+|---|---|
+| Built-in or standard verb | bashy `vcs.revision` (the public commit) plus the verb; a dirty or unknown build is refused |
+| Example (`.bsh`) | sha256 of the file |
+| Registered `script` | sha256 of the canonical record plus the script |
+| Registered `exec` / `download` wrapping a tool | the record must declare `source: {url, rev}` and the installed binary's sha256; otherwise refused |
+
+- **The offer app serves its source** read-only to the offer's audience.
+  - `bashy offer source HOST NAME` fetches the source and recomputes the digest.
+  - `bashy remote --verify` checks it before the first call and again whenever it
+    changes.
+
+### 3.2 Two kinds of deal
+
+| Deal | For | Settlement |
 |---|---|---|
-| Nostr NIP-90 "data vending machines" | Signed job request, result and feedback events, paid by Lightning invoice | The job and receipt shape is good. Upstream now marks the spec "unrecommended" because it sprawled, and operators report idle machines with **no demand**. Keep the scope narrow; demand comes from trusted groups, not an open market. |
-| x402 (HTTP 402 + stablecoin; MCP `_meta` binding) | Per-call pay-on-402 for APIs and MCP tools | **Adopt the wire shape.** When credit runs out the door answers `402 Payment Required` with a machine-readable requirement body. 429 stays for rate limits. A later rail plugs in without changing callers. |
-| L402 (Lightning macaroon + invoice) | Per-call Lightning payment | Same 402 pattern. A candidate rail for a later public pool only. |
-| Cashu / Fedimint ecash (federated mints) | Blind-signed bearer tokens issued by a mint or a guardian federation | The closest crypto match to a family or team federation. But bearer tokens that move between people are value transfer, and they are custodial. **Not used.** |
-| Agent-hiring marketplaces (NEAR AI Agent Market, TaskMarket, Wuselverse, OpenTask; IETF PACT draft) | Whole tasks posted with a budget; agents bid; crypto escrow; accept or reject | Confirms a one-round sealed bid with ranges. SGI differs on purpose: the unit is one typed command call, not a task, so there is no escrow and no acceptance step. |
-| DePIN GPU networks | Token-incentivized compute markets | Token emissions subsidize supply that is often not real. **No own token or chain.** |
-| p2p inference swarms (Petals, exo) | Model sharding over a DHT | That is the sphere tier, not this feature. |
-| NIP-90 bids; DVM price replies | The job request carries a `bid` (max amount); the service answers with its price or declines | **Adopt a one-round bid:** a range on each side and a single match, no order book or auction engine. |
-| Mutual credit / time banking | Bilateral balances that sum to zero; nothing is issued | **Fits the trusted group:** p2p, no money, no mint, no central ledger. |
-| Closed-loop prepaid rules | Credit sold by the issuer for its own services is generally outside money-transmission rules. An operator moving funds between third parties can still be a money transmitter. | Tessaro sells only its own capacity. Earned credits never cash out and never pay members. |
-| LLM vendor terms | Subscriptions are personal; reselling access needs vendor approval | An offer declares what backs it. **Subscription-backed offers are refused for non-owners.** Local or open-weight models, open-source tools and the member's own API keys used within the vendor's terms are fine. |
+| **Per call** | cheap, interactive commands (`llm`, lookups) | the price is cleared by the bid before the run; the receipt is final at once |
+| **Verified delivery** | spec → artifact work (video, spec→source, dubbing, …) | the price is **held**, the artifact is delivered, the pinned verifier runs, and the verdict settles the deal |
 
-## 3. Design: credits, priced per command call
+**Bidding (both kinds).**
+- The offerer sets an ask range, and the current ask moves inside it with load. The
+  taker sends a take range: `--bid MIN..MAX`, sent as header `X-Bashy-Bid`.
+- When the ranges overlap, the price is `max(ask, take MIN)`, capped at
+  `min(offer MAX, take MAX)`.
+- When they don't, the door answers 402 with a counter, `{ask, range}`.
+- `--any` picks the lowest ask among the offerers of the same command; a tie goes
+  to the lowest latency.
+- There is no order book.
 
-### Rail 0: group mutual credit (MVP; p2p, no money)
+**Verified delivery: the deal.**
+1. The offer pins a **verifier**. It is a bashy-provided command with published
+   source, never seller-written. The offer also pins the thresholds, the accepted
+   spec format and the redelivery limit.
+2. The buyer orders: `bashy remote C -- video --spec film.md --bid 40..60`. The
+   cleared price is held as a signed `hold` receipt.
+3. The seller runs the verifier itself, then delivers the artifact URI plus its own
+   report.
+4. The buyer's bashy runs **the same pinned verifier** automatically on the
+   artifact plus the spec.
+5. The verdict decides:
+   - **Pass → done deal.** A `final` receipt is written, and the buyer cannot reject
+     the delivery.
+   - **Fail → no charge.** A `release` receipt is written, and the seller may
+     redeliver up to N times.
+   - **Waiver.** The buyer accepts a failure anyway; this is logged.
+   - **Buyer silent.** The seller's passing report settles the deal after a timeout.
+     Either side can rerun the verifier later.
+6. **Determinism is the dispute rule.** Both sides run the same verifier on the same
+   inputs. A different verdict is a verifier defect: it is filed and fixed in the
+   method, not in the deal.
+7. **Subjective quality.** In the MVP only objective checks bind. An LLM or vision
+   judge is advisory unless the offer opts in to a pinned model with a majority of 3.
+   Taste is judged before ordering, from the listing's sample deliveries.
 
-- **Signed receipts.** Every served run of an SGI offer produces one receipt:
-  `{command, source digest, caller principal, price, time, cost_usd|unpriced, prev}`. `prev` is the
-  sha256 of the door's previous receipt, so each door keeps a hash-chained log.
-  - The receipt is signed with the door host's ed25519 key under a new canonical tag,
-    `dhnt-receipt-v1` (the same length-prefixed encoding as `yoke/pkg/feed/sign.go`).
-  - It is returned to the caller in a response header. The caller's bashy stores it.
-- **Balances are local.** Each member computes balances from the receipts they hold
-  (served and consumed). Members cross-check by exchanging chain heads; a mismatch or
-  a bad signature is reported, never silently merged. There is no central ledger, and
-  no hosted-plane change: the hosted plane keeps holding relationship data only.
-- **Credit lines.** The owner sets a credit line per circle or per member (credits
-  owed). Past the line, the door answers 402 with
-  `{schema_version: "bashy-credit-402-v1", offer, owed, line, accepts: ["group-credit"]}`.
-  The `accepts` list is where later rails appear.
-- **Observe-only first.** Like the budget/band experiment, the default mode records
-  `would-refuse` events and never blocks. The owner turns on enforcement per offer.
+**Verifiers are conform contracts per artifact kind.** They are named bashy commands
+built on `conform`, with ffprobe, transcription and OCR checks as their own
+commands. The first verifier is **video**:
+- duration, resolution, fps and codec;
+- EBU R128 loudness;
+- no black frames or silent gaps;
+- captions present and in sync;
+- the transcribed speech matches the script (word error rate at or under the
+  threshold);
+- every spec scene is covered.
 
-### Verifiable source
+### 3.3 Credits and the cloudbox ledger (totals only, transparency log)
 
-Every SGI offer publishes the source of the command it runs. The **source digest**
-(sha256) is the command's identity: in the offer, in the ask (HEAD), and in every
-receipt.
+- **Receipts are the detail, and they stay peer-to-peer.**
+  - Each receipt is `hold`, `final` or `release`, with the command, source digest,
+    verifier digest, price, parties, time and `prev`.
+  - Receipts are signed with the door host's ed25519 key under the tag
+    `dhnt-receipt-v1`, using the `yoke/pkg/feed/sign.go` encoding, and chained per
+    door.
+  - Both parties keep their receipts. **Cloudbox never sees them.**
+- **Cloudbox keeps one append-only credit record per account (operator,
+  2026-11-27).** A member's credits are a list of entries that only grows:
+  `{account, seq, delta, counterparty, type: earned|spent|purchased|redeemed,
+  period, settled count, failed count, receipt-chain head hash, prev}`.
+  - **Balance = sum of the entries.** Nothing is ever edited. A correction is a new
+    entry.
+  - **Double entry.** A settlement between A and C writes two mirrored entries, a
+    debit in A's record and a credit in C's, from one **netting checkpoint** signed
+    by both parties. A one-sided checkpoint is recorded as disputed and is not
+    applied.
+  - **Totals, not transactions.** Entries are netted per counterparty per period
+    (default daily, settable by the owner). They hold no command, artifact, spec or
+    per-call times, and the timing of individual deals stays hidden. The chain-head
+    hash commits to the private receipts without revealing them, so a party can
+    later prove a disputed receipt was included.
+  - **Each record is hash-chained** (`prev`), so a member can verify their own
+    record end to end with `bashy credits record`.
+- **All account records sit in one append-only Merkle transparency log.** This is the
+  crypto part.
+  It is modeled on Certificate Transparency and Sigstore Rekor, and Go has Trillian
+  and `transparency-dev` libraries. Each record entry is a log leaf.
+  - Cloudbox signs a tree head after each batch.
+  - Clients keep the last tree head they saw and check:
+    - an **inclusion proof** for their own record entries;
+    - a **consistency proof** between tree heads.
+  - So cloudbox cannot alter, drop or reorder history, or show two members
+    different histories, without detection.
+  - Members gossip tree heads with their counterparties, and `bashy credits audit`
+    checks them.
+  - Balances are recomputable: a member's position is the sum of their own record,
+    which they can check against cloudbox's reported number.
+  - What this gives: integrity and auditability of one trusted operator, without a
+    blockchain, a token or consensus.
+- **Why a central position ledger at all.** Anyone can invite anyone. Without a
+  global view, a new account could run up debt with many sellers and leave. The
+  rules:
+  - A new account starts with a position limit of 0. It earns first, or the seller
+    extends a per-relationship credit line.
+  - The door checks the buyer's cloudbox position, served with the relationship
+    stamp, and the seller's own line.
+- **Purchased credits are a separate balance type.** Tessaro credit is closed-loop,
+  spendable only on cloudbox offers, never transferable and never cashed out.
+  Earned credits never convert into it.
+- **It is still relationship data.** A netted balance per relationship is a property
+  of the relationship, like its circle. The hosted plane stores strings, totals and
+  log hashes; the nodes and receipts hold the meaning. This repo documents only the
+  public wire: checkpoint submit, tree head, inclusion and consistency proofs,
+  position query and listing publish.
+- **Observe-only first.** Limits and lines record `would-refuse` before any
+  enforcement is switched on.
 
-| Command kind | Source that must be available | Digest |
-|---|---|---|
-| Built-in or standard verb (e.g. `llm`) | bashy itself (open source); the running binary's VCS revision (Go build info) pins the public commit | bashy `vcs.revision` plus the verb |
-| Example (a shaped `.bsh` command) | the `.bsh` file | sha256 of the file |
-| Registered `script` record | the record and its script | sha256 of the canonical record plus script |
-| Registered `exec` / `download` record that wraps a tool (ffmpeg, whisper, …) | the record, **plus** a declared `source: {url, rev}` for the wrapped tool and the sha256 of the installed binary | sha256 of the record, which includes both |
+### 3.4 The store
 
-- **Refused for SGI:** a registered `exec` or `download` record with no `source`
-  declaration (an opaque binary), and a dirty or unknown-revision bashy build. Each
-  refusal names the missing field.
-- **The offer serves its source.** The `offer-NAME` app gets a read-only `source`
-  route (the record, the script or `.bsh`, the declared source reference) with the
-  same audience as the offer.
-- **Taker verification.** `bashy offer source HOST NAME` fetches the source, recomputes
-  the digest and compares it with the ask. `bashy credits verify` checks every
-  receipt's digest against the fetched source.
-  - A mismatch is refused before the call, and flagged after it.
-  - `bashy remote --verify` does the source check before the first call to an
-    offerer, and again whenever the digest changes.
-- **Not in MVP:** reproducible-build proof that a binary was built from its declared
-  source. The MVP verifies the declaration and the digests, not the build.
+- **Catalog (public, static, git):** the existing `dhnt/appstore` repository gains
+  `caas/<kind>/` entries. Each entry holds:
+  - the spec format and an example spec;
+  - the pinned verifier and its thresholds;
+  - source references;
+  - sample deliveries with verifier reports;
+  - a price guide in credits.
 
-### Simple bidding: offer range and take range
-
-Credits are priced **per call** of the named command.
-
-- **Offer range.** The offerer sets `--ask MIN..MAX` credits per call.
-  - The door's current ask moves inside that range with load: MIN when idle, rising
-    toward MAX as in-flight runs approach the offer's concurrency limit.
-  - With no range set, the price is a fixed 1 credit per call.
-- **Take range.** The taker sends `--bid MIN..MAX` on `bashy remote` (header
-  `X-Bashy-Bid: min=…,max=…`). MIN is the opening bid; MAX is the most the taker
-  will pay. With no bid, the taker accepts any price within the offer range.
-- **Match.** The run is admitted when the two ranges overlap and the current ask is
-  at or below the taker's MAX. The clearing price is `max(current ask, take MIN)`,
-  capped at `min(offer MAX, take MAX)`. That price is recorded in the receipt
-  (`price`; one call is charged `price`).
-- **No match.** The door answers 402 with a counter, `{ask: current, range: [MIN, MAX]}`.
-  The taker may bid again or try another offerer. There is no queue, no order book
-  and no auction state.
-- **Several offerers.** When several members (or cloudbox) offer the same command
-  (the same name, with a compatible argument schema),
-  `bashy remote --any NAME --bid …` asks each candidate's door for its current ask
-  (a cheap `HEAD`). It takes the lowest ask in range, and a tie goes to the lowest
-  latency. This is one-shot first-price selection, not continuous trading.
-- **Known before the run.** One call has one price, so the taker always knows the
-  charge before the command runs. There is no metering of tokens or seconds and no
-  after-the-fact bill. A command that does very different amounts of work should be
-  split into separate commands, or its owner sets a wider ask range.
-
-### Rail 1: Tessaro purchased credits (after the MVP, on a release train)
-
-- Closed-loop prepaid account credit, sold by Tessaro and redeemed only for
-  commands that cloudbox itself offers on Tessaro capacity. To a taker, those offers
-  look like any other offerer's (same ask range, same 402 counter), with an
-  `accepts` entry for Tessaro credit.
-- It is non-transferable, never paid out, and never spendable on member offers.
-- This repo documents only the public wire contract: a 402 `accepts` entry plus a
-  redemption header. The implementation lives outside this public workspace.
-
-### No external payment rails
-
-Credits only (operator, 2026-11-27). x402, L402 and ecash are not pursued. The 402
-body keeps the `accepts` list only so that Tessaro credits (Rail 1) can be added.
-
-### Opt-in and offer metadata
-
-- `bashy offer NAME --sgi` adds SGI pricing to a Sprint 739 offer. `NAME` must
-  resolve to a named bashy command (built-in, standard, example or registered; the
-  739 K2 set). Otherwise `--sgi` is refused, with a hint to register the command
-  (`bashy commands add`). `bashy offer` recommends
-  SGI in its consumer line and help.
-- The offer record gains:
-  - `backing: local | api-own-key | subscription`;
-  - `ask: {min, max}` credits per call (optional; default fixed 1);
-  - the command's source digest (Verifiable source), so a receipt names exactly what
-    ran.
-- `--sgi` is also refused when the source cannot be published (an opaque `exec` or
-  `download` record, or an unknown-revision bashy build).
-- **Guard with an escape hatch.** A `subscription` backing is refused for any
-  audience beyond the owner unless the owner passes `--force --reason R`. The forced
-  share is logged in the record.
+  The first entry is video. It needs no hosted change.
+- **Listing (live, cloudbox):** an SGI offer is published to the cloudbox listing
+  with its command, kind, seller, ask range, verifier digest, source digest, deal
+  type and audience. Cloudbox's own offers are listed the same way.
+  - A member sees only listings from people they have a relationship with, plus
+    cloudbox's offers.
+  - Each row shows the **track record** from the logged checkpoints (settled,
+    verifier pass share, redeliveries, distinct counterparties). There are **no
+    written reviews**, so nothing can be faked by typing.
+- **Surfaces:**
+  - CLI: `bashy store list [--kind K]`, `bashy store show ID`, and
+    `bashy store order ID --spec F --bid R` (the verified-delivery flow).
+  - Web: a store page, a thin UI over the same CLI operations.
+  - With no tools, a member sees cloudbox offers and pays with purchased credits.
 
 ## 4. Reuse (code inspected 2026-11-27)
 
 | Piece | Where | Reused as |
 |---|---|---|
-| Door run record: principal, tokens, wall time, `cost_usd`/`unpriced` | `yoke/pkg/broker/audit.go` (`Record`, `auditLog`) | receipt body |
-| Peer meter, limits and refusals (tokens/day, USD/month, RPM → 429) | `yoke/pkg/broker/peerlimit.go` (`peerMeter.admit/observe`, `seedPeerMeter`, `admitPeer`) | credit-line check; adds 402 next to 429 |
-| Pricer | `yoke/pkg/broker/broker.go` `Pricer`, `llmprice` | `cost_usd` on the receipt, informational only (lets an owner set a sensible ask) |
-| Registered command records (typed schema, effects, timeout); the 739 K2 offerable set (registered commands and bashy verbs) | `yoke/pkg/fleet/commands.go`, `command_schema.go`; Sprint 739 K2 | SGI eligibility check and identity digest |
-| ed25519 canonical signing and keys | `yoke/pkg/feed/sign.go`, `key.go` | receipt signature |
-| Offers, member stamp, `member:` principal, `bashy remote` | Sprint 739 K1–K4 | transport and identity, unchanged |
-| A/O/C sandbox lane with `cloudboxfake` | bashy `test-group-shaping-e2e` | acceptance |
+| Door run record (principal, tokens, wall time, `cost_usd`/`unpriced`) | `yoke/pkg/broker/audit.go` | receipt body |
+| Peer meter, limits, refusals | `yoke/pkg/broker/peerlimit.go` | line and position checks; 402 next to 429 |
+| ed25519 canonical signing | `yoke/pkg/feed/sign.go`, `key.go` | receipts and checkpoints |
+| Registered command records | `yoke/pkg/fleet/commands.go`, `command_schema.go` | eligibility, source digest |
+| Sigstore verification, including transparency-log inclusion against an embedded trusted root | `yoke/pkg/binmgr/sigstore.go` | wrapped-tool provenance; the pattern for verifying ledger proofs offline |
+| conform contract runner | `conform/` | verifier framework |
+| App catalog | `appstore/` (`categories.yaml`, `apps/<id>/`) | CaaS kind catalog |
+| Hosted-plane fake | `yoke/pkg/fleet/cloudboxfake` | ledger, log and listing in e2e |
+| Offers, stamp, `bashy remote`, `bashy://` artifacts | Sprint 739 K1–K4 | transport, identity, delivery |
 
 ## 5. Stories
 
 | Story | What | Repo |
 |---|---|---|
-| **G1** SGI opt-in and offer metadata | `--sgi` and `--ask MIN..MAX` on `bashy offer`, refused unless NAME is a named bashy command (built-in, standard, example or registered) whose source can be published; source digest per kind; the read-only `source` route on the offer app; `bashy offer source HOST NAME`; `backing`, `ask` and the command record digest in the offer record; the subscription guard with `--force --reason` | yoke `pkg/fleet`, bashy (needs 739 K4) |
-| **G2** signed receipts | `dhnt-receipt-v1` signing over the audit record, carrying the source digest; `bashy remote --verify` and the receipt-digest check against fetched source; per-door hash chain; receipt header to the caller; caller-side store | yoke `pkg/broker` |
-| **G3** credits and lines | `bashy credits` (balance, history, verify, export); owner credit lines per circle or member; simple bidding (price per call; load-moved ask inside the offer range, `--bid MIN..MAX` / `X-Bashy-Bid`, overlap match and clearing price in the receipt, 402 counter on no match, `--any` lowest-ask selection); 402 body; observe-only default with an enforce switch | yoke `pkg/broker`, bashy |
-| **G4** A/O/C sandbox e2e (acceptance) | C offers `transcribe --sgi` and O uses it; receipts verify on both sides and the balances agree; past the line, would-refuse in observe mode and 402 when enforced; a subscription-backed offer to a member is refused; `--sgi` on a name that is not a bashy command is refused; a built-in (`llm`) and a registered command are both offered; a tampered receipt fails verify; an opaque `exec` record is refused for `--sgi`; `bashy offer source` matches the digest, and changing C's script makes `--verify` refuse the next call; a bid below the ask gets a 402 counter and a re-bid in range runs at the clearing price; with two offerers, `--any` picks the lower ask | bashy (`test-group-shaping-e2e` lane) |
-| **G5** cloudbox as offerer + Rail 1 wire contract (spike, doc only) | The public wire for cloudbox-offered commands (same offer, ask range and 402 counter as a member's) and the 402 `accepts` entry plus redemption header for Tessaro credits; the private design is kept outside this repo | umbrella docs |
+| **G1** SGI opt-in | `--sgi`, ask range, backing guard, verifiable source per kind, the source route, `bashy offer source` | yoke `pkg/fleet`, bashy |
+| **G2** receipts | `hold` / `final` / `release` receipts, signed and chained; receipt header; caller store; `--verify` | yoke `pkg/broker` |
+| **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
+| **V1** verified delivery | offer `verifier`, `spec-format`, `redeliver`; hold → deliver → buyer verify → final/release; waiver; timeout settle | yoke, bashy |
+| **V2** verifier framework and the video verifier | conform-based verifier commands; ffprobe, loudness, black/silence, captions, transcript-WER and scene-coverage checks; deterministic verdict | conform, bashy examples |
+| **L1** ledger wire and client | public wire for checkpoint submit (both-signed), per-account append-only record (double entry, hash-chained), signed tree head, inclusion and consistency proofs, position query, track record; `bashy credits checkpoint`, `record` and `audit` (proof checks, tree-head gossip); door position check; cloudboxfake with a Merkle log. The hosted implementation is tracked privately. | yoke `pkg/fleet`, bashy |
+| **S1** CaaS catalog | `appstore` `caas/<kind>/` format, video entry with an example spec and a sample delivery | appstore |
+| **S2** listing and store CLI | publish offers to the listing wire; `bashy store list/show/order`; track record per row; cloudboxfake support | yoke, bashy |
+| **S3** store web page | thin UI over the store CLI operations | bashy |
+| **G5** cloudbox offers and Tessaro credit (spike, doc only) | public wire for cloudbox-offered commands and the purchased-credit balance type | umbrella docs |
+| **G4** A/O/C sandbox e2e (acceptance) | see section 7 | bashy (`test-group-shaping-e2e`) |
 
-Order: G1 → G2 → G3 → G4. G5 is an independent planning output. G6 (an external payment rail study) was dropped on 11-27: credits only. MVP = G1–G4.
+Order:
+1. G1, then G2 and G3 (per call working end to end).
+2. V1 and V2 (verified delivery).
+3. L1 (ledger).
+4. S1 and S2, then S3 (store).
+5. G4.
+
+G5 is a parallel planning output.
 
 ## 6. Non-goals
 
-- A public pool, or discovery of offers.
-- An own token or blockchain, crypto, stablecoin or Lightning payment rails.
-- Whole-task hiring (post a job, bid, escrow, accept). The unit is one command call.
-- Offering ad-hoc shell lines; only named bashy commands are SGI-eligible.
-- Cash-out or payouts to members.
-- Bearer ecash transfer between people.
-- Spending purchased credits on member offers.
-- Raw RAM or GPU sharing.
-- Hosted deploys. Live checks are release-train items.
+- An anonymous public market. Every party is in a relationship by invitation.
+- Tokens, blockchains, crypto or Lightning payment rails, cash-out, payouts.
+- Transaction details in the hosted plane.
+- Hardware attestation or sealed runtimes.
+- Written reviews or ratings.
+- Binding subjective judges by default.
+- Whole-task hiring outside a named command.
+- Shape contributions flowing back through the store; the catalog stays DIY starters.
+- Hosted deploys; live checks are release-train items.
 
-## 7. Verification and venues
+## 7. Acceptance (G4) and venues
 
-- Unit tests per story on its branch.
-- G4 runs on the gate host with fakes, within the e2e minutes budget.
-- No paid provider runs and no live hosted-plane change.
+The run uses the sandbox, `cloudboxfake` with the ledger log and listing, fake
+providers, and fake accounts. Neither A nor O has an LLM.
+
+1. C offers the registered `transcribe` (per call) and the example `video`
+   (verified delivery, video verifier). C also offers the built-in `llm`.
+2. O finds `video` with `bashy store list --kind video`. The row shows the ask,
+   the verifier and the track record.
+3. O orders with a spec:
+   - A passing delivery settles, and O cannot reject it.
+   - A failing delivery is released without charge. The redelivery passes and
+     settles.
+   - A waiver is logged.
+   - Both sides reproduce the same verdict.
+4. Per call: a bid below the ask gets a 402 counter, and a re-bid runs at the
+   clearing price. With two offerers, `--any` picks the lower ask.
+5. Ledger:
+   - The netting checkpoint is signed by both sides and appears as mirrored entries
+     in A's and C's records. The fake log holds only totals, and each balance equals
+     the sum of its record.
+   - Inclusion and consistency proofs verify.
+   - A fake that rewrites a leaf, or shows A and C different tree heads, is caught
+     by `bashy credits audit`.
+   - A new invitee with a position limit of 0 is refused past its line
+     (would-refuse when observing, 402 when enforcing).
+   - A one-sided checkpoint is marked disputed.
+6. Refusals:
+   - `--sgi` on an ad-hoc name, or on an opaque exec record;
+   - a subscription-backed offer to a member;
+   - a tampered receipt;
+   - a changed script, which `--verify` refuses.
+7. A, with purchased fake credits, orders a cloudbox-offered command.
+
+Venue: the gate host, within the e2e minutes budget. Unit tests run per story. No
+paid provider runs and no live hosted-plane change.
 
 ## 8. Risks and rollback
 
-- **Disputed balances.** Receipts are signed and chained, and verification reports
-  mismatches. A dispute is settled socially within the group; there is no money to
-  claw back.
-- **Vendor terms.** The backing declaration plus the guard keep personal
-  subscriptions owner-only. The escape hatch is logged.
-- **Regulatory drift.** Rail 1 stays behind a legal review. Rail 0 issues nothing
-  and moves no money, and no external payment rail is used.
-- **Price gaming within a group.** The ranges are owner-set, and the ask moves only
-  with measured load. Receipts show every clearing price, so overcharging is
-  visible. Members are trusted; there is no anonymous market.
-- **Source available is not build proven.** A wrapped binary's declared source may
-  not be what was compiled. The MVP pins the binary digest and the declared source,
-  so a change is visible. Reproducible-build verification is later work.
-- **Rollback.** `--sgi` is opt-in and observe-only by default. Removing it leaves
-  Sprint 739 offers unchanged.
+- **The verifier's quality becomes the market's quality.** A weak verifier lets bad
+  deliveries settle. Mitigations:
+  - verifiers are pinned, open and versioned;
+  - conform's mutation harness measures their strength;
+  - verifiers are fixed generically, in the method (shapeware rule).
+- **Verifier non-determinism** (transcription-based checks). Pin the model, seed and
+  thresholds. A disagreement is treated as a defect, not a dispute.
+- **Collusion to inflate a track record.** Fake mutual deals between colluding
+  accounts. The record counts only checkpoints signed by both sides, and the store
+  shows counts per distinct counterparty.
+- **Ledger operator misbehaviour.** The transparency log makes rewriting or forking
+  detectable, not impossible. Detection relies on members keeping and gossiping tree
+  heads, which bashy does automatically.
+- **Hosted-plane scope.** The ledger and listing are new hosted data. They are
+  limited to per-account totals records, log hashes and listings, ship on a release train, and are
+  public only as a wire contract.
+- **Regulatory.** Earned credits never cash out, and purchased credit buys only
+  cloudbox offers. Legal review happens before purchased credits go live (G5).
+- **Rollback.** SGI is opt-in, and the ledger and store start observe-only.
+  Disabling SGI leaves Sprint 739 offers unchanged.
