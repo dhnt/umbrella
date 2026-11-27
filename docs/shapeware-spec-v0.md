@@ -221,6 +221,19 @@ Every published release defines its minimal lifecycle as exact, non-interactive 
 - The SKILL.md run block points at these targets and never repeats their commands, so there is one source of truth.
 - More targets (`serve`, `uninstall`, …) are allowed; the five names are fixed.
 
+### 5b. Standard gate targets (optional; operator 2026-11-27)
+
+A folder that is certified carries its gate operations as targets too, so the conductor, a worker and a later rebuild run the same commands (`bashy dag -f dag.md cert`) instead of building them by hand. The names are fixed when present; each step has its `Effects:` and `Band:` lines like any other.
+
+| Target | Required content |
+|---|---|
+| `check` | The static lint: `conform spec check .`, and in a repository with `shapeware/`, `shapeware/index.bsh check`. Effects `read`, band `none`. Runs anywhere. |
+| `cert` | `conform cert` against the built implementation: 3 runs, fresh HOME, `--bin` named explicitly (conform otherwise guesses the command to shim from the first word of each assertion, which is wrong when a contract drives the app through a script), evidence written under `evidence/`. `CANDIDATE=<cmd>` certifies another implementation against the reference: the evaluation of a rebuild. |
+| `mutate` | `conform mutate` with the same command on PATH, evidence under `evidence/`. Its purpose line states the size (mutants × one contract run); a large contract takes `SHARDS`/`SHARD`. |
+| `alone` | The mechanical half of the folder-alone check (§4.3a): copy this folder to a temporary directory outside any checkout and run `source`, `build` and `test` there. The agent half (an agent that has not seen the repository reaches a passing Check) stays a review step. |
+
+`cert`, `mutate` and `alone` run on a test host. Long ones run in the foreground of a session that outlives them.
+
 ## 6. Checks contract
 
 **`checks/acceptance.bsh [DIR]`**
