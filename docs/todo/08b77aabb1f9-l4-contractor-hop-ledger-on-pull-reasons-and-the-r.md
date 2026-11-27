@@ -3,14 +3,17 @@ id: 08b77aabb1f9
 kind: feature
 title: 'L4 Contractor hop: ledger on pull, reasons and the right actor on push'
 seq: 806
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:25.656652Z
+assignee: codex-gpt6.2-astra
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T06:45:02.225167Z
+closed_by: claude-opus5.5
 ---
 
 Problem: a contractor's code already syncs (pull returns the owner's source, push returns a patch), but push carries only base_revision and patch. The request is recorded as the fixed text 'Import member patch', the contractor's agent and reasons do not cross, the recorded actor is not the contractor, and pull gives the contractor's agent no history.

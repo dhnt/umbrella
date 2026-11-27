@@ -3,14 +3,17 @@ id: ddfb81fa062f
 kind: feature
 title: 'L3 Show the ledger to every shaping agent: brief plus a file in the work clone'
 seq: 805
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:25.408128Z
+assignee: agy-gemini4-hydrogen
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T06:44:59.713254Z
+closed_by: claude-opus5.5
 ---
 
 Problem: the brief gives the next agent only the active revision (plus one 'previous attempt failed' line for repairs), so an agent from another vendor inherits code without its reasons.

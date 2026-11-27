@@ -3,14 +3,17 @@ id: 86e8a12324d7
 kind: feature
 title: L5 Group end-to-end test (acceptance) and the open points
 seq: 807
-status: todo
+status: done
 priority: p1
 labels:
     - shaping
 created: 2026-11-26T19:45:25.908582Z
+assignee: claude-opus5.5
 sprint: 732
 sprint_id: f71a8649-8650-54de-9d57-9b5b04015fef
 sprint_title: 'Shared shaping ledger: reasons travel with the app across agents in group shaping'
+closed: 2026-11-27T11:33:08.889675Z
+closed_by: claude-opus5.5
 ---
 
 Problem: one ledger holding everyone's attempts widens what participants see of each other.
@@ -41,4 +44,3 @@ Build brief (conductor 2026-11-26, after L1-L4 merge; venue: the group-shaping h
 - Stub: the codex fixture prints the closing block (COVERED/NOT COVERED/WHY/EXPECT/NEXT) with a distinct WHY and EXPECT per prompt, appends its whole prompt to $HOME/stub-prompts, and answers the repair brief with a deterministic fix. Two bindings on the same stub (X = codex:gpt6-sol, Y = codex:gpt6-terra or similar), proven by delegate dry runs.
 - Scenario additions, in order: (1) member wish by X records why/expect (owner `bashy shape ledger APP --json`); (2) owner CLI incident on the active revision with --agent Y; the repair activates by itself; Y's recorded prompt contains X's WHY and EXPECT inside the LEDGER fence, and the ledger files Y's attempt under X's problem; (3) contractor shape_pull returns a filtered ledger (no owner address, no host paths) and shape_push with why/expect/agent is recorded with the contractor as principal; (4) owner undo then restore: standings change (undone, then restored) and the attempt count is unchanged; (5) a check step (checks/*.bsh in the website template, or the verifier record) proves .git/shape-ledger.json was readable in the work clone; (6) an out-of-scope caller is refused the ledger route and reads.
 - Keep every existing check green; count before and after.
-
