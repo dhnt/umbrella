@@ -88,3 +88,21 @@ C1 first and alone. If it fails for a vendor (genie cannot work through cligw's 
 - bashy `internal/agentos/door.go` (the per-host door), `cobra_schema.go` (cligw mount); `bashy genie --help`, `bashy llm --help`, `bashy oci --help`.
 - ycode `examples/genie/agent.yaml` (openai-compatible endpoint), `README.md`.
 - agent-bench `packs/spec2src/venue/` (`env.sh`, `guard.sb.template`) and `scripts/arm_home.py` (the per-arm home workaround).
+
+## 9. C1 results (2026-11-27, conductor)
+
+Run contained from the start (the design's shape, ahead of C2 to C4): genie in a macOS `sandbox-exec` profile that hides the fixture's source checkout, every other copy, `~/.config/bashy`, `~/.claude`, `~/.config/muse` and `~/.codex`; the model on the host through cligw; only the door's session URL and key in the sandbox. Raw evidence (transcript, profile, prompt, fixture) kept privately with the conductor.
+
+| Binding | Through cligw | Result |
+|---|---|---|
+| `codex-gpt6.1-terra` | served | **PASS, 4 of 4.** Named the surface; found the code through the folder's own `source` step (cloned the certified commit into `.shapeware/src`); ran `source`, `build`, `test`: `PASS greet#1`, `PASS greet#2`, `TBD shout#1`; described `shout` as a work copy of the implementation graded with `IMPL=…`, spec files untouched, no self-approval. One turn, 76 s. |
+| `claude-opus5.5` | **not served** | blocked by C2a |
+| `muse-wonder` | **not served** | blocked by C2a |
+
+Findings:
+1. **cligw serves no claude, muse or agy model on a host whose CLIs live in `~/.local/bin`** (C2a, p0): `Router.toolInstalled` looks the bare binary up on the door service's PATH, which lacks the user's bin dirs; `delegate` resolves the managed pins. Product defect.
+2. **genie cannot name the host's own door models with `-m`** (local tags, registry API models and other hosts' `MODEL@DOOR` only). The run used genie's external-model environment (`GENIE_EXTERNAL_MODEL`, `GENIE_MODEL_ID`, `GENIE_EXTERNAL_CONTEXT`, `OPENAI_BASE_URL`, `OPENAI_API_KEY`) directly; C4's `--contained` sets the same five.
+3. **One-turn genie prints only its closing `DONE`** on stdout; the answer is in the session record. C4 prints the substantive answer.
+4. **Packaging the genie bundle copies files only** (`genie build`, no compile), so it is allowed on the dev box.
+
+**Verdict:** GO for the design. The spike stays open until C2a lands and the same run passes with `claude-opus5.5` and `muse-wonder`.
