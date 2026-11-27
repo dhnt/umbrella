@@ -12,12 +12,14 @@ tags:
     - contract
     - reverse-sdlc
     - dag
-status: validated
+status: superseded
 evidence: 'bashy examples/desk/form: spec v1 to v2.2, certified, rebuilt by agents of four vendors (umbrella docs/sprint-723-report.md, docs/sprint-731-report.md). bashy examples/desk/notepad: spec v1.0 written from this page by an agent in one 40-minute session, 37 assertions, 124/124 mutants, rebuilt 3 of 3 by another vendor''s agent (umbrella docs/sprint-726-report.md)'
 source:
     tool: claude
 created: "2026-11-26T11:18:39Z"
-updated: "2026-11-26T21:32:51Z"
+updated: "2026-11-27T13:40:35Z"
+superseded_by: shapeware-lift-app
+valid_to: "2026-11-27T13:40:35Z"
 ---
 
 Goal: make an existing app or repository shapeable: give it a shapeware spec that is sound enough for another agent to rebuild, repair or extend the app from the spec alone. Format: the shapeware spec (a superset of an Agent Skill folder; only `SKILL.md` is required, missing parts take defaults). Worked example, converted this way and then rebuilt from its spec by agents of four vendors: bashy `examples/desk/form`. Related: [[shapeware-spec-from-plan]] when there are only instructions, [[shapeware-source-from-spec]] for the builder's side, [[spec-to-source-drill]] to test the result.

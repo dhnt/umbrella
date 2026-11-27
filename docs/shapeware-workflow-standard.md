@@ -31,6 +31,7 @@ plan is `plan-reverse-sdlc-workflow.md`, and the evidence is
 | **Band** | A level L1 to L5 for what an agent can do, held per binding and per role. `none` means no model is needed. |
 | **Venue** | The stated machine conditions a build must work on (OS, toolchain versions, network, what is absent). |
 | **Work copy** | A fresh copy of the folder in which an agent makes a change; the installed folder's checks grade it (the format §2, §6). |
+| **Lift** | To turn an existing app's source into its shapeware spec, so that it can be shaped (kb runbook `shapeware-lift-app`; the reverse step of §3). The official word, adopted 2026-11-27. |
 | **Shaping pass** | One change carried through the stages below and judged: a new spec, a new feature, a fix. |
 | **Release class** | The computed claim about a folder, from **blocked** to **verified** (the format §12). Never written by hand. |
 
@@ -97,7 +98,7 @@ set of todos) into a spec folder, following the kb runbook
 are silent, the author writes an open value under "Open questions" and
 never guesses a literal. The **owner review** settles those questions
 before anything is built (gate 1, §5). An existing app enters by the
-reverse step instead (kb runbook `shapeware-spec-from-app`).
+reverse step instead: it is **lifted** (kb runbook `shapeware-lift-app`).
 
 *`form`:* its spec came by the reverse step, not from instructions, and was
 written by the conductor: v1 (Sprint 722), v2 after the seven measured gaps
@@ -390,9 +391,9 @@ the Sprint 723 results exist only in its report.
 Both paths end in the same loop (§3, stages 3 to 8); they differ in where
 the spec comes from and what certifies it.
 
-### An existing app: the reverse step
+### An existing app: the reverse step (lift)
 
-1. **Spec from the app** (stage 1): kb runbook `shapeware-spec-from-app`,
+1. **Spec from the app** (stage 1): kb runbook `shapeware-lift-app`,
    steps 1 to 8; assertions come from real runs on the app.
 2. **Compile** (stage 2): `conform spec check` reports nothing.
 3. **Owner review** (gate 1): the owner accepts the spec as what the app

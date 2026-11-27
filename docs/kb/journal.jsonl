@@ -43,3 +43,6 @@
 {"op":"update","slug":"spec-to-source-drill","id":"01a21794-377c-7f36-bca3-5bddae1380af","tool":"claude","at":"2026-11-26T21:32:52.151967Z"}
 {"op":"update","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T21:32:52.292276Z"}
 {"op":"update","slug":"shapeware-source-from-spec","id":"01a21794-3957-7845-9cf3-0952cc2184b7","tool":"claude","at":"2026-11-26T21:32:56.203944Z"}
+{"op":"supersede","slug":"shapeware-lift-app","id":"01a21d3c-85ba-74d2-a6c3-1064fefde783","tool":"claude","at":"2026-11-27T13:40:35.388397Z"}
+{"op":"supersede","slug":"shapeware-spec-from-app","id":"01a21794-386b-7432-bdb3-1af7421cfcb1","tool":"claude","at":"2026-11-27T13:40:35.391061Z"}
+{"op":"validate","slug":"shapeware-lift-app","id":"01a21d3c-85ba-74d2-a6c3-1064fefde783","tool":"claude","at":"2026-11-27T13:40:57.367503Z"}

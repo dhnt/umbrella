@@ -23,7 +23,7 @@ New tools and models join by passing the same drills.
 | The judge | works for CLI and page inventory; one page interaction is scripted outside conform | conform v0.1.1 plus `spec check`; two judge defects found and fixed in Sprint 722, none in 723 |
 | Spec → source (builder role) | proven on one app | `form` from spec v2 with the judge in the loop: three vendors' start tiers and three step-down tiers pass 3 of 3 (see the Sprint 723 report) |
 | Drill method | written down | `spec2src-protocol-v2.md`; kb runbook `spec-to-source-drill` |
-| Authoring and building guides | written, not yet tested on an agent | kb runbooks `shapeware-spec-from-app`, `shapeware-source-from-spec` |
+| Authoring and building guides | written, not yet tested on an agent | kb runbooks `shapeware-lift-app`, `shapeware-source-from-spec` |
 | One name for the judge | done | bashy 64d3381a: `conform` is the judge; bashy's own batteries are `selftest` |
 
 ## What is missing for an end-to-end workflow
@@ -61,7 +61,7 @@ KISS: the smallest slice in which every role is filled once by an agent,
 with the tools that already exist. Four stories, nothing new built.
 
 1. **Reverse (W1, W2).** One binding writes the shapeware spec for the
-   second app from the kb runbook `shapeware-spec-from-app`. Done when
+   second app from the kb runbook `shapeware-lift-app`. Done when
    `conform spec check` is clean, the reference certifies and every mutant
    is killed. Recommended app: `notepad` (about 2,000 lines, one service,
    one page; closest in size to `form`).

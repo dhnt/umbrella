@@ -20,7 +20,7 @@ created: "2026-11-26T11:43:01Z"
 updated: "2026-11-26T11:53:29Z"
 ---
 
-Goal: turn instructions (an agent's plan, or a bashy sprint card with its stories, or a set of todos) into a shapeware spec folder that another agent can build from with no further questions. Format: `docs/shapeware-spec-v0.md`. Worked example of a finished spec: bashy `examples/desk/form` (`CONTRACT.md`, `features.yaml`, `examples/`). Related: [[shapeware-spec-from-app]] when the app already exists; [[spec-to-source-drill]] to test the result.
+Goal: turn instructions (an agent's plan, or a bashy sprint card with its stories, or a set of todos) into a shapeware spec folder that another agent can build from with no further questions. Format: `docs/shapeware-spec-v0.md`. Worked example of a finished spec: bashy `examples/desk/form` (`CONTRACT.md`, `features.yaml`, `examples/`). Related: [[shapeware-lift-app]] when the app already exists; [[spec-to-source-drill]] to test the result.
 
 ## Steps
 1. **Collect the instructions as given.** For a sprint: `bashy sprint show N` and each story body. For todos: `bashy todo show ID`. For a plan: the plan text. Do not read the app's source, even if it exists; the spec must come from the instructions.

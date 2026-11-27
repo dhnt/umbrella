@@ -22,7 +22,7 @@ updated: "2026-11-26T21:32:52Z"
 Goal: decide, with evidence, whether an agent binding (tool:model) can build an app from its shapeware spec alone. Use it to qualify a new tool or model, to find the lowest adequate tier of a vendor, or to check a new spec. Reference run: Sprint 723 on bashy's `form` (`docs/spec2src-protocol-v2.md`). Retro with the reasons behind each rule: [[shapeware-drill-retro-sprints-722-725]].
 
 ## A. One-time setup (per app and spec version)
-1. **Sound spec.** `conform spec check DIR` reports nothing. On a gate lane: `conform cert` passes the reference 3 times with no noisy assertion; `conform mutate` kills every mutant. Authoring guide: [[shapeware-spec-from-app]].
+1. **Sound spec.** `conform spec check DIR` reports nothing. On a gate lane: `conform cert` passes the reference 3 times with no noisy assertion; `conform mutate` kills every mutant. Authoring guide: [[shapeware-lift-app]].
 2. **Hidden cases** (private store, never in a public repo or a subject's reach): the documented behaviours with other ids and values. One small contract file per case; each creates its own state and runs alone in a fresh HOME. One case per input format, so one gap costs one case.
 3. **Grader on the test host.** Grade the snapshot, never the live workspace. Each phase (visible contract, each hidden case, page interaction) gets its own network and process namespace and a fresh HOME. Remove native executables from the snapshot first. Put the digests of the hidden set, contract, judge binary and snapshot in every grade.
 4. **Controls.** Reference through the full grader 3 times, all pass; an empty workspace fails every layer. Pin control shims to absolute tool paths.

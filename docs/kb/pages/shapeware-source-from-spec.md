@@ -18,7 +18,7 @@ created: "2026-11-26T11:18:39Z"
 updated: "2026-11-26T21:32:56Z"
 ---
 
-Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, `dag.md`, a task file) so that it passes the judge at the stated venue and can be installed and run through its lifecycle. Lessons are from rebuilding two bashy apps from their specs (`form`, a form tool, and `notepad`, a notes server) by agents of several vendors. Related: [[shapeware-spec-from-app]], [[spec-to-source-drill]].
+Goal: build an app from a shapeware spec folder (`CONTRACT.md`, `features.yaml`, `examples/`, `dag.md`, a task file) so that it passes the judge at the stated venue and can be installed and run through its lifecycle. Lessons are from rebuilding two bashy apps from their specs (`form`, a form tool, and `notepad`, a notes server) by agents of several vendors. Related: [[shapeware-lift-app]], [[spec-to-source-drill]].
 
 ## Steps
 0. **Compile the spec you were given:** `conform spec check .` (the judge also says so when you run it: "spec check reports N finding(s)"). Each finding is a place where the spec does not fully decide the behaviour. Do not guess silently there: take the reading that the examples and the rule's purpose both support, and write the choice in your notes.
