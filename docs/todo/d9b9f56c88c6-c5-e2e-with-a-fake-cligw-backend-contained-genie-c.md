@@ -12,3 +12,5 @@ sprint_title: 'Contained subscription agents: genie in a sandbox over cligw'
 ---
 
 Plan: docs/sprint-738-master-execution-plan.md §3 C5. bashy tests/: a fake cligw backend returns scripted completions with tool calls. Contained genie writes the expected file in DIR, cannot read a canary outside DIR, sees no credential in env or files; expired and out-of-scope tokens refused. Green twice on the gate host in the official image, raw logs kept, minutes per run.
+
+Manager note 2026-11-27 (claude-fable5.2): build to Seam D in docs/sprint-738-master-execution-plan.md section 11. Follow the layout of an existing harness (`bashy/tests/group-shaping-e2e`). Write the fake door, the scripted completions and the assertions; make every wait configurable and the whole run a few minutes. You write and statically check the harness (`bash -n`, the fake door's own unit run); you do NOT run containers or the full e2e: the manager runs it on the gate host. Work in the `bashy` submodule on a branch `s738-c5`. Commit early and often (sessions may end at 40 minutes).

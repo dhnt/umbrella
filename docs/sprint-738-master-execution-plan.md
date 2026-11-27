@@ -130,3 +130,39 @@ Stories:
 Dropped: projecting vendor tokens into each worker (the opposite of the model above). Out of scope: `delegate` and `weave` launching vendor CLIs directly (yoke todos `1da1b9c67cf7`, `44539a940c1c`).
 
 Also observed: the door restarted by the update at 07:48 still listed no claude, muse or agy model, while a clean `bashy service start llm` at 08:07 did. Not yet explained; recorded so G1's restart path is checked for it.
+
+## 11. Parallel build: the seams between C2 to C5 (2026-11-27, manager claude-fable5.2)
+
+C2, C3 and G2 run in parallel; C4 and C5 are built at the same time against the command-line seams below. A seam is a contract: a worker who needs it changed says so on the story before changing it. Reuse first: two pieces already exist and are extended, not rebuilt.
+
+**Already there (code inspected 2026-11-27, yoke 298788ea, bashy 37833eb8):**
+- `bashy contain --net deny|model -- CMD` (bashy `internal/agentos/contain*.go`): network isolation, native on macOS (Seatbelt, `contain_darwin.go`) and Linux, bashy's own image elsewhere (`contain_image.go`, working directory as the only mount), exit 125 when it cannot enforce. It does **not** confine file access today (the macOS profile is `allow default` plus network rules). C3 adds that to this verb; no second sandbox package.
+- cligw door auth is one host bearer token (`server.go` `Authorize`, one principal `owner`), with loopback and `unix:` binds (`BindUnixPrefix`). No per-run token exists. The `llm` command tree is yoke `pkg/cligw/cmd.go`, mounted by bashy.
+- No OpenAI client in ycode or yoke speaks HTTP over a unix socket, so the sandbox side reaches the run socket through a small forwarder (below).
+
+**Seam A, C2 (yoke `pkg/cligw`): the run session.**
+```
+bashy llm session open  (--model BINDING[,BINDING] | --band L3|L4|L5) [--ttl 30m] [--max-requests 200] --label LABEL --json
+    -> {"label":…, "token":…, "socket":"/abs/path.sock", "expires_at":…, "models":[…]}      exit 0
+bashy llm session close LABEL          revoke the token, remove the socket; idempotent           exit 0
+bashy llm session list  [--json]
+bashy llm session forward --socket /abs/path.sock [--listen 127.0.0.1:0]
+    prints one line  http://127.0.0.1:PORT/v1  then serves until killed (plain HTTP reverse proxy to the socket)
+```
+The socket is owner-only (0600 in a 0700 directory), serves the door's OpenAI and Anthropic routes, and accepts **only** that run's token. A request for a model outside the scope, after the expiry, or past the request cap is refused with a 4xx whose message names which limit. The door must be up (`open` says how to start it when it is not). The host token and every existing route are unchanged. `forward` needs no door access beyond the socket; it is what runs inside the sandbox.
+
+**Seam B, C3 (bashy `internal/agentos/contain*.go`): file confinement on the existing verb.**
+```
+bashy contain --net deny --dir DIR [--socket /abs/path.sock]… [--ro /abs/path]… -- CMD [ARGS…]
+```
+With `--dir`: `DIR` and a fresh private temp (exported as `TMPDIR`) are the only writable places and `DIR` is the working directory; the user's home is unreadable except each `--ro` path and bashy itself; each `--socket` is reachable; no other network (loopback inside the sandbox stays usable for the forwarder). The environment is scrubbed to a fixed allow-list (`PATH`, `LANG`, `LC_ALL`, `TERM`, `TMPDIR`, plus names passed with a repeatable `--env NAME`); `HOME` points at the private temp. macOS: a generated Seatbelt profile. Linux: bashy's image, `DIR`, the `--ro` paths and the sockets bind-mounted, network none. Windows and any host that cannot enforce it: exit 125 with a named reason; nothing runs. Without `--dir` the verb behaves exactly as today.
+
+**Seam C, C4 (bashy `internal/agentos/genie*.go`): the verb.**
+```
+bashy genie --contained [-m BINDING|BAND] [--dir DIR] "TASK"
+```
+`session open` (label = run id) → `contain --net deny --dir DIR --socket SOCK --ro <genie bundle> --env …` running a small in-sandbox launcher that starts `llm session forward`, sets the five variables C1 used (`GENIE_EXTERNAL_MODEL`, `GENIE_MODEL_ID`, `GENIE_EXTERNAL_CONTEXT`, `OPENAI_BASE_URL`, `OPENAI_API_KEY` = the run token) and runs genie → print genie's substantive answer (C1 finding 3) → write the run record → `session close` on every exit path, including a signal. Refusals (no door, no backend, model out of scope) are explicit and name the fix.
+
+**Seam D, C5 (bashy `tests/contained-genie-e2e/`): the test.** A fake door: a tiny HTTP server on a unix socket that checks the bearer token and answers `/v1/chat/completions` with a scripted sequence of tool calls (write a file in `DIR`, try to read a canary outside `DIR`, print the environment) and then a final answer. The test starts the real `bashy contain --dir … --socket …` with real genie pointed at the fake through the forwarder, and asserts: expected file written; canary unreadable; no credential-shaped variable or file visible; a wrong token and an expired token refused. The real `session open` scope checks are covered by C2's unit tests; C5 proves the containment and the wiring. Minutes per run, gate host, official image.
+
+**Venue for every worker:** unit tests of the touched package only; no full suites, no builds of whole products on the dev box, no containers on the dev box. The manager runs gate-host builds and the e2e. agy sessions end at 40 minutes: commit early.

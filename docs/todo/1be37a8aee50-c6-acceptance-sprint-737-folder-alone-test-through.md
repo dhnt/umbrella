@@ -12,3 +12,5 @@ sprint_title: 'Contained subscription agents: genie in a sandbox over cligw'
 ---
 
 Plan: docs/sprint-738-master-execution-plan.md §3 C6. Run the greet folder-alone test through bashy genie --contained with claude-opus5.5 and muse-wonder: each names the surface and the repository, reaches a passing Check from the folder alone, and describes a change as a work copy of the implementation. Logged transcripts; unblocks the Sprint 737 owner choice.
+
+Manager note 2026-11-27 (claude-fable5.2): run by the manager on the dev box after C4 and C5 are merged; not assigned to a worker.
