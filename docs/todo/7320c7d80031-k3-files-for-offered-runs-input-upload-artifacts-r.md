@@ -11,4 +11,4 @@ sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands as a service: offer bashy commands to your trusted group'
 ---
 
-Plan: docs/sprint-739-master-execution-plan.md §4 K3. Peer results are text only today; video/transcribe need files in and out. Upload inputs into the run's scratch dir (cap), return an artifacts list, download into the consumer cwd; long runs via the existing async job verbs. Code inspected 2026-11-27: yoke pkg/toolcmd peer.go jobs.go http_media_test.go, pkg/cligw capability.go.
+Plan: docs/sprint-739-master-execution-plan.md §4 K3. Peer results are text only today; video/transcribe need files in and out. Upload inputs into the run's scratch dir (cap), outputs land in the offerer's designated output folder and return by reference (F2 URIs), by value only under a small cap; long runs via the existing async job verbs. Code inspected 2026-11-27: yoke pkg/toolcmd peer.go jobs.go http_media_test.go, pkg/cligw capability.go.

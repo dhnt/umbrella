@@ -1,4 +1,4 @@
-# Sprint 739: commands as a service (offer bashy commands to your trusted group)
+# Sprint 739: commands and folders as a service (offer bashy commands and designated folders to your trusted group)
 
 *Master execution plan · 2026-11-27 · backlog, operator review before start.*
 
@@ -61,6 +61,8 @@ Gaps between this and CaaS:
    output files returned.
 4. There is no offer step: the offerer edits YAML and the peers file by hand, and
    a consumer cannot list what a peer offers.
+6. Folders: the `files` app serves one root for humans only; there is no list of
+   designated folders, no agent surface, and no link-instead-of-copy.
 5. Two sharing systems: door peer credentials (`peer:NAME`, owned hosts, agents)
    and app shares (cloudbox audiences, members, humans). Offers must use the app
    share as the one authority; the peer credential stays for owned-host links.
@@ -113,6 +115,44 @@ bashy remote C -- video generate ...                  # thin alias
   password and never a second credential system. The caller principal (the member,
   and the agent acting for them) is recorded in the door audit.
 
+**Shared folders (companion to CaaS, operator 2026-11-27)**
+
+An app and a folder are shared the same way. A member designates folders, and the
+team reads them in place. Think of a simplified SMB over HTTP and MCP, built for
+agents: one copy of each artifact, links instead of copies. A generated video
+stays on the machine that made it; the team gets a URI.
+
+```
+bashy files share DIR [--name N] [--circle C] [--group G] [--email E] [--write]
+bashy files shares                      # mine, and folders shared with me
+bashy files unshare N
+bashy files ls|stat|cat|get HOST:N/PATH # agent surface; cat/get stream, Range supported
+bashy files link PATH                   # URI of a local file inside a designated folder
+```
+
+- **Builds on outpost's `files` app** (`outpost/cmd/outpost/capability_files.go`,
+  `yoke/pkg/fleet/baseline/services/files.yaml`). Today that is the embedded File
+  Browser, the human surface: one confined root (`settings.scope`, default HOME),
+  read-only unless the host sets `allow_write`. The generalization changes three
+  things:
+  - one root becomes a **list of designated folders** (the old `scope` reads as
+    one entry);
+  - each folder share gets the app-share audience rule;
+  - an **agent surface** sits beside the UI.
+- **Agent surface:** HTTP `GET`/`HEAD` with `Range`, ETag and sha256 (streaming
+  big files), a JSON listing, and site MCP tools `files_list`, `files_stat`,
+  `files_read` (bounded, by range) and `files_link`. A URI is stable,
+  `bashy://HOST/files/N/PATH`, and resolves through the satellite (members) or the
+  mesh (owned hosts). The same member token and stamp as every app apply.
+- **Confinement:** every path is resolved inside its folder with `os.Root`, so a
+  symlink or `..` cannot escape. Read-only by default; `--write` per folder, set
+  only from the host.
+- **CaaS companion:** an offered run's output stays in the offerer's designated
+  output folder. K3 returns artifacts **by reference** (URI) by default and by
+  value only under a small size cap. A consumer streams or `get`s them on demand.
+- Not in MVP: sync, caching or mirroring, locking, versioning, mounting as a
+  filesystem (FUSE, real NFS or SMB), quotas.
+
 **Human surface (same model, MVP-minimal)**
 
 - An offered command lists in the member's app list next to UI apps.
@@ -126,11 +166,13 @@ bashy remote C -- video generate ...                  # thin alias
 |---|---|---|
 | **K1** named runs + listing | `tool cmd run TOOL:NAME --peer`, selected by name; door listing endpoint `GET /v1/commands` that returns only the command apps the caller's stamp admits | yoke `pkg/toolcmd`, `pkg/cligw` |
 | **K2** `bashy` runner kind | offered bashy verbs and registered commands; schema-bound args, scratch directory, env allow-list | yoke `pkg/toolcmd`, `pkg/fleet` |
-| **K3** files | input upload, `artifacts` result, consumer download, size caps, async jobs for long runs | yoke `pkg/toolcmd`, `pkg/cligw` |
+| **K3** run inputs and artifacts | input upload into scratch (size cap); outputs land in the offerer's designated output folder and return **by reference** (F2 URIs), by value only under a small cap; async jobs for long runs | yoke `pkg/toolcmd`, `pkg/cligw` |
 | **K4** offers as shared apps | `bashy offer` publishes the command as an app (agent surface) and adds its audience rule through the existing app share; the door admits by stamp and member token (Sprint 709 exchange) instead of `peer:NAME`; `offers` lists command apps shared with me; `remote` runs one; "offered by" hint in missing-command errors | yoke `pkg/broker`, `pkg/fleet`; outpost (stamp on door routes, if missing); bashy |
-| **K5** A/O/C e2e (acceptance) | sandbox, fake accounts, fake transcribe provider: C offers `llm` and `transcribe` to the circle; O (no LLM) shapes and A's wish runs on C's LLM; O runs `bashy remote C -- transcribe in.wav` and gets the artifact; a non-member is refused, revoke gives 401, a limit gives 429; O offers to C | bashy (`test-group-shaping-e2e` lane) |
+| **F1** designated folders | the `files` app serves a list of designated folders (old `scope` = one entry), each with the app-share audience rule; `bashy files share/unshare/shares`; `os.Root` confinement; read-only by default, `--write` from the host only | outpost (`capability_files.go`), yoke `pkg/fleet`, bashy |
+| **F2** agent surface for folders | HTTP listing plus `GET`/`HEAD` with Range, ETag and sha256; stable `bashy://HOST/files/N/PATH` URIs via satellite or mesh; `bashy files ls/stat/cat/get/link`; site MCP `files_list/stat/read/link` | outpost, yoke, bashy (`mcp_site.go`) |
+| **K5** A/O/C e2e (acceptance) | sandbox, fake accounts, fake transcribe provider: C offers `llm` and `transcribe` to the circle; O (no LLM) shapes and A's wish runs on C's LLM; O runs `bashy remote C -- transcribe in.wav` and gets the artifact as a URI it streams; C shares a folder with the circle and A's agent lists and reads it in place (Range), while a non-member and a path escape are refused; a non-member is refused, revoke gives 401, a limit gives 429; O offers to C | bashy (`test-group-shaping-e2e` lane) |
 
-Order: K1, then K2 and K3 in parallel, then K4, then K5. Each story is
+Order: K1 and F1 first, then K2, F2 and K3 (K3 uses F2 URIs), then K4, then K5. Each story is
 delivered on yoke first, then the bashy pin is bumped.
 
 ## 5. Non-goals (not in MVP)
