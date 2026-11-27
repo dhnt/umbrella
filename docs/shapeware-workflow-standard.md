@@ -32,6 +32,7 @@ plan is `plan-reverse-sdlc-workflow.md`, and the evidence is
 | **Venue** | The stated machine conditions a build must work on (OS, toolchain versions, network, what is absent). |
 | **Work copy** | A fresh copy of the folder in which an agent makes a change; the installed folder's checks grade it (the format §2, §6). |
 | **Lift** | To turn an existing app's source into its shapeware spec, so that it can be shaped (kb runbook `shapeware-lift-app`; the reverse step of §3). The official word, adopted 2026-11-27. |
+| **Surface folder** | Where a lifted surface lives: `shapeware/<surface>/` at the repo root, one folder per surface; a self-contained app is its own folder. `shapeware/index.bsh` lists, locates and lints them (the format, §1 and Appendix C). |
 | **Shaping pass** | One change carried through the stages below and judged: a new spec, a new feature, a fix. |
 | **Release class** | The computed claim about a folder, from **blocked** to **verified** (the format §12). Never written by hand. |
 

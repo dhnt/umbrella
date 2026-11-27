@@ -31,6 +31,7 @@ The shapeware folder is wherever its `SKILL.md` is. The Agent Skills format does
 - **The shapeware parts have default paths** (`features.yaml`, `checks/`, `assets/ui/`, `contract.bsh`). A repo that already uses a name for something else points elsewhere with a `metadata` path key (§3).
 - **Zero-touch alternative:** a self-contained subfolder at the usual skills location (`skills/<name>/`, or the repo's existing one), whose scripts reach the repo root with `git rev-parse --show-toplevel`.
 - **One canonical location per repo.** Use either the root or one subfolder, never both. `bashy skill export --repo` is for the subfolder case only.
+- **Lifted surfaces have a fixed place (adopted 2026-11-27).** A self-contained app is its own folder (`examples/desk/form`). A surface lifted from a larger repo always goes in `shapeware/<surface>/` at the repo root, one folder per surface; `shapeware/` is then the repo's one canonical location, whatever number of surfaces it holds. `shapeware/index.bsh` is its entry point (Appendix C). Not under `skills/`: some repos (bashy) embed that directory in a binary.
 - Uploading a whole repo as one skill (claude.ai, the Skills API) may exceed size limits; trimming is not in the MVP.
 
 ## 2. Layout
@@ -952,3 +953,13 @@ else class=verified; fi
 printf 'class: %s\nversion: %s\nfeatures: %d verified, %d tbd\nknown issues open/workaround: %d\n' "$class" "$ver" "$vok" "$tbd" "$ki"
 ````
 
+## Appendix C: `shapeware/index.bsh`, the entry point of a repo's lifted surfaces
+
+Adopted 2026-11-27. The canonical copy is bashy `shapeware/index.bsh`; every repo copies it verbatim, so the file is the same everywhere and needs no editing.
+
+- **Two faces in one file.** A `~~~skill as guide` fence (name `shapeware-index`, `metadata.type: shapeware-index`) tells an agent what `shapeware/` is; the body is the script.
+- **It discovers, it does not list.** A surface is any `shapeware/*/` folder with a `SKILL.md`; there is no hand-kept list to drift. Other folders are skipped.
+- **Commands:** `list` (default; `name`, `path`, `description` from each surface's `SKILL.md` frontmatter), `--json` (schema `shapeware-index-v1`: `{"surfaces":[{"name","path","description"}]}`), `path NAME` (exit 1 for an unknown name), `check` (`bashy conform spec check` on each surface, `PASS`/`FAIL` per surface, exit 1 if any fails; no surfaces is not an error).
+- **Builtins only** for parsing, so it runs under any bashy locale.
+- **Discovery:** one line in the files agents already read (`CLAUDE.md`, `AGENTS.md`): "This repo has shapeware: run `bashy --bashsharp shapeware/index.bsh`".
+- Validated 2026-11-27 on a scratch tree (two surfaces, one plain folder, an empty `shapeware/`).
