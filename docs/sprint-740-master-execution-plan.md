@@ -1,16 +1,26 @@
-# Sprint 740: SGI (bashy commands as a service for credits, with verified delivery and a store)
+# Sprint 740: SGI (a pay-per-use tool market for agents: models, tools and agents for credits)
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only. Revised the same day: verified delivery, the store, and a per-account append-only credit records kept by cloudbox in a transparency log.*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only. Revised the same day: verified delivery, the store, and a per-account append-only credit records kept by cloudbox in a transparency log. Revised again after the operator review: the store is a tool market made for agents (section 3.4), what is sold follows the fleet partition (section 3.1), and every deal is pay per use.*
 
 ## 1. The gap
 
 **SGI** ("super general intelligence, the dhnt way") is a recommended opt-in feature
 for every user:
-- A member offers **bashy commands** as a service to the people they have a
-  relationship with. Others' agents buy calls or deliveries with **credits**.
+- **Agents are the sellers and the buyers.** A member's agent offers **tools** to
+  the people the member has a relationship with. Others' agents pay per use with
+  **credits**.
+- **A tool is a typed tool call backed by something scarce:** a model, a paid key,
+  a GPU, a logged-in tool, an expert agent. Agents do not buy apps. They make an
+  app on the fly from a spec; what they cannot make is that backing.
 - Sharing earns credits. People who own no satellite, outpost or tools buy credits
-  and spend them on commands that cloudbox itself offers.
-- A **store** lists what kinds of service exist and who offers them now.
+  and spend them on tools that cloudbox itself offers.
+- A **store** lets an agent find a tool, read its definition and price, and add it
+  to its own tool list.
+
+**Two shelves.** What an agent can make is free: the app catalog (`dhnt/appstore`:
+starters, specs, Helm pointers) stays a free shelf of DIY starters. What an agent
+cannot make is paid: the SGI market. The hosted app listing stays what it is, human
+access to a shared running instance. It is not a store.
 
 Sprint 739 (`docs/sprint-739-master-execution-plan.md`) builds the sharing mechanism:
 - offers and folders as gated apps;
@@ -39,6 +49,20 @@ Sprint 739 K1–K4 and does not reopen it.
    cryptographic techniques (signatures, hash chains, a Merkle transparency log),
    not a token or a blockchain (section 3.3).
 
+Added at the sprint review (2026-11-27). Where these differ from the rulings above,
+these apply:
+
+10. **The store is made for agents.** Agents sell and buy. The store sells tools,
+    not apps.
+11. **The fleet partition decides what can be sold.** bash, Bash# and bashy's
+    internal commands are not for sale. The fleet and fleet-backed commands are, in
+    three classes: (1) model, (2) agentic tool and bashy command, (3) agent.
+12. **Pay per use.** The tool call is the format. There is no lease or subscription
+    deal.
+13. **An agent is a tool, a smart tool.** It is sold only as a typed tool call with
+    a token cap. This keeps ruling 3: the unit stays a named call, never an
+    open-ended task.
+
 ## 2. State of the art (what to copy, what to avoid)
 
 | Approach | Lesson for SGI |
@@ -58,11 +82,30 @@ Sprint 739 K1–K4 and does not reopen it.
 
 ### 3.1 What can be offered
 
-- **Eligible:** any named bashy command whose **source is published**. These are
-  the commands Sprint 739 K2 makes offerable. Mutating and `confirm` commands stay
-  refused remotely (`Admit`).
-- **Command opt-in:** `bashy offer NAME --sgi [--ask MIN..MAX] [--verifier V@DIGEST
-  --spec-format F --redeliver N]`.
+**Eligibility is one test: the name is in the fleet.** That means a fleet model, a
+fleet tool or agent, or a registered command (`bashy commands add`). bash, Bash#,
+coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
+`todo` and the like) are refused: every agent already has them.
+
+| Class | Examples | Unit | Settlement |
+|---|---|---|---|
+| **Model** | `llm` on a local or own-key model | per token | per call, final at once |
+| **Tool / command** | `web_search`, `fetch`, `transcribe`, `image`, `narrate`, `translate`, `video` | per call, or per unit of output named in the offer (second of audio, image) | per call; verified delivery when the offer pins a verifier |
+| **Agent (smart tool)** | an expert agent bound to a local or own-key model | metered tokens at the offer's rate, under a token cap | per call; verified delivery when the offer pins a verifier |
+
+- These are the names Sprint 739 K2 makes offerable. Mutating and `confirm`
+  commands stay refused remotely (`Admit`).
+- **Command opt-in:** `bashy offer NAME --sgi [--ask MIN..MAX] [--unit U]
+  [--token-cap N] [--verifier V@DIGEST --spec-format F --redeliver N]`.
+- **An offer carries a typed tool definition:** the name, a description written for
+  a model, the typed input schema (the record's `args`), the output shape and the
+  effects. An offer with only an untyped argument list is refused, naming what is
+  missing. The **definition digest** is published beside the source digest, so a
+  buyer's agent detects a changed description or schema before it calls.
+- **An agent offer declares its token cap and its model backing.** A call that
+  reaches the cap stops and is charged for what was used.
+- `bashy offer` here is the Sprint 739 command offer. It is unrelated to
+  `bashy shape offer`, which hands a shaped revision to a principal.
 - **Each offer declares its backing:** `local`, `api-own-key` or `subscription`.
   `subscription` is refused for anyone but the owner unless the owner passes
   `--force --reason R`, which is logged.
@@ -71,7 +114,7 @@ Sprint 739 K1–K4 and does not reopen it.
 
 | Command kind | Source digest |
 |---|---|
-| Built-in or standard verb | bashy `vcs.revision` (the public commit) plus the verb; a dirty or unknown build is refused |
+| Fleet model, tool or agent | sha256 of the canonical fleet record, plus bashy `vcs.revision` for a baseline record; a dirty or unknown build is refused |
 | Example (`.bsh`) | sha256 of the file |
 | Registered `script` | sha256 of the canonical record plus the script |
 | Registered `exec` / `download` wrapping a tool | the record must declare `source: {url, rev}` and the installed binary's sha256; otherwise refused |
@@ -85,7 +128,7 @@ Sprint 739 K1–K4 and does not reopen it.
 
 | Deal | For | Settlement |
 |---|---|---|
-| **Per call** | cheap, interactive commands (`llm`, lookups) | the price is cleared by the bid before the run; the receipt is final at once |
+| **Per call** | models, tools and agents called interactively | the unit price is cleared by the bid before the run; the run is metered in the offer's unit (call, token, output unit); the receipt is final at once |
 | **Verified delivery** | spec → artifact work (video, spec→source, dubbing, …) | the price is **held**, the artifact is delivered, the pinned verifier runs, and the verdict settles the deal |
 
 **Bidding (both kinds).**
@@ -97,6 +140,9 @@ Sprint 739 K1–K4 and does not reopen it.
 - `--any` picks the lowest ask among the offerers of the same command; a tie goes
   to the lowest latency.
 - There is no order book.
+- **The price is per unit.** For a metered unit (tokens, seconds) the door reads the
+  amount from its run record and the receipt carries units times the cleared price.
+  The taker's `--max` (and an agent offer's token cap) bounds the total.
 
 **Verified delivery: the deal.**
 1. The offer pins a **verifier**. It is a bashy-provided command with published
@@ -194,37 +240,63 @@ commands. The first verifier is **video**:
 - **Observe-only first.** Limits and lines record `would-refuse` before any
   enforcement is switched on.
 
-### 3.4 The store
+### 3.4 The store (made for agents)
 
-- **Catalog (public, static, git):** the existing `dhnt/appstore` repository gains
-  `caas/<kind>/` entries. Each entry holds:
-  - the spec format and an example spec;
-  - the pinned verifier and its thresholds;
-  - source references;
-  - sample deliveries with verifier reports;
-  - a price guide in credits.
+The buyer is an agent, so the store answers in tool definitions, not pages.
 
-  The first entries are listed in 3.5. The catalog needs no hosted change.
+- **No static catalog.** The fleet record is the tool definition, and the live
+  listing is the catalog. The app catalog in `dhnt/appstore` is not extended.
 - **Listing (live, cloudbox):** an SGI offer is published to the cloudbox listing
-  with its command, kind, seller, ask range, verifier digest, source digest, deal
-  type and audience. Cloudbox's own offers are listed the same way.
-  - A member sees only listings from people they have a relationship with, plus
-    cloudbox's offers.
+  with its class, typed tool definition, definition digest, source digest, seller,
+  ask range, unit, deal type, verifier digest and audience. Cloudbox's own offers
+  are listed the same way.
+  - A member's agent sees only listings from people the member has a relationship
+    with, plus cloudbox's offers.
   - Each row shows the **track record** from the logged checkpoints (settled,
     verifier pass share, redeliveries, distinct counterparties). There are **no
     written reviews**, so nothing can be faked by typing.
-- **Surfaces:**
-  - CLI: `bashy store list [--kind K]`, `bashy store show ID`, and
-    `bashy store order ID --spec F --bid R` (the verified-delivery flow).
-  - Web: a store page, a thin UI over the same CLI operations.
-  - With no tools, a member sees cloudbox offers and pays with purchased credits.
+- **The agent's path (CLI, every verb with `--json`):**
+  - `bashy store search QUERY [--class model|tool|agent]` returns tool definitions
+    with seller, ask, unit, digests and track record.
+  - `bashy store show ID` prints one listing in full.
+  - `bashy store add ID [--as NAME]` **mounts** the tool: it writes a local
+    registered command record whose exec is `bashy remote HOST -- NAME {args}`,
+    with the listed schema and the pinned digests. Registered records already
+    become typed MCP tools and refresh live, so the tool appears in the agent's
+    tool list with no new mechanism. `bashy store remove NAME` unmounts it.
+  - `bashy store order ID --spec F --bid R` is the verified-delivery flow.
+  - The store verbs carry typed schemas, so an agent can call them as tools too.
+- **Agent budget guard.** The owner sets a credit budget per agent principal
+  (`bashy credits budget AGENT N [--per day]`). Inside it an agent adds and calls
+  tools without asking. Past it the call is refused; the owner can override with a
+  logged reason. Observe-only first, like the other limits.
+- **Verifier contracts and price guide.** Each verifier ships with its contract,
+  thresholds, one passing sample delivery and a price guide per unit. They are
+  published with the verifier source, not in a separate catalog.
+- **Owner page (web):** not a storefront. A thin page over CLI operations where the
+  owner sees agent budgets, spend and mounted tools, and can revoke.
+- With no tools of their own, a member's agent sees cloudbox offers and pays with
+  purchased credits.
 
-### 3.5 Catalog roadmap (operator, 2026-11-27)
+### 3.5 Tool roadmap (operator, 2026-11-27; regrouped at the review)
 
-Entries are ranked by value: how scarce the capability is (GPU, paid model,
-installed tooling) times how objectively a verifier can check the result.
-"verified" means verified delivery and "call" means a per-call deal. Every entry
-must use a named bashy command with published source.
+**First, the tool calls agents make most and cannot back themselves.** All are per
+call, and all exist today as fleet records or registered examples:
+
+| Class | Tool calls | Backing | Exists as |
+|---|---|---|---|
+| Model | `llm` | local or own-key model | fleet model bindings |
+| Tool | `web_search` | paid search key | `examples/service-door` search doors |
+| Tool | `fetch` / `browse` (rendered page) | live browser | `fetch`, `browser` |
+| Tool | `transcribe`, `narrate`, `translate`, `image` | GPU or provider | `examples/oss-rods`, `examples/service-door` |
+| Tool | `run` (sandboxed run on another OS or a bigger host) | compute, OS | `oci` |
+| Agent | one expert agent under a token cap | local or own-key model | fleet agent records |
+
+**Then the verified-delivery backlog** below: spec in, artifact out. Entries are
+ranked by value: how scarce the capability is (GPU, paid model, installed tooling)
+times how objectively a verifier can check the result. "verified" means verified
+delivery and "call" means a per-call deal. Every entry must be a fleet-backed
+command with published source.
 
 **Tier 1: high value, strongly verifiable**
 
@@ -257,7 +329,9 @@ must use a named bashy command with published source.
 | 15 | `site` | page spec → static site | verified | conform DOM walker: inventory, links, accessibility basics |
 | 16 | `dataviz` | data + chart spec → charts or page | verified | every series plotted from the data (values match); axes and labels per spec |
 
-**Not catalog entries:**
+**Not sold:**
+- bash, Bash#, coreutils and bashy's internal verbs (ruling 11);
+- apps (an agent makes one from a free starter or spec);
 - raw compute or GPU rental (sphere tier);
 - open-ended work with nothing objective to verify;
 - anything backed by a personal subscription (owner-only).
@@ -275,14 +349,13 @@ must use a named bashy command with published source.
 - conform.
 
 V2 builds this library, and each new kind is then mostly a contract file plus its
-catalog entry.
+price guide.
 
 **Order.**
-- In this sprint (S1): `video` (V2's first verifier), `transcribe`, `dub` and
-  `spec2src`. The first three share the transcription and loudness checks;
-  `spec2src` reuses conform.
-- Next: `extract` and `translate` (the broadest everyday demand), then the rest of
-  Tier 2, then Tier 3.
+- In this sprint: the per-call tools of the first table, one per class in the
+  acceptance run, and `video` as the one verified delivery (V2's first verifier).
+- Next: `dub` and `spec2src`, then `extract` and `translate` (the broadest everyday
+  demand), then the rest of Tier 2, then Tier 3.
 - Each later entry is a small story on its own, filed when the previous one has
   settled real deals.
 
@@ -296,7 +369,11 @@ catalog entry.
 | Registered command records | `yoke/pkg/fleet/commands.go`, `command_schema.go` | eligibility, source digest |
 | Sigstore verification, including transparency-log inclusion against an embedded trusted root | `yoke/pkg/binmgr/sigstore.go` | wrapped-tool provenance; the pattern for verifying ledger proofs offline |
 | conform contract runner | `conform/` | verifier framework |
-| App catalog | `appstore/` (`categories.yaml`, `apps/<id>/`) | CaaS kind catalog |
+| Registered command to typed MCP tool, refreshed live (`list_changed`) | `yoke/mcp/direct.go:179-309`, `yoke/pkg/fleet/command_schema.go:40-63` | mounting a bought tool: a local record wrapping `bashy remote` |
+| Tool-definition SHA-256 | `yoke/mcp/policy.go:331` (`server_info`) | definition digest in the offer and listing |
+| Fleet records for agents and tools; model prices | `yoke/pkg/fleet/baseline/tools/*.yaml`, `bashy/examples/fleet/tools/*.yaml`, `yoke/pkg/llmprice` | the three sellable classes; per-token unit |
+| Tool-call catalog | `bashy mcp tools --json` (`bashy/internal/agentos/mcp.go:67-77`) | where a mounted tool shows up; 22 of 337 definitions are typed today |
+| App catalog | `appstore/` (`categories.yaml`, `apps/<id>/`) | not extended: it stays the free shelf |
 | Hosted-plane fake | `yoke/pkg/fleet/cloudboxfake` | ledger, log and listing in e2e |
 | Offers, stamp, `bashy remote`, `bashy://` artifacts | Sprint 739 K1–K4 | transport, identity, delivery |
 
@@ -304,29 +381,37 @@ catalog entry.
 
 | Story | What | Repo |
 |---|---|---|
-| **G1** SGI opt-in | `--sgi`, ask range, backing guard, verifiable source per kind, the source route, `bashy offer source` | yoke `pkg/fleet`, bashy |
+| **G1** SGI opt-in | `--sgi`, eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused), typed tool definition and its digest, ask range and unit, agent token cap, backing guard, verifiable source per kind, the source route, `bashy offer source` | yoke `pkg/fleet`, bashy |
 | **G2** receipts | `hold` / `final` / `release` receipts, signed and chained; receipt header; caller store; `--verify` | yoke `pkg/broker` |
-| **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
+| **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing per unit (call, token, output unit); metered total under `--max` or the token cap; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
+| **B1** agent budget guard | `bashy credits budget AGENT N`: a credit budget per agent principal; refusal past it; logged owner override; observe-only first | yoke `pkg/broker`, bashy |
 | **V1** verified delivery | offer `verifier`, `spec-format`, `redeliver`; hold → deliver → buyer verify → final/release; waiver; timeout settle | yoke, bashy |
 | **V2** verifier framework and the video verifier | conform-based verifier commands; the shared check library of section 3.5 (ffprobe, loudness, black/silence, caption timing, transcribe-back WER, scene coverage first); deterministic verdict | conform, bashy examples |
 | **L1** ledger wire and client | public wire for checkpoint submit (both-signed), per-account append-only record (double entry, hash-chained), signed tree head, inclusion and consistency proofs, position query, track record; `bashy credits checkpoint`, `record` and `audit` (proof checks, tree-head gossip); door position check; cloudboxfake with a Merkle log. The hosted implementation is tracked privately. | yoke `pkg/fleet`, bashy |
-| **S1** CaaS catalog | `appstore` `caas/<kind>/` format; the first four roadmap entries (`video`, `transcribe`, `dub`, `spec2src`, section 3.5), each with an example spec and a passing sample delivery | appstore |
-| **S2** listing and store CLI | publish offers to the listing wire; `bashy store list/show/order`; track record per row; cloudboxfake support | yoke, bashy |
-| **S3** store web page | thin UI over the store CLI operations | bashy |
+| **S1** verifier contracts and price guide | each verifier ships its contract, thresholds, one passing sample delivery and a price guide per unit; no `appstore` catalog | conform, bashy examples |
+| **S2** listing and store CLI for agents | publish offers with the typed definition to the listing wire; `bashy store search/show/add/remove/order`, all with `--json` and typed schemas; `add` mounts the tool as a local registered record; track record per row; cloudboxfake support | yoke, bashy |
+| **S3** owner page | thin page over CLI operations: agent budgets, spend, mounted tools, revoke | bashy |
 | **G5** cloudbox offers and Tessaro credit (spike, doc only) | public wire for cloudbox-offered commands and the purchased-credit balance type | umbrella docs |
 | **G4** A/O/C sandbox e2e (acceptance) | see section 7 | bashy (`test-group-shaping-e2e`) |
 
 Order:
-1. G1, then G2 and G3 (per call working end to end).
-2. V1 and V2 (verified delivery).
-3. L1 (ledger).
-4. S1 and S2, then S3 (store).
+1. G1, then G2, G3 and B1 (per call working end to end, for all three classes).
+2. S2 (an agent finds and mounts a tool).
+3. V1, V2 and S1 (verified delivery).
+4. L1 (ledger).
 5. G4.
+6. S3 last; it is not part of G4.
 
 G5 is a parallel planning output.
 
 ## 6. Non-goals
 
+- Selling bash, Bash#, coreutils or bashy's internal verbs.
+- Selling apps, or a human storefront. The app catalog stays the free shelf.
+- Leases, subscriptions or any deal that is not pay per use.
+- Typed schemas for bashy's untyped built-in verbs. Only an offered tool needs one.
+- The local tool-call gaps (typed read, edit and write tools, a per-call timeout).
+  They are tracked by their own todos.
 - An anonymous public market. Every party is in a relationship by invitation.
 - Tokens, blockchains, crypto or Lightning payment rails, cash-out, payouts.
 - Transaction details in the hosted plane.
@@ -342,10 +427,14 @@ G5 is a parallel planning output.
 The run uses the sandbox, `cloudboxfake` with the ledger log and listing, fake
 providers, and fake accounts. Neither A nor O has an LLM.
 
-1. C offers the registered `transcribe` (per call) and the example `video`
-   (verified delivery, video verifier). C also offers the built-in `llm`.
-2. O finds `video` with `bashy store list --kind video`. The row shows the ask,
-   the verifier and the track record.
+1. C offers one of each class: the model `llm` (per token), the registered
+   `transcribe` (per call), one fleet agent (metered, token cap), and the example
+   `video` (verified delivery, video verifier).
+2. O's agent finds them with `bashy store search --json`. Each row carries the
+   typed definition, the digests, the ask and the track record. `bashy store add`
+   mounts `transcribe`, and it then shows in `bashy mcp tools` with a typed schema.
+   A call through the mounted tool is metered and settles. The agent call stops at
+   its token cap and is charged for what was used.
 3. O orders with a spec:
    - A passing delivery settles, and O cannot reject it.
    - A failing delivery is released without charge. The redelivery passes and
@@ -365,7 +454,11 @@ providers, and fake accounts. Neither A nor O has an LLM.
      (would-refuse when observing, 402 when enforcing).
    - A one-sided checkpoint is marked disputed.
 6. Refusals:
-   - `--sgi` on an ad-hoc name, or on an opaque exec record;
+   - `--sgi` on an ad-hoc name, on an internal verb, on an offer without a typed
+     definition, or on an opaque exec record;
+   - a mounted tool whose definition digest changed;
+   - a call past the agent's budget (would-refuse when observing, refused when
+     enforcing, allowed with the owner's logged override);
    - a subscription-backed offer to a member;
    - a tampered receipt;
    - a changed script, which `--verify` refuses.
