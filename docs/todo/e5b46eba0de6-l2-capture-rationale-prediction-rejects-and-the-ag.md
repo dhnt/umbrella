@@ -34,3 +34,19 @@ Review (2026-11-26, code re-read at yoke 0bc70d51): larger than first triaged. T
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: widen the S730 decision log (shape/state/auto.go AutoDecision) with optional Rev, Agent, Principal, Line, Problem, Why, Expect; log human wishes (source human) without changing unattended-only behaviour; add reject, undo and restore events with actor and by person|system; WHY:/EXPECT: headings in the brief closing block, parsed like ParseCoverage; agent name passed to the activation. No commit trailers on undo/restore, no tidy carry-forward. Problem key = Source.Ref, else todo/story, else tracking item. Size M.
+
+Record format (conductor 2026-11-26; L1 and L3 build on exactly this):
+- One record: yoke/pkg/shape/state/auto.go AutoDecision, the Sprint 730 decision log. Add optional JSON fields, all omitempty: rev (the activated or undone revision), base (candidate base revision), agent (binding name), principal (who asked), line (principal line the event acted on), problem (key below), why, expect, by ("person" or "system"). Old lines must still parse; ReadAutoLog keeps working.
+- Problem key: Source.Ref when set; else "todo:<id>" or "story:<id>" from the wish; else "cand:<candidate id>". An incident repair uses "incident:<id>"; L1 joins it to the attempt live at the incident's base revision, so do not try to join here.
+- Log human wishes too. Keep logAuto's unattended-only callers as they are (off switch and refusal still key on Source.Unattended()); add one ledger write path that logs every source, with source "human" for an empty Kind.
+- Events: keep trigger, attempt, verdict, activation, refusal. Add reject (Service.Reject, shape/service.go:980), undo and restore (the console history handlers and the CLI that call src.Restore / src.UndoSealed / src.RestoreSealed), each with principal, line, rev and by. The rollback after a failed repair patch release (webconsole/shaped_repair.go:364-373) is undo with by "system".
+- Why and expect: add WHY: and EXPECT: sections to the brief's closing block in BriefWithExtra (shape/helpers.go), same bullet format as COVERED/NOT COVERED/NEXT, and parse them where ParseCoverage parses (shape/helpers.go:28); store on the candidate and on its verdict and activation lines. A missing section is empty, never an error.
+- Agent name: pass it to the activation line (production.go:141,230 drop it today).
+- Tests (targeted, GOWORK=off): a record round-trip with and without the new fields; a human wish writes trigger/verdict/activation lines with problem, agent, why, expect; reject, undo, restore and the system rollback each write one line with by set; the parser reads WHY:/EXPECT: and tolerates their absence.
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke 1ae2290c, bashy 9cae0c5b, ycode fcc970b or later on origin main. Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
