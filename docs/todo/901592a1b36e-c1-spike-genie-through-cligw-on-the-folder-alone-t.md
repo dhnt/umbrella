@@ -3,9 +3,10 @@ id: 901592a1b36e
 kind: spike
 title: 'C1 spike: genie through cligw on the folder-alone task (go/no-go)'
 seq: 821
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-27T14:25:09.514287Z
+assignee: claude-opus5.5
 sprint: 738
 sprint_id: 7ecf2342-069f-53f2-b07e-bd3a348052e9
 sprint_title: 'Contained subscription agents: genie in a sandbox over cligw'
