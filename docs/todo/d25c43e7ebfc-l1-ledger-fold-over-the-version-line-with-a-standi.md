@@ -38,3 +38,21 @@ Review (2026-11-26, code re-read at yoke 0bc70d51 and bashy eb41d87b):
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Rescoped: fold over the decision log (not git trailers) per app and base revision; incident joins the problem of the attempt live at its base revision; standing; size bound; viewer filter; bashy shape ledger --json behind L0. Size M.
+
+Build brief (conductor 2026-11-26; reads exactly the L2 record format on story e5b46eba):
+- yoke pkg/shape/ledger.go: Fold(lines []state.AutoDecision, app, base string) Ledger. Problems newest first; each attempt: candidate id, agent, principal, line, request, why, expect, observed (verdict pass/fail detail or incident id), rev, standing.
+- Standing from events only: activation -> active; a later activation in the same problem -> earlier one superseded; undo of rev R -> undone; restore of R -> active (restored); reject -> rejected; failing verdict or failed generation with no activation -> failed. Nothing is deleted; old lines without the new fields fold as best they can (no problem key -> own problem).
+- Incident join: an incident problem ("incident:<id>") joins the problem of the attempt active at the incident's base revision; no match keeps its own problem.
+- Base: the view is relative to a base revision; attempts after the base are marked later, not hidden.
+- Size bound for small-context models: open problems in full, closed ones one line, newest first, at most N bytes (default 8 KiB, a parameter); truncation says so.
+- Viewer filter: ForViewer(l Ledger, owner bool, self string) Ledger. Owner sees all. Others: problem key becomes an opaque alias (stable short hash), no host paths, board/todo ids, other principals' addresses (own kept), host actor, agent receipts; reuse shape.MemberView's scrub for detail text.
+- Reads: console route GET /api/shape/{app}/ledger through shapeReadCaller (L0) with the caller's viewer filter; bashy CLI `bashy shape ledger APP [--base REV] [--json]` (owner on the host; site/console callers go through the route). Register the verb in bashy internal/agentos/shape.go beside incident.
+- Tests (targeted): fold standing for wish -> activate -> repair (incident join) -> undo -> restore; reject and failed attempts kept; size bound; viewer filter drops each listed field; route refuses an out-of-scope caller (reuse the L0 fixtures).
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke 625c20d9, bashy 25e87ba4, ycode cfa8bdc or later on origin main (fetch first; L0 changed the history handlers you touch). Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+- Repos: yoke (ledger, route) and bashy (CLI verb); bashy builds against yoke under the umbrella go.work; the conductor bumps pins.
