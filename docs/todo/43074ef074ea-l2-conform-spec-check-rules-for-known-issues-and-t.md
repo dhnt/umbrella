@@ -3,7 +3,7 @@ id: 43074ef074ea
 kind: feature
 title: L2 conform spec check rules for known issues and tbd features
 seq: 792
-status: todo
+status: wontfix
 priority: p1
 labels:
     - shapeware
@@ -11,6 +11,7 @@ created: 2026-11-26T12:45:53.898548Z
 sprint: 734
 sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
 sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
+closed: 2026-11-27T22:52:59.908325Z
 ---
 
 Compile-step rules, with fixtures and tests: a known issue names an existing feature id (or none), has a valid status and, when published, an expiry date; a bug's failing example exists in features.yaml or the contract; a tbd feature has at least one acceptance line; a critical feature has no open or workaround issue. Decide per rule whether it is an error or a warning. Code inspection of conform spec/check.go before writing the rules. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.

@@ -3,7 +3,7 @@ id: fce48cc11515
 kind: doc
 title: L0 Decide the spec format points the field loop depends on
 seq: 812
-status: todo
+status: wontfix
 priority: p0
 labels:
     - shapeware
@@ -11,6 +11,7 @@ created: 2026-11-26T21:51:05.94751Z
 sprint: 734
 sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
 sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
+closed: 2026-11-27T22:53:04.174163Z
 ---
 
 Problem: L1, L2 and L4 each assume answers the format does not give. Without them the runbook and the lint would be written against guesses, and Sprint 734 would settle the same points separately.

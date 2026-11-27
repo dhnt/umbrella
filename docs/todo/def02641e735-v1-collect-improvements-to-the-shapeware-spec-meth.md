@@ -1,9 +1,9 @@
 ---
 id: def02641e735
 kind: enhancement
-title: 'V1 collect improvements to the shapeware spec method from the builds (generic fixes; notepad is the test case; no run until the operator says the list is enough)'
+title: V1 collect improvements to the shapeware spec method from the builds (generic fixes; notepad is the test case; no run until the operator says the list is enough)
 seq: 810
-status: todo
+status: wontfix
 priority: p1
 labels:
     - conform
@@ -11,6 +11,7 @@ created: 2026-11-26T20:58:54.899933Z
 sprint: 734
 sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
 sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
+closed: 2026-11-27T22:53:02.762541Z
 ---
 
 Operator rulings 2026-11-26, during Sprint 726:

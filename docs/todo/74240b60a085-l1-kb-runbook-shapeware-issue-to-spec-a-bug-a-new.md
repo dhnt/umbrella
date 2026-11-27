@@ -3,7 +3,7 @@ id: 74240b60a085
 kind: doc
 title: 'L1 kb runbook shapeware-issue-to-spec: a bug, a new feature or a missing feature becomes a spec change'
 seq: 791
-status: todo
+status: wontfix
 priority: p0
 labels:
     - shapeware
@@ -11,6 +11,7 @@ created: 2026-11-26T12:45:53.061634Z
 sprint: 734
 sprint_id: c0fe136f-1cdc-5b2b-bc4f-cec6d3f9680d
 sprint_title: 'Shapeware spec method: collect improvements from the builds (notepad is the test case), then one more round'
+closed: 2026-11-27T22:52:58.495356Z
 ---
 
 Classify an incoming issue and write it into the spec. Bug: a known-issue entry (KI-n, status, feature, symptom -> action, retry, expiry, todo) plus an acceptance example that fails today. New feature: a tbd feature with id, intent, effort and acceptance lines. Missing or tbd feature someone needs: a Build request for the existing entry, not a new one. Anything the issue does not decide goes to the owner as an open question. Try it on form's real KI-1 and on its tbd feature group-required. Plan: umbrella docs/plan-reverse-sdlc-workflow.md, section 'The field loop' (operator 2026-11-26). Format: docs/shapeware-spec-v0.md sections 4.2, 4.3, 5, 7, 12. Operator review before start.
