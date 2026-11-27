@@ -1,204 +1,171 @@
 # Sprint 739: commands and folders as a service (offer bashy commands and designated folders to your trusted group)
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start.*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only; revised the same day after a code review for minimum change.*
 
 ## 1. The gap
 
 In teamwork, one member has what another lacks: an LLM subscription, a video or
-transcription provider, a GPU, an installed tool. Today each member has to install
-and configure everything locally. In the A/O/C case (O owner and approver, A an
-account member with no machine in the mesh, C a contractor with one), C usually
-holds the LLM and the tools, while O's host runs the shaping and has none.
+transcription provider, a GPU, an installed tool, a big artifact. Today each member
+installs, configures and copies everything locally. In A/O/C:
+- O is the owner and approver.
+- A is an account member with no machine in the mesh.
+- C is a contractor with a machine in the mesh.
 
-The goal: a member **offers** a bashy command to their trusted group, and the other
-members **run it remotely on the offerer's machine**, on demand, with no local
-install or config. LLM sharing is one case of this; the sprint covers any bashy
-command:
+C usually holds the LLM and the tools, while O's host runs the shaping and has none.
 
-- (a) members without an LLM use an offered `llm`;
-- (b) a member offers a feature others lack: `video`, `transcribe`, image
-  generation;
-- (c) any registered custom command (`bashy commands add`).
+The goal: a member **offers** a bashy command or a **designated folder** to their
+trusted group. Other members' agents run the command on the offerer's machine, or
+read the folder in place, on demand. Nobody needs a local install, config or copy.
+It works in every direction (C to O, O to C, any member to any member).
 
-It works in every direction (C to O, O to C, any member to any member of the
-group).
+Example cases:
+- (a) A or O have no LLM and use C's offered `llm`.
+- (b) C offers `video` or `transcribe`, and the team uses them without the
+  provider.
+- (c) Any registered command (`bashy commands add`) can be offered.
+- (d) C generates a video and the team gets a link, not a copy.
 
 **One sharing model for humans and agents (operator, 2026-11-27).** bashy is for
-agents; the existing app sharing was designed for human users of UI apps. This
-sprint generalizes that one model rather than adding a second: a shared thing is
-an **app**, and an app has a human surface (the UI), an agent surface (bashy
-commands over CLI, MCP and HTTP), or both. The same audience rules
-(`outpost apps share APP --circle/--group/--email`), the same relationship
-stamps, the same member tokens and the same revoke apply to both. An offered
-command is an app whose surface is agent-facing. An agent acting for a member
-gets exactly that member's rights (`docs/access-tiers.md`).
+agents. The existing app sharing was designed for humans using UI apps. This sprint
+generalizes that one model rather than adding a second one:
+- A shared thing is an **app** with a human surface (UI), an agent surface (bashy
+  commands, HTTP, MCP), or both.
+- Offers and folders are apps. The same audience rules
+  (`outpost apps share APP --circle/--group/--email`), the same relationship
+  stamps, the same member tokens and the same revoke apply to all of them.
+- An agent acting for a member gets exactly that member's rights
+  (`docs/access-tiers.md`).
 
 ## 2. What already exists (code inspected 2026-11-27)
 
-CaaS generalizes app sharing and the door; it is not a new plane.
+| Piece | Where | Reused as |
+|---|---|---|
+| Per-app audience gate: the owner always passes; anyone else must be a member matching circles AND (groups OR emails). It is enforced per app id by outpost before forwarding, for any app name. | `outpost/internal/agent/apps.go:1196-1209` (`ProxyTo` → `grants.AllowFresh`), `grants.go:47-101`; rules via `outpost apps share` (`outpost/cmd/outpost/apps_share.go`, `portal.CreateHostShare`) | the one authority for offers and folders |
+| Signed identity stamp to the app (`Remote-Email`, `X-Outpost-Relationship`, circle, groups, HMAC signature with the per-app SSO secret) when `trust_cloud_identity` is on | `apps.go:238-252, 633-728`; verify `yoke/pkg/coopauth/coopauth.go:234,271` | member identity at the door |
+| A member's CLI or agent reaches an owner's app through the satellite with a member token (exchange `host:proxy`) | `yoke/pkg/fleet/satellite_invite.go:70-136`, `satellite_exchange.go`, `yoke/pkg/broker/keycmd.go:113-141`, `bashy/internal/agentos/mcp_connect.go` (Sprint 709) | transport for every member call (A needs no outpost) |
+| Door auth: owner token, per-peer credential (`peer:NAME`, deny by default, email/circle binding, caps) | `yoke/pkg/broker/broker.go:299-326`, `peershare.go:282-341`, `peerlimit.go` | unchanged for owned hosts; caps reused for members |
+| **A named command run on a door already works:** `X-Bashy-Filter: slash=NAME[,tool=TOOL]`. Shared peers are admitted. Mutating or `confirm` commands are refused remotely (`Admit`). | `yoke/pkg/cligw/server.go:631-714`, `slash.go:339-480`, `yoke/pkg/toolcmd/toolcmd.go:185-191` | the remote run; only the caller refuses names (`toolcmd/cmd.go:280-291`) |
+| Registered commands: YAML record (exec, download or script) with a typed argument schema bound by bashy itself | `yoke/pkg/fleet/commands.go`, `command_schema.go`; `bashy/internal/agentos/registered.go:390` | offerable as a ToolCommand `exec: bashy NAME {args}` (tool binary `bashy`, as `herald.yaml` does); no new runner kind |
+| Results carry `Artifacts []string` (absolute paths on the door host) via `output: file:<glob>` | `toolcmd/toolcmd.go:72-104`, `print.go:276-311` | the artifact list, published by reference instead |
+| LLM through a shared door with no config: `MODEL@DOOR` | `broker.ResolveDoorModel`, genie (`bashy/internal/agentos/genie_external.go:50`) | case (a) |
+| `files` app: the embedded File Browser, the owner's whole-scope browser. Single instance per process, one root, no ETag, no identity pass-through. | `outpost/cmd/outpost/capability_files.go`, fork `fbembed/embed.go:20-104` | **kept as is** for the owner; not the base for per-folder audiences |
+| App registry accepts any app name; one in-memory listener can serve many apps | `apps.go:466-486` (`RegisterWithMetaDialer`), `outpost/cmd/outpost/capability_support.go:150-155` | per-folder and per-offer apps |
 
-| Human app sharing (reused as the authority) | Where |
-|---|---|
-| Audience rules per app: circles, groups, emails, stored by cloudbox | `outpost apps share APP` / `unshare` (`outpost/cmd/outpost/apps_share.go`), `bashy share who HOST/APP` (`yoke/pkg/fleet/share_who_cmd.go`) |
-| Relationship stamps (anonymous < account < member < owner), one vocabulary for UI, CLI, API and MCP | `docs/access-tiers.md`; `outpost/internal/agent/grants.go`, `apps.go`; `pkg/coopauth` |
-| A member's own tools reach an owner's app with the member's account token, never an OS password | Sprint 709; site MCP `bashy/internal/agentos/mcp_site.go` |
-
-| Agent-side pieces (reused as the transport and runner) | Where |
-|---|---|
-| Door: authenticated HTTP front door per host, reachable over the outpost mesh or as the cloudbox satellite app `llm` (credential in the path) | `yoke/pkg/broker/door`, `yoke/pkg/broker/share.go` |
-| Per-peer credential (principal `peer:NAME`), deny by default, `share allow/deny`, `revoke`, caps on tokens/day, USD/month, RPM, member check `--email --circle` | `yoke/pkg/broker/peercmd.go`, `peershare.go`, `peerlimit.go` |
-| Grant delivery and import | `bashy llm share PEER` (mesh or cloudbox; `--print` for a host it cannot reach) → `bashy llm door import`; consumer peers file `toolcmd/peers.json` (0600) |
-| Remote command run on a peer | `bashy tool cmd run --capability X --peer NAME` (`yoke/pkg/toolcmd/peer.go`, `cmd.go:278`), served by the peer's door (`yoke/pkg/cligw/capability.go`) through the slash path, so routing, quota, guards and the reply shape already apply |
-| Declared commands as YAML data, typed args, async jobs | `yoke/pkg/toolcmd` (`BindHTTPArgs`, `jobs.go`); capabilities `video`, `transcribe`, `image-generation` already declared (`yoke/pkg/fleet/baseline/tools/*.yaml`) |
-| An LLM through a shared door with no config | `MODEL@DOOR` (`broker.ResolveDoorModel`, `model_source.go`), used by genie (`bashy/internal/agentos/genie_external.go:50`) |
-| Shaping runs on the owner's host | `yoke/pkg/shape/delegate.go` (headless `bashy delegate`, pinned `tool:model`, env allow-list) |
-
-Gaps between this and CaaS:
-
-1. A peer run selects by `--capability` only, not by a named command.
-2. Only vendor-tool commands run, not bashy verbs or registered commands.
-3. Results are text only. Video and transcription need input files uploaded and
-   output files returned.
-4. There is no offer step: the offerer edits YAML and the peers file by hand, and
-   a consumer cannot list what a peer offers.
-6. Folders: the `files` app serves one root for humans only; there is no list of
-   designated folders, no agent surface, and no link-instead-of-copy.
-5. Two sharing systems: door peer credentials (`peer:NAME`, owned hosts, agents)
-   and app shares (cloudbox audiences, members, humans). Offers must use the app
-   share as the one authority; the peer credential stays for owned-host links.
+**Truly missing:**
+1. The caller cannot ask a peer for a named command.
+2. A shared peer can run *any* declared command; there is no per-command allow-list.
+   This is a **pre-existing** exposure, fixed in K1.
+3. A peer-supplied path argument (`json-file`, path-shaped `{args}`) is read from the
+   door host's filesystem. This is a **pre-existing** hazard, fixed in K3.
+4. Artifacts are door-host paths the caller cannot fetch.
+5. The door ignores the member stamp. The `llm` app is registered without
+   `require_login`, so its audience rule has no effect. Also, `llm share`
+   re-registers it without login if the owner turns login on (`share.go:249`).
+6. There are no per-folder apps and no agent-friendly file surface (JSON listing,
+   Range, ETag).
+7. A model-less command tool (binary `bashy`) may not route: the door only lists
+   agent rows with a model binding (`cligw/catalog.go:280-315`). K2 verifies this
+   first.
 
 ## 3. Design
 
-**Offerer**
+**Each offer and each folder is its own gated app.** That gives each one its own
+audience with zero new audience code.
 
-```
-bashy offer CMD [--circle C] [--group G] [--email E] [--limit ...] [--for 2h]   # the app-share audience grammar
-bashy offer list
-bashy offer stop CMD
-```
+- `bashy offer NAME [--circle C] [--group G] [--email E] [--limit …] [--for 2h]` does
+  three things:
+  - registers app `offer-NAME` on the door's port with `require_login` and
+    `trust_cloud_identity`;
+  - adds the command to the door's offered set;
+  - adds the audience with the existing `outpost apps share offer-NAME …`.
 
-- An offer is a declared ToolCommand with a new runner kind `bashy`, which execs a
-  bashy verb or registered command with the bound arguments. It is published as an
-  app of the host (agent surface), exposed through the host's satellite like any
-  app, and shared with the existing audience rule (`outpost apps share`). The
-  door admits a run only when the caller's stamp (member token, exchanged on the
-  satellite) matches that app's audience. Caps and the door audit are reused,
-  keyed by member.
-- `bashy offer llm` is the special case: it shares the inference routes, which
-  already exist.
-- `--for` and `stop` bound an offer to the session. Nothing is offered implicitly.
+  `bashy offer llm` registers `offer-llm` for the inference routes. The existing
+  `llm` app (`/k/` peers) is untouched. `bashy offer stop NAME` unregisters the
+  app; `bashy offer list` lists them.
+- **Door, one new admission branch:**
+  - It applies when there is no presented credential, the request arrived via the
+    cloud, the stamp verifies with that app's SSO secret, and the relationship is
+    member or owner.
+  - It reads the app name from `X-Forwarded-Prefix`. The command must equal that
+    offer (`offer-llm` admits only inference).
+  - The principal becomes `member:EMAIL`. That principal gets the peer route limits
+    and caps.
+- **Consumer:** `bashy remote HOST -- NAME args…` is `tool cmd run NAME --peer`
+  over the member path. `llm env --from HOST --member` serves the LLM case. Both
+  use `SatelliteTokenSource` and relax the URL checks that today allow only
+  `/app/llm` and `/app/NAME/mcp`.
+- **Owned hosts:** keep `peer:NAME` credentials, now with the K1 per-command
+  allow-list.
+- **Inputs and outputs are references, never host paths:**
+  - A peer caller's path arguments must be `bashy://` URIs. The offerer fetches
+    each one into the run's scratch directory with its own member token, since the
+    consumer shares the input folder with the offerer's circle. Small text stays
+    inline.
+  - Artifacts move into the offerer's output folder share and return as URIs with
+    size and sha256. Consumers stream or `get` them on demand.
+- **Folders:** a new outpost capability `outpost.shares` with
+  `settings.folders: {NAME: DIR, …}` registers one app `files-NAME` per folder
+  (`require_login`, read-only). Its handler serves:
+  - `os.OpenInRoot`, so a symlink or `..` cannot escape the folder;
+  - `http.ServeContent`, giving Range, HEAD and Last-Modified;
+  - a weak ETag from size and mtime;
+  - a JSON listing for directories.
 
-**Consumer**
+  The URI is `bashy://HOST/files-NAME/PATH`. It resolves through the satellite for
+  members and through the mesh for owned hosts.
+- **Folder CLI:**
+  - owner: `bashy files share DIR --name N [--circle|--group|--email]` (writes the
+    capability setting, then `outpost apps share files-N`), `unshare`, `shares`;
+  - member: `bashy files ls|stat|cat|get|link`.
 
-```
-bashy offers [HOST]                                   # command apps shared with me
-bashy tool cmd run video:generate --peer C -- --prompt ... --in clip.wav
-bashy remote C -- video generate ...                  # thin alias
-```
-
-- Hint, not magic: when a local command is missing or unconfigured, its error
-  names the peers offering it (`also offered by C: bashy remote C -- ...`). LLM
-  keeps its existing transparent `MODEL@DOOR` path.
-
-**Execution on the offerer**
-
-- Arguments are bound against the offer's declared schema (`BindHTTPArgs`
-  style). Raw shell is never accepted.
-- Each run gets a fresh scratch directory. The offerer's workspace and
-  environment are not exposed (same allow-list idea as `shape/delegate.go`
-  `delegateEnv`). The command runs as the offerer with the offerer's provider
-  login, which is the point of sharing.
-- Inputs are uploaded into scratch (size cap). Outputs come back as an
-  `artifacts` list in the result, downloaded into the consumer's current
-  directory. Long runs use the existing async job verbs.
-- Authorization is the app share: the member's token and stamp, never an OS
-  password and never a second credential system. The caller principal (the member,
-  and the agent acting for them) is recorded in the door audit.
-
-**Shared folders (companion to CaaS, operator 2026-11-27)**
-
-An app and a folder are shared the same way. A member designates folders, and the
-team reads them in place. Think of a simplified SMB over HTTP and MCP, built for
-agents: one copy of each artifact, links instead of copies. A generated video
-stays on the machine that made it; the team gets a URI.
-
-```
-bashy files share DIR [--name N] [--circle C] [--group G] [--email E] [--write]
-bashy files shares                      # mine, and folders shared with me
-bashy files unshare N
-bashy files ls|stat|cat|get HOST:N/PATH # agent surface; cat/get stream, Range supported
-bashy files link PATH                   # URI of a local file inside a designated folder
-```
-
-- **Builds on outpost's `files` app** (`outpost/cmd/outpost/capability_files.go`,
-  `yoke/pkg/fleet/baseline/services/files.yaml`). Today that is the embedded File
-  Browser, the human surface: one confined root (`settings.scope`, default HOME),
-  read-only unless the host sets `allow_write`. The generalization changes three
-  things:
-  - one root becomes a **list of designated folders** (the old `scope` reads as
-    one entry);
-  - each folder share gets the app-share audience rule;
-  - an **agent surface** sits beside the UI.
-- **Agent surface:** HTTP `GET`/`HEAD` with `Range`, ETag and sha256 (streaming
-  big files), a JSON listing, and site MCP tools `files_list`, `files_stat`,
-  `files_read` (bounded, by range) and `files_link`. A URI is stable,
-  `bashy://HOST/files/N/PATH`, and resolves through the satellite (members) or the
-  mesh (owned hosts). The same member token and stamp as every app apply.
-- **Confinement:** every path is resolved inside its folder with `os.Root`, so a
-  symlink or `..` cannot escape. Read-only by default; `--write` per folder, set
-  only from the host.
-- **CaaS companion:** an offered run's output stays in the offerer's designated
-  output folder. K3 returns artifacts **by reference** (URI) by default and by
-  value only under a small size cap. A consumer streams or `get`s them on demand.
-- Not in MVP: sync, caching or mirroring, locking, versioning, mounting as a
-  filesystem (FUSE, real NFS or SMB), quotas.
-
-**Human surface (same model, MVP-minimal)**
-
-- An offered command lists in the member's app list next to UI apps.
-- A UI app already has an agent surface through the site MCP.
-- A generated form page for an offered command (from its argument schema) is
-  out of MVP; the model leaves room for it.
+  Agents with a shell use the CLI. An MCP wrapper is out of MVP unless bashy's
+  existing MCP exposure covers verbs already.
+- **Humans:** offers and folders are apps, so they show in the member's app list.
+  The UI for a folder is a later addition. The owner keeps File Browser.
 
 ## 4. Stories
 
 | Story | What | Repo |
 |---|---|---|
-| **K1** named runs + listing | `tool cmd run TOOL:NAME --peer`, selected by name; door listing endpoint `GET /v1/commands` that returns only the command apps the caller's stamp admits | yoke `pkg/toolcmd`, `pkg/cligw` |
-| **K2** `bashy` runner kind | offered bashy verbs and registered commands; schema-bound args, scratch directory, env allow-list | yoke `pkg/toolcmd`, `pkg/fleet` |
-| **K3** run inputs and artifacts | input upload into scratch (size cap); outputs land in the offerer's designated output folder and return **by reference** (F2 URIs), by value only under a small cap; async jobs for long runs | yoke `pkg/toolcmd`, `pkg/cligw` |
-| **K4** offers as shared apps | `bashy offer` publishes the command as an app (agent surface) and adds its audience rule through the existing app share; the door admits by stamp and member token (Sprint 709 exchange) instead of `peer:NAME`; `offers` lists command apps shared with me; `remote` runs one; "offered by" hint in missing-command errors | yoke `pkg/broker`, `pkg/fleet`; outpost (stamp on door routes, if missing); bashy |
-| **F1** designated folders | the `files` app serves a list of designated folders (old `scope` = one entry), each with the app-share audience rule; `bashy files share/unshare/shares`; `os.Root` confinement; read-only by default, `--write` from the host only | outpost (`capability_files.go`), yoke `pkg/fleet`, bashy |
-| **F2** agent surface for folders | HTTP listing plus `GET`/`HEAD` with Range, ETag and sha256; stable `bashy://HOST/files/N/PATH` URIs via satellite or mesh; `bashy files ls/stat/cat/get/link`; site MCP `files_list/stat/read/link` | outpost, yoke, bashy (`mcp_site.go`) |
-| **K5** A/O/C e2e (acceptance) | sandbox, fake accounts, fake transcribe provider: C offers `llm` and `transcribe` to the circle; O (no LLM) shapes and A's wish runs on C's LLM; O runs `bashy remote C -- transcribe in.wav` and gets the artifact as a URI it streams; C shares a folder with the circle and A's agent lists and reads it in place (Range), while a non-member and a path escape are refused; a non-member is refused, revoke gives 401, a limit gives 429; O offers to C | bashy (`test-group-shaping-e2e` lane) |
+| **K1** named peer runs + per-command allow-list | Caller only for the run: `runPeer` accepts `TOOL:NAME`/`NAME`, and a `DispatchPeerCommand` sends `slash=NAME[,tool=TOOL]` without the measured-selection checks. Door: `PeerShare.Commands` allow-list, checked from the parsed slash name; empty = no named commands, so nothing widens (fixes missing item 2). | yoke `pkg/toolcmd`, `pkg/broker` |
+| **K2** offerable registered commands and bashy verbs | Generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
+| **F1** `outpost.shares` capability | `settings.folders`, one `files-NAME` app per folder, handler (`os.OpenInRoot` + `ServeContent` + weak ETag + JSON listing), read-only. File Browser unchanged. | outpost |
+| **F2** folder CLI and URIs | `bashy files share/unshare/shares` (owner), `ls/stat/cat/get/link` (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `files-*` apps | yoke `pkg/fleet`, bashy |
+| **K3** inputs and outputs by reference | Refuse host paths from peer callers (fixes the pre-existing item 3); fetch URI inputs into scratch; publish artifacts into the offerer's output share and return URIs with size and sha256 | yoke `pkg/toolcmd`, `pkg/cligw` |
+| **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list`; register `offer-NAME` (`require_login` + `trust_cloud_identity`); the door stamp branch with the prefix-to-offer check; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
+| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers `llm` and `transcribe`; O shapes and A's wish runs on C's LLM; O runs `bashy remote C -- transcribe bashy://O/files-in/in.wav` and gets a URI it streams with Range; A's agent reads a folder C shared, in place; a non-member, a path escape and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
 
-Order: K1 and F1 first, then K2, F2 and K3 (K3 uses F2 URIs), then K4, then K5. Each story is
-delivered on yoke first, then the bashy pin is bumped.
+Order: F1 and K1 first (independent), then F2 and K2, then K3 (needs F2), then K4,
+then K5. Each story is delivered in its module first; then consumer pins and the
+umbrella pin are bumped.
 
 ## 5. Non-goals (not in MVP)
 
-- Transparent fallback for non-LLM commands.
-- Load balancing across several offerers.
-- Container sandboxing of offered runs (`bashy oci`; a follow-up, see Sprint
-  738 for the sandbox backends).
-- Offers to anyone outside the group.
-- Billing.
+- Discovery of offers and folders shared with me. No member-side "apps of an
+  owner" listing exists, and it would need the hosted plane. The offer and share
+  verbs print the one consumer line, which the offerer posts with `bashy mb`.
+- Write access to shared folders, sync, caching, locking, versioning, filesystem
+  mounts (FUSE, NFS, SMB), quotas.
+- An MCP server for folders or offers beyond what bashy already exposes.
+- A generated UI form for an offered command, or a member UI for folders.
+- Transparent fallback for non-LLM commands, load balancing, container
+  sandboxing of offered runs (see Sprint 738), billing.
 
 ## 6. Verification and venues
 
-- Unit tests per story on the branch.
-- K5 runs in the sandbox e2e on the gate host with fake accounts and fake
-  providers, within the e2e minutes budget.
-- No paid provider runs.
+- Unit tests per story on its branch.
+- K5 runs on the gate host with `cloudboxfake`, fake accounts and fake providers,
+  within the e2e minutes budget.
+- No paid provider runs. No live hosted-plane change: the train rule applies.
 
 ## 7. Risks
 
-- **Running commands for others on the offerer's machine.** Mitigated by
-  declared schemas only, a scratch directory, the env allow-list, deny by
-  default, caps, and audit.
-- **Cross-owner access.** Resolved by the model: members reach an offer through
-  the offerer's satellite with their own member token, like any shared app. No
-  credential push is needed. K4 verifies that the satellite stamps door routes
-  for members. If it does not, that is the one outpost change.
-- **One model, two surfaces.** Members must see the same audience grammar for UI
-  apps and offered commands. No command-only audience words.
+- **Running commands for others on the offerer's machine.** Offers are explicit and
+  per command. Mutating and confirm commands stay refused remotely (`Admit`).
+  Arguments are schema-bound, runs use scratch directories, peers cannot pass host
+  paths, and caps and audit apply.
+- **Real satellite parity.** Member-token access to arbitrary app paths is proven
+  against `cloudboxfake`. The hosted satellite must behave the same, which is
+  checked on the next release train, not in this sprint.
+- **Model-less command rows in the door.** This is unproven (item 7). K2 starts by
+  testing it, and the result decides the size of K2.
