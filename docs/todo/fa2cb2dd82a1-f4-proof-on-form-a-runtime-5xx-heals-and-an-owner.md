@@ -3,14 +3,17 @@ id: fa2cb2dd82a1
 kind: task
 title: 'F4 Proof on form: a runtime 5xx heals and an owner-filed GitHub issue is shaped through the same workflow, once from bashy schedule'
 seq: 794
-status: todo
+status: done
 priority: p1
 labels:
     - shapeware
 created: 2026-11-26T12:45:54.568985Z
+assignee: muse-wonder
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
+closed: 2026-11-27T01:12:56.616318Z
+closed_by: claude-opus5.5
 ---
 
 F4 build notes (conductor 2026-11-26, at assignment):

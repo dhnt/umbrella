@@ -3,7 +3,7 @@ id: 37fd86c8a8cb
 kind: feature
 title: 'F3 One guard for every unattended shaping source: host bound wins, per-item bound, off switch, decision log, logged override'
 seq: 795
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
@@ -12,6 +12,8 @@ assignee: claude-fable5.2
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
+closed: 2026-11-26T23:52:51.454179Z
+closed_by: claude-opus5.5
 ---
 
 Delivery rules (conductor 2026-11-26, Sprint 730 started):

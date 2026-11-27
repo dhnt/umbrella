@@ -3,14 +3,17 @@ id: ab9cbdd6f838
 kind: feature
 title: 'F3b The unattended guard and the activation policy on the wish path: shape wish --source, off switch, decision log, auto-activate'
 seq: 816
-status: todo
+status: done
 priority: p0
 labels:
     - shapeware
 created: 2026-11-26T23:49:36.66533Z
+assignee: claude-fable5.2
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
+closed: 2026-11-27T01:12:44.372436Z
+closed_by: claude-opus5.5
 ---
 
 Delivery rules (conductor 2026-11-26): same as F1-F3. Base: yoke origin/main 2b10346c or later, bashy origin/main with s730-int merged (9e516af8 or later). Branch s730-<id> in each submodule; conductor merges. Trailers Sprint/Story/Story-ID/Agent: <your agent name>. Targeted unit tests only. KISS.

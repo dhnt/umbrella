@@ -3,7 +3,7 @@ id: fedd3166a7c9
 kind: feature
 title: 'F2 Feed to wish as a skill-script: a designated issues source (owner-filed GitHub label, chat channel, scheduled research agent) files todos that enter shape wish'
 seq: 793
-status: todo
+status: done
 priority: p1
 labels:
     - shapeware
@@ -12,6 +12,8 @@ assignee: agy-gemini4-hydrogen
 sprint: 730
 sprint_id: 84e490e9-6cc4-55f2-befb-36c1ba042c5b
 sprint_title: 'Field shaping loop: runtime errors and issue feeds drive the existing shaping workflow unattended'
+closed: 2026-11-26T23:52:49.044537Z
+closed_by: claude-opus5.5
 ---
 
 Delivery rules (conductor 2026-11-26, Sprint 730 started):
