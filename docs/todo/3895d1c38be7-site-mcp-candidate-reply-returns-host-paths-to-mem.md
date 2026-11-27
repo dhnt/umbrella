@@ -26,3 +26,11 @@ Review (2026-11-26, code re-read at bashy eb41d87b and yoke 0bc70d51): raised to
 No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Known leak, fixed here; first, in parallel with L0. Its filter is shared with L1 (whichever lands first owns it; the other reuses it). Lands before L4.
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke 1ae2290c, bashy 9cae0c5b, ycode fcc970b or later on origin main. Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
+- Filter the reply only; keep it small and reusable (a function L1 will call for member views). Update the two harness checks in bashy tests/group-shaping-e2e/sandbox.py that read leaked fields.

@@ -21,3 +21,10 @@ Verification: unit tests in yoke/pkg/webconsole that a signed-in non-member, an 
 Triage (2026-11-26, review): p0, no dependencies, lands first. The ledger widens these reads, so nothing in L1 to L4 ships before this. Was the open point 'still to verify in L5'; now confirmed. No coding until Sprint 730 completes (operator, 2026-11-26).
 
 Revision 2 (2026-11-26, operator review; code at yoke 1ae2290c): start approved; plan in docs/sprint-732-master-execution-plan.md "Revision 2". Unchanged scope. First, in parallel with 759c57a6 and 3895d1c3.
+
+Delivery rules (conductor 2026-11-26, Sprint 732 started):
+- Work on current heads: yoke 1ae2290c, bashy 9cae0c5b, ycode fcc970b or later on origin main. Commit inside the submodule on a branch named s732-<story-short-id> and push that branch; the conductor merges. Never push to main, never bump pins, never touch other submodules.
+- Commit trailers: Sprint: #732, Story: #<seq>, Story-ID: <id>, Agent: <your agent name>.
+- Tests: only targeted unit tests of the packages you touch (go test -run <YourTests> ./pkg/<pkg>/). No full suites, no e2e, no long background runs; the conductor runs package suites on the gate lane. GOWORK=off for yoke.
+- KISS: the smallest change that meets this story. Anything else you notice goes in your final report as future input.
+- Final report: branch, commits, tests run with result, and any open point.
