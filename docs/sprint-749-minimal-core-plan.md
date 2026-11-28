@@ -16,6 +16,22 @@ Epic: `core-split`.
   they print from configuration and registry data.
 - Everything else is optional.
 - `custom/` holds only the adapter mechanism (if needed), never actual tools.
+- **Amendment, same day: optional has two packagings.** *Builtin optional*
+  tools stay linked in-process, kept for performance. *External optional*
+  tools are downloaded and run as separate processes. A tool moves between
+  them only when there is a reason. This replaces "unlink everything".
+
+The packaging axis already exists, so nothing new is introduced. The invariant
+class (yoke `pkg/src/class.go`) has `core`, `skill` and `external`. `skill`
+("everything else that ships in-process") is builtin optional, and
+`external` ("bin-managed: downloaded, verified and exec'd") is external
+optional.
+
+| kind | packaging | class |
+|---|---|---|
+| util | core, always linked | `core` |
+| tool | builtin optional, linked for performance | `skill` |
+| tool | external optional | `external` |
 
 ## Gap, as the code stands today
 
@@ -26,21 +42,22 @@ Code inspected at bashy `9830fa6c` and yoke at its pinned head.
 | Core verbs = 6 | `src.CoreVerbs()` (yoke `pkg/src/class.go:50`) locks 14: `agent model tool skill self src git dag commands inspect secret ask claim resource`. It is ratcheted by yoke `class_test.go:20` and bashy `atlas_views_test.go:37` and `commandkind_test.go`. | Drop 10 verbs, add `help` and `version`. |
 | `help` from data | `dispatchHelp` (bashy `internal/agentos/help.go:55`) prints compiled topic tables. | Print help from the atlas or registry plus config. A new tool's help comes from its record. |
 | `version` verb | Only the `--version` flag exists; there is no `version` verb. | Add `bashy version`, printing build info and config data. |
-| Rest optional | Classification only: after M1, `kind` makes them tools. Physically, `cmd/bashy` still links `internal/agentos`, which pulls in most of yoke. | The physical unlinking is the Sprint 355 Base/Core design (bashy `docs/sprint-355-core-optional-design.md`). |
+| Rest optional | After M1 the 10 dropped verbs classify `skill`, which is builtin optional, and stay linked. | None for this sprint. Moving a tool to external optional is a per-tool decision made later. |
 | `custom/` = adapters only | `bashy/custom/` has 51 entries: agent CLIs (`claude codex opencode agy aider muse …`), managed externals (`aws gh kubectl helm psql …`) and `internal/adapter`. | Move the tool adapters to `optional/`. Keep only the mechanism. |
-| Lockstep tags | bash, bashsharp and bashy are tagged independently. | Write the release rule. Tagging itself waits for the core-only build. |
+| Lockstep tags | bash, bashsharp and bashy are tagged independently. | Builtin optional tools ship in the same binary, so the binary changes when they change. The core contract therefore gets its own version, shared with bash and Bash#. The binary keeps its release version. |
 
 Source protection does not change. It is per path (`src.PathClass` and the
 protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 
 ## Minimal alternatives considered
 
-1. **Classification first (chosen for this sprint).** Change the verb list,
-   help, version and `custom/`. Nothing leaves the binary. This is small,
-   cheap to undo, and the `kind` view shows the target immediately.
-2. **Full Base/Core split now.** This is a separate binary entry without
-   `internal/agentos`. It is a mass change across bashy, yoke and bashsharp,
-   and is too big for one MVP sprint. It is planned as the follow-up below.
+1. **Classification plus builtin optional (chosen).** Change the verb list,
+   help, version and `custom/`. The dropped verbs stay linked as builtin
+   optional. This is small, cheap to undo, and reuses the existing classes.
+2. **Unlink every optional tool (Base/Core split).** This is a separate binary
+   entry without `internal/agentos`, a mass change across bashy, yoke and
+   bashsharp. The amendment makes it unnecessary. It remains available as a
+   per-tool route to external optional.
 
 ## Stories (MVP)
 
@@ -52,7 +69,7 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 - Route: kb `shapeware-issue-to-spec`. The feature change is filed `tbd`, gate 1, build, then the spec change.
 
 **M2: help and version from data** (bashy)
-- `bashy version` prints the build info and the configured release channel.
+- `bashy version` prints the core contract version (shared with bash and Bash#), the binary's release version and the configured channel.
 - `bashy help` lists the core verbs plus every registered tool, read from the atlas or registry.
 - Ratchet: register a tool in a temporary ring, then check that `help` shows it and that no core path changed (`src.PathClass` = core for none of the touched files).
 
@@ -63,14 +80,15 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 - A test pins that `custom/` holds no tool.
 
 **M4: lockstep release rule** (bashy docs)
-- One paragraph in the release doc: bash, Bash# and core-only bashy share one version.
-- A core release happens only on a bash or Bash# contract change.
-- Tagging starts when the core-only build exists (follow-up).
+- One paragraph in the release doc: bash, Bash# and the bashy core contract share one version.
+- The core version moves only on a bash or Bash# contract change.
+- The binary's release version also moves when a builtin optional tool changes.
+- The ratchet from M2 shows that adding or changing a tool changes no core path.
 
-## Non-goals (follow-up sprint, not filed until M1–M4 close)
+## Non-goals
 
-- The core-only build: a `cmd/bashy` base entry that does not import `internal/agentos` (Sprint 355 design). Optional verbs then run as verified child runners.
-- Moving optional verbs out of the binary.
+- A core-only build that links no optional tool (Sprint 355 design). The amendment no longer requires it.
+- Moving any builtin optional tool to external optional. That is a per-tool decision with its own reason (size, licence, platform).
 - Emptying the fleet baseline YAML.
 
 ## Compatibility
