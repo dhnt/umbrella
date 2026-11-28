@@ -212,7 +212,8 @@ Sprint 742. A lifted surface such as ClassGo's `reports-weekly-summary` changes 
 1. **The candidate file set is declared.** `SKILL.md` names the files a candidate may change in `metadata.candidate-files`: a space-separated list of repo-relative globs, for example `"internal/backup/*.go"`. `*` and `?` never cross `/`, and there is no `**`. Build outputs go in `metadata.build-outputs`, in the same form; a `build-outputs` glob that matches a directory (for example `node_modules`) leaves out everything under it. Values may be bare, double-quoted or single-quoted. `checks/candidate.bsh` (Appendix D, the same file for every surface) enforces the set:
    - every file that differs between the installed implementation and the work copy matches a `candidate-files` glob. Every file counts, tracked, untracked or git-ignored: Go compiles an ignored `.go` file all the same. Only `.git/`, `.shapeware/` and `build-outputs` are left out. A file differs in its bytes, its mode (`100644` or `100755`) or its type; a symlink is compared as a link (its target) and never followed. Changed, added and deleted files all count;
    - this folder's files in the copy are unchanged: the same type, mode and bytes, so a protected file replaced by a symlink to the same bytes fails. `features.yaml` may add lines. A spec change that comes with a candidate is §6a, spec change with a candidate (sprint 742 M2);
-   - the copy builds with this folder's `build` step, and this folder's `checks/acceptance.bsh` passes on it;
+   - **fail fast:** the comparisons above (protected files, the candidate-files set, modes, links) all run first. If any fails, `candidate.bsh` prints the FAIL lines and the VARIANT and exits 1 without building the copy, running its acceptance or any regression, so a copy's code (for example an added file's `init()`) never runs in the grader (sprint 742 M6);
+   - only then: the copy builds with this folder's `build` step, and this folder's `checks/acceptance.bsh` passes on it;
    - it prints `VARIANT <version>+shaped.<sha>`, the hash taken over the changed implementation files.
 2. **`build` runs the compiler.** For example `go build -o "$bin/<name>" ./cmd/<name>` in `$impl`, where `bin=${SHAPEWARE_BIN:-$PWD/.shapeware/bin}`. `candidate.bsh` sets `IMPL` to the work copy and `SHAPEWARE_BIN` to a scratch folder, so grading never overwrites the installed build. `Effects: read, write, exec`, `Band: unmeasured`. `build` also writes the launcher.
 3. **The judge runs the app through a launcher.** The launcher starts the reference, or a candidate, on a fresh temporary data dir and SQLite file under the scratch HOME, seeded with synthetic data only, on a free loopback port. Its verbs are the same as the weekly-summary preview launcher's (`CONTRACT.md`, "Commands"):
@@ -225,6 +226,23 @@ Sprint 742. A lifted surface such as ClassGo's `reports-weekly-summary` changes 
    Effect cap: `read`, `write` (scratch only), `exec`, and loopback `net`. The launcher never opens a real data dir, config file or credential, and reaches no address beyond loopback.
 
 `conform spec check` rejects a malformed glob (`candidate-files-invalid`: empty, absolute, with an empty, `.` or `..` segment, `**`, or a bad pattern) and `candidate-files` on a folder with no `metadata.implementation` (`candidate-files-not-lifted`).
+
+#### 4.3c A candidate that arrives as dependency pin lines
+
+**Proposed (owner decision pending, sprint 742 M6).** Not implemented; `candidate.bsh` does not read these keys.
+
+Some surfaces are implemented mostly in a dependency (bashy's agent identity lives in `github.com/qiangli/yoke`). A fix there reaches the surface's repository only as pin lines: `require` lines in `go.mod` files, their `go.sum` lines, and any source pin (for example a pinned commit in a `.go` file).
+
+- **Declared.** `metadata.candidate-pins: "github.com/qiangli/yoke github.com/qiangli/yoke/pkg/oci"` names the modules whose pin may move. The files holding the pins (`go.mod`, `go.sum` in each module that pins them, and a source-pin file) are listed in `candidate-files` as usual.
+- **The pin lines are the candidate in this repository.** This surface grades only that the pins moved and that the copy, built at the new pins, passes its acceptance (its cited dependency tests included, §6). The dependency's own diff is graded where it lives: by the dependency's own surface, if it has one, or by its review. This surface never reads that diff.
+- **Published first.** The dependency commit must be pushed and its pseudo-version served by the module proxy and the checksum database before the candidate can build standalone (`GOWORK=off`, `GOFLAGS=-mod=readonly`, no `replace` to a local path). The checksum database lagged 10 to 30 minutes on each of three bumps in sprint 744, so a grader that sees "not found" retries later. It never adds `GONOSUMDB`, `GOFLAGS=-mod=mod` or a local `replace` to get past this.
+- **`candidate.bsh` checks only the declared pin lines moved.** In a file listed only because it holds pins, every changed line must be a `require`, `go.sum` or source-pin line for a module in `candidate-pins` (a `go.sum` line also for a module that the new pin needs). Any other change in that file is a FAIL. The VARIANT digest covers the pin lines as it covers any changed file.
+
+Open questions for the owner:
+1. Is a pin-only candidate one candidate per repository, or one per (repository, dependency commit) pair, so the same yoke commit pinned in five modules is one variant?
+2. May `go.sum` gain lines for modules that are not in `candidate-pins` but that the new pin pulls in, or must those be declared too?
+3. Does an unreviewed dependency diff block the surface's candidate, or does the surface trust that the dependency's own review happened?
+4. Where is the source pin declared (a file and a pattern), so `candidate.bsh` can tell a pin line from code?
 
 ## 5. features.yaml
 
@@ -291,12 +309,33 @@ A folder that is certified carries its gate operations as targets too, so the co
 - A served app adds an HTTP pattern: `GET <path> => <status> <json-path>=<value>`. Its exact form is settled in the pilot.
 
 **A pinned go test** (Sprint 742) is cited through the surface launcher's `gotest` verb (§4.3b, Appendix D):
-- `<launcher> gotest PKG NAME` runs `go test -count=1 -v -run '^NAME$' PKG` in the implementation. It prints exactly `PASS NAME` with exit 0 when that test reports `--- PASS: NAME`, and otherwise exactly `FAIL NAME` with exit 1. The go test log is not printed, so the output the judge sees is stable. `-v` makes a run that matched no test a FAIL.
+- `<launcher> gotest PKG NAME` runs `go test -count=1 -v -run '^NAME$'` on PKG with `GOWORK=off`. It prints exactly `PASS NAME` with exit 0 when the run exits 0 and reports exactly one `--- PASS: NAME` line, and otherwise exactly `FAIL NAME` with exit 1. The go test log is not printed, so the output the judge sees is stable. `-v` makes a run that matched no test a FAIL. The launcher validates both operands itself, not only the lint: a NAME outside `^Test[A-Za-z0-9_]+$` (for example `Test.*`) or a PKG outside the forms below is a FAIL before any go test runs.
 - An acceptance line: `<launcher> gotest ./internal/backup TestRestoreRoundTrip => PASS TestRestoreRoundTrip`. A `CONTRACT.md` assertion: `$ <launcher> gotest PKG NAME`, the output `PASS NAME`, `exit: 0`.
-- `PKG` is `.` (the root package) or `./` followed by a clean relative path: no empty, `.` or `..` segment and no `...` pattern, so a pin names exactly one package inside the implementation. `NAME` is one top-level test (`Test...`); subtests are not cited.
+- `PKG` names exactly one package, in one of three forms (sprint 742 M6). `NAME` is one top-level test (`^Test[A-Za-z0-9_]+$`); subtests are not cited.
+  - `.` (the root package) or `./` followed by a clean relative path: no empty, `.` or `..` segment and no `...` pattern. It resolves inside the implementation (a symlink out of it is a FAIL).
+  - That `./path` may lie in a **nested module**, a subdirectory with its own `go.mod`, such as bashy's `./yoke/mb`. The launcher runs `go test ./<rest>` from the nearest directory at or above the package that holds a `go.mod`, never above the implementation root.
+  - A **dependency import path**, such as `github.com/qiangli/yoke/pkg/chat`, in a module that the implementation's `go.mod` requires. The launcher runs `go test -mod=readonly <importpath>` from the implementation root, so the module graph is the implementation's own: the version tested is exactly the pinned one (after the implementation's `replace` lines, as it ships), and `go.mod` and `go.sum` are never rewritten. An import path in the implementation's own module is written as a `./` path.
+- **Which dependency tests can be cited.** A dependency's test runs with the package's directory in the module cache as its working directory. The module cache is read-only, and it holds only the module zip. So a dependency test can be cited only when (checked on bashy `096b1744` and yoke `d5e2b267`, where every yoke package's test imports resolve from bashy's `go.sum`):
+  - its package and its test-only imports resolve from the implementation's `go.sum`. Otherwise `go test` stops with a missing `go.sum` entry and the launcher prints FAIL. The launcher never uses `-mod=mod`, which would rewrite the implementation's files;
+  - it writes nothing beside its sources: no golden-file update, no file under `testdata/` or `.`, which fails on the read-only cache (it may write under `t.TempDir()`);
+  - it reads only files in its module zip: not the dependency repository's `.git`, sibling or nested modules (a nested module is cut out of the parent's zip), or files beside the repository.
+
+  A test that fails one of these is not citable from a consumer. Cite a test in the implementation (a `./path`, a nested module included) that exercises the same behaviour instead.
+- Real case, bashy `096b1744` as the implementation: `launcher gotest github.com/qiangli/yoke/pkg/chat TestJoinAdHocDerivesTheIDFromTheInstanceUUID`, `... github.com/qiangli/yoke/pkg/bus TestAdHocIdentityNeedsASessionKey`, `... ./yoke/mb TestMBExtensionAndMainLineWiring` and `... ./yoke/inbox TestInboxPeekWithoutSessionDoesNotCreateClaim` each print `PASS NAME`. `go test ./yoke/mb` from the bashy root fails ("main module does not contain package"), which is why the nested-module rule exists.
 - A pinned test that fails today is a bug's correct behaviour: a tbd feature with `resolves:` (§4.2). A fix that makes it pass is then a spec-linked change, and `candidate.bsh` runs it with the rest of the acceptance lines.
-- `conform spec check` rule `gotest-form`: a `gotest` line takes exactly `PKG NAME`, expects exactly `PASS NAME`, and in `CONTRACT.md` exits 0.
+- `conform spec check` rule `gotest-form`: a `gotest` line takes exactly `PKG NAME` in the forms above, expects exactly `PASS NAME`, and in `CONTRACT.md` exits 0. It rejects `./...` and any `...` pattern, a `..` segment, an absolute path, a standard-library path, and an import path not in a module the implementation's `go.mod` requires. The `go.mod` check needs the folder inside its implementation (the repository root above it holds a `go.mod`). A folder that stands alone accepts any syntactically valid import path, since the lint cannot see the pins there; the launcher still fails a path the implementation does not require.
 - `conform mutate` treats it as any CLI assertion. It seeds an output mutant and an exit mutant; the stable output kills both (measured on the Appendix D self-test surface: 2/2). Each mutant reruns the whole contract, so every `gotest` assertion adds one go test run per mutant. Budget for it, or shard (`SHARDS`/`SHARD`).
+
+**A surface with a live terminal session.** **Proposed (owner decision pending, sprint 742 M6).** The contract runner runs each command through `sh -c` with no terminal. A behaviour seen only in a live session (the session id a real `bashy <tool>` launch prints, `bashy chat sessions` while it runs) may be asserted, in order of preference, by:
+1. a cited go test (above) that drives the session code in-process: the usual form, now that a nested module or a dependency test can be cited;
+2. `--dry-run` text, when the command prints what the session would do (the id it would mint) without starting one; it pins the plan, not the live effect;
+3. a recorded transcript under `examples/`, compared by a check after masking the parts that vary (ids, times). Evidence only: it is not re-run, so it is not an acceptance line;
+4. a pty runner, a future judge feature (`conform` would allocate a pseudo-terminal, drive keystrokes and read the screen). Not available; nothing may assert through it yet.
+
+Open questions for the owner:
+1. Is a recorded transcript acceptable evidence for a `verified` feature, or only for a `tbd` one?
+2. Should the pty runner be a `conform` contract kind, or a launcher verb (`session start|send|read|stop`) like `serve`/`request`?
+3. Does `--dry-run` text count as pinning the behaviour, or must every such feature also cite a go test?
 
 **`checks/candidate.bsh COPY`** is run from the installed folder. It prints PASS/FAIL lines and exits 1 on any FAIL:
 - the copy is not the installed folder
