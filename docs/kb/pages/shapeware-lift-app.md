@@ -14,11 +14,11 @@ tags:
     - reverse-sdlc
     - dag
 status: validated
-evidence: renamed from shapeware-spec-from-app (validated) 2026-11-27; body unchanged apart from the lift wording
+evidence: renamed from shapeware-spec-from-app (validated) 2026-11-27; judge normalisation note added 2026-11-28 from bashy sprint 744 and ClassGo sprint 741 lifts (conform contract/normalize.go, run.go)
 source:
     tool: claude
 created: "2026-11-27T13:40:35Z"
-updated: "2026-11-27T13:40:57Z"
+updated: "2026-11-28T11:03:22Z"
 supersedes: shapeware-spec-from-app
 valid_from: "2026-11-27T13:40:35Z"
 ---
@@ -67,6 +67,7 @@ Goal: lift an existing app or repository, making it shapeable: give it a shapewa
 ## What the second conversion taught (a service app; the spec written by an agent, the hidden cases by another vendor's agent)
 - **A service needs a start and a stop that the contract can run.** If the app has no stop verb, or no verb starts its server, say where they live (a small launcher beside the built program is acceptable), how the contract starts the server and waits until it is ready, and what `stop` is scoped to (this folder or this user). Assert that `stop` exits 0 with nothing running and that stored state survives a stop. A signal is not a stop the contract can check.
 - **Name the reference command.** Certify the command a user runs (the launcher), not the program it wraps: `conform cert --reference-cmd` takes that command, and `--dir` the folder that holds `examples/`.
+- **What the judge does to plain text (conform `contract/normalize.go`, `run.go`).** It drops bashy's advisor hint lines (`{"schema_version":"bashy-hint-v1",...}` and the one-time `bashy: ... bashy skill show bashy` line), strips ANSI escapes and carriage returns, trims surrounding whitespace and rewrites loopback addresses to `localhost`. A plain-text assertion sees **all of stdout, then all of stderr**, not their interleaving, so paste a captured run in that order (or send diagnostics to one stream). Capture reference output with `BASHY_HINTS=off`, or hints leak into what you paste; a hint that slips into a committed assertion also leaks local paths.
 - **Know how the judge compares output.** Only a command that carries `--json` is compared structurally (open markers, any key order). Every other output is compared as text, including JSON printed by `curl`. For those, either state the exact format as a rule or normalise the output inside the command. A byte format the spec never stated failed a build whose behaviour was right.
 - **When the reference's page fails the UI rules** (no programmatic labels, for example): assert what the page does carry (the visible texts, the button names) with a console check, record the gap as a known issue, and say that an implementation may do better.
 - **A surviving mutant is usually a missing assertion, not always.** Redirections, pipes and compound commands can hide a mutation from the judge. First make the assertion's last step one plain command; add an assertion only if the mutant still survives.
