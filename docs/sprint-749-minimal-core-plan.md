@@ -226,6 +226,11 @@ the ruling but stay linked and on by default.
 - bash, Bash# and the core contract (`yoke/core`) share one version, which moves only on a bash or Bash# contract change.
 - The binary's release version also moves when a builtin optional tool changes.
 - Cite the M0a cache check and the M2 ratchet.
+- **`release-pins-consistent`** (owner, 2026-11-28). Lift a narrow new surface `bashy/shapeware/release-pins` from today, through kb `shapeware-lift-app`. File this feature `tbd` and take it to gate 1:
+  - **Intent:** a versioned bashy and the ycode it pins agree on the shared siblings (bash, bashsharp, coreutils, yoke, yoke `pkg/core`).
+  - **Acceptance:** `session gotest . TestSiblingPinsAgree => PASS`. With `GOWORK=off` at a fixed commit, never against live heads, ycode's version of each shared sibling must be no older than bashy's.
+  - **Why:** ycode gets bashsharp only through its bashy pin. A ycode bumped before bashy's last sibling bump keeps the old siblings (the Sprint 746 gap, todo `da93e20e0f6a`). The test fails until that gap is closed.
+  - **Release order:** bump the siblings into bashy, bump ycode to that bashy, bump bashy's ycode pin, then tag. M0a's merge already follows this order.
 
 **Order:**
 1. M0a, then M0b, then M1.
