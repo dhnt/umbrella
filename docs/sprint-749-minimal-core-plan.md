@@ -213,6 +213,7 @@ the ruling but stay linked and on by default.
 
 **M2: `help` reads data** (bashy). There is no new command or option. Only what the existing output reads from changes.
 - `bashy --version` stays exactly as it is. The shell layer answers it (bashsharp `cli/version.go`, not cobra). Its build ID is the stamped release tag, and under the M4 lockstep rule that tag also names the core contract version, so nothing needs adding.
+- **`--version` on the core verbs** (owner, 2026-11-28). Set cobra's built-in `Version` field to the existing banner (`bashsharp/cli` `versionBanner`, made reachable by an exported function), so `bashy agent --version`, `bashy model --version` and `bashy tool --version` print the same line as `bashy --version`. `commands` uses its own parser and gets the same line in a few lines of code. This adds no new command. Optional tools are left alone.
 - `bashy help` takes its topics from records, not from compiled tables. It names `commands --json` as the discovery entry, so a new tool shows up without a core change.
 - **Ratchet:** register a tool in a temporary ring. `commands --json` and `help commands` must show it, and no file under `yoke/core` may change.
 
