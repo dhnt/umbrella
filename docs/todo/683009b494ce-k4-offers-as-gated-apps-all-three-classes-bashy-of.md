@@ -35,3 +35,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #832 / Story-ID: 683009b494ce / Agent: codex-gpt6-sol. Do not push main, do not bump any pin, do not edit bashy (the conductor mounts the verbs).
 - Finish by appending a "Delivery" paragraph to docs/todo/683009b494ce-k4-offers-as-gated-apps-all-three-classes-bashy-of.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Conductor note at dispatch: yoke main 567a9efc already has package pkg/offer (K2: offer.Offerable(catalog, name) returns the typed definition or a typed refusal) and fleet.ToolDefinition; extend that package, do not recreate it. Run the FULL test of every package you touch (not -run filters) before committing: K2 regressed four tests that a filtered run missed.

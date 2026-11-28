@@ -3,12 +3,15 @@ id: 093aad14de84
 kind: feature
 title: 'K2 the offerable set and the typed tool definition: model, tool, agent, registered command (ToolCommand overlay, no new runner kind)'
 seq: 830
-status: todo
+status: done
 priority: p1
 created: 2026-11-27T15:34:19.121048Z
+assignee: codex-gpt6.2-astra
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T07:19:36.702646Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §3.1, §4 K2. Two parts.
@@ -37,3 +40,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #830 / Story-ID: 093aad14de84 / Agent: codex-gpt6.2-astra. Do not push main, do not bump any pin, do not edit other repos.
 - Finish by appending a "Delivery" paragraph to docs/todo/093aad14de84-k2-the-offerable-set-and-the-typed-tool-definition.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 40 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Delivered (conductor record): yoke main 098f9429 (worker commit 752683bc by codex-gpt6.2-astra, cherry-picked) + conductor repair 567a9efc. Root cause of the repair: the worker verified with -run Offer only; four existing tests regressed (cligw name ratchet, fleet CLI goldens, hidden-tool --builtin list, seeds-off tool set); fixed with fleet Tool.IsOffers, regenerated goldens and updated expectations (offers is first-party mechanism). Gate: go test ./pkg/fleet ./pkg/cligw ./pkg/broker ./pkg/chat ./pkg/toolcmd ./pkg/sharedfiles ./mcp ok.
