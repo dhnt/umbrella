@@ -1,6 +1,6 @@
 # Sprint 740: SGI (a pay-per-use tool market for agents: models, tools and agents for credits)
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only. Revised the same day: verified delivery, the store, and a per-account append-only credit records kept by cloudbox in a transparency log. Revised again after the operator review: the store is a tool market made for agents (section 3.4), what is sold follows the fleet partition (section 3.1), and every deal is pay per use.*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only. Revised the same day: verified delivery, the store, and a per-account append-only credit records kept by cloudbox in a transparency log. Revised again after the operator review: the store is a tool market made for agents (section 3.4), what is sold follows the fleet partition (section 3.1), and every deal is pay per use. Revised at the Sprint 739 review: the tool-call form, the meter and the mount moved into Sprint 739, and this sprint adds only the payment layer (section 1).*
 
 ## 1. The gap
 
@@ -22,14 +22,23 @@ starters, specs, Helm pointers) stays a free shelf of DIY starters. What an agen
 cannot make is paid: the SGI market. The hosted app listing stays what it is, human
 access to a shared running instance. It is not a store.
 
-Sprint 739 (`docs/sprint-739-master-execution-plan.md`) builds the sharing mechanism:
-- offers and folders as gated apps;
-- the member stamp;
-- `bashy remote`;
-- artifacts by `bashy://` reference.
+Sprint 739 (`docs/sprint-739-master-execution-plan.md`) builds everything that does
+not involve payment (operator, 2026-11-27):
+- offers and folders as gated apps, the member stamp and `bashy remote`;
+- artifacts by `bashy://` reference;
+- **the tool-call form:** the fleet partition that decides what can be offered,
+  the three classes (model, tool, agent), the typed tool definition and its
+  digest, and the agent token cap (739 K2, K4);
+- **the meter:** every call is counted in the offer's unit on both sides, whether
+  free, shared or paid (739 T1);
+- **the mount:** `bashy remote add` puts an offered tool in the agent's tool list
+  (739 T2).
 
-SGI is the economy, verification and discovery layer on top. Sprint 740 depends on
-Sprint 739 K1–K4 and does not reopen it.
+**SGI is only the payment layer on top.** It adds a price on the metered unit, the
+backing and source rules for a paid offer, bids, credits, signed receipts,
+budgets, verified delivery, the ledger and the priced listing. It adds no second
+offer format, call path, meter or mount. Sprint 740 depends on all of Sprint 739
+(K1–K4, T1, T2) and does not reopen it.
 
 ### Operator rulings (2026-11-27)
 
@@ -82,6 +91,11 @@ these apply:
 
 ### 3.1 What can be offered
 
+Eligibility, the three classes, the typed tool definition, its digest and the agent
+token cap are Sprint 739 K2 and K4. They apply to every offer, paid or not, and
+are restated here only for reference. `--sgi` adds the ask, the backing and the
+source digest to an offer that already passes them.
+
 **Eligibility is one test: the name is in the fleet.** That means a fleet model, a
 fleet tool or agent, or a registered command (`bashy commands add`). bash, Bash#,
 coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
@@ -95,8 +109,9 @@ coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
 
 - These are the names Sprint 739 K2 makes offerable. Mutating and `confirm`
   commands stay refused remotely (`Admit`).
-- **Command opt-in:** `bashy offer NAME --sgi [--ask MIN..MAX] [--unit U]
-  [--token-cap N] [--verifier V@DIGEST --spec-format F --redeliver N]`.
+- **Command opt-in:** `bashy offer NAME --sgi [--ask MIN..MAX]
+  [--verifier V@DIGEST --spec-format F --redeliver N]`. The unit and the token
+  cap are already on the offer (739).
 - **An offer carries a typed tool definition:** the name, a description written for
   a model, the typed input schema (the record's `args`), the output shape and the
   effects. An offer with only an untyped argument list is refused, naming what is
@@ -140,8 +155,8 @@ coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
 - `--any` picks the lowest ask among the offerers of the same command; a tie goes
   to the lowest latency.
 - There is no order book.
-- **The price is per unit.** For a metered unit (tokens, seconds) the door reads the
-  amount from its run record and the receipt carries units times the cleared price.
+- **The price is per unit.** The units come from the Sprint 739 T1 usage record,
+  which both sides already hold; the receipt carries units times the cleared price.
   The taker's `--max` (and an agent offer's token cap) bounds the total.
 
 **Verified delivery: the deal.**
@@ -259,11 +274,9 @@ The buyer is an agent, so the store answers in tool definitions, not pages.
   - `bashy store search QUERY [--class model|tool|agent]` returns tool definitions
     with seller, ask, unit, digests and track record.
   - `bashy store show ID` prints one listing in full.
-  - `bashy store add ID [--as NAME]` **mounts** the tool: it writes a local
-    registered command record whose exec is `bashy remote HOST -- NAME {args}`,
-    with the listed schema and the pinned digests. Registered records already
-    become typed MCP tools and refresh live, so the tool appears in the agent's
-    tool list with no new mechanism. `bashy store remove NAME` unmounts it.
+  - `bashy store add ID [--as NAME]` **mounts** the tool by calling the Sprint 739
+    T2 mount (`bashy remote add`) for the listing's host and name, and also pins
+    the source digest. `bashy store remove NAME` unmounts it.
   - `bashy store order ID --spec F --bid R` is the verified-delivery flow.
   - The store verbs carry typed schemas, so an agent can call them as tools too.
 - **Agent budget guard.** The owner sets a credit budget per agent principal
@@ -376,20 +389,23 @@ price guide.
 | App catalog | `appstore/` (`categories.yaml`, `apps/<id>/`) | not extended: it stays the free shelf |
 | Hosted-plane fake | `yoke/pkg/fleet/cloudboxfake` | ledger, log and listing in e2e |
 | Offers, stamp, `bashy remote`, `bashy://` artifacts | Sprint 739 K1–K4 | transport, identity, delivery |
+| Fleet-partition eligibility, typed tool definition and digest, agent token cap | Sprint 739 K2, K4 | what a paid offer is; `--sgi` only adds the ask, backing and source |
+| Usage record per call on both sides (tool, class, unit, units) | Sprint 739 T1 | the receipt body and the priced quantity |
+| `bashy remote add` (mount as a local registered record) | Sprint 739 T2 | `bashy store add` |
 
 ## 5. Stories
 
 | Story | What | Repo |
 |---|---|---|
-| **G1** SGI opt-in | `--sgi`, eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused), typed tool definition and its digest, ask range and unit, agent token cap, backing guard, verifiable source per kind, the source route, `bashy offer source` | yoke `pkg/fleet`, bashy |
-| **G2** receipts | `hold` / `final` / `release` receipts, signed and chained; receipt header; caller store; `--verify` | yoke `pkg/broker` |
-| **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing per unit (call, token, output unit); metered total under `--max` or the token cap; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
+| **G1** SGI opt-in | `--sgi` on an offer that already passes the Sprint 739 checks (fleet partition, typed definition and digest, unit, token cap): ask range, backing guard, verifiable source per kind, the source route, `bashy offer source` | yoke `pkg/fleet`, bashy |
+| **G2** receipts | `hold` / `final` / `release` receipts: the Sprint 739 T1 usage record plus price, signed and chained; receipt header; caller store; `--verify` | yoke `pkg/broker` |
+| **G3** credits and per-call bidding | `bashy credits` (balance, history, verify, export); per-relationship lines; bid clearing per unit (call, token, output unit); total from the 739 T1 units under `--max`; 402 counter; `--any`; observe-only default | yoke `pkg/broker`, bashy |
 | **B1** agent budget guard | `bashy credits budget AGENT N`: a credit budget per agent principal; refusal past it; logged owner override; observe-only first | yoke `pkg/broker`, bashy |
 | **V1** verified delivery | offer `verifier`, `spec-format`, `redeliver`; hold → deliver → buyer verify → final/release; waiver; timeout settle | yoke, bashy |
 | **V2** verifier framework and the video verifier | conform-based verifier commands; the shared check library of section 3.5 (ffprobe, loudness, black/silence, caption timing, transcribe-back WER, scene coverage first); deterministic verdict | conform, bashy examples |
 | **L1** ledger wire and client | public wire for checkpoint submit (both-signed), per-account append-only record (double entry, hash-chained), signed tree head, inclusion and consistency proofs, position query, track record; `bashy credits checkpoint`, `record` and `audit` (proof checks, tree-head gossip); door position check; cloudboxfake with a Merkle log. The hosted implementation is tracked privately. | yoke `pkg/fleet`, bashy |
 | **S1** verifier contracts and price guide | each verifier ships its contract, thresholds, one passing sample delivery and a price guide per unit; no `appstore` catalog | conform, bashy examples |
-| **S2** listing and store CLI for agents | publish offers with the typed definition to the listing wire; `bashy store search/show/add/remove/order`, all with `--json` and typed schemas; `add` mounts the tool as a local registered record; track record per row; cloudboxfake support | yoke, bashy |
+| **S2** listing and store CLI for agents | publish offers with the typed definition to the listing wire; `bashy store search/show/add/remove/order`, all with `--json` and typed schemas; `add` calls the 739 T2 mount; track record per row; cloudboxfake support | yoke, bashy |
 | **S3** owner page | thin page over CLI operations: agent budgets, spend, mounted tools, revoke | bashy |
 | **G5** cloudbox offers and Tessaro credit (spike, doc only) | public wire for cloudbox-offered commands and the purchased-credit balance type | umbrella docs |
 | **G4** A/O/C sandbox e2e (acceptance) | see section 7 | bashy (`test-group-shaping-e2e`) |

@@ -1,6 +1,6 @@
 # Sprint 739: commands and folders as a service (offer bashy commands and designated folders to your trusted group)
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only; revised the same day after a code review for minimum change.*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only; revised the same day after a code review for minimum change. Revised again at the operator review: every offer is a typed tool call, every call is metered, and Sprint 740 adds only the payment layer (section 3.1).*
 
 ## 1. The gap
 
@@ -36,6 +36,19 @@ generalizes that one model rather than adding a second one:
 - An agent acting for a member gets exactly that member's rights
   (`docs/access-tiers.md`).
 
+**Everything offered is a tool call, and every call is metered (operator review,
+2026-11-27).**
+- A model, a tool and an agent are all offered the same way: as a **typed tool
+  call**. There is one definition format, one call path and one usage record.
+- **Every call is metered**, on both sides, whether it is free, shared or (later)
+  paid. The owner's own calls are metered too. Payment is not what turns the
+  meter on.
+- This sprint is the whole base of Sprint 740
+  (`docs/sprint-740-master-execution-plan.md`). Sprint 740 adds only the payment
+  layer on top: a price on the metered unit, credits, signed receipts,
+  settlement and the priced listing. It adds no second offer format, call path
+  or meter.
+
 ## 2. What already exists (code inspected 2026-11-27)
 
 | Piece | Where | Reused as |
@@ -49,6 +62,8 @@ generalizes that one model rather than adding a second one:
 | Results carry `Artifacts []string` (absolute paths on the door host) via `output: file:<glob>` | `toolcmd/toolcmd.go:72-104`, `print.go:276-311` | the artifact list, published by reference instead |
 | LLM through a shared door with no config: `MODEL@DOOR` | `broker.ResolveDoorModel`, genie (`bashy/internal/agentos/genie_external.go:50`) | case (a) |
 | `files` app: the embedded File Browser over HOME (or `settings.scope`), **for the owner only**. Single instance per process, one root, no ETag, no identity pass-through. | `outpost/cmd/outpost/capability_files.go`, fork `fbembed/embed.go:20-104` | **kept as is**, owner only; never exposed to members, and not the base for member folders |
+| Door run record per request (principal, class, path, model, tokens, wall time, `cost_usd`); rollup per principal with `usage`; peer limits count tokens and cost | `yoke/pkg/broker/audit.go:22-62`, `usage.go:22-44`, `usagecmd.go`, `peerlimit.go:213-240` | the meter (T1 adds the tool name, class and units) |
+| A registered command with a typed `args` schema becomes a typed MCP tool, refreshed live; tool-definition SHA-256 | `yoke/mcp/direct.go:56-64,179-309`, `yoke/pkg/fleet/command_schema.go:40-63`, `yoke/mcp/policy.go` (`ToolsSHA256`) | the typed tool definition and its digest (K2); mounting an offered tool (T2) |
 | App registry accepts any app name; one in-memory listener can serve many apps | `apps.go:466-486` (`RegisterWithMetaDialer`), `outpost/cmd/outpost/capability_support.go:150-155` | per-folder and per-offer apps |
 
 **Truly missing:**
@@ -66,14 +81,70 @@ generalizes that one model rather than adding a second one:
 7. A model-less command tool (binary `bashy`) may not route: the door only lists
    agent rows with a model binding (`cligw/catalog.go:280-315`). K2 verifies this
    first.
+8. An offer has no typed tool definition. Nothing says what class it is, what it
+   takes and returns, or what unit it is counted in. Any declared name can be
+   offered, including verbs every agent already has.
+9. The run record does not name the tool or count its units, so usage cannot be
+   read per tool. It counts tokens only (a command run counts as nothing), and the
+   caller keeps no record at all.
+10. An offered tool cannot be put in an agent's own tool list. The agent has to be
+    told the `bashy remote` line.
 
 ## 3. Design
+
+### 3.1 One form: a metered, typed tool call
+
+**Three classes, one form.** The class comes from the fleet record, not from a flag.
+
+| Class | What is offered | Call | Unit |
+|---|---|---|---|
+| **Model** | a fleet model binding (`llm`) | the typed call `llm`, and the inference routes for an agent that uses it as its model | token |
+| **Tool** | a fleet tool, or a registered command (`bashy commands add`) | `slash=NAME` with schema-bound arguments | call, or an output unit the offer names (second of audio, image) |
+| **Agent** | a fleet agent bound to a model: "a smart tool" | the typed call `{task, …}`, under a token cap | token |
+
+- **What can be offered is one test: the name is in the fleet.** That means a
+  fleet model, a fleet tool or agent, or a registered command. bash, Bash#,
+  coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
+  `todo` and the like) are refused, because every agent already has them. This
+  is the test Sprint 740 planned for paid offers; it now applies to every offer.
+- **Every offer carries a typed tool definition:** the name, the class, a
+  description written for a model, the typed input schema (the record's
+  `args`), the output shape, the effects and the unit. An offer with only an
+  untyped argument list is refused, and the refusal names what is missing.
+- **The definition has a digest** (the existing tool-definition SHA-256). The
+  offer app serves the definition and its digest read-only to the offer's
+  audience.
+- **An agent offer declares a token cap.** A call that reaches the cap stops and
+  is counted for what it used. An agent is never offered as an open-ended task.
+- **Metering.** The door's run record already exists for every request. It gains
+  the tool name, the class, the unit, the units used and the definition digest.
+  - A call counts 1. Tokens come from the usage the door already parses. An
+    output unit comes from the result, as the offer declares it.
+  - The door returns the record's usage to the caller, and the caller keeps its
+    own copy. Both sides can then show the same numbers.
+  - `bashy offer usage` (by member and tool) and `bashy remote usage` (by host
+    and tool) roll the records up, with `--json`.
+  - Offer limits (`--limit`) count in the offer's unit.
+  - The record carries **no price**. Sprint 740 puts a price on the unit and
+    signs the record as a receipt.
+- **Mounting.** `bashy remote add HOST NAME [--as LOCAL]` reads the definition
+  and writes a local registered command record whose exec is
+  `bashy remote HOST -- NAME {args}`, with the offered schema and the pinned
+  definition digest. Registered records already become typed MCP tools and
+  refresh live, so the tool appears in the agent's tool list with no new
+  mechanism. A changed digest makes the mounted tool refuse until it is added
+  again. `bashy remote remove NAME` unmounts it.
+- **Folders are data, not tools.** They stay gated apps (below) and are not
+  metered in this sprint.
+
+### 3.2 Offers and folders as gated apps
 
 **Each offer and each folder is its own gated app.** That gives each one its own
 audience with zero new audience code.
 
-- `bashy offer NAME [--circle C] [--group G] [--email E] [--limit …] [--for 2h]` does
-  three things:
+- `bashy offer NAME [--circle C] [--group G] [--email E] [--limit …] [--for 2h]
+  [--token-cap N]` does three things, after the eligibility and typed-definition
+  checks of section 3.1:
   - registers app `offer-NAME` on the door's port with `require_login` and
     `trust_cloud_identity`;
   - adds the command to the door's offered set;
@@ -86,8 +157,9 @@ audience with zero new audience code.
   - It applies when there is no presented credential, the request arrived via the
     cloud, the stamp verifies with that app's SSO secret, and the relationship is
     member or owner.
-  - It reads the app name from `X-Forwarded-Prefix`. The command must equal that
-    offer (`offer-llm` admits only inference).
+  - It reads the app name from `X-Forwarded-Prefix`. The call must be that
+    offer's tool, by class: `offer-llm` admits only inference, a tool offer only
+    its `slash=NAME`, an agent offer only its agent run under the token cap.
   - The principal becomes `member:EMAIL`. That principal gets the peer route limits
     and caps.
 - **Consumer:** `bashy remote HOST -- NAME args…` is `tool cmd run NAME --peer`
@@ -157,15 +229,17 @@ audience with zero new audience code.
 | Story | What | Repo |
 |---|---|---|
 | **K1** named peer runs + per-command allow-list | Caller only for the run: `runPeer` accepts `TOOL:NAME`/`NAME`, and a `DispatchPeerCommand` sends `slash=NAME[,tool=TOOL]` without the measured-selection checks. Door: `PeerShare.Commands` allow-list, checked from the parsed slash name; empty = no named commands, so nothing widens (fixes missing item 2). | yoke `pkg/toolcmd`, `pkg/broker` |
-| **K2** offerable registered commands and bashy verbs | Generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
+| **K2** the offerable set and the typed tool definition | Eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused). One typed tool definition per offer (name, class, description, input schema, output shape, effects, unit) and its digest; an untyped offer is refused. For a registered command, generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is part of the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
 | **F1** `outpost.shares` capability | reads one record per share, `~/.bashy/shared/NAME.json` (path, default the empty `~/.bashy/shared/NAME/`; mode; audience; created), and reloads on change; one `files-NAME` app per record; handler (`os.OpenInRoot` on the folder + `ServeContent` + weak ETag + JSON listing), read-only for members. File Browser over HOME unchanged and owner only. | outpost |
 | **F2** folder CLI and URIs | `bashy files share NAME [--path DIR] [--force --reason]` writes `NAME.json` (default folder created empty; refuses HOME, its ancestors and `~/.bashy` without `--force`) and applies the audience with `outpost apps share`; `unshare` / `shares` (owner); `ls/stat/cat/get/link` (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `files-*` apps | yoke `pkg/fleet`, bashy |
 | **K3** inputs and outputs by reference | Refuse host paths from peer callers (fixes the pre-existing item 3); fetch URI inputs into scratch; publish artifacts into the offerer's output share and return URIs with size and sha256 | yoke `pkg/toolcmd`, `pkg/cligw` |
-| **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list`; register `offer-NAME` (`require_login` + `trust_cloud_identity`); the door stamp branch with the prefix-to-offer check; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
-| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers `llm` and `transcribe`; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
+| **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list` for all three classes; register `offer-NAME` (`require_login` + `trust_cloud_identity`); the offer app serves the typed definition and its digest; the door stamp branch with the prefix-to-offer check per class; an agent offer's token cap; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
+| **T1** meter every offered call | The door run record gains tool name, class, unit, units and definition digest, for every caller (owner, peer, member) and every class; usage returned to the caller, who keeps a copy; `bashy offer usage` and `bashy remote usage` with `--json`; limits count in the offer's unit; no price | yoke `pkg/broker`, `pkg/toolcmd`, bashy |
+| **T2** mount an offered tool | `bashy remote add HOST NAME [--as LOCAL]` writes a local registered record wrapping `bashy remote`, with the offered schema and pinned definition digest, so the tool shows in `bashy mcp tools`; a changed digest refuses until re-added; `bashy remote remove` | yoke `pkg/fleet`, bashy |
+| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers one of each class (`llm`, `transcribe`, one fleet agent with a token cap); `bashy remote add` mounts `transcribe` and it shows in `bashy mcp tools` with a typed schema; the agent call stops at its cap; after the runs, `bashy offer usage` on C and `bashy remote usage` on O show the same units per tool for owner, peer and member calls, with no price anywhere; an internal verb and an untyped offer are refused; a changed definition digest refuses the mounted tool; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
 
 Order: F1 and K1 first (independent), then F2 and K2, then K3 (needs F2), then K4,
-then K5. Each story is delivered in its module first; then consumer pins and the
+then T1 and T2 (both need K4), then K5. Each story is delivered in its module first; then consumer pins and the
 umbrella pin are bumped.
 
 ## 5. Non-goals (not in MVP)
@@ -178,7 +252,14 @@ umbrella pin are bumped.
 - An MCP server for folders or offers beyond what bashy already exposes.
 - A generated UI form for an offered command, or a member UI for folders.
 - Transparent fallback for non-LLM commands, load balancing, container
-  sandboxing of offered runs (see Sprint 738), billing.
+  sandboxing of offered runs (see Sprint 738).
+- Anything about payment: a price, bids, credits, credit lines, budgets in
+  credits, signed receipts, verified delivery, the ledger and the priced
+  listing. That is Sprint 740, on top of this sprint's offer, definition, meter
+  and mount.
+- Metering folder reads. Folders are data, not tool calls.
+- Typed schemas for bashy's untyped built-in verbs. Only an offered tool needs
+  one.
 
 ## 6. Verification and venues
 
@@ -198,3 +279,10 @@ umbrella pin are bumped.
   checked on the next release train, not in this sprint.
 - **Model-less command rows in the door.** This is unproven (item 7). K2 starts by
   testing it, and the result decides the size of K2.
+- **Stopping an agent run at a token cap.** This is unproven. K4 starts by
+  checking whether the door can stop a running agent on its served-token count;
+  if it cannot, the cap is checked between turns and the story records that.
+- **Output units other than call and token.** The count has to come from the
+  result in a way the door can read. T1 supports call and token first and one
+  declared output unit (seconds) for `transcribe`; other units are added when an
+  offer needs them.

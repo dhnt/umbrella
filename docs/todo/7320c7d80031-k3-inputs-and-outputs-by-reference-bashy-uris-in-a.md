@@ -12,3 +12,5 @@ sprint_title: 'Commands and folders as a service: offer bashy commands and desig
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 K3. Pre-existing hazard: a peer-supplied json-file or path-shaped arg is read from the door host's filesystem (fleet toolcommand.go:358-375). Refuse host paths from peer/member callers; accept bashy:// URIs, fetched into the run's scratch dir by the offerer (member token, F2). Artifacts (Result.Artifacts, output file:<glob>, print.go:276-311) move into the offerer's output share <bashy-home>/shared/offers/ (app files-offers, same audience as the offer; F1) and return as URIs with size + sha256; small text stays inline. Depends on F2. Code inspected 2026-11-27 (revised after review): yoke pkg/toolcmd toolcmd.go print.go peer.go, pkg/cligw slash.go:261-277, pkg/fleet toolcommand.go.
+
+Review 2026-11-27: unchanged in scope. Applies to tool and agent calls alike; a model call has no file arguments. Revised at the sprint review 2026-11-27 (operator: every offer is a typed tool call in one of three classes, model, tool or agent; every call is metered whether free, shared or paid; Sprint 740 adds only the payment layer).
