@@ -24,3 +24,5 @@ Accept: unit tests: record fields per class; a command run counts 1 call; caller
 Code inspected 2026-11-27: yoke pkg/broker audit.go usage.go usagecmd.go peerlimit.go broker.go:497-530, pkg/cligw server.go:1246-1270 (usage.jsonl), pkg/toolcmd toolcmd.go. Depends on K1, K2, K4. Filed at the sprint review 2026-11-27 (operator: every offer is a typed tool call in one of three classes, model, tool or agent; every call is metered whether free, shared or paid; Sprint 740 adds only the payment layer).
 
 Tags (operator 2026-11-27, plan §3.1): the rollups take --tag, resolved from the definition by its digest; tags are not copied onto each run record.
+
+Revised 2026-11-27 night (operator: everything is a tool call as far as agents are concerned; the name is TaaS). Folder offers are metered like any other: files-NAME calls and link streams count the call and bytes served; bytes joins call, token and seconds as a supported unit. 'Not in MVP: metering folder reads' is withdrawn.

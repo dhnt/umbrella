@@ -1,6 +1,6 @@
-# Sprint 739: commands and folders as a service (offer bashy commands and designated folders to your trusted group)
+# Sprint 739: tools as a service (TaaS): offer a model, tool, agent or designated folder to your trusted group as a metered, typed tool call
 
-*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only; revised the same day after a code review for minimum change. Revised again at the operator review: every offer is a typed tool call, every call is metered, and Sprint 740 adds only the payment layer (section 3.1).*
+*Master execution plan · 2026-11-27 · backlog, operator review before start. Planning only; revised the same day after a code review for minimum change. Revised again at the operator review: every offer is a typed tool call, every call is metered, and Sprint 740 adds only the payment layer (section 3.1). Revised a third time (operator, 2026-11-27 night): a folder is a tool call too, so everything an agent reaches is a tool call; the name is TaaS (section 1).*
 
 ## 1. The gap
 
@@ -13,9 +13,9 @@ installs, configures and copies everything locally. In A/O/C:
 
 C usually holds the LLM and the tools, while O's host runs the shaping and has none.
 
-The goal: a member **offers** a bashy command or a **designated folder** to their
-trusted group. Other members' agents run the command on the offerer's machine, or
-read the folder in place, on demand. Nobody needs a local install, config or copy.
+The goal: a member **offers** a model, a tool, an agent or a **designated
+folder** to their trusted group, each as a typed tool call. Other members' agents
+call it on the offerer's machine on demand, and read a folder in place. Nobody needs a local install, config or copy.
 It works in every direction (C to O, O to C, any member to any member).
 
 Example cases:
@@ -24,6 +24,15 @@ Example cases:
   provider.
 - (c) Any registered command (`bashy commands add`) can be offered.
 - (d) C generates a video and the team gets a link, not a copy.
+
+**Why: software shaping (operator, 2026-11-27).** Software shaping is the primary
+theme. Tools as a service (TaaS) exists to benefit the agents that do the shaping:
+a shaping agent on O's host gets the LLM, the providers and the files it lacks
+from C, without an install. bashy is for agents, and cloudbox, the satellite and
+outpost exist for bashy. The name is **TaaS**, not CaaS: everything an agent
+reaches is a tool call (the MCP word), "command" is only one of the three
+backings, and CaaS already means containers as a service, which would be
+confused with bashy's own sandbox tier.
 
 **One sharing model for humans and agents (operator, 2026-11-27).** bashy is for
 agents. The existing app sharing was designed for humans using UI apps. This sprint
@@ -102,6 +111,15 @@ generalizes that one model rather than adding a second one:
 | **Tool** | a fleet tool, or a registered command (`bashy commands add`) | `slash=NAME` with schema-bound arguments | call, or an output unit the offer names (second of audio, image) |
 | **Agent** | a fleet agent bound to a model: "a smart tool" | the typed call `{task, …}`, under a token cap | token |
 
+A **designated folder** is offered in the same form, as a tool (operator,
+2026-11-27 night: everything is a tool call as far as agents are concerned). It
+is a Tool-class offer `files-NAME` whose typed definition bashy ships, so the
+owner types nothing: input `{op: ls|stat|read|link, path, offset, length}`,
+output a JSON listing, a stat, inline bytes (up to a small cap) or a
+`bashy://HOST/files-NAME/PATH` link; effects read-only; unit bytes, plus the
+call. A link streams from the same offer (Range, HEAD, ETag), and that stream is
+a metered call as well.
+
 - **What can be offered is one test: the name is in the fleet.** That means a
   fleet model, a fleet tool or agent, or a registered command. bash, Bash#,
   coreutils and bashy's internal verbs (read, write, edit, search, `ast`, `kb`,
@@ -145,8 +163,9 @@ generalizes that one model rather than adding a second one:
   refresh live, so the tool appears in the agent's tool list with no new
   mechanism. A changed digest makes the mounted tool refuse until it is added
   again. `bashy remote remove NAME` unmounts it.
-- **Folders are data, not tools.** They stay gated apps (below) and are not
-  metered in this sprint.
+- **Folders are tools too.** A folder share is the `files-NAME` offer above: it
+  is gated, defined, digested, metered and mountable like any other offer. Only
+  the byte route behind its `link` is special, and it is served by the door.
 
 ### 3.2 Offers and folders as gated apps
 
@@ -210,10 +229,14 @@ audience with zero new audience code.
     HOME, or anything containing `~/.bashy` (vault, tokens) is refused unless
     `--force` is given. A forced share is logged in the record (`"forced": true`,
     with a reason).
-  - A new outpost capability, `outpost.shares`, reads `~/.bashy/shared/*.json`
-    (and reloads when the directory changes). It registers one app `files-NAME`
-    per record (`require_login`, read-only; `mode: rw` is out of MVP). Its handler
-    serves:
+  - **The door serves folders, not outpost.** Every door request already gets
+    an authenticated principal and a run record (`broker.go:335`), so a folder
+    served there is gated, metered and logged with no new mechanism, and outpost
+    needs no change. The door reads `~/.bashy/shared/*.json` (and reloads when
+    the directory changes). Each record becomes the offer `files-NAME`
+    (registered as app `offer-files-NAME` by the K4 code path, read-only;
+    `mode: rw` is out of MVP). Its tool call runs in-process, and its byte route
+    `/files/NAME/PATH` serves:
   - `os.OpenInRoot` on the record's path, so a symlink or `..` cannot escape the
     folder;
   - `http.ServeContent`, giving Range, HEAD and Last-Modified;
@@ -221,17 +244,19 @@ audience with zero new audience code.
   - a JSON listing for directories.
 
   The URI is `bashy://HOST/files-NAME/PATH`. It resolves through the satellite for
-  members and through the mesh for owned hosts.
+  members and through the mesh for owned hosts. The run record names the tool
+  `files-NAME`, the op and the bytes served.
 - **Folder CLI:**
   - owner: `bashy files share NAME [--path DIR] [--circle|--group|--email]
     [--force --reason R]` writes `NAME.json` (and creates the empty default
-    folder when no `--path` is given), then runs `outpost apps share files-NAME`.
+    folder when no `--path` is given), then offers `files-NAME` with that
+    audience (`outpost apps share offer-files-NAME`).
     `unshare NAME` removes the record, the app and the rule, and keeps the
     files. `shares` lists the records;
-  - member: `bashy files ls|stat|cat|get|link`.
-
-  Agents with a shell use the CLI. An MCP wrapper is out of MVP unless bashy's
-  existing MCP exposure covers verbs already.
+  - member: `bashy files ls|stat|cat|get|link HOST:NAME/PATH`, a thin CLI over
+    the `files-NAME` tool call, for agents and humans with a shell. An agent can
+    also mount the folder as a typed tool with `bashy remote add HOST files-NAME`
+    (T2), so it shows in `bashy mcp tools` and needs no CLI line.
 - **Humans:** offers and folders are apps, so they show in the member's app list.
   The UI for a folder is a later addition. The owner keeps File Browser over HOME.
 
@@ -241,15 +266,15 @@ audience with zero new audience code.
 |---|---|---|
 | **K1** named peer runs + per-command allow-list | Caller only for the run: `runPeer` accepts `TOOL:NAME`/`NAME`, and a `DispatchPeerCommand` sends `slash=NAME[,tool=TOOL]` without the measured-selection checks. Door: `PeerShare.Commands` allow-list, checked from the parsed slash name; empty = no named commands, so nothing widens (fixes missing item 2). | yoke `pkg/toolcmd`, `pkg/broker` |
 | **K2** the offerable set and the typed tool definition | Eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused). One typed tool definition per offer (name, class, description, input schema, output shape, effects, unit, optional tags) and its digest; an untyped offer is refused. For a registered command, generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is part of the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
-| **F1** `outpost.shares` capability | reads one record per share, `~/.bashy/shared/NAME.json` (path, default the empty `~/.bashy/shared/NAME/`; mode; audience; created), and reloads on change; one `files-NAME` app per record; handler (`os.OpenInRoot` on the folder + `ServeContent` + weak ETag + JSON listing), read-only for members. File Browser over HOME unchanged and owner only. | outpost |
-| **F2** folder CLI and URIs | `bashy files share NAME [--path DIR] [--force --reason]` writes `NAME.json` (default folder created empty; refuses HOME, its ancestors and `~/.bashy` without `--force`) and applies the audience with `outpost apps share`; `unshare` / `shares` (owner); `ls/stat/cat/get/link` (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `files-*` apps | yoke `pkg/fleet`, bashy |
+| **F1** the folder tool on the door | The door reads one record per share, `~/.bashy/shared/NAME.json` (path, default the empty `~/.bashy/shared/NAME/`; mode; audience; created), and reloads on change. Each record is the Tool-class offer `files-NAME` with the typed definition bashy ships (`op: ls\|stat\|read\|link`, read-only, unit bytes). In-process tool call plus the byte route `/files/NAME/PATH` (`os.OpenInRoot` + `ServeContent` + weak ETag + JSON listing), both through the door's existing auth and run record. Owner and `peer:` callers in this story; members arrive with K4. File Browser over HOME unchanged and owner only; no outpost change. | yoke `pkg/broker` |
+| **F2** folder CLI and URIs | `bashy files share NAME [--path DIR] [--force --reason]` writes `NAME.json` (default folder created empty; refuses HOME, its ancestors and `~/.bashy` without `--force`) and offers `files-NAME` with that audience; `unshare` / `shares` (owner); `ls/stat/cat/get/link` as a thin CLI over the `files-NAME` call (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `offer-*` apps | yoke `pkg/fleet`, bashy |
 | **K3** inputs and outputs by reference | Refuse host paths from peer callers (fixes the pre-existing item 3); fetch URI inputs into scratch; publish artifacts into the offerer's output share and return URIs with size and sha256 | yoke `pkg/toolcmd`, `pkg/cligw` |
-| **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list` for all three classes; register `offer-NAME` (`require_login` + `trust_cloud_identity`); the offer app serves the typed definition and its digest; the door stamp branch with the prefix-to-offer check per class; an agent offer's token cap; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
-| **T1** meter every offered call | The door run record gains tool name, class, unit, units and definition digest, for every caller (owner, peer, member) and every class; usage returned to the caller, who keeps a copy; `bashy offer usage` and `bashy remote usage` with `--json` and `--tag`; limits count in the offer's unit; no price | yoke `pkg/broker`, `pkg/toolcmd`, bashy |
+| **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list` for all three classes and folder offers (`files-NAME`); register `offer-NAME` (`require_login` + `trust_cloud_identity`); the offer app serves the typed definition and its digest; the door stamp branch with the prefix-to-offer check per class; an agent offer's token cap; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
+| **T1** meter every offered call | The door run record gains tool name, class, unit, units and definition digest, for every caller (owner, peer, member) and every class; usage returned to the caller, who keeps a copy; `bashy offer usage` and `bashy remote usage` with `--json` and `--tag`; limits count in the offer's unit (call, token, seconds, bytes); folder calls and link streams counted like any other; no price | yoke `pkg/broker`, `pkg/toolcmd`, bashy |
 | **T2** mount an offered tool | `bashy remote add HOST NAME [--as LOCAL]` writes a local registered record wrapping `bashy remote`, with the offered schema and pinned definition digest, so the tool shows in `bashy mcp tools`; a changed digest refuses until re-added; `bashy remote remove` | yoke `pkg/fleet`, bashy |
-| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers one of each class (`llm`, `transcribe`, one fleet agent with a token cap); `bashy remote add` mounts `transcribe` and it shows in `bashy mcp tools` with a typed schema; the agent call stops at its cap; after the runs, `bashy offer usage` on C and `bashy remote usage` on O show the same units per tool for owner, peer and member calls, with no price anywhere; an internal verb and an untyped offer are refused; a changed definition digest refuses the mounted tool; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
+| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers one of each class (`llm`, `transcribe`, one fleet agent with a token cap); `bashy remote add` mounts `transcribe` and it shows in `bashy mcp tools` with a typed schema; the agent call stops at its cap; after the runs, `bashy offer usage` on C and `bashy remote usage` on O show the same units per tool for owner, peer and member calls, with no price anywhere; an internal verb and an untyped offer are refused; a changed definition digest refuses the mounted tool; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place, and O's agent mounts it (`bashy remote add C files-NAME`) and lists it through the typed tool; folder reads show in both usage rollups in bytes; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
 
-Order: F1 and K1 first (independent), then F2 and K2, then K3 (needs F2), then K4,
+Order: F1 and K1 first (independent, both yoke), then F2 and K2, then K3 (needs F2), then K4,
 then T1 and T2 (both need K4), then K5. Each story is delivered in its module first; then consumer pins and the
 umbrella pin are bumped.
 
@@ -268,7 +293,6 @@ umbrella pin are bumped.
   credits, signed receipts, verified delivery, the ledger and the priced
   listing. That is Sprint 740, on top of this sprint's offer, definition, meter
   and mount.
-- Metering folder reads. Folders are data, not tool calls.
 - Typed schemas for bashy's untyped built-in verbs. Only an offered tool needs
   one.
 
