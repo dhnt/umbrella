@@ -54,3 +54,10 @@ What the real runs showed that the unit tests had not:
 Known issues recorded in the surface: KI-1 (the line a live terminal session
 prints), KI-2 (harness-process naming is test-pinned only), KI-3 (the hint
 names the sender by instance address, not label).
+
+Follow-up, same day: bashy `144bbfd8` adds the remaining evidence. `mutate`:
+strength 46/46 (one output and one exit mutant per assertion, all killed,
+1649 s). `alone`: a lone copy outside the checkout cloned the pinned commit,
+built and passed 23 of 23 (51 s). Not done: the rebuild test (a builder that
+has not seen the source rebuilds the surface from the spec), which the lift
+runbook lists as step 12.
