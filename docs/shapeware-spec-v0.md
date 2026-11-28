@@ -4,6 +4,7 @@ Status: **draft v0.1, 2026-11-25** (Sprint 712, story b35b89620f88).
 - v0 was operator-reviewed (record D19).
 - v0.1 applies the cross-vendor review (codex, agy, muse, GLM; all 28 findings accepted by the operator, record D20; §17 maps each finding to its change).
 - v0.1 adds the minimal lifecycle (operator, record D21): every release defines source, build, test, install and run as exact steps, so agents never guess (§5a).
+- Sprint 742 (stories ab766c146b32, fa74df82ef8a, 0a5eafd54350) adds: `resolves:` on a feature and `fixed-by:` on a known issue, so a bug's example and its fix are linked (§4.2, §5); the Go-backed lifted surface (§4.3b, Appendix D); and pinned go tests as acceptance lines (§6). `conform spec check` enforces the new keys.
 
 Plan only: no product code changed. It was validated with scratch walkthroughs on the dev box (§15).
 
@@ -80,6 +81,7 @@ The shapeware keys under `metadata`:
 | `requires`, `check-tests` | Existing bashy keys (see `form.bsh`). |
 | `features`, `checks`, `ui`, `dag` | Path overrides relative to the folder (§1). Defaults: `features.yaml`, `checks/acceptance.bsh`, `assets/ui/`, `dag.md`. |
 | `implementation`, `reference-commit` | A lifted surface only (§4.3a): the clone URL of the repository that implements it, and the full commit its contract was certified against. |
+| `candidate-files`, `build-outputs` | A lifted surface whose implementation is compiled code (§4.3b): space-separated repo-relative globs. `candidate-files` lists what a candidate may change; `build-outputs` lists build outputs left out of the comparison. |
 
 **`type` (review R1, then muse #1):**
 - Shapeware writes **only** `metadata.type`.
@@ -110,6 +112,7 @@ A known issue is a symptom → action lookup on **one header line**, followed by
   forbidden: <workarounds that must not be used>
   expires: <YYYY-MM-DD>
   todo: <todo id | none>
+  fixed-by: <feature-id>
 ```
 
 - Writers use `->`; readers also accept the arrow sign (`→`).
@@ -121,11 +124,29 @@ A known issue is a symptom → action lookup on **one header line**, followed by
 | `open` | No safe action yet: report it. |
 | `workaround` | Do the action, at most `retry` times. |
 | `expired` | The action is **disabled**. Report the issue as expired; the owner (the todo's assignee) is notified. It stays listed until fixed. |
-| `fixed` | A passing acceptance example proves it. Kept for one release, then moved to `references/known-issues.md`. |
+| `fixed` | A passing acceptance example proves it: `fixed-by:` names that example's feature. Kept for one release, then moved to `references/known-issues.md`. |
 
 - A published release needs an ISO date in `expires:`. A draft may write `next release`, and the release run converts it.
 - A tbd feature is **not** a known issue. It is found in `features.yaml`, through the **Build** intent.
 - Ids are stable across versions.
+
+**A bug and its fix (Sprint 742).** A bug is written twice: as a known issue (what to do today) and as the correct behaviour (what the fix must do).
+- The correct behaviour is a `tbd` feature in `features.yaml` with `resolves: KI-<n>` and at least one acceptance line. It fails today, but a tbd example prints TBD, never FAIL (§6), so the release class is not blocked.
+- The fix promotes that feature to `verified` and, **in the same change**, sets the issue to `fixed` with `fixed-by: <feature-id>`.
+- `fixed` requires `fixed-by:`, and `fixed-by:` must name a `verified` feature whose `resolves:` is this issue.
+- When a fixed issue moves to `references/known-issues.md`, it keeps its header line and `fixed-by:`; the feature keeps `resolves:`.
+
+`conform spec check` reads the entries under `## Known issues` in `SKILL.md`, and those in `references/known-issues.md` if it exists. Each rule is an error:
+
+| Rule | When |
+|---|---|
+| `resolves-unknown-ki` | a feature's `resolves:` names no known issue |
+| `resolves-no-acceptance` | a feature with `resolves:` has no acceptance line |
+| `resolves-ki-not-fixed` | a `verified` feature resolves an issue that is not `fixed` (open, workaround or expired) |
+| `ki-fixed-without-fixed-by` | a `fixed` issue has no `fixed-by:` |
+| `ki-fixed-by-unknown` | `fixed-by:` names no feature |
+| `ki-fixed-by-not-verified` | `fixed-by:` names a feature that is not `verified` |
+| `ki-fixed-by-mismatch` | `fixed-by:` names a feature whose `resolves:` is another issue, or none |
 
 ### 4.3 The standard run block
 The block is fixed text with **named slots only**: `<name>` and `<page>`; run and check go through the lifecycle targets. Everything else is verbatim. Its canonical text is the hello `SKILL.md` in Appendix A. It is organized by **intent**:
@@ -184,6 +205,27 @@ Adopted 2026-11-27. A self-contained app ships its code in the folder; a surface
 
 **The folder-alone check.** A lifted surface is not done until an agent given only the folder (copied out, no checkout around it) reaches a passing **Check** using nothing but the folder's own text and lifecycle.
 
+### 4.3b Go-backed lifted surfaces: compiled code, a declared file set
+
+Sprint 742. A lifted surface such as ClassGo's `reports-weekly-summary` changes one presentation file and builds nothing. A surface whose implementation is compiled code (Go) differs in three ways. Everything else in §4.3a holds.
+
+1. **The candidate file set is declared.** `SKILL.md` names the files a candidate may change in `metadata.candidate-files`: a space-separated list of repo-relative globs, for example `"internal/backup/*.go"`. `*` and `?` never cross `/`, and there is no `**`. Build outputs that are not git-ignored go in `metadata.build-outputs`, in the same form. `checks/candidate.bsh` (Appendix D, the same file for every surface) enforces the set:
+   - every file that differs between the installed implementation and the work copy matches a `candidate-files` glob. "Differs" covers changed, added and deleted files, tracked or untracked; git-ignored files, `.shapeware/` and `build-outputs` are left out;
+   - this folder's files in the copy are unchanged, except that `features.yaml` may add lines. A spec change that comes with a candidate is §6a, spec change with a candidate (sprint 742 M2);
+   - the copy builds with this folder's `build` step, and this folder's `checks/acceptance.bsh` passes on it;
+   - it prints `VARIANT <version>+shaped.<sha>`, the hash taken over the changed implementation files.
+2. **`build` runs the compiler.** For example `go build -o "$bin/<name>" ./cmd/<name>` in `$impl`, where `bin=${SHAPEWARE_BIN:-$PWD/.shapeware/bin}`. `candidate.bsh` sets `IMPL` to the work copy and `SHAPEWARE_BIN` to a scratch folder, so grading never overwrites the installed build. `Effects: read, write, exec`, `Band: unmeasured`. `build` also writes the launcher.
+3. **The judge runs the app through a launcher.** The launcher starts the reference, or a candidate, on a fresh temporary data dir and SQLite file under the scratch HOME, seeded with synthetic data only, on a free loopback port. Its verbs are the same as the weekly-summary preview launcher's (`CONTRACT.md`, "Commands"):
+   - `serve` starts the app when none is running and prints its address; run again, it prints the same address;
+   - `status --json` reports whether it runs;
+   - `request METHOD PATH [BODY]` sends one request and prints a stable line, such as `STATUS TYPE`;
+   - `stop` stops it and prints `stopped`, or `not running`;
+   - `gotest PKG NAME` runs one pinned go test (§6).
+
+   Effect cap: `read`, `write` (scratch only), `exec`, and loopback `net`. The launcher never opens a real data dir, config file or credential, and reaches no address beyond loopback.
+
+`conform spec check` rejects a malformed glob (`candidate-files-invalid`: empty, absolute, with an empty, `.` or `..` segment, `**`, or a bad pattern) and `candidate-files` on a folder with no `metadata.implementation` (`candidate-files-not-lifted`).
+
 ## 5. features.yaml
 
 A YAML list. Feature ids are stable across versions, and each example is addressed as `<feature-id>#<n>` (its position).
@@ -197,11 +239,13 @@ A YAML list. Feature ids are stable across versions, and each example is address
   critical: false                # default false; true = never tbd, never field-built
   band: L2                       # optional; raises the app min-band for this feature
   effort: 2                      # Fibonacci points 1, 2, 3, 5, 8, 13 (13 = split it); relative size
+  resolves: KI-1                 # optional; this feature is the correct behaviour of that known issue (§4.2)
 ```
 
 - A feature's floor is the higher of `metadata.min-band` and its own `band`.
 - `effort` is the feature's relative size in Fibonacci points (operator, 2026-11-25). An app's size is the sum over its features. Points are not minutes: the minutes per point are **measured** per band by the builder drills (Sprint 722: the one full reproduction of `form`, 10 points of verified features, took 1,034 s), and the expected time and cost of a shaping request come from that measurement. A feature estimated at 13 is too large and is split.
 - A work copy may **add** features and examples. It may never change or remove an existing line, so it cannot weaken an example or flip `critical`.
+- A feature with `resolves:` must have at least one acceptance line, whatever its status (§4.2).
 - UI acceptance by label and role is not in the MVP.
 
 ## 5a. Lifecycle: `dag.md` (operator, D21)
@@ -242,8 +286,17 @@ A folder that is certified carries its gate operations as targets too, so the co
   - A `verified` feature's example that errors, exits non-zero or differs prints FAIL.
   - A `tbd` feature's example prints TBD, or PASS when it already passes. The feature stays `tbd` until the owner promotes it.
 - Arguments are split with shell quoting, without evaluation (`xargs`), and the status resets for each feature.
+- A tbd feature with `resolves:` is no exception: its example fails today and prints TBD.
 - `DIR` defaults to the checker's own folder. Given a work copy, **this** folder's checker grades the copy's scripts.
 - A served app adds an HTTP pattern: `GET <path> => <status> <json-path>=<value>`. Its exact form is settled in the pilot.
+
+**A pinned go test** (Sprint 742) is cited through the surface launcher's `gotest` verb (§4.3b, Appendix D):
+- `<launcher> gotest PKG NAME` runs `go test -count=1 -v -run '^NAME$' PKG` in the implementation. It prints exactly `PASS NAME` with exit 0 when that test reports `--- PASS: NAME`, and otherwise exactly `FAIL NAME` with exit 1. The go test log is not printed, so the output the judge sees is stable. `-v` makes a run that matched no test a FAIL.
+- An acceptance line: `<launcher> gotest ./internal/backup TestRestoreRoundTrip => PASS TestRestoreRoundTrip`. A `CONTRACT.md` assertion: `$ <launcher> gotest PKG NAME`, the output `PASS NAME`, `exit: 0`.
+- `PKG` is a `./` path inside the implementation; `NAME` is one top-level test (`Test...`); subtests are not cited.
+- A pinned test that fails today is a bug's correct behaviour: a tbd feature with `resolves:` (§4.2). A fix that makes it pass is then a spec-linked change, and `candidate.bsh` runs it with the rest of the acceptance lines.
+- `conform spec check` rule `gotest-form`: a `gotest` line takes exactly `PKG NAME`, expects exactly `PASS NAME`, and in `CONTRACT.md` exits 0.
+- `conform mutate` treats it as any CLI assertion. It seeds an output mutant and an exit mutant; the stable output kills both (measured on the Appendix D self-test surface: 2/2). Each mutant reruns the whole contract, so every `gotest` assertion adds one go test run per mutant. Budget for it, or shard (`SHARDS`/`SHARD`).
 
 **`checks/candidate.bsh COPY`** is run from the installed folder. It prints PASS/FAIL lines and exits 1 on any FAIL:
 - the copy is not the installed folder
@@ -254,6 +307,8 @@ A folder that is certified carries its gate operations as targets too, so the co
 It then prints `VARIANT <version>+shaped.<sha>`: the first 7 hex digits of a SHA-256 over the copy's files (each file's SHA-256 and relative path, sorted, `SKILL.md` excluded). It is reproducible, and no agent computes it by hand.
 
 "The installed folder" is the folder holding the `SKILL.md` the agent read, whether or not `install` ever ran.
+
+A lifted surface's `candidate.bsh` grades a work copy of the implementation instead (§4.3a, §4.3b, Appendix D).
 
 Run both as `bashy --bashsharp <file>`: a record install drops the executable bit (§14).
 
@@ -298,7 +353,7 @@ As inspected (§14), with the v0.1 rules:
 **Semver meaning:**
 - major: a feature id is removed or renamed, or an example or data shape changes meaning
 - minor: a feature is added, or one moves from tbd to verified
-- patch: a known issue changes, or docs change
+- patch: a known issue changes, or docs change. A known issue that becomes `fixed` is a patch, even though its `resolves:` feature moves from tbd to verified in the same change.
 
 **Upgrade:**
 - Drop every local variant whose feature is now `verified` upstream.
@@ -318,9 +373,12 @@ Merge mechanics are `bashy shape`'s business, not this spec's. Not in the MVP: b
 | An agent's own band | The band its operator registered (`bashy agent list`). Unknown never meets a **declared** floor: stop and ask the operator. |
 | `features.yaml` | No feature claims |
 | A feature's `status` / `critical` / `acceptance` | `tbd` / `false` / none (so the feature stays `tbd`) |
+| A feature's `resolves` | None: the feature is not tied to a known issue |
 | `## Known issues` | None |
 | A known issue's `status` / `cause` / `retry` | `open` / `suspected` / 1 |
 | A known issue's `expires` | `next release` in drafts; a published release needs a date |
+| A known issue's `fixed-by` | None; a `fixed` issue without it fails the lint |
+| `metadata.candidate-files` / `build-outputs` | None. Appendix D's `candidate.bsh` then fails every candidate: no file may change |
 | `checks/` | Nothing to run. Declared features stay `tbd`; a declared `verified` feature with no checks blocks the release |
 | An effect cap | Read-only, and no field building (§7) |
 | `shaped.json` | No trusted core, no wishes |
@@ -342,6 +400,8 @@ The first match wins. The card carries this list verbatim, and `release-class.bs
 7. any tbd → **verified with tbd**
 8. any open or workaround known issue → **verified with known issues**
 9. otherwise → **verified**
+
+A tbd feature with `resolves:` counts as tbd in rules 6 and 7, like any other tbd feature. Its open issue counts in rule 8 (Sprint 742).
 
 ## 13. Enabling an existing repo
 
@@ -1013,3 +1073,258 @@ Adopted 2026-11-27. The canonical copy is bashy `shapeware/index.bsh`; every rep
 - **Builtins only** for parsing, so it runs under any bashy locale.
 - **Discovery:** one line in the files agents already read (`CLAUDE.md`, `AGENTS.md`): "This repo has shapeware: run `bashy --bashsharp shapeware/index.bsh`".
 - Validated 2026-11-27 on a scratch tree (two surfaces, one plain folder, an empty `shapeware/`).
+
+## Appendix D: the reusable lifted-surface `candidate.bsh` and the `gotest` verb
+
+Sprint 742 (§4.3b, §6). The canonical copies are in bashy `examples/shapeware/lifted-surface/`: `checks/candidate.bsh`, `scripts/launcher.sh` and `selftest.sh`. A surface copies `candidate.bsh` verbatim into its `checks/`; it reads everything it needs from the surface's `SKILL.md`.
+
+- **Inputs:** `metadata.version`, `metadata.candidate-files` and `metadata.build-outputs`; the installed implementation from `IMPL`, `.shapeware/impl` (the `source` step) or the repository around `shapeware/index.bsh`.
+- **File listing:** `git ls-files -co --exclude-standard` on both trees, run with the host git by path, because a shell's built-in git may not serve it. A listing that fails is a FAIL, never "no changes".
+- **Build and judge:** `dag.md` `build`, then `checks/acceptance.bsh WORKCOPY`, both from this folder with `IMPL=WORKCOPY` and `SHAPEWARE_BIN` set to a scratch folder.
+- **Self-test:** `bash selftest.sh` builds a tiny Go repository with one surface, `shapeware/calc/`, and grades git clones of it. Validated 2026-11-27 on macOS, with bashy 5.3.0(1)-bashy-dev (345f01d) and Go 1.27.4: an allowed change passes with a reproducible `VARIANT`; a change outside the globs, a new untracked file outside them, a changed `CONTRACT.md`, a changed `features.yaml` line, and an allowed change that breaks the pinned go test each fail. With `CONFORM=` set, the fake surface lints clean. `conform mutate` on its one `gotest` assertion kills 2 of 2 mutants.
+
+A `build` step for a Go-backed surface (the self-test's):
+
+```bash
+set -eu
+impl=$(cd "${IMPL:-$(cat .shapeware/impl)}" && pwd -P)
+bin=${SHAPEWARE_BIN:-$PWD/.shapeware/bin}
+quote() { printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"; }
+mkdir -p "$bin"
+(cd "$impl" && go build -o "$bin/calc-app" ./cmd/calc)
+printf '#!/bin/sh\nLAUNCHER_IMPL=%s exec sh %s "$@"\n' "$(quote "$impl")" "$(quote "$PWD/scripts/launcher.sh")" >"$bin/calc"
+chmod +x "$bin/calc"
+echo "build: ok"
+```
+
+### scripts/launcher.sh (the `gotest` verb)
+
+````sh
+#!/bin/sh
+# Launcher snippet for a Go-backed lifted surface (shapeware spec §4.3b, §6).
+# The surface's dag.md build step writes a wrapper into the bin folder that
+# sets LAUNCHER_IMPL to the implementation it built and execs this file.
+#
+# This snippet carries one verb, the same in every surface:
+#   gotest PKG NAME   run the pinned go test NAME in package PKG of the
+#                     implementation; print exactly "PASS NAME" (exit 0) or
+#                     "FAIL NAME" (exit 1). Nothing else reaches stdout, so
+#                     the judge's comparison is stable.
+# A surface adds its own serve, status --json, request METHOD PATH [BODY]
+# and stop verbs: they start the app on a fresh data dir and SQLite file
+# under the scratch HOME, seeded with synthetic data only, on a free
+# loopback port. ClassGo's reports-weekly-summary preview launcher is the
+# worked example of those four verbs.
+set -u
+impl=${LAUNCHER_IMPL:?LAUNCHER_IMPL is not set (run the build step)}
+
+case ${1:-} in
+gotest)
+  [ $# -eq 3 ] || { echo "usage: gotest PKG NAME" >&2; exit 2; }
+  pkg=$2 name=$3
+  case $name in
+    Test*) ;;
+    *) echo "FAIL $name"; exit 1 ;;
+  esac
+  # -v so a run that matched no test ("no tests to run", exit 0) is a FAIL:
+  # the named test itself must report "--- PASS: NAME".
+  log=$(cd "$impl" && go test -count=1 -v -run "^${name}\$" "$pkg" 2>&1)
+  rc=$?
+  if [ $rc -eq 0 ] && printf '%s\n' "$log" | grep -q "^--- PASS: ${name} "; then
+    echo "PASS $name"
+    exit 0
+  fi
+  # The go test log is not printed: the judge reads stdout and stderr
+  # together. Rerun the go test command by hand to see why it failed.
+  echo "FAIL $name"
+  exit 1
+  ;;
+*)
+  echo "usage: launcher gotest PKG NAME" >&2
+  exit 2
+  ;;
+esac
+````
+
+### checks/candidate.bsh
+
+````bash
+# Grade a work copy of the IMPLEMENTATION against this INSTALLED lifted
+# surface (shapeware spec §4.3b and Appendix D). The same file serves every
+# lifted surface: it reads what it needs from this folder's SKILL.md, so a
+# surface copies it verbatim into its checks/ folder.
+#
+# Usage, from anywhere:
+#   bashy --bashsharp checks/candidate.bsh WORKCOPY
+# WORKCOPY is a fresh clone or git worktree of the implementing repository.
+#
+# Read from this folder's SKILL.md frontmatter (metadata, string values):
+#   version          the release the variant id starts with
+#   candidate-files  space-separated repo-relative globs a candidate may
+#                    change, e.g. "internal/backup/*.go"; * and ? never
+#                    cross "/", and there is no **
+#   build-outputs    optional globs of build outputs, left out of the comparison
+#
+# PASS/FAIL lines, then VARIANT <version>+shaped.<sha>; exit 1 on any FAIL:
+#   - the copy is not the installed implementation;
+#   - every file that differs between the installed implementation and the
+#     copy (tracked, or untracked and not ignored; .shapeware/ and build
+#     outputs left out; a deleted file counts) matches a candidate-files glob;
+#   - this folder's files in the copy are unchanged, except that features.yaml
+#     may add lines. (A spec change with a candidate, §6a, sprint 742 M2,
+#     relaxes this rule; this file does not implement it.)
+#   - the copy builds with this folder's dag.md build step, and this folder's
+#     checks/acceptance.bsh passes on it. Both run from this folder with
+#     IMPL=WORKCOPY and SHAPEWARE_BIN set to a scratch bin folder, so the
+#     installed build is never overwritten.
+# <sha> is the first 7 hex of a SHA-256 over the changed implementation
+# files (each file's SHA-256, or "deleted", two spaces, its repo-relative
+# path; sorted). No changed file gives "none". Reproducible.
+set -u
+export BASHY_HINTS=off
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
+runner=${BASHY:-bashy}
+
+[[ $# -eq 1 ]] || { echo "usage: candidate.bsh WORKCOPY" >&2; exit 2; }
+
+fail=0
+ok()  { echo "PASS $1"; }
+bad() { echo "FAIL $1 ${2:-}"; fail=1; }
+
+# meta KEY: a metadata string value from this folder's SKILL.md frontmatter.
+meta() {
+  awk -v k="$1" '
+    NR == 1 && /^---$/ { f = 1; next }
+    f && /^---$/ { exit }
+    f && /^metadata:/ { m = 1; next }
+    f && m && /^[^ ]/ { m = 0 }
+    f && m {
+      line = $0; sub(/^ +/, "", line)
+      if (index(line, k ": ") == 1) {
+        v = substr(line, length(k) + 3); gsub(/^"|"$/, "", v); print v; exit
+      }
+    }' "$here/SKILL.md"
+}
+
+# glob_match PATH GLOB: segment by segment, so * and ? never cross "/".
+glob_match() {
+  local IFS=/ i
+  local -a ps gs
+  read -ra ps <<<"$1"
+  read -ra gs <<<"$2"
+  (( ${#ps[@]} == ${#gs[@]} )) || return 1
+  for ((i = 0; i < ${#ps[@]}; i++)); do
+    [[ ${ps[i]} == ${gs[i]} ]] || return 1
+  done
+}
+match_any() { # PATH GLOB...
+  local p=$1 g
+  shift
+  for g in "$@"; do glob_match "$p" "$g" && return 0; done
+  return 1
+}
+
+# list DIR: the files git sees (tracked, or untracked and not ignored). The
+# host git by path: a shell's built-in git may not serve ls-files -co.
+hostgit=$(type -P git) || hostgit=/usr/bin/git
+list() {
+  if [[ -d $1/.git || -f $1/.git ]]; then
+    "$hostgit" -C "$1" ls-files -co --exclude-standard
+  else
+    (cd "$1" && find . -type f ! -path './.git/*' | sed 's|^\./||')
+  fi
+}
+
+sum256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum; else shasum -a 256; fi; }
+
+base=${IMPL:-}
+if [[ -z $base && -f $here/.shapeware/impl ]]; then
+  base=$(<"$here/.shapeware/impl")
+fi
+if [[ -z $base && -f $here/../index.bsh ]]; then
+  base=$(cd "$here/../.." && pwd -P)
+fi
+base=$(cd "${base:-/nonexistent}" 2>/dev/null && pwd -P) || {
+  echo "FAIL installed implementation resolved (run the source step first)"
+  exit 1
+}
+copy=$(cd "$1" 2>/dev/null && pwd -P) || {
+  echo "FAIL copy exists (no such folder: $1)"
+  exit 1
+}
+case $here/ in
+  "$base"/*) surface=${here#"$base/"} ;;
+  *) surface=shapeware/${here##*/} ;; # standing alone: the folder's place in the repository
+esac
+
+read -ra allowed <<<"$(meta candidate-files)"
+read -ra outputs <<<"$(meta build-outputs)"
+
+[[ $copy != "$base" ]] && ok "copy is not the installed implementation" || bad "copy is not the installed implementation"
+(( ${#allowed[@]} )) && ok "metadata.candidate-files is declared" || bad "metadata.candidate-files is declared" "(no globs in SKILL.md)"
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+# 1. Implementation files: every difference matches a candidate-files glob.
+# Fail closed: a listing that fails is a FAIL, never "no changes".
+list "$base" >"$tmp/files.base" || bad "list the installed implementation's files" "(git ls-files failed in $base)"
+list "$copy" >"$tmp/files.copy" || bad "list the copy's files" "(git ls-files failed in $copy)"
+changed=()
+outside=0
+while IFS= read -r f; do
+  case /$f/ in */.shapeware/* | "/$surface/"*) continue ;; esac
+  (( ${#outputs[@]} )) && match_any "$f" "${outputs[@]}" && continue
+  [[ -d $base/$f || -d $copy/$f ]] && continue # a submodule or a directory entry
+  cmp -s "$base/$f" "$copy/$f" 2>/dev/null && continue
+  if (( ${#allowed[@]} )) && match_any "$f" "${allowed[@]}"; then
+    changed+=("$f")
+  else
+    bad "change within metadata.candidate-files" "($f)"
+    outside=$((outside + 1))
+  fi
+done < <(LC_ALL=C sort -u "$tmp/files.base" "$tmp/files.copy")
+(( outside == 0 )) && ok "changes within metadata.candidate-files (${#changed[@]} files)"
+
+# 2. This folder, as the copy carries it: unchanged, features.yaml adds only.
+if [[ -d $copy/$surface ]]; then
+  before=$fail
+  while IFS= read -r f; do
+    case /$f/ in */.shapeware/* | /features.yaml/) continue ;; esac
+    cmp -s "$here/$f" "$copy/$surface/$f" 2>/dev/null || bad "protected $surface/$f unchanged" "($f was changed, added or removed)"
+  done < <({ (cd "$here" && find . -type f); (cd "$copy/$surface" && find . -type f); } | sed 's|^\./||' | LC_ALL=C sort -u)
+  (( fail == before )) && ok "protected $surface unchanged"
+  if [[ -f $here/features.yaml ]]; then
+    if [[ -f $copy/$surface/features.yaml ]]; then
+      removed=$(diff "$here/features.yaml" "$copy/$surface/features.yaml" | grep -c '^<')
+      (( removed == 0 )) && ok "features.yaml only adds lines" || bad "features.yaml only adds lines" "($removed existing lines changed or removed)"
+    else
+      bad "features.yaml only adds lines" "(features.yaml missing in copy)"
+    fi
+  fi
+else
+  bad "copy has this folder" "($surface is missing)"
+fi
+
+# 3. Build the copy into a scratch bin folder, then this folder's checker grades it.
+if (cd "$here" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" dag -f dag.md build) >"$tmp/build.log" 2>&1; then
+  ok "copy builds (dag.md build)"
+  (cd "$here" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" --bashsharp checks/acceptance.bsh "$copy") || fail=1
+else
+  tail -n 20 "$tmp/build.log" >&2
+  bad "copy builds (dag.md build)" "(acceptance not run)"
+fi
+
+# 4. The variant id, over the changed implementation files only.
+ver=$(meta version)
+sha=none
+if (( ${#changed[@]} )); then
+  sha=$(for f in "${changed[@]}"; do
+    if [[ -f $copy/$f ]]; then h=$(sum256 <"$copy/$f"); h=${h%% *}; else h=deleted; fi
+    printf '%s  %s\n' "$h" "$f"
+  done | sum256 | cut -c1-7)
+fi
+echo "VARIANT ${ver:-0.0.0}+shaped.$sha"
+exit $fail
+````
