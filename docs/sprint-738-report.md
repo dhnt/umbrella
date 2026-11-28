@@ -62,3 +62,9 @@ Five stories were dispatched at once to four vendors against written command-lin
 ## Addendum, same day: the four red unit tests
 
 Todo `570d50d0` is closed (bashy `7a30ca7a`, `e8b5032d`). One was a product defect: two script changes had not been regenerated into the copies built into the binary. Three were a test defect: the make-hint tests read the hint switch from the environment, and the gate lanes run with hints off. With both fixes the full `go test ./internal/agentos` is green on the gate lane (bashy `e8b5032d`), which is also the first full-package run after the Sprint 738 merge.
+
+## Addendum, same day: the other three follow-ups
+
+- `1e7e2a1d`, closed. A caller abort was counted as an upstream failure and tripped the breaker: fixed in yoke `4c70844e` (bashy pin `1b8320e4`). The second claim in that todo was wrong: every routed request has a 10-minute deadline; the drill run was stopped before it fired. Why that one vendor turn stalled is unknown and was not reproduced.
+- `bbbb3b54`, open, reclassified as a design question. An adapter is built from the owner's `src/bashy` checkout, which bashy deliberately never moves; nothing decides what an upgrade of the binary should do with it.
+- `bc0e918b`, open. The supplementary-groups limit is in rootless podman and cannot be reproduced or verified on the rootful gate lanes; no fix was shipped blind.
