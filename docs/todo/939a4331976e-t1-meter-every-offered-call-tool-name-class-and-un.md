@@ -22,3 +22,5 @@ This record is what Sprint 740 G2 signs as a receipt and G3 prices; keep it pric
 Accept: unit tests: record fields per class; a command run counts 1 call; caller and door copies agree; rollups by member and by tool; a per-call limit refuses with 429; older audit lines without the new fields still roll up. Not in MVP: metering folder reads; output units beyond seconds; cost or price fields beyond the existing cost_usd.
 
 Code inspected 2026-11-27: yoke pkg/broker audit.go usage.go usagecmd.go peerlimit.go broker.go:497-530, pkg/cligw server.go:1246-1270 (usage.jsonl), pkg/toolcmd toolcmd.go. Depends on K1, K2, K4. Filed at the sprint review 2026-11-27 (operator: every offer is a typed tool call in one of three classes, model, tool or agent; every call is metered whether free, shared or paid; Sprint 740 adds only the payment layer).
+
+Tags (operator 2026-11-27, plan §3.1): the rollups take --tag, resolved from the definition by its digest; tags are not copied onto each run record.

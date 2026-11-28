@@ -20,3 +20,5 @@ Works for all three classes: a mounted model is the typed call llm, a mounted ag
 Accept: unit tests: add writes a valid record (fleet Command.Validate) and the tool appears in the MCP tool list with a typed schema; remove; digest-change refusal; --as rename; a reserved or shadowing local name is refused. Not in MVP: discovery or search of offers (the offerer posts the bashy remote add line with bashy mb; the listing is Sprint 740 S2).
 
 Code inspected 2026-11-27: yoke mcp direct.go policy.go, pkg/fleet commands.go command_schema.go; bashy internal/agentos registered.go mcp.go. Depends on K2, K4. Filed at the sprint review 2026-11-27 (operator: every offer is a typed tool call in one of three classes, model, tool or agent; every call is metered whether free, shared or paid; Sprint 740 adds only the payment layer).
+
+Tags (operator 2026-11-27, plan §3.1): the mounted record keeps the offer's tags; bashy remote list --tag filters.
