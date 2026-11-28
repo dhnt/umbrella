@@ -3,14 +3,15 @@ id: 9f80555a4c41
 kind: feature
 title: 'F1 the folder tool on the door: each designated folder is the Tool-class offer files-NAME (typed ls/stat/read/link, os.OpenInRoot + ServeContent byte route)'
 seq: 834
-status: assigned
+status: done
 priority: p1
 created: 2026-11-27T15:44:28.647256Z
-weave: 7
 assignee: agy-gemini4-carbon
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T06:59:24.783058Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 F1. File Browser (fbembed) is single-instance, one root, no ETag, no identity pass-through (fork embed.go:20-104): keep it as the owner's browser, unchanged. Owner vs members (operator 11-27): HOME stays owner-only via File Browser; members only see designated folders: default an empty ~/.bashy/shared/NAME/, or any other path the owner designates. Record = one JSON file per share, ~/.bashy/shared/NAME.json {name, path (missing = default folder), mode ro, audience {circles, groups, emails}, created, note, forced+reason}; no outpost unit setting. New capability outpost.shares reads ~/.bashy/shared/*.json (reload on change) and registers one app files-NAME per record (RegisterWithMetaDialer, RequireLogin, one in-memory listener, capability_support.go:150-155); per-app audience via existing outpost apps share files-NAME (no new audience code). Handler: os.OpenInRoot (no symlink/.. escape) + http.ServeContent (Range, HEAD, Last-Modified) + weak ETag from size+mtime + JSON listing for dirs; read-only. ~200-300 lines + tests. Code inspected 2026-11-27 (revised after review): outpost cmd/outpost capability_files.go capabilities.go:90-97 main.go:369 capability_support.go, internal/agent apps.go:466-486,1196-1209 grants.go:67-101; fork fbembed embed.go.
@@ -27,3 +28,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #834 / Story-ID: 9f80555a4c41 / Agent: <your agent name>. Do not push main, do not bump any pin, do not edit other repos except as the story says.
 - Finish by appending a "Delivery" paragraph to this story file (files changed, test command and its result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 30 minutes. If blocked, write the blocker in the story, commit, and stop. Do not work around a failing pre-existing test: record it.
+
+Delivered (conductor record): yoke main b5a3acc1 (worker commit 6b8071ec by agy-gemini4-carbon, cherry-picked). Gate: GOWORK=off go test ./pkg/broker/ ok, vet ok. Owner-only until K4; the share record type is duplicated with pkg/sharedfiles.Record (same JSON; an import would cycle broker->sharedfiles->toolcmd), left as is.

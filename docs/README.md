@@ -481,3 +481,7 @@ The plan for Sprint 740, SGI: a pay-per-use tool market made for agents, on top 
 ## sprint-738-report.md
 
 The report of Sprint 738, contained subscription agents. `bashy genie --contained` runs genie inside a file sandbox with a subscription model served by the host's model door; the only secret inside is a scoped, short-lived run token. The report lists what each of the ten stories delivered and who wrote and reviewed it, the four blockers a cross-vendor review found in the sandbox, the six integration defects the gate lane and the dev-box drill found, the evidence (e2e twice green, 20 checks; the folder-alone task with two vendors), the limits a user will meet (no network inside, no Windows backend) and the follow-up todos.
+
+## sprint-739-report.md
+
+The report of Sprint 739, tools as a service. A member offers a fleet model, tool, agent or designated folder to their trusted group as a typed tool call that other members' agents mount and call on the offerer's machine; every call is metered on both doors with no price, so Sprint 740 adds only payment. The report lists what each of the ten stories delivered and who wrote it, what integration found (two regressions repaired at merge, four product gaps the e2e exposed), the evidence (full package tests, the bashy agentos suite and builds on the gate lane, the A/O/C e2e green with 45 checks) and the limits a user will meet.

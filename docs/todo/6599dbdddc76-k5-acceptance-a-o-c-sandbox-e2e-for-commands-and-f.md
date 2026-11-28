@@ -3,14 +3,15 @@ id: 6599dbdddc76
 kind: test
 title: 'K5 acceptance: A/O/C sandbox e2e for commands and folders as a service (cloudboxfake, fake providers)'
 seq: 833
-status: assigned
+status: done
 priority: p1
 created: 2026-11-27T15:34:19.86828Z
-weave: 15
 assignee: claude-opus5.5
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T08:51:03.726539Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 K5. Extend bashy dag test-group-shaping-e2e with cloudboxfake fake accounts and a fake transcribe provider; no LLM for A or O. C offers llm + transcribe; O shapes and A's wish runs on C's LLM; O puts in.wav in <bashy-home>/shared/in/ (shared with C's circle) and runs bashy remote C -- transcribe bashy://O/files-in/in.wav and gets an artifact URI it streams with Range; A's agent reads a folder C shared in place; O also shares an outside path (--path) that A reads; sharing HOME without --force refused; non-member, path escape (.., symlink out) and non-offered command refused; unshare 403, limit 429; O offers to C (symmetry); the same audience rule admits a member's UI app use and their agent's runs. Gate host only, minutes budget, no paid provider. Code inspected 2026-11-27 (revised after review): bashy tests/group-shaping-e2e README.md sandbox.py; yoke pkg/fleet/cloudboxfake cloudboxfake.go:1336-1396.
@@ -34,3 +35,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in bashy with trailers: Sprint: #739 / Story: #833 / Story-ID: 6599dbdddc76 / Agent: claude-opus5.5-s588. Do not push main.
 - Finish by appending a "Delivery" paragraph to docs/todo/6599dbdddc76-k5-acceptance-a-o-c-sandbox-e2e-for-commands-and-f.md and commit it in the umbrella workspace with the same trailers.
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Delivered (conductor record, 2026-11-28): bashy tests/taas-e2e (author commit 451068f1 by claude-opus5.5-s588, then manager gate iteration on the Windows test host lane, 20 runs). Green run: 34 s, 45 checks, TAAS_T1=1 TAAS_T2=1; raw evidence kept privately with the manager. Product gaps the run exposed were fixed in their modules with root causes in the commits: yoke 25426379 (registered offer unit), a74ef552 (offers tool keeps command stdout; command output file:<glob>), 744d2263 (remote call declares --json), c4c8e611 (seconds error names the outcome); bashy adapters llm and files link pkg/offer. Deviations from the acceptance wording, recorded in the report: the fixture is stt (transcribe is a shipped verb); unshare answers 404 (the offer app is removed); the agent cap is a refusal from delegate for the codex stub; the usage agreement accounts for one raw HTTP Range call the caller does not record.

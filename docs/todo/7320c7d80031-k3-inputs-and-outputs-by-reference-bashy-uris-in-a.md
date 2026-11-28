@@ -3,14 +3,15 @@ id: 7320c7d80031
 kind: feature
 title: 'K3 inputs and outputs by reference: bashy:// URIs in, artifact URIs out; refuse host paths from peers'
 seq: 831
-status: assigned
+status: done
 priority: p1
 created: 2026-11-27T15:34:19.372087Z
-weave: 10
 assignee: codex-gpt6-sol
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T07:00:54.804119Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 K3. Pre-existing hazard: a peer-supplied json-file or path-shaped arg is read from the door host's filesystem (fleet toolcommand.go:358-375). Refuse host paths from peer/member callers; accept bashy:// URIs, fetched into the run's scratch dir by the offerer (member token, F2). Artifacts (Result.Artifacts, output file:<glob>, print.go:276-311) move into the offerer's output share <bashy-home>/shared/offers/ (app files-offers, same audience as the offer; F1) and return as URIs with size + sha256; small text stays inline. Depends on F2. Code inspected 2026-11-27 (revised after review): yoke pkg/toolcmd toolcmd.go print.go peer.go, pkg/cligw slash.go:261-277, pkg/fleet toolcommand.go.
@@ -29,3 +30,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #831 / Story-ID: 7320c7d80031 / Agent: <your agent name>. Do not push main, do not bump any pin, do not edit other repos.
 - Finish by appending a "Delivery" paragraph to this story file (files changed, test command and result; the story file is docs/todo/7320c7d80031-k3-inputs-and-outputs-by-reference-bashy-uris-in-a.md) and commit it in the umbrella workspace with the same trailers.
 - Budget about 40 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Delivered (conductor record): yoke main febde3ad (worker commit fb1c37bf by codex-gpt6-sol, cherry-picked). Gate: GOWORK=off go test ./pkg/broker ./pkg/cligw ./pkg/toolcmd ./pkg/sharedfiles ok, vet ok. Known MVP limit: the host-path refusal is a heuristic (an argument naming an existing door-host file is refused); mutating commands stay refused remotely.
