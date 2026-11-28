@@ -3,14 +3,15 @@ id: 52336cf615d7
 kind: feature
 title: K1 named peer runs + per-command allow-list for shared peers
 seq: 829
-status: assigned
+status: done
 priority: p1
 created: 2026-11-27T15:34:18.868292Z
-weave: 6
 assignee: codex-gpt6-sol
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T06:48:09.078336Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 K1. The door already runs a named command for a shared peer via X-Bashy-Filter slash=NAME[,tool=TOOL] (cligw server.go:631-714, slash.go:339-480); only the caller refuses names (toolcmd cmd.go:280-291). Caller: runPeer accepts TOOL:NAME|NAME; DispatchPeerCommand in peer.go beside DispatchPeerCapability, no measured-selection checks (peer.go:203-215), verifies res.Tool/res.Command. Door: PeerShare.Commands allow-list checked from the parsed slash name (broker.go:497 slashOf), 403 when not listed; empty list = no named commands (pre-existing gap: any shared peer can run any declared command today). Code inspected 2026-11-27 (revised after review): yoke pkg/toolcmd cmd.go peer.go, pkg/cligw server.go slash.go, pkg/broker peershare.go broker.go.
@@ -25,3 +26,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #829 / Story-ID: 52336cf615d7 / Agent: <your agent name>. Do not push main, do not bump any pin, do not edit other repos except as the story says.
 - Finish by appending a "Delivery" paragraph to this story file (files changed, test command and its result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 30 minutes. If blocked, write the blocker in the story, commit, and stop. Do not work around a failing pre-existing test: record it.
+
+Delivered (conductor record): yoke main 6efea8dc (worker commit 6872b321 by codex-gpt6-sol, cherry-picked). Gate: GOWORK=off go test ./pkg/broker/ ./pkg/toolcmd/ ok; go vet ok.
