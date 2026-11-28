@@ -28,11 +28,13 @@ Seam (conductor, 2026-11-27; base = yoke main with K4):
 - bashy remote call HOST NAME (K4) gains: when invoked through a mounted record, send the pinned digest (header X-Bashy-Offer-Digest); the door refuses 409 when it differs, naming `bashy remote add HOST NAME` as the fix.
 - remote remove NAME deletes the record; remote list [--tag T] [--json] shows mounted tools with host, class, unit, digest.
 - A reserved or shadowing local name (an existing bashy verb or registered command) is refused unless --as is given.
-- Tests: GOWORK=off go test ./pkg/offer/ ./pkg/fleet/ -run 'Remote|Mount|Command'.
+- Tests: GOWORK=off go test ./pkg/offer/ ./pkg/fleet/.
 
 Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Read yoke/CLAUDE.md first. Work in the yoke submodule of your workspace on branch s739-t2, based on current origin main (`git fetch origin && git checkout -B s739-t2 origin/main` first: the workspace pin is older). Change only what this story needs; no refactors, no renames, no new dependencies.
-- Tests: targeted unit tests only: `cd yoke && GOWORK=off go test ./pkg/offer/ ./pkg/fleet/ -run 'Remote|Mount|Command'`. No full suites, no e2e, no network, no podman.
+- Tests: targeted unit tests only: `cd yoke && GOWORK=off go test ./pkg/offer/ ./pkg/fleet/`. No full suites, no e2e, no network, no podman.
 - Commit in yoke with trailers: Sprint: #739 / Story: #852 / Story-ID: 6161eebd0360 / Agent: claude-fable5.2. Do not push main, do not bump any pin, do not edit bashy (the conductor mounts the verbs).
 - Finish by appending a "Delivery" paragraph to docs/todo/6161eebd0360-t2-mount-an-offered-tool-bashy-remote-add-writes-a.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).

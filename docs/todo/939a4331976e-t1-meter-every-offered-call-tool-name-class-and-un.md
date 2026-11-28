@@ -34,7 +34,7 @@ Seam (conductor, 2026-11-27; base = yoke main with K4). With K4 there is one cal
 - bashy offer usage [--by member|tool] [--tag T] [--json] on the offerer (reuse RollupUsage over the audit records) and bashy remote usage [--by host|tool] [--tag T] [--json] on the caller. --tag resolves tags from the definition by digest (offer records on the offerer; mounted/remote records on the caller).
 - --limit on an offer counts in its unit through the existing peer meter (429).
 - No price field. Older audit lines without the new fields still roll up.
-- Tests: GOWORK=off go test ./pkg/broker/ ./pkg/offer/ -run 'Usage|Meter|Offer'.
+- Tests: GOWORK=off go test ./pkg/broker/ ./pkg/offer/.
 
 Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Read yoke/CLAUDE.md first. Work in the yoke submodule of your workspace on branch s739-t1, based on current origin main (`git fetch origin && git checkout -B s739-t1 origin/main` first: the workspace pin is older). Change only what this story needs; no refactors, no renames, no new dependencies.
@@ -42,3 +42,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #851 / Story-ID: 939a4331976e / Agent: codex-gpt6.2-astra. Do not push main, do not bump any pin, do not edit bashy (the conductor mounts the verbs).
 - Finish by appending a "Delivery" paragraph to docs/todo/939a4331976e-t1-meter-every-offered-call-tool-name-class-and-un.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
+
+Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).
