@@ -22,3 +22,17 @@ Accept: unit tests: add writes a valid record (fleet Command.Validate) and the t
 Code inspected 2026-11-27: yoke mcp direct.go policy.go, pkg/fleet commands.go command_schema.go; bashy internal/agentos registered.go mcp.go. Depends on K2, K4. Filed at the sprint review 2026-11-27 (operator: every offer is a typed tool call in one of three classes, model, tool or agent; every call is metered whether free, shared or paid; Sprint 740 adds only the payment layer).
 
 Tags (operator 2026-11-27, plan §3.1): the mounted record keeps the offer's tags; bashy remote list --tag filters.
+
+Seam (conductor, 2026-11-27; base = yoke main with K4):
+- In pkg/offer (K4's RemoteSubcommands): remote add HOST NAME [--as LOCAL] reads GET /offers/NAME?definition over the same transport as bashy remote call (peer door or satellite member route) and writes a registered command record via the existing pkg/fleet commands writer: exec = bashy remote call HOST NAME {args}, args schema from the definition input, effects from the definition, plus pinned digest, host, class, unit, tags (store them in the record's existing metadata/notes fields if no field fits; do not add a new record kind). The record validates with fleet Command.Validate and so appears as a typed tool in bashy mcp tools (yoke mcp direct.go).
+- bashy remote call HOST NAME (K4) gains: when invoked through a mounted record, send the pinned digest (header X-Bashy-Offer-Digest); the door refuses 409 when it differs, naming `bashy remote add HOST NAME` as the fix.
+- remote remove NAME deletes the record; remote list [--tag T] [--json] shows mounted tools with host, class, unit, digest.
+- A reserved or shadowing local name (an existing bashy verb or registered command) is refused unless --as is given.
+- Tests: GOWORK=off go test ./pkg/offer/ ./pkg/fleet/ -run 'Remote|Mount|Command'.
+
+Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
+- Read yoke/CLAUDE.md first. Work in the yoke submodule of your workspace on branch s739-t2, based on current origin main (`git fetch origin && git checkout -B s739-t2 origin/main` first: the workspace pin is older). Change only what this story needs; no refactors, no renames, no new dependencies.
+- Tests: targeted unit tests only: `cd yoke && GOWORK=off go test ./pkg/offer/ ./pkg/fleet/ -run 'Remote|Mount|Command'`. No full suites, no e2e, no network, no podman.
+- Commit in yoke with trailers: Sprint: #739 / Story: #852 / Story-ID: 6161eebd0360 / Agent: claude-fable5.2. Do not push main, do not bump any pin, do not edit bashy (the conductor mounts the verbs).
+- Finish by appending a "Delivery" paragraph to docs/todo/6161eebd0360-t2-mount-an-offered-tool-bashy-remote-add-writes-a.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
+- Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.

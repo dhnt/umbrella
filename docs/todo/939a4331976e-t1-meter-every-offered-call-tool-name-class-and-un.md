@@ -26,3 +26,19 @@ Code inspected 2026-11-27: yoke pkg/broker audit.go usage.go usagecmd.go peerlim
 Tags (operator 2026-11-27, plan §3.1): the rollups take --tag, resolved from the definition by its digest; tags are not copied onto each run record.
 
 Revised 2026-11-27 night (operator: everything is a tool call as far as agents are concerned; the name is TaaS). Folder offers are metered like any other: files-NAME calls and link streams count the call and bytes served; bytes joins call, token and seconds as a supported unit. 'Not in MVP: metering folder reads' is withdrawn.
+
+Seam (conductor, 2026-11-27; base = yoke main with K4). With K4 there is one call path, POST /offers/NAME (plus the model offer's inference routes and the files-NAME byte route), so the meter lives there:
+- pkg/broker audit.go Record gains tool, offer_class, unit, units, digest (Bytes from F1 stays and feeds units for files-NAME). Set them in the /offers/NAME handler and the files byte route for every principal (owner, peer:, member:); inference through a model offer sets tool=llm, class=model, unit=token, units=input+output tokens the door already parses.
+- Units: call -> 1; token -> usage from the M1 envelopes (llm call, delegate); seconds -> a numeric `seconds` field in the tool's JSON result when the definition's unit is seconds; bytes -> bytes served.
+- The /offers/NAME response carries usage {tool, class, unit, units, digest}; pkg/offer remote appends it to <bashy-home>/remote-usage.jsonl on the caller.
+- bashy offer usage [--by member|tool] [--tag T] [--json] on the offerer (reuse RollupUsage over the audit records) and bashy remote usage [--by host|tool] [--tag T] [--json] on the caller. --tag resolves tags from the definition by digest (offer records on the offerer; mounted/remote records on the caller).
+- --limit on an offer counts in its unit through the existing peer meter (429).
+- No price field. Older audit lines without the new fields still roll up.
+- Tests: GOWORK=off go test ./pkg/broker/ ./pkg/offer/ -run 'Usage|Meter|Offer'.
+
+Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
+- Read yoke/CLAUDE.md first. Work in the yoke submodule of your workspace on branch s739-t1, based on current origin main (`git fetch origin && git checkout -B s739-t1 origin/main` first: the workspace pin is older). Change only what this story needs; no refactors, no renames, no new dependencies.
+- Tests: targeted unit tests only: `cd yoke && GOWORK=off go test ./pkg/broker/ ./pkg/offer/`. No full suites, no e2e, no network, no podman.
+- Commit in yoke with trailers: Sprint: #739 / Story: #851 / Story-ID: 939a4331976e / Agent: codex-gpt6.2-astra. Do not push main, do not bump any pin, do not edit bashy (the conductor mounts the verbs).
+- Finish by appending a "Delivery" paragraph to docs/todo/939a4331976e-t1-meter-every-offered-call-tool-name-class-and-un.md (files changed, test command and result) and commit it in the umbrella workspace with the same trailers.
+- Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.

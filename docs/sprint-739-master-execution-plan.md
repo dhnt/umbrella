@@ -218,7 +218,7 @@ audience with zero new audience code.
     its `slash=NAME`, an agent offer only its agent run under the token cap.
   - The principal becomes `member:EMAIL`. That principal gets the peer route limits
     and caps.
-- **Consumer:** `bashy remote HOST -- NAME args…` is `tool cmd run NAME --peer`
+- **Consumer:** `bashy remote call HOST NAME args…` is `tool cmd run NAME --peer`
   over the member path. `llm env --from HOST --member` serves the LLM case. Both
   use `SatelliteTokenSource` and relax the URL checks that today allow only
   `/app/llm` and `/app/NAME/mcp`.
@@ -283,6 +283,17 @@ audience with zero new audience code.
     the `files-NAME` tool call, for agents and humans with a shell. An agent can
     also mount the folder as a typed tool with `bashy remote add HOST files-NAME`
     (T2), so it shows in `bashy mcp tools` and needs no CLI line.
+- **Delivery-time design note (conductor, 2026-11-27).** Every offer has one door
+  route, `POST /offers/NAME` (and `GET /offers/NAME?definition`), which runs the
+  offered typed tool: `llm` through the M1 call, an agent through
+  `bashy delegate --max-tokens` (the token cap), a tool through an in-process
+  slash run carrying the caller principal (so K1 and K3 apply), a folder through
+  the F1 call. A model offer also admits the inference routes. This gives one
+  call path and one meter point for T1. bashy already has a `remote` noun
+  (`install`, `exec`), so the consumer verbs are its new subcommands:
+  `bashy remote call HOST NAME`, `remote add|remove|list|usage`. Members are
+  admitted by the outpost-signed stamp with the offer app's SSO secret, as the
+  door's self-service route already does; outpost enforces the audience.
 - **Humans:** offers and folders are apps, so they show in the member's app list.
   The UI for a folder is a later addition. The owner keeps File Browser over HOME.
 
