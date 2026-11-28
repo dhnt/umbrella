@@ -75,6 +75,71 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
    bashsharp. The amendment makes it unnecessary. It remains available as a
    per-tool route to external optional.
 
+## Code inspection: what the minimal core is (2026-11-28)
+
+Inspected at bashy `9830fa6c`+ and yoke at its pinned head. Module counts come from
+`go list -deps` on the dev box; this is metadata only, nothing was built.
+
+**The allowed dependency set is the Bash# binary's graph.**
+- The `bsh` binary (bashsharp `cmd/bsh`) links coreutils `cmds/all` and `multicall`.
+- So "bash and Bash# only" means bash, bashsharp and coreutils plus what they pull in: about 20 modules. That includes cobra, pflag, goawk and gopsutil, and golang.org/x.
+- `gopkg.in/yaml.v3` is not in that set. It is the only extra module the core needs (D1).
+
+**The seam already exists.** The bashsharp `cli` package has hook variables
+that bashy fills in `cmd/bashy/main.go:48-70`: `AgentOSDispatch`, `AgentOSWireExec`,
+`AgentOSShellStartup`, `AgentOSPreamble`, `AgentOSUsage`, `AgentOSShutdown`,
+`VersionProduct` and a few more. The core implements these hooks and nothing more.
+
+**A minimal exec wiring already exists.** The adapter-exec branch of `wireExec`
+(bashy `internal/agentos/agentos.go:1803`) wires only `Env`, `StdIO`,
+`CommandResolver`, `ServedInProcess` (coreutils) and the coreutils exec handler.
+That is the core shell profile. The full branch adds about 22 middlewares, and all of them are
+builtin optional:
+- telemetry, audit, exec history, index visit and the claim guard;
+- the advisor, not-found hints, learn and the weave guard;
+- autofix, recommend, confirm and dry-run;
+- session define, GNU make, dag make and the host converters;
+- host floor, contain and limit;
+- the decorators and the advice callback.
+
+**What the core holds** (rod, not fish):
+
+| Part | Today | Lines (non-test) | Deps today |
+|---|---|---|---|
+| Front-door dispatch: verb → core verb or registered extension | `agentos.Dispatch` | part of 139k in agentos | 268 modules |
+| Name resolution and exec of registered commands | `commandResolverFor`, `registeredHandler` (bashy `dagmake.go:437`, `registered.go`) | ~1–2k | agentos |
+| Ring layer: embedded, shared and local (cloud is optional) | yoke `pkg/assetring`, `pkg/ref` | 0.7k + 1.2k | stdlib only |
+| Record types plus read/write for model, tool, agent and command | yoke `pkg/fleet`: `types catalog write setpath overlay resolve kind_records kind_verbs commands` | ~6k of fleet's 29.6k | assetring, ref, yaml.v3, cobra; **binmgr** (63 modules) via `commands.go` |
+| `help`, `version` | `help.go` (compiled topics); `--version` flag only | small | agentos |
+
+**The extraction is mostly moving files.** The only real leak is `fleet/commands.go`
+importing `binmgr` for `download.url` records. In the core the field stays as
+data, and installing (download and verify) becomes an external-optional extension.
+
+**What leaves the core** (builtin optional, still linked):
+- the 22 exec middlewares;
+- the cloud ring and sync;
+- binmgr;
+- live probes and the chat context cloner on `agent`;
+- the `person` and `whois` nouns;
+- infra, pairing, satellites, services, workers and tokens: most of fleet's 29.6k lines;
+- the atlas views and reports on `commands` (the core keeps CRUD plus a minimal show with class and kind);
+- ycode wiring and the `telemetry.Init` call in `main`.
+
+**A blank fleet is really blank.** The embedded baseline (about 200 YAML files: tools,
+models, agents, plans, services, infra, adapters) becomes optional data.
+`BASHY_FLEET_SEEDS=off` already drops the roster but keeps the compiled tool
+launch contracts. In the core those contracts become data too.
+
+**Behaviour rule for M0b.** Optional extensions register at init, in today's
+middleware order, so the built `bashy` behaves exactly as before. The safety
+handlers (confirm, dry-run, audit, claim guard, contain, limit) are optional by
+the ruling but stay linked and on by default.
+
+**Size estimate.** The core is about 9–10k lines, mostly moved from yoke `fleet`,
+`assetring` and `ref` and from three agentos files. It goes into a nested module
+(D2 `yoke/core`), so both yoke fleet and bashy can import it without a cycle.
+
 ## Stories (MVP)
 
 **M0: dependency-clean core package** (bashy, yoke). This comes first, and the other stories build on it.
