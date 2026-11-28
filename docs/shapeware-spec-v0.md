@@ -209,9 +209,9 @@ Adopted 2026-11-27. A self-contained app ships its code in the folder; a surface
 
 Sprint 742. A lifted surface such as ClassGo's `reports-weekly-summary` changes one presentation file and builds nothing. A surface whose implementation is compiled code (Go) differs in three ways. Everything else in §4.3a holds.
 
-1. **The candidate file set is declared.** `SKILL.md` names the files a candidate may change in `metadata.candidate-files`: a space-separated list of repo-relative globs, for example `"internal/backup/*.go"`. `*` and `?` never cross `/`, and there is no `**`. Build outputs that are not git-ignored go in `metadata.build-outputs`, in the same form. `checks/candidate.bsh` (Appendix D, the same file for every surface) enforces the set:
-   - every file that differs between the installed implementation and the work copy matches a `candidate-files` glob. "Differs" covers changed, added and deleted files, tracked or untracked; git-ignored files, `.shapeware/` and `build-outputs` are left out;
-   - this folder's files in the copy are unchanged, except that `features.yaml` may add lines. A spec change that comes with a candidate is §6a, spec change with a candidate (sprint 742 M2);
+1. **The candidate file set is declared.** `SKILL.md` names the files a candidate may change in `metadata.candidate-files`: a space-separated list of repo-relative globs, for example `"internal/backup/*.go"`. `*` and `?` never cross `/`, and there is no `**`. Build outputs go in `metadata.build-outputs`, in the same form; a `build-outputs` glob that matches a directory (for example `node_modules`) leaves out everything under it. Values may be bare, double-quoted or single-quoted. `checks/candidate.bsh` (Appendix D, the same file for every surface) enforces the set:
+   - every file that differs between the installed implementation and the work copy matches a `candidate-files` glob. Every file counts, tracked, untracked or git-ignored: Go compiles an ignored `.go` file all the same. Only `.git/`, `.shapeware/` and `build-outputs` are left out. A file differs in its bytes, its mode (`100644` or `100755`) or its type; a symlink is compared as a link (its target) and never followed. Changed, added and deleted files all count;
+   - this folder's files in the copy are unchanged: the same type, mode and bytes, so a protected file replaced by a symlink to the same bytes fails. `features.yaml` may add lines. A spec change that comes with a candidate is §6a, spec change with a candidate (sprint 742 M2);
    - the copy builds with this folder's `build` step, and this folder's `checks/acceptance.bsh` passes on it;
    - it prints `VARIANT <version>+shaped.<sha>`, the hash taken over the changed implementation files.
 2. **`build` runs the compiler.** For example `go build -o "$bin/<name>" ./cmd/<name>` in `$impl`, where `bin=${SHAPEWARE_BIN:-$PWD/.shapeware/bin}`. `candidate.bsh` sets `IMPL` to the work copy and `SHAPEWARE_BIN` to a scratch folder, so grading never overwrites the installed build. `Effects: read, write, exec`, `Band: unmeasured`. `build` also writes the launcher.
@@ -293,7 +293,7 @@ A folder that is certified carries its gate operations as targets too, so the co
 **A pinned go test** (Sprint 742) is cited through the surface launcher's `gotest` verb (§4.3b, Appendix D):
 - `<launcher> gotest PKG NAME` runs `go test -count=1 -v -run '^NAME$' PKG` in the implementation. It prints exactly `PASS NAME` with exit 0 when that test reports `--- PASS: NAME`, and otherwise exactly `FAIL NAME` with exit 1. The go test log is not printed, so the output the judge sees is stable. `-v` makes a run that matched no test a FAIL.
 - An acceptance line: `<launcher> gotest ./internal/backup TestRestoreRoundTrip => PASS TestRestoreRoundTrip`. A `CONTRACT.md` assertion: `$ <launcher> gotest PKG NAME`, the output `PASS NAME`, `exit: 0`.
-- `PKG` is a `./` path inside the implementation; `NAME` is one top-level test (`Test...`); subtests are not cited.
+- `PKG` is `.` (the root package) or `./` followed by a clean relative path: no empty, `.` or `..` segment and no `...` pattern, so a pin names exactly one package inside the implementation. `NAME` is one top-level test (`Test...`); subtests are not cited.
 - A pinned test that fails today is a bug's correct behaviour: a tbd feature with `resolves:` (§4.2). A fix that makes it pass is then a spec-linked change, and `candidate.bsh` runs it with the rest of the acceptance lines.
 - `conform spec check` rule `gotest-form`: a `gotest` line takes exactly `PKG NAME`, expects exactly `PASS NAME`, and in `CONTRACT.md` exits 0.
 - `conform mutate` treats it as any CLI assertion. It seeds an output mutant and an exit mutant; the stable output kills both (measured on the Appendix D self-test surface: 2/2). Each mutant reruns the whole contract, so every `gotest` assertion adds one go test run per mutant. Budget for it, or shard (`SHARDS`/`SHARD`).
@@ -316,7 +316,7 @@ Run both as `bashy --bashsharp <file>`: a record install drops the executable bi
 
 A fix that changes pinned behaviour also changes the spec. The two are one change: graded together, approved together, undone together.
 
-- **In a work copy.** `checks/candidate.bsh --spec-change WORKCOPY` lets the copy's surface folder change `CONTRACT.md`, `features.yaml`, `examples/` and the `## Known issues` section of `SKILL.md`. It never lets the copy change `checks/`, `contract.bsh`, `dag.md`, `shaped.json` or any other file. It prints a `SPEC-CHANGE` section: every changed file, every removed (`-`) and added (`+`) `features.yaml` line, and every changed, removed or added `CONTRACT.md` assertion id. It grades the copy with the installed checker logic applied to the copy's spec. The VARIANT digest covers the changed implementation files and the changed spec files. Without the flag, `candidate.bsh` behaves as above.
+- **In a work copy.** `checks/candidate.bsh --spec-change WORKCOPY` lets the copy's surface folder change `CONTRACT.md`, `features.yaml`, `examples/` and the `## Known issues` section of `SKILL.md`. It never lets the copy change `checks/`, `contract.bsh`, `dag.md`, `shaped.json` or any other file (type, mode and bytes, as in §4.3b). A spec file that changes stays a regular file. In `SKILL.md` only the `## Known issues` section, from its heading to the next `## ` heading or the end, may change. It prints a `SPEC-CHANGE` section: every changed file, every removed (`-`) and added (`+`) `features.yaml` line, and every changed, removed or added `CONTRACT.md` assertion id. It grades the copy with the installed checker logic applied to the copy's spec. The VARIANT digest covers the changed implementation files and the changed spec files. Without the flag, `candidate.bsh` behaves as above.
 - **Owner review first.** A spec change is gate 1: the owner reviews the `SPEC-CHANGE` section before the candidate is kept. A known issue fixed by the change is marked `fixed` with `fixed-by:` in the same change (§4.2).
 - **Under shaping (`bashy shape`).** The trusted verifier treats a candidate that edits or removes a required check as a spec change. It refuses that candidate until the owner records a review of exactly that spec (`bashy shape spec-review APP ID`, owner tier only, bound by the spec's digest). It then grades the candidate against its own checks, under the base's effect cap. Approval activates code and spec together. Every version records the digest of the spec it was verified against, and undo and restore grade the target version against the spec it carries, so undo after a spec-changing approval needs no manual step.
 - **Anchoring a lifted surface's spec.** The verifier freezes the app's root `checks/` files. A shaped app built from a lifted surface pins the surface spec from its root check (for example, `checks/installed.bsh` records a SHA-256 of the surface's `features.yaml`, `CONTRACT.md` and `examples/` and runs `candidate.bsh --spec-change`). A spec change then edits the root check and goes through the owner's review.
@@ -1088,9 +1088,9 @@ Adopted 2026-11-27. The canonical copy is bashy `shapeware/index.bsh`; every rep
 Sprint 742 (§4.3b, §6). The canonical copies are in bashy `examples/shapeware/lifted-surface/`: `checks/candidate.bsh`, `scripts/launcher.sh` and `selftest.sh`. A surface copies `candidate.bsh` verbatim into its `checks/`; it reads everything it needs from the surface's `SKILL.md`.
 
 - **Inputs:** `metadata.version`, `metadata.candidate-files` and `metadata.build-outputs`; the installed implementation from `IMPL`, `.shapeware/impl` (the `source` step) or the repository around `shapeware/index.bsh`.
-- **File listing:** `git ls-files -co --exclude-standard` on both trees, run with the host git by path, because a shell's built-in git may not serve it. A listing that fails is a FAIL, never "no changes".
+- **File listing:** a full walk of both trees (`find`, `.git` and `.shapeware` pruned, files and symlinks, links not followed), so git-ignored files count. A listing that fails is a FAIL, never "no changes". Each entry is compared as git sees it: type, mode (`100644`, `100755`, `120000` with the link target) and bytes.
 - **Build and judge:** `dag.md` `build`, then `checks/acceptance.bsh WORKCOPY`, both from this folder with `IMPL=WORKCOPY` and `SHAPEWARE_BIN` set to a scratch folder.
-- **Self-test:** `bash selftest.sh` builds a tiny Go repository with one surface, `shapeware/calc/`, and grades git clones of it. Validated 2026-11-27 on macOS, with bashy 5.3.0(1)-bashy-dev (345f01d) and Go 1.27.4: an allowed change passes with a reproducible `VARIANT`; a change outside the globs, a new untracked file outside them, a changed `CONTRACT.md`, a changed `features.yaml` line, and an allowed change that breaks the pinned go test each fail. With `CONFORM=` set, the fake surface lints clean. `conform mutate` on its one `gotest` assertion kills 2 of 2 mutants.
+- **Self-test:** `bash selftest.sh` builds a tiny Go repository with one surface, `shapeware/calc/`, and grades git clones of it. Validated 2026-11-27 on macOS, with bashy 5.3.0(1)-bashy-dev (345f01d) and Go 1.27.4, 20 cases. An allowed change passes with a reproducible `VARIANT`, and untracked build outputs and single-quoted metadata are handled. Each of these fails: a change outside the globs; a new untracked file outside them; a new git-ignored Go file outside them; a re-pointed symlink; an exec-bit change; a changed `CONTRACT.md`; a changed `features.yaml` line; a protected file replaced by a symlink to the same bytes; and an allowed change that breaks the pinned go test. The `--spec-change` cases are listed in `selftest.sh` (§6a). With `CONFORM=` set, the fake surface lints clean. `conform mutate` on its one `gotest` assertion kills 2 of 2 mutants.
 
 A `build` step for a Go-backed surface (the self-test's):
 
@@ -1155,7 +1155,7 @@ gotest)
 esac
 ````
 
-### checks/candidate.bsh
+### checks/candidate.bsh (with §6a `--spec-change`)
 
 ````bash
 # Grade a work copy of the IMPLEMENTATION against this INSTALLED lifted
@@ -1164,7 +1164,7 @@ esac
 # surface copies it verbatim into its checks/ folder.
 #
 # Usage, from anywhere:
-#   bashy --bashsharp checks/candidate.bsh WORKCOPY
+#   bashy --bashsharp checks/candidate.bsh [--spec-change] WORKCOPY
 # WORKCOPY is a fresh clone or git worktree of the implementing repository.
 #
 # Read from this folder's SKILL.md frontmatter (metadata, string values):
@@ -1172,30 +1172,51 @@ esac
 #   candidate-files  space-separated repo-relative globs a candidate may
 #                    change, e.g. "internal/backup/*.go"; * and ? never
 #                    cross "/", and there is no **
-#   build-outputs    optional globs of build outputs, left out of the comparison
+#   build-outputs    optional globs of build outputs, left out of the
+#                    comparison; a glob that matches a directory leaves out
+#                    everything under it (e.g. "node_modules")
+# Values may be bare, "double-quoted" or 'single-quoted', as the lint reads them.
 #
 # PASS/FAIL lines, then VARIANT <version>+shaped.<sha>; exit 1 on any FAIL:
 #   - the copy is not the installed implementation;
 #   - every file that differs between the installed implementation and the
-#     copy (tracked, or untracked and not ignored; .shapeware/ and build
-#     outputs left out; a deleted file counts) matches a candidate-files glob;
+#     copy matches a candidate-files glob. Every file counts, tracked,
+#     untracked or git-ignored; only .git/, .shapeware/ and build-outputs are
+#     left out. A file differs in its bytes, its mode (100644 or 100755) or
+#     its kind; a symlink is compared as a link (its target), never followed.
+#     An added or deleted file counts;
 #   - this folder's files in the copy are unchanged, except that features.yaml
-#     may add lines. (A spec change with a candidate, §6a, sprint 742 M2,
-#     relaxes this rule; this file does not implement it.)
+#     may add lines. With --spec-change (a spec change with a candidate, §6a)
+#     the copy may also change CONTRACT.md, features.yaml (any line),
+#     examples/ and the Known issues section of SKILL.md; checks/,
+#     contract.bsh, dag.md, shaped.json and every other file stay unchanged.
+#     "Unchanged" means the same type (file or symlink), mode and bytes: a
+#     protected file replaced by a symlink to the same bytes fails, and a
+#     spec file that changes must stay a regular file. In SKILL.md only the
+#     Known issues section (its heading to the next "## " heading) may change.
+#     A SPEC-CHANGE section then lists every changed or removed features.yaml
+#     line and every changed or removed CONTRACT.md assertion id, and the
+#     build and acceptance below run this folder's (the INSTALLED) dag.md and
+#     checks/ over the COPY's spec files, in a scratch folder.
 #   - the copy builds with this folder's dag.md build step, and this folder's
 #     checks/acceptance.bsh passes on it. Both run from this folder with
 #     IMPL=WORKCOPY and SHAPEWARE_BIN set to a scratch bin folder, so the
 #     installed build is never overwritten.
 # <sha> is the first 7 hex of a SHA-256 over the changed implementation
-# files (each file's SHA-256, or "deleted", two spaces, its repo-relative
-# path; sorted). No changed file gives "none". Reproducible.
+# files (each file's SHA-256 and mode, a symlink's "120000 TARGET", or
+# "deleted"; two spaces, its repo-relative path; sorted). No changed file
+# gives "none". Reproducible. With --spec-change the changed spec files are
+# hashed too, as <surface>/<path>, so a variant names its code and its spec
+# together.
 set -u
 export BASHY_HINTS=off
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)
 runner=${BASHY:-bashy}
 
-[[ $# -eq 1 ]] || { echo "usage: candidate.bsh WORKCOPY" >&2; exit 2; }
+spec_change=0
+if [[ ${1:-} == --spec-change ]]; then spec_change=1; shift; fi
+[[ $# -eq 1 ]] || { echo "usage: candidate.bsh [--spec-change] WORKCOPY" >&2; exit 2; }
 
 fail=0
 ok()  { echo "PASS $1"; }
@@ -1210,10 +1231,13 @@ meta() {
     f && m && /^[^ ]/ { m = 0 }
     f && m {
       line = $0; sub(/^ +/, "", line)
-      if (index(line, k ": ") == 1) {
-        v = substr(line, length(k) + 3); gsub(/^"|"$/, "", v); print v; exit
+      if (index(line, k ":") == 1) {
+        v = substr(line, length(k) + 2); sub(/^[ \t]+/, "", v); sub(/[ \t]+$/, "", v)
+        if (length(v) >= 2 && (v ~ /^".*"$/ || v ~ ("^" q ".*" q "$"))) v = substr(v, 2, length(v) - 2)
+        else if ((i = index(v, " #")) > 0) { v = substr(v, 1, i - 1); sub(/[ \t]+$/, "", v) }
+        print v; exit
       }
-    }' "$here/SKILL.md"
+    }' q="'" "$here/SKILL.md"
 }
 
 # glob_match PATH GLOB: segment by segment, so * and ? never cross "/".
@@ -1234,15 +1258,42 @@ match_any() { # PATH GLOB...
   return 1
 }
 
-# list DIR: the files git sees (tracked, or untracked and not ignored). The
-# host git by path: a shell's built-in git may not serve ls-files -co.
-hostgit=$(type -P git) || hostgit=/usr/bin/git
+# is_output PATH: PATH, or a directory above it, matches a build-outputs glob.
+is_output() {
+  local IFS=/ seg pre=
+  local -a segs
+  (( ${#outputs[@]} )) || return 1
+  read -ra segs <<<"$1"
+  for seg in "${segs[@]}"; do
+    pre=${pre:+$pre/}$seg
+    match_any "$pre" "${outputs[@]}" && return 0
+  done
+  return 1
+}
+
+# list DIR: every file and symlink under DIR, .git and .shapeware pruned.
+# Ignored files count: Go compiles a git-ignored .go file all the same.
+# Symlinks are listed, never followed.
 list() {
-  if [[ -d $1/.git || -f $1/.git ]]; then
-    "$hostgit" -C "$1" ls-files -co --exclude-standard
-  else
-    (cd "$1" && find . -type f ! -path './.git/*' | sed 's|^\./||')
-  fi
+  (cd "$1" && find . \( -name .git -o -name .shapeware \) -prune -o \( -type f -o -type l \) -print) | sed 's|^\./||'
+  return "${PIPESTATUS[0]}"
+}
+
+# kind PATH: git's view of one entry. "-" missing, "120000 TARGET" a symlink
+# (not followed), "100755" or "100644" a file, "other" anything else.
+kind() {
+  if [[ -L $1 ]]; then printf '120000 %s' "$(readlink "$1")"
+  elif [[ -f $1 ]]; then if [[ -x $1 ]]; then printf 100755; else printf 100644; fi
+  elif [[ -e $1 ]]; then printf other
+  else printf -; fi
+}
+# same_file A B: same kind, mode, link target and, for files, the same bytes.
+same_file() {
+  local ka kb
+  ka=$(kind "$1") kb=$(kind "$2")
+  [[ $ka == "$kb" ]] || return 1
+  [[ $ka == 100* ]] || return 0
+  cmp -s "$1" "$2"
 }
 
 sum256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum; else shasum -a 256; fi; }
@@ -1278,15 +1329,14 @@ trap 'rm -rf "$tmp"' EXIT
 
 # 1. Implementation files: every difference matches a candidate-files glob.
 # Fail closed: a listing that fails is a FAIL, never "no changes".
-list "$base" >"$tmp/files.base" || bad "list the installed implementation's files" "(git ls-files failed in $base)"
-list "$copy" >"$tmp/files.copy" || bad "list the copy's files" "(git ls-files failed in $copy)"
+list "$base" >"$tmp/files.base" || bad "list the installed implementation's files" "(find failed in $base)"
+list "$copy" >"$tmp/files.copy" || bad "list the copy's files" "(find failed in $copy)"
 changed=()
 outside=0
 while IFS= read -r f; do
   case /$f/ in */.shapeware/* | "/$surface/"*) continue ;; esac
-  (( ${#outputs[@]} )) && match_any "$f" "${outputs[@]}" && continue
-  [[ -d $base/$f || -d $copy/$f ]] && continue # a submodule or a directory entry
-  cmp -s "$base/$f" "$copy/$f" 2>/dev/null && continue
+  is_output "$f" && continue
+  same_file "$base/$f" "$copy/$f" && continue
   if (( ${#allowed[@]} )) && match_any "$f" "${allowed[@]}"; then
     changed+=("$f")
   else
@@ -1297,14 +1347,55 @@ done < <(LC_ALL=C sort -u "$tmp/files.base" "$tmp/files.copy")
 (( outside == 0 )) && ok "changes within metadata.candidate-files (${#changed[@]} files)"
 
 # 2. This folder, as the copy carries it: unchanged, features.yaml adds only.
+# With --spec-change, the spec files may change (spec_file) and are listed.
+spec_file() { # REL: a file a spec change may change
+  case $1 in CONTRACT.md | features.yaml | SKILL.md | examples/*) return 0 ;; esac
+  return 1
+}
+# outside_known_issues FILE: SKILL.md without its Known issues section (the
+# "## Known issues" heading up to the next "## " heading or the end).
+outside_known_issues() { [[ -f $1 ]] && awk '/^## / { ki = ($0 ~ /^## Known issues[ \t]*$/) } !ki' "$1"; }
+# assertions FILE: "ID<TAB>sha" per CONTRACT.md assertion (### heading to the next).
+assertions() {
+  [[ -f $1 ]] || return 0
+  local id
+  for id in $(awk '/^### / { print $2 }' "$1" | LC_ALL=C sort -u); do
+    printf '%s\t%s\n' "$id" "$(awk -v id="$id" '/^### / { on = ($2 == id) } on' "$1" | sum256 | cut -c1-16)"
+  done
+}
+spec_changed=()
 if [[ -d $copy/$surface ]]; then
   before=$fail
   while IFS= read -r f; do
-    case /$f/ in */.shapeware/* | /features.yaml/) continue ;; esac
-    cmp -s "$here/$f" "$copy/$surface/$f" 2>/dev/null || bad "protected $surface/$f unchanged" "($f was changed, added or removed)"
-  done < <({ (cd "$here" && find . -type f); (cd "$copy/$surface" && find . -type f); } | sed 's|^\./||' | LC_ALL=C sort -u)
+    case /$f/ in */.shapeware/*) continue ;; esac
+    if (( spec_change )) && spec_file "$f"; then
+      # A spec file may change, but stays a regular file (or is removed):
+      # never a symlink, so it cannot point outside the copy.
+      case $(kind "$copy/$surface/$f") in
+        100* | -) same_file "$here/$f" "$copy/$surface/$f" || spec_changed+=("$f") ;;
+        *) bad "spec file $surface/$f is a regular file" "($f is $(kind "$copy/$surface/$f"))" ;;
+      esac
+      continue
+    fi
+    if [[ $f == features.yaml ]]; then # its lines are checked below; its kind and mode here
+      [[ $(kind "$here/$f") == "$(kind "$copy/$surface/$f")" ]] || bad "protected $surface/$f unchanged" "($f changed its type or mode)"
+      continue
+    fi
+    same_file "$here/$f" "$copy/$surface/$f" || bad "protected $surface/$f unchanged" "($f was changed, added or removed)"
+  done < <({ list "$here"; list "$copy/$surface"; } | LC_ALL=C sort -u)
+  if (( spec_change )); then
+    # Through files: cmp stops at the first difference, and a writer cut off
+    # mid-stream would end this script with SIGPIPE.
+    outside_known_issues "$here/SKILL.md" >"$tmp/skill.here"
+    outside_known_issues "$copy/$surface/SKILL.md" >"$tmp/skill.copy"
+    if cmp -s "$tmp/skill.here" "$tmp/skill.copy"; then
+      ok "SKILL.md changes only its Known issues"
+    else
+      bad "SKILL.md changes only its Known issues" "(SKILL.md changed outside its ## Known issues section)"
+    fi
+  fi
   (( fail == before )) && ok "protected $surface unchanged"
-  if [[ -f $here/features.yaml ]]; then
+  if (( ! spec_change )) && [[ -f $here/features.yaml ]]; then
     if [[ -f $copy/$surface/features.yaml ]]; then
       removed=$(diff "$here/features.yaml" "$copy/$surface/features.yaml" | grep -c '^<')
       (( removed == 0 )) && ok "features.yaml only adds lines" || bad "features.yaml only adds lines" "($removed existing lines changed or removed)"
@@ -1316,10 +1407,39 @@ else
   bad "copy has this folder" "($surface is missing)"
 fi
 
+# The spec change, for the owner's review: every changed or removed
+# features.yaml line and every changed or removed contract assertion id.
+if (( spec_change )); then
+  echo "SPEC-CHANGE files: ${spec_changed[*]:-(none)}"
+  diff "$here/features.yaml" "$copy/$surface/features.yaml" 2>/dev/null | sed -n 's/^< /SPEC-CHANGE features.yaml - /p'
+  diff "$here/features.yaml" "$copy/$surface/features.yaml" 2>/dev/null | sed -n 's/^> /SPEC-CHANGE features.yaml + /p'
+  join -t $'\t' -a 1 -e '' -o 0,1.2,2.2 <(assertions "$here/CONTRACT.md" | LC_ALL=C sort) <(assertions "$copy/$surface/CONTRACT.md" | LC_ALL=C sort) |
+    while IFS=$'\t' read -r id old new; do
+      if [[ -z $new ]]; then echo "SPEC-CHANGE assertion $id removed"
+      elif [[ $old != "$new" ]]; then echo "SPEC-CHANGE assertion $id changed"; fi
+    done
+  join -t $'\t' -v 2 <(assertions "$here/CONTRACT.md" | LC_ALL=C sort) <(assertions "$copy/$surface/CONTRACT.md" | LC_ALL=C sort) |
+    while IFS=$'\t' read -r id _; do echo "SPEC-CHANGE assertion $id added"; done
+fi
+
 # 3. Build the copy into a scratch bin folder, then this folder's checker grades it.
-if (cd "$here" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" dag -f dag.md build) >"$tmp/build.log" 2>&1; then
+# With --spec-change the checker is this folder's, the spec the copy's: a
+# scratch folder holds the installed files with the copy's spec files over them.
+grader=$here
+if (( spec_change )); then
+  grader=$tmp/surface
+  mkdir -p "$grader"
+  (cd "$here" && find . -type f ! -path './.shapeware/*' | while IFS= read -r f; do
+    mkdir -p "$grader/$(dirname "$f")" && cp -p "$f" "$grader/$f"; done)
+  rm -rf "$grader/examples" "$grader/CONTRACT.md" "$grader/features.yaml" "$grader/SKILL.md"
+  for f in CONTRACT.md features.yaml SKILL.md; do
+    [[ -f $copy/$surface/$f ]] && cp -p "$copy/$surface/$f" "$grader/$f"
+  done
+  [[ -d $copy/$surface/examples ]] && cp -Rp "$copy/$surface/examples" "$grader/examples"
+fi
+if (cd "$grader" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" dag -f dag.md build) >"$tmp/build.log" 2>&1; then
   ok "copy builds (dag.md build)"
-  (cd "$here" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" --bashsharp checks/acceptance.bsh "$copy") || fail=1
+  (cd "$grader" && IMPL=$copy SHAPEWARE_BIN=$tmp/bin "$runner" --bashsharp checks/acceptance.bsh "$copy") || fail=1
 else
   tail -n 20 "$tmp/build.log" >&2
   bad "copy builds (dag.md build)" "(acceptance not run)"
@@ -1328,9 +1448,16 @@ fi
 # 4. The variant id, over the changed implementation files only.
 ver=$(meta version)
 sha=none
-if (( ${#changed[@]} )); then
-  sha=$(for f in "${changed[@]}"; do
-    if [[ -f $copy/$f ]]; then h=$(sum256 <"$copy/$f"); h=${h%% *}; else h=deleted; fi
+hashed=("${changed[@]}")
+for f in "${spec_changed[@]}"; do hashed+=("$surface/$f"); done
+if (( ${#hashed[@]} )); then
+  sha=$(for f in "${hashed[@]}"; do
+    k=$(kind "$copy/$f")
+    case $k in
+      100*) h=$(sum256 <"$copy/$f"); h="${h%% *} $k" ;;
+      -) h=deleted ;;
+      *) h=$k ;;
+    esac
     printf '%s  %s\n' "$h" "$f"
   done | sum256 | cut -c1-7)
 fi
