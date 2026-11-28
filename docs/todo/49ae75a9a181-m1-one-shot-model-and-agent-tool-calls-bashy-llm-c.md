@@ -3,14 +3,15 @@ id: 49ae75a9a181
 kind: feature
 title: 'M1 one-shot model and agent tool calls: bashy llm call and bashy agent call, typed in bashy mcp tools (request/response)'
 seq: 858
-status: assigned
+status: done
 priority: p1
 created: 2026-11-28T06:33:13.706984Z
-weave: 8
 assignee: claude-fable5.2
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Tools as a service (TaaS): offer a model, tool, agent or designated folder to your trusted group as a metered, typed tool call'
+closed: 2026-11-28T06:59:23.223735Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §3.1, §4 M1. Operator 2026-11-27 night: the bashy CLI calls any LLM and any agent as a one-shot tool call, request in, response out; that is the same typed call a Model or Agent offer serves.
@@ -31,3 +32,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Commit in yoke with trailers: Sprint: #739 / Story: #858 / Story-ID: 49ae75a9a181 / Agent: <your agent name>. Do not push main, do not bump any pin, do not edit other repos except as the story says.
 - Finish by appending a "Delivery" paragraph to this story file (files changed, test command and its result) and commit it in the umbrella workspace with the same trailers.
 - Budget about 30 minutes. If blocked, write the blocker in the story, commit, and stop. Do not work around a failing pre-existing test: record it.
+
+Delivered (conductor record): yoke main 48caa867 (llm call, typed MCP tools llm and agent, delegate usage) and bashy main 7ebdb2cd with yoke pin 57848aae (worker commits 5a3eaad1 + 962fe02f by claude-fable5.2, cherry-picked, Agent trailer corrected). Gate: GOWORK=off go test ./pkg/broker ./pkg/chat ok; Windows test host lane: bashy linux/darwin/windows build ok, vet ok, go test ./internal/agentos -run MCP|Typed|SrcPins ok.
