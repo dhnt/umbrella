@@ -21,6 +21,18 @@ Epic: `core-split`.
   tools are downloaded and run as separate processes. A tool moves between
   them only when there is a reason. This replaces "unlink everything".
 
+- **Amendment 2, same day: the core depends only on bash and Bash#.** The
+  core (the six verbs and the classification they use) may import only the
+  Go standard library and the module graph Bash# already has: `qiangli/bash`,
+  `bashsharp`, and what they pull in. It may not depend on yoke packages,
+  go-git, cobra, otel, YAML libraries or any other module. Builtin optional
+  tools may keep any dependency.
+  The reason: a change or pin bump in a non-essential package must not
+  rebuild the core or invalidate its build and test cache. Go caches per
+  package, keyed by the package's own sources and the packages it imports, so a
+  core that imports none of them stays cached. The final binary is still
+  relinked, because it contains the builtin optional tools.
+
 The packaging axis already exists, so nothing new is introduced. The invariant
 class (yoke `pkg/src/class.go`) has `core`, `skill` and `external`. `skill`
 ("everything else that ships in-process") is builtin optional, and
@@ -46,6 +58,10 @@ Code inspected at bashy `9830fa6c` and yoke at its pinned head.
 | `custom/` = adapters only | `bashy/custom/` has 51 entries: agent CLIs (`claude codex opencode agy aider muse …`), managed externals (`aws gh kubectl helm psql …`) and `internal/adapter`. | Move the tool adapters to `optional/`. Keep only the mechanism. |
 | Lockstep tags | bash, bashsharp and bashy are tagged independently. | Builtin optional tools ship in the same binary, so the binary changes when they change. The core contract therefore gets its own version, shared with bash and Bash#. The binary keeps its release version. |
 
+| Core depends only on bash and Bash# | The core verbs run inside `bashy/internal/agentos`, whose package graph has 268 modules. The fleet nouns use yoke `pkg/fleet`, which has 63 modules: go-git, otel, bbolt, gojq, cobra and `gopkg.in/yaml.v3`. `CoreVerbs`/`ClassOf` live in yoke `pkg/src`, which has 176 modules (bleve, chromedp, badger …). yoke `pkg/atlas` is already clean: stdlib plus yoke only. The Bash# graph is bash, readline, pty, u-root and golang.org/x. | A new dependency-clean core package (M0). The rich implementations stay as builtin optional extensions behind it. |
+
+Module counts come from `go list -deps` over each package, excluding test files. M0 measures them again on the lane.
+
 Source protection does not change. It is per path (`src.PathClass` and the
 protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 
@@ -60,6 +76,19 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
    per-tool route to external optional.
 
 ## Stories (MVP)
+
+**M0: dependency-clean core package** (bashy, yoke). This comes first, and the other stories build on it.
+- **One package, `bashy/core`**, holds the six verbs and the class table: `CoreVerbs`, plus `ClassOf` moved from yoke `pkg/src` or re-exported over yoke `pkg/atlas`.
+  - The verbs are `model`, `tool` and `agent` CRUD over local records; `commands` CRUD over the operator ring; `help`; and `version`.
+  - It uses the standard library plus bash and Bash# only.
+- **Today's implementations become builtin optional extensions.** These are the fleet cloud overlay, signing, verify, the cobra front ends and so on. Each one registers with the core through an interface, so the core never imports it.
+  - The existing verbs keep their behaviour by delegating to the core plus their extension. This avoids duplicate paths: there is one store, and the core owns it.
+- **Ratchet test:** the modules in `go list -deps ./core` must be a subset of the stdlib plus the module graph of `bashsharp`. A failure names the offending import path.
+- **Cache check on the lane:**
+  1. `go test ./core` runs.
+  2. Bump a non-essential pin (for example yoke or otel) and touch an optional package.
+  3. `go build ./core` and `go test ./core` must report no rebuild: the test result shows `(cached)`, and `go build -x` shows no compile action for `core`.
+- **Record format is decision D1** (below). Fleet records are YAML today, and no YAML parser is in the Bash# graph.
 
 **M1: core verb set = 6** (yoke, bashy)
 - Change `CoreVerbs()` to `agent model tool commands help version`.
@@ -85,6 +114,12 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 - The binary's release version also moves when a builtin optional tool changes.
 - The ratchet from M2 shows that adding or changing a tool changes no core path.
 
+## Decision needed before start
+
+**D1: the format of the core's records.** Fleet and ring records are YAML (`gopkg.in/yaml.v3`, 24 import sites).
+- **(a) JSON records in the core (recommended).** The core stores and reads JSON with the standard library. YAML input is accepted by a builtin optional `import` front end. This keeps the rule strict.
+- **(b) Allow `gopkg.in/yaml.v3` as the one listed exception.** It is pure Go and has no dependencies, but it breaks the rule as written.
+
 ## Non-goals
 
 - A core-only build that links no optional tool (Sprint 355 design). The amendment no longer requires it.
@@ -100,8 +135,8 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 
 | Repo | Stories |
 |---|---|
-| yoke | M1 |
-| bashy | M1–M4 |
+| yoke | M0 (moves or re-exports `ClassOf`), M1 |
+| bashy | M0–M4 |
 | umbrella | pins and report |
 
 bashsharp and bash are unaffected.
@@ -117,7 +152,7 @@ bashsharp and bash are unaffected.
 ## Owners, budget, risks, rollback
 
 - **Owner:** the manager is claude-opus5.5. M3 and M4 may go to a worker.
-- **Budget:** about 4 small stories, with no paid services.
+- **Budget:** five stories with no paid services. M0 is the only one that is not small.
 - **Known cost:** mutate takes about 28 minutes per run until conform todo `1fe89580` is fixed.
 - **Risk:** agents and docs that assume the 14-verb list. A grep for `CoreVerbs` and the doc block covers this, and the ratchets catch drift.
 - **Rollback:** each story is a single revertible commit. M3 is a pure `git mv`.
