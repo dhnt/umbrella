@@ -3,9 +3,11 @@ id: 9f80555a4c41
 kind: feature
 title: 'F1 the folder tool on the door: each designated folder is the Tool-class offer files-NAME (typed ls/stat/read/link, os.OpenInRoot + ServeContent byte route)'
 seq: 834
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-27T15:44:28.647256Z
+weave: 7
+assignee: agy-gemini4-carbon
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'

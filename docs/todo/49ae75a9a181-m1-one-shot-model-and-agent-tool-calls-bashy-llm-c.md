@@ -3,9 +3,11 @@ id: 49ae75a9a181
 kind: feature
 title: 'M1 one-shot model and agent tool calls: bashy llm call and bashy agent call, typed in bashy mcp tools (request/response)'
 seq: 858
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-28T06:33:13.706984Z
+weave: 8
+assignee: claude-fable5.2
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Tools as a service (TaaS): offer a model, tool, agent or designated folder to your trusted group as a metered, typed tool call'

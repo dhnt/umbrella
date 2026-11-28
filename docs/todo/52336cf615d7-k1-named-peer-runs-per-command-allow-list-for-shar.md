@@ -3,9 +3,11 @@ id: 52336cf615d7
 kind: feature
 title: K1 named peer runs + per-command allow-list for shared peers
 seq: 829
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-27T15:34:18.868292Z
+weave: 6
+assignee: codex-gpt6-sol
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
