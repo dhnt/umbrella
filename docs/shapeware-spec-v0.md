@@ -312,6 +312,15 @@ A lifted surface's `candidate.bsh` grades a work copy of the implementation inst
 
 Run both as `bashy --bashsharp <file>`: a record install drops the executable bit (§14).
 
+### 6a. A spec change travels with its candidate (sprint 742 M2)
+
+A fix that changes pinned behaviour also changes the spec. The two are one change: graded together, approved together, undone together.
+
+- **In a work copy.** `checks/candidate.bsh --spec-change WORKCOPY` lets the copy's surface folder change `CONTRACT.md`, `features.yaml`, `examples/` and the `## Known issues` section of `SKILL.md`. It never lets the copy change `checks/`, `contract.bsh`, `dag.md`, `shaped.json` or any other file. It prints a `SPEC-CHANGE` section: every changed file, every removed (`-`) and added (`+`) `features.yaml` line, and every changed, removed or added `CONTRACT.md` assertion id. It grades the copy with the installed checker logic applied to the copy's spec. The VARIANT digest covers the changed implementation files and the changed spec files. Without the flag, `candidate.bsh` behaves as above.
+- **Owner review first.** A spec change is gate 1: the owner reviews the `SPEC-CHANGE` section before the candidate is kept. A known issue fixed by the change is marked `fixed` with `fixed-by:` in the same change (§4.2).
+- **Under shaping (`bashy shape`).** The trusted verifier treats a candidate that edits or removes a required check as a spec change. It refuses that candidate until the owner records a review of exactly that spec (`bashy shape spec-review APP ID`, owner tier only, bound by the spec's digest). It then grades the candidate against its own checks, under the base's effect cap. Approval activates code and spec together. Every version records the digest of the spec it was verified against, and undo and restore grade the target version against the spec it carries, so undo after a spec-changing approval needs no manual step.
+- **Anchoring a lifted surface's spec.** The verifier freezes the app's root `checks/` files. A shaped app built from a lifted surface pins the surface spec from its root check (for example, `checks/installed.bsh` records a SHA-256 of the surface's `features.yaml`, `CONTRACT.md` and `examples/` and runs `candidate.bsh --spec-change`). A spec change then edits the root check and goes through the owner's review.
+
 ## 7. The effect cap
 
 As inspected (§14), with the v0.1 rules:
