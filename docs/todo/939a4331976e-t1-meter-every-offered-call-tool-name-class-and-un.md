@@ -44,3 +44,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
 
 Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).
+
+Conductor note at dispatch (yoke main c47be359): pkg/offer exists (K4: NewOfferCmd, RemoteSubcommands, run.go callers, broker offers.go). Put T1 code in NEW files (pkg/offer/usage.go, pkg/broker/offer_usage.go) and only add one line to RemoteSubcommands and NewOfferCmd for the usage subcommands: T2 edits pkg/offer in parallel. K4 already counts units per principal+offer in broker offerCalls (in memory) for --limit: reuse that unit logic for the record fields.

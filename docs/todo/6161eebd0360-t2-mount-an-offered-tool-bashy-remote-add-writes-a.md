@@ -38,3 +38,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
 
 Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).
+
+Conductor note at dispatch (yoke main c47be359): pkg/offer exists (K4: NewOfferCmd, RemoteSubcommands with remote call, run.go transport). Put T2 code in a NEW file pkg/offer/mount.go and only append to the RemoteSubcommands slice: T1 edits pkg/offer in parallel. The definition route is GET /offers/NAME?definition (K4 broker offers.go).

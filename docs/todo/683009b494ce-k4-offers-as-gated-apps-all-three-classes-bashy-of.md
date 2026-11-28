@@ -3,12 +3,15 @@ id: 683009b494ce
 kind: feature
 title: 'K4 offers as gated apps, all three classes: bashy offer/remote, definition route, door admits signed member stamps per offer-NAME app, agent token cap'
 seq: 832
-status: todo
+status: done
 priority: p1
 created: 2026-11-27T15:34:19.619768Z
+assignee: codex-gpt6-sol
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T07:49:30.320003Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §4 K4. One sharing model (operator 11-27): bashy offer NAME [--circle|--group|--email] [--limit] [--for] registers app offer-NAME on the door port with require_login + trust_cloud_identity and adds the audience via existing outpost apps share; offer llm = offer-llm (inference only); existing llm app and /k/ peers untouched. Door authorize: new branch when no credential + ArrivedViaCloud + VerifyOutpost/VerifyRelationship with that app's SSO secret + member/owner; X-Forwarded-Prefix app must match the offered command; principal member:EMAIL gets peer route limits and caps. Consumer: bashy remote HOST -- NAME, llm env --from HOST --member via SatelliteTokenSource (relax URL checks keycmd.go ~104, satellite_exchange.go:39). Fix share.go:249 login flip-back for gated apps. Discovery listing out of MVP: offer prints the consumer line to post with bashy mb. Code inspected 2026-11-27 (revised after review): yoke pkg/broker broker.go:299-326 peershare.go selfservice.go:211 share.go:190-265 keycmd.go, pkg/coopauth coopauth.go:234,271, pkg/fleet satellite_exchange.go; outpost internal/agent apps.go:238-252,633-728,1196-1209 grants.go.
@@ -37,3 +40,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 - Budget about 45 minutes. If blocked, write the blocker in the story, commit, and stop.
 
 Conductor note at dispatch: yoke main 567a9efc already has package pkg/offer (K2: offer.Offerable(catalog, name) returns the typed definition or a typed refusal) and fleet.ToolDefinition; extend that package, do not recreate it. Run the FULL test of every package you touch (not -run filters) before committing: K2 regressed four tests that a filtered run missed.
+
+Delivered (conductor record): yoke main c47be359 (worker commit 2c8ca2f8 by codex-gpt6-sol, cherry-picked onto 742 yoke 67a7a635). Gate: full go test ./pkg/broker ./pkg/offer ./pkg/cligw ./pkg/sharedfiles ./pkg/fleet ./pkg/toolcmd ./mcp ok, vet ok. Deferred: llm env --member. MVP limit: --limit counters are in memory and reset on door restart.
