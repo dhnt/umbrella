@@ -53,7 +53,7 @@ Code inspected at bashy `9830fa6c` and yoke at its pinned head.
 |---|---|---|
 | Core verbs = 5 plus `--version` | `src.CoreVerbs()` (yoke `pkg/src/class.go:50`) locks 14: `agent model tool skill self src git dag commands inspect secret ask claim resource`. It is ratcheted by yoke `class_test.go:20` and bashy `atlas_views_test.go:37` and `commandkind_test.go`. | Drop 10 verbs and add `help`. Version stays the `--version` flag. |
 | `help` from data | `dispatchHelp` (bashy `internal/agentos/help.go:55`) prints compiled topic tables. | Print help from the atlas or registry plus config. A new tool's help comes from its record. |
-| version | The `--version` flag exists; there is no `version` verb. | None: keep the flag (D4) and add the core contract version to its output (M2). |
+| version | The `--version` flag exists and is answered by the shell layer (bashsharp `cli/version.go`); there is no `version` verb. | None: keep the flag as it is (D4). |
 | Rest optional | After M1 the 10 dropped verbs classify `skill`, which is builtin optional, and stay linked. | None for this sprint. Moving a tool to external optional is a per-tool decision made later. |
 | `custom/` = adapters only | `bashy/custom/` has 51 entries: agent CLIs (`claude codex opencode agy aider muse …`), managed externals (`aws gh kubectl helm psql …`) and `internal/adapter`. | Move the tool adapters to `optional/`. Keep only the mechanism. |
 | Lockstep tags | bash, bashsharp and bashy are tagged independently. | Builtin optional tools ship in the same binary, so the binary changes when they change. The core contract therefore gets its own version, shared with bash and Bash#. The binary keeps its release version. |
@@ -211,8 +211,8 @@ the ruling but stay linked and on by default.
 - Amend and recertify `command-kinds` through kb `shapeware-issue-to-spec`.
 - Lift a new `core-contract` shapeware surface. It is a spec, not a command, and asserts the agent-facing minimal set on Linux, macOS and Windows: bash builtins, the POSIX names (D5 for six), fences, `commands` add/show/set/remove, `model`, `tool`, `agent`, `help` and `--version`. Gates: test, cert, mutate, alone.
 
-**M2: `help` and `--version` read data** (bashy). There is no new command or option. Only what the existing output reads from changes.
-- `bashy --version` adds the core contract version (shared with bash and Bash#) to its existing line, read from the core's build data.
+**M2: `help` reads data** (bashy). There is no new command or option. Only what the existing output reads from changes.
+- `bashy --version` stays exactly as it is. The shell layer answers it (bashsharp `cli/version.go`, not cobra). Its build ID is the stamped release tag, and under the M4 lockstep rule that tag also names the core contract version, so nothing needs adding.
 - `bashy help` takes its topics from records, not from compiled tables. It names `commands --json` as the discovery entry, so a new tool shows up without a core change.
 - **Ratchet:** register a tool in a temporary ring. `commands --json` and `help commands` must show it, and no file under `yoke/core` may change.
 
