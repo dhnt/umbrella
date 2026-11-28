@@ -3,12 +3,14 @@ id: b1defa24918f
 kind: task
 title: N4 Lift the agent-identity surface in bashy; N1, N2 and N3 are accepted on its cert
 seq: 863
-status: assigned
+status: done
 created: 2026-11-28T10:20:19.522712Z
 assignee: claude-fable5.2
 sprint: 744
 sprint_id: 934a9e36-eb10-5022-83ec-d60e76999c11
 sprint_title: Unique session ids for ad hoc bashy <tool> launches
+closed: 2026-11-28T13:45:13.745823Z
+closed_by: claude-fable5.2
 ---
 
 Operator, 11-28: accept N1 and N2 when the shapeware specs are met; start using the shapeware spec process for this work.

@@ -3,12 +3,14 @@ id: ced4b1c369db
 kind: task
 title: N3 every yoke verb runs under a unique agent name and id, never the bare tool name
 seq: 861
-status: assigned
+status: done
 created: 2026-11-28T09:51:01.597893Z
 assignee: claude-fable5.2
 sprint: 744
 sprint_id: 934a9e36-eb10-5022-83ec-d60e76999c11
 sprint_title: Unique session ids for ad hoc bashy <tool> launches
+closed: 2026-11-28T13:45:12.993541Z
+closed_by: claude-fable5.2
 ---
 
 Problem: N2 grants the ad hoc identity only on messaging (mb, inbox, the unread hint). Every other yoke verb called from a native agent session still records the bare tool name: principal.Resolver.Self falls back to the detected tool, so for example a resource claim is held by 'claude' and two sessions of one tool are indistinguishable.
