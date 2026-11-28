@@ -58,3 +58,7 @@ Running the pieces together on the gate lane found what unit tests could not. Ea
 ## How the sprint ran
 
 Five stories were dispatched at once to four vendors against written command-line contracts (plan section 11). All five came back within 25 minutes; two review rounds and seven gate-lane runs followed. From taking the seat to both `main` branches: about two hours.
+
+## Addendum, same day: the four red unit tests
+
+Todo `570d50d0` is closed (bashy `7a30ca7a`, `e8b5032d`). One was a product defect: two script changes had not been regenerated into the copies built into the binary. Three were a test defect: the make-hint tests read the hint switch from the environment, and the gate lanes run with hints off. With both fixes the full `go test ./internal/agentos` is green on the gate lane (bashy `e8b5032d`), which is also the first full-package run after the Sprint 738 merge.
