@@ -1,6 +1,6 @@
 # Sprint 749 plan: a minimal, stable core
 
-Status: **backlog**. It needs operator review before start.
+Status: **approved 2026-11-28**. Stories: M0 `0341c7477c14`, M1 `3e2c4ff166f0`, M2 `5c260398c214`, M3 `2acc0cc42eeb`, M4 `791735df2789`.
 Ruling: the owner, 2026-11-28, answering the Sprint 746 open questions
 (bashy `docs/commands-utils-tools.md`, "Owner ruling").
 Epic: `core-split`.
@@ -114,7 +114,16 @@ protected manifest, yoke `pkg/src/manifest.go:37`), not per verb.
 - The binary's release version also moves when a builtin optional tool changes.
 - The ratchet from M2 shows that adding or changing a tool changes no core path.
 
-## Decision needed before start
+## Principle (owner, 2026-11-28)
+
+Every boundary in this sprint separates packages so a change in one does not
+spread to the others: no rebuild, no cache invalidation, no re-certification.
+The core is the strictest case of that rule.
+
+## Decision
+
+**D1 = (a), decided 2026-11-28.** The owner approved the start and the
+principle above. JSON records in the core follow that principle.
 
 **D1: the format of the core's records.** Fleet and ring records are YAML (`gopkg.in/yaml.v3`, 24 import sites).
 - **(a) JSON records in the core (recommended).** The core stores and reads JSON with the standard library. YAML input is accepted by a builtin optional `import` front end. This keeps the rule strict.
