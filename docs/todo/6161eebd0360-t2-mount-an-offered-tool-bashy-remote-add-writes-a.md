@@ -3,12 +3,15 @@ id: 6161eebd0360
 kind: feature
 title: 'T2 mount an offered tool: bashy remote add writes a local registered record, typed in the agent tool list, digest-pinned'
 seq: 852
-status: todo
+status: done
 priority: p1
 created: 2026-11-27T23:59:34.66897Z
+assignee: claude-fable5.2
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T07:57:16.34996Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §3.1, §4 T2. An offered tool goes into the agent's own tool list (moved here from Sprint 740 S2 store add; the store then only looks the listing up and calls this).
@@ -40,3 +43,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).
 
 Conductor note at dispatch (yoke main c47be359): pkg/offer exists (K4: NewOfferCmd, RemoteSubcommands with remote call, run.go transport). Put T2 code in a NEW file pkg/offer/mount.go and only append to the RemoteSubcommands slice: T1 edits pkg/offer in parallel. The definition route is GET /offers/NAME?definition (K4 broker offers.go).
+
+Delivered (conductor record): yoke main 125e7c86 (worker commit f11d9f86 by claude-fable5.2, cherry-picked). Gate: full go test ./pkg/offer ./pkg/broker ./pkg/fleet ./mcp ok, vet ok.

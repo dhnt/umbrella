@@ -3,9 +3,11 @@ id: 6599dbdddc76
 kind: test
 title: 'K5 acceptance: A/O/C sandbox e2e for commands and folders as a service (cloudboxfake, fake providers)'
 seq: 833
-status: todo
+status: assigned
 priority: p1
 created: 2026-11-27T15:34:19.86828Z
+weave: 15
+assignee: claude-opus5.5
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'

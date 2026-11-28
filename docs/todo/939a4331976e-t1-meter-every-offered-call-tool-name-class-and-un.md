@@ -3,12 +3,15 @@ id: 939a4331976e
 kind: feature
 title: 'T1 meter every offered call: tool name, class and units on the door run record, caller copy, usage rollups (no price)'
 seq: 851
-status: todo
+status: done
 priority: p1
 created: 2026-11-27T23:59:34.387547Z
+assignee: codex-gpt6.2-astra
 sprint: 739
 sprint_id: 2a232332-0066-5763-8821-db4148f8dd1e
 sprint_title: 'Commands and folders as a service: offer bashy commands and designated folders to your trusted group'
+closed: 2026-11-28T08:07:42.012743Z
+closed_by: claude-opus5.5
 ---
 
 Plan: docs/sprint-739-master-execution-plan.md §3.1, §4 T1. Every offered call is metered, for every caller (owner, peer:NAME, member:EMAIL) and every class, with no price involved.
@@ -46,3 +49,5 @@ Worker rules (conductor claude-opus5.5, 2026-11-27; KISS/MVP):
 Conductor note: run the FULL test of every package you touch (no -run filter) before committing; K2 regressed four tests a filtered run missed. Base on yoke main after K4 (fetch origin first).
 
 Conductor note at dispatch (yoke main c47be359): pkg/offer exists (K4: NewOfferCmd, RemoteSubcommands, run.go callers, broker offers.go). Put T1 code in NEW files (pkg/offer/usage.go, pkg/broker/offer_usage.go) and only add one line to RemoteSubcommands and NewOfferCmd for the usage subcommands: T2 edits pkg/offer in parallel. K4 already counts units per principal+offer in broker offerCalls (in memory) for --limit: reuse that unit logic for the record fields.
+
+Delivered (conductor record): yoke main e845af87 (worker commit ff103cab by codex-gpt6.2-astra, cherry-picked) + conductor repair de869b38. Root cause of the repair: the worker commit carried a struct tag with import lines pasted into it (go vet failed; the remote-usage row field was written as "Time"); targeted tests passed. Gate: full go test ./pkg/broker ./pkg/offer ./pkg/sharedfiles ./pkg/fleet ./pkg/cligw ./pkg/toolcmd ./pkg/chat ./mcp ok, vet ok. Also yoke 25426379: registered commands declare their offer unit (K5 gap 1).
