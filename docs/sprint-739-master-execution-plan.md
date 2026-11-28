@@ -34,6 +34,13 @@ reaches is a tool call (the MCP word), "command" is only one of the three
 backings, and CaaS already means containers as a service, which would be
 confused with bashy's own sandbox tier.
 
+**To an external agent, everything is a tool (operator, 2026-11-27 night).** A
+calling agent (Claude Code, codex, an MCP client) sees one kind of thing: a
+typed tool in `bashy mcp tools` or a `bashy … call`. A model, an agent, a
+registered command and a folder differ only in their definition and unit,
+whether they run locally or on a member's machine. M1 completes the set with
+the one-shot model and agent calls.
+
 **One sharing model for humans and agents (operator, 2026-11-27).** bashy is for
 agents. The existing app sharing was designed for humans using UI apps. This sprint
 generalizes that one model rather than adding a second one:
@@ -110,6 +117,23 @@ generalizes that one model rather than adding a second one:
 | **Model** | a fleet model binding (`llm`) | the typed call `llm`, and the inference routes for an agent that uses it as its model | token |
 | **Tool** | a fleet tool, or a registered command (`bashy commands add`) | `slash=NAME` with schema-bound arguments | call, or an output unit the offer names (second of audio, image) |
 | **Agent** | a fleet agent bound to a model: "a smart tool" | the typed call `{task, …}`, under a token cap | token |
+
+**One-shot calls from the CLI (operator, 2026-11-27 night).** The bashy CLI
+calls any LLM and any agent as a one-shot tool call, request in and response
+out, locally as well as through an offer:
+- `bashy llm call [--model M|M@DOOR|--band L] [--system S] [--schema FILE]
+  PROMPT|-` sends one request through the door's existing inference route and
+  returns `{model, text, json, usage}`. A local model, a peer door and a
+  member's offer are the same call, because `MODEL@DOOR` already resolves
+  (`broker.ResolveDoorModel`).
+- `bashy agent call AGENT|--band L|--capability C --task T [--token-cap N]`
+  wraps the existing one-shot `bashy chat --instruction … --json`, read-only by
+  default, and returns `{agent, output, exit_code, usage, capped}`. Chat's
+  result envelope gains the token usage it lacks today (`chat.go:205-221`).
+- Both ship a typed tool definition, so they show as the typed tools `llm` and
+  `agent` in `bashy mcp tools` for any local agent. These are the definitions
+  the Model and Agent offer classes serve (K2), so a mounted remote model or
+  agent and a local one look the same to the calling agent.
 
 A **designated folder** is offered in the same form, as a tool (operator,
 2026-11-27 night: everything is a tool call as far as agents are concerned). It
@@ -265,16 +289,17 @@ audience with zero new audience code.
 | Story | What | Repo |
 |---|---|---|
 | **K1** named peer runs + per-command allow-list | Caller only for the run: `runPeer` accepts `TOOL:NAME`/`NAME`, and a `DispatchPeerCommand` sends `slash=NAME[,tool=TOOL]` without the measured-selection checks. Door: `PeerShare.Commands` allow-list, checked from the parsed slash name; empty = no named commands, so nothing widens (fixes missing item 2). | yoke `pkg/toolcmd`, `pkg/broker` |
-| **K2** the offerable set and the typed tool definition | Eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused). One typed tool definition per offer (name, class, description, input schema, output shape, effects, unit, optional tags) and its digest; an untyped offer is refused. For a registered command, generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is part of the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
+| **M1** one-shot model and agent tool calls | `bashy llm call` (one request through the door's inference route, `M@DOOR` included, `{model, text, json, usage}`) and `bashy agent call` (wraps the `bashy chat` one-shot, read-only, `{agent, output, exit_code, usage, capped}`; chat's result gains usage); both typed tools `llm` and `agent` in `bashy mcp tools`, reused by K2 for the Model and Agent classes | yoke `pkg/broker`, `pkg/chat`, bashy |
+| **K2** the offerable set and the typed tool definition | Eligibility by the fleet partition (model, tool, agent, registered command; internal verbs refused). One typed tool definition per offer (name, class, description, input schema, output shape, effects, unit, optional tags) and its digest, the Model and Agent classes taking M1's `llm` and `agent` definitions; an untyped offer is refused. For a registered command, generate a ToolCommand overlay (tool binary `bashy`, `mode: print`, `exec: bashy NAME {args}`, effects and timeout from the record). Verify first that the door can route a model-less `bashy` tool row; if not, the catalog change for it is part of the story (item 7). | yoke `pkg/fleet`, `pkg/cligw` |
 | **F1** the folder tool on the door | The door reads one record per share, `~/.bashy/shared/NAME.json` (path, default the empty `~/.bashy/shared/NAME/`; mode; audience; created), and reloads on change. Each record is the Tool-class offer `files-NAME` with the typed definition bashy ships (`op: ls\|stat\|read\|link`, read-only, unit bytes). In-process tool call plus the byte route `/files/NAME/PATH` (`os.OpenInRoot` + `ServeContent` + weak ETag + JSON listing), both through the door's existing auth and run record. Owner and `peer:` callers in this story; members arrive with K4. File Browser over HOME unchanged and owner only; no outpost change. | yoke `pkg/broker` |
 | **F2** folder CLI and URIs | `bashy files share NAME [--path DIR] [--force --reason]` writes `NAME.json` (default folder created empty; refuses HOME, its ancestors and `~/.bashy` without `--force`) and offers `files-NAME` with that audience; `unshare` / `shares` (owner); `ls/stat/cat/get/link` as a thin CLI over the `files-NAME` call (member, satellite token, mesh for owned hosts), `bashy://` resolution; relax the satellite URL check for `offer-*` apps | yoke `pkg/fleet`, bashy |
 | **K3** inputs and outputs by reference | Refuse host paths from peer callers (fixes the pre-existing item 3); fetch URI inputs into scratch; publish artifacts into the offerer's output share and return URIs with size and sha256 | yoke `pkg/toolcmd`, `pkg/cligw` |
 | **K4** offers as gated apps | `bashy offer`/`offer stop`/`offer list` for all three classes and folder offers (`files-NAME`); register `offer-NAME` (`require_login` + `trust_cloud_identity`); the offer app serves the typed definition and its digest; the door stamp branch with the prefix-to-offer check per class; an agent offer's token cap; `member:` limits and caps; consumer `bashy remote`, `llm env --from HOST --member`; fix the `share.go:249` login flip-back for gated apps | yoke `pkg/broker`, `pkg/fleet`, bashy |
 | **T1** meter every offered call | The door run record gains tool name, class, unit, units and definition digest, for every caller (owner, peer, member) and every class; usage returned to the caller, who keeps a copy; `bashy offer usage` and `bashy remote usage` with `--json` and `--tag`; limits count in the offer's unit (call, token, seconds, bytes); folder calls and link streams counted like any other; no price | yoke `pkg/broker`, `pkg/toolcmd`, bashy |
 | **T2** mount an offered tool | `bashy remote add HOST NAME [--as LOCAL]` writes a local registered record wrapping `bashy remote`, with the offered schema and pinned definition digest, so the tool shows in `bashy mcp tools`; a changed digest refuses until re-added; `bashy remote remove` | yoke `pkg/fleet`, bashy |
-| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: C offers one of each class (`llm`, `transcribe`, one fleet agent with a token cap); `bashy remote add` mounts `transcribe` and it shows in `bashy mcp tools` with a typed schema; the agent call stops at its cap; after the runs, `bashy offer usage` on C and `bashy remote usage` on O show the same units per tool for owner, peer and member calls, with no price anywhere; an internal verb and an untyped offer are refused; a changed definition digest refuses the mounted tool; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place, and O's agent mounts it (`bashy remote add C files-NAME`) and lists it through the typed tool; folder reads show in both usage rollups in bytes; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
+| **K5** A/O/C e2e (acceptance) | Sandbox, fake accounts (`cloudboxfake`), fake transcribe provider. No LLM for A or O. Checks: `bashy llm call` and `bashy agent call` work locally on C and, through the offers, from O and A's agents, returning the same envelope; C offers one of each class (`llm`, `transcribe`, one fleet agent with a token cap); `bashy remote add` mounts `transcribe` and it shows in `bashy mcp tools` with a typed schema; the agent call stops at its cap; after the runs, `bashy offer usage` on C and `bashy remote usage` on O show the same units per tool for owner, peer and member calls, with no price anywhere; an internal verb and an untyped offer are refused; a changed definition digest refuses the mounted tool; O shapes and A's wish runs on C's LLM; O puts `in.wav` in `<bashy-home>/shared/in/` (shared with C's circle) and runs `bashy remote C -- transcribe bashy://O/files-in/in.wav`, then streams the result URI (`files-offers`) with Range; A's agent reads a folder C shared, in place, and O's agent mounts it (`bashy remote add C files-NAME`) and lists it through the typed tool; folder reads show in both usage rollups in bytes; O also shares an outside path (`--path`) that A reads; sharing HOME without `--force` is refused; a non-member, a path escape (`..`, a symlink out of the folder) and a non-offered command are refused; unshare gives 403, a limit gives 429; O offers to C; the same audience rule admits a member's UI app use and their agent's runs. | bashy (`test-group-shaping-e2e` lane) |
 
-Order: F1 and K1 first (independent, both yoke), then F2 and K2, then K3 (needs F2), then K4,
+Order: F1, K1 and M1 first (independent, all yoke), then F2 and K2 (K2 after M1), then K3 (needs F2), then K4,
 then T1 and T2 (both need K4), then K5. Each story is delivered in its module first; then consumer pins and the
 umbrella pin are bumped.
 
