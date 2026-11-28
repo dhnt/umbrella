@@ -3,12 +3,14 @@ id: 9dc206c63b71
 kind: task
 title: N2 one-off bashy calls from a native agent CLI get an identity and a mail notice
 seq: 860
-status: assigned
+status: done
 created: 2026-11-28T09:24:06.731892Z
 assignee: claude-fable5.2
 sprint: 744
 sprint_id: 934a9e36-eb10-5022-83ec-d60e76999c11
 sprint_title: Unique session ids for ad hoc bashy <tool> launches
+closed: 2026-11-28T11:02:04.095917Z
+closed_by: claude-fable5.2
 ---
 
 Problem: an agent started with its vendor CLI (not bashy <tool>) that calls bashy verbs one at a time has no identity and watches no inbox, so replies never reach it and mb send refuses to sign.

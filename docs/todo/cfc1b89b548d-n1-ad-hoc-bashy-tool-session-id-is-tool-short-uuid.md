@@ -3,12 +3,14 @@ id: cfc1b89b548d
 kind: task
 title: N1 ad hoc bashy <tool> session id is <tool>-<short uuid>, never reused
 seq: 859
-status: assigned
+status: done
 created: 2026-11-28T08:50:20.337903Z
 assignee: claude-fable5.2
 sprint: 744
 sprint_id: 934a9e36-eb10-5022-83ec-d60e76999c11
 sprint_title: Unique session ids for ad hoc bashy <tool> launches
+closed: 2026-11-28T11:02:02.483702Z
+closed_by: claude-fable5.2
 ---
 
 Problem: bashy claude claims the id claude (the tool name) and the id is reused by the next launch, so peers cannot tell which claude is meant and a late inbox message reaches a later session.
