@@ -3,11 +3,14 @@ id: a297eccbbfd8
 kind: task
 title: 'M6 Lifted surface whose code spans a second module: cite its pinned go tests and grade its candidate'
 seq: 862
-status: todo
+status: done
 created: 2026-11-28T10:19:44.398526Z
+assignee: claude-opus5.5-s741
 sprint: 742
 sprint_id: 7dde34d4-f382-5aba-8ff5-071c5e3548b8
 sprint_title: 'Shaping: bugs and issues become spec changes (issue-to-spec support)'
+closed: 2026-11-28T10:50:08.747746Z
+closed_by: claude-opus5.5-s741
 ---
 
 Found while moving bashy sprint 744 (agent identity: N1 per-launch session id, N2 ad hoc identity for native agent sessions, N3 front-door identity step) onto the shapeware process. The surface is bashy CLI behaviour, but most of the code and its pinned tests are in the yoke repository, which bashy consumes by a versioned go.mod pin, and in bashy's nested yoke/ module. Sprint 742's Go-backed surface (spec 4.3b, 6, Appendix D) assumes one repository and one root module, so this surface cannot be fully specified yet.
